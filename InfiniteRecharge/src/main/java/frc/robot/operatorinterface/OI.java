@@ -106,32 +106,7 @@ public class OI {
 	private final static int DRIVE_INVERT_BUTTON         = controllerMapper.getL1();
 	private final static int DRIVE_ALIGN_LOCK_BUTTON     = controllerMapper.getShare();
 	private final static int DRIVE_LOCK_BUTTON     		 = controllerMapper.getOption();
-	// Note: operator has secondary priority with POVs
-	private final static int DRIVE_INFEED_BUTTON   		 = controllerMapper.getR2();
-	private final static int DRIVE_OUTFEED_BUTTON    	 = controllerMapper.getL2();
 	private final static int DRIVE_AUTO_ALIGN            = controllerMapper.getCross();
-
-	// How do you like me now, Sam?
-	// TODO: Make a get/set function instead of setting it to public
-	public  final static int ARM_CLIMBER                 = controllerMapper.getBrandButton();
-	private final static int HIGH_CLIMB                  = controllerMapper.getLStickButton();
-	private final static int LOW_CLIMB                   = controllerMapper.getRStickButton();
-
-	private final static int TEST_MOVE_BY_BUTTON         = controllerMapper.getTriangle(); /// TODO: Temp, use dashboard instead
-
-	private final static int BEAK_GRAPPLE_BUTTON   		 = controllerMapper.getR2();
-	private final static int BEAK_RELEASE_BUTTON    	 = controllerMapper.getL2();
-
-
-	// TODO: configure correct IDs
-	private final static int SCORING_TOP_DEAD_CENTER = controllerMapper.getTriangle();
-	private final static int SCORING_HATCH_PANEL = controllerMapper.getCircle();
-	private final static int SCORING_GROUND      = controllerMapper.getCross();
-	private final static int SCORING_BALL_C      = controllerMapper.getL1();
-	private final static int SCORING_BALL_LS     = controllerMapper.getR1();
-	// private final static int SCORING_BALL_R1     = controllerMapper.getL2();
-	private final static int SWITCH_ORIENTATION  = controllerMapper.getSquare();
-	private final static int ARM_MANUAL  = controllerMapper.getLeftStickY();
 
 
 
@@ -143,148 +118,32 @@ public class OI {
 
 
 
-	public boolean lowSpeed()
-	{
+	public boolean lowSpeed() {
 		return driverControl.getRawButton(DRIVE_LOW_SENSITIVE_BUTTON);
 	}
 
 	/** 
 	 * invertDrive - a private function used by speed() to invert the speed joystick sense temporarily
 	 */
-	private boolean invertDrive()
-	{
+	private boolean invertDrive() {
 		return driverControl.getRawButton(DRIVE_INVERT_BUTTON);
 	}
+
 	/**
 	 * alighLock - indicates driver would like to have some help driving straight
 	 * or otherwise resist a turn
 	 */
-	public boolean alignLock()
-	{
+	public boolean alignLock() {
 		return driverControl.getRawButton(DRIVE_ALIGN_LOCK_BUTTON);
 	}
+	
 	/**
 	 * driveLock - indicates driver would like to have some help holding position
 	 * The intent is to use the drive system position control loops to act like
 	 * a brake.
 	 */
-	public boolean  driveLock()
-	{
+	public boolean driveLock() {
 		return driverControl.getRawButton(DRIVE_LOCK_BUTTON);
-	}
-    
-
-  public boolean testMoveBy() /// TODO: Temporary, use dashboard instead
-  {
-      return driverControl.getRawButton(TEST_MOVE_BY_BUTTON);
-	}	
-	
-  public boolean armClimber()
-  {
-      return driverControl.getRawButton(ARM_CLIMBER) && operatorControl.getRawButton(ARM_CLIMBER);
-	}	
-	
-  public boolean highClimb()
-  {
-      return operatorControl.getRawButton(HIGH_CLIMB);
-	}	
-	
-   public boolean lowClimb()
-  {
-      return operatorControl.getRawButton(LOW_CLIMB);
-  }	
-
-
-
-
-	// these correspond to whether or not the buttons corresponding
-	// to each level are pressed
-	
-	public boolean hp() {
-		return operatorControl.getRawButton(SCORING_HATCH_PANEL);
-	}
-	public boolean topDeadCenter()
-	{
-		return operatorControl.getRawButton(SCORING_TOP_DEAD_CENTER);
-	}
-	public boolean ground() {
-		return operatorControl.getRawButton(SCORING_GROUND);
-	}
-
-	public boolean bCargo() {
-		return operatorControl.getRawButton(SCORING_BALL_C);
-	}
-
-	public boolean bLoadingStation() {
-		return operatorControl.getRawButton(SCORING_BALL_LS);
-	}
-
-	public boolean bRocket1() {
-		// return operatorControl.getRawButton(SCORING_BALL_R1);
-		return false;
-	}
-
-	public boolean switchOrientation() {
-		return operatorControl.getRawButton(SWITCH_ORIENTATION);
-	}
-
-	public double manualArmControl() {
-		return operatorControl.getRawAxis(ARM_MANUAL);
-	}
-
-	/**
-	 * intakeActive - turns the intake rollers to rotate inwards when true, pulling balls inside.
-	 */
-	public boolean infeedActive1() {
-		return driverControl.getRawButton(DRIVE_INFEED_BUTTON);
-	}
-
-	public boolean infeedActive2() {
-		return operatorControl.getPOV() == 180;
-	}
-
-	public boolean outfeedActive1() {
-		return driverControl.getRawButton(DRIVE_OUTFEED_BUTTON);
-	}
-
-	public boolean outfeedActive2() {
-		return operatorControl.getPOV() == 0;
-	}
-
-	public boolean infeedActive() {
-		return
-			(infeedActive1() && !outfeedActive1()) ||
-			(infeedActive2() && !outfeedActive2() && !outfeedActive1());
-	}
-
-	public boolean outfeedActive() {
-		return
-			(!infeedActive1() && outfeedActive1()) ||
-			(!infeedActive2() && !infeedActive1() && outfeedActive2());
-	}
-
-	public boolean hatchOutfeedActive() {
-		return false;//driverControl.getRawButton(DRIVE_HATCH_OUTFEED_BUTTON);
-	}
-
-	public boolean autoAlign(){
-		return driverControl.getRawButton(DRIVE_AUTO_ALIGN);
-	}
-
-	public boolean driverIdle() {
-		return driverControl.getRawButton(DRIVER_IDLE);
-	}
-
-	public boolean operatorIdle() {
-		return operatorControl.getRawButton(OPERATOR_IDLE);
-	}
-
-	public boolean beakGrapple() {
-		return operatorControl.getRawButton(BEAK_GRAPPLE_BUTTON);
-	}
-
-	public boolean beakRelease() {
-		return operatorControl.getRawButton(BEAK_RELEASE_BUTTON);
 	}
 
 	public boolean forceExitAuto() {
