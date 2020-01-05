@@ -1,7 +1,6 @@
 package frc.robot.operatorinterface;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
 import frc.robot.subsystem.drive.DriveConstants;
 
 public class OI {
@@ -136,7 +135,7 @@ public class OI {
 	public boolean alignLock() {
 		return driverControl.getRawButton(DRIVE_ALIGN_LOCK_BUTTON);
 	}
-	
+
 	/**
 	 * driveLock - indicates driver would like to have some help holding position
 	 * The intent is to use the drive system position control loops to act like
