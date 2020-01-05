@@ -190,7 +190,7 @@ public class BBSparkMax extends BBMotorController {
 
     @Override
     public void setInverted(boolean invert) {
-        setInverted(invert);
+        MOTOR.setInverted(invert);
     }
 
     @Override
