@@ -1,0 +1,59 @@
+package frc.robot.subsystem.copypaste;
+
+import java.util.HashMap;
+
+import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.Subsystems;
+
+
+
+public class CopyPasteSubsystem extends BitBucketSubsystem {
+    public CopyPasteSubsystem() {
+        setName(INSERT NAME STRING HERE);
+    }
+
+
+
+    public void initialize() {
+        initializeBaseDashboard();
+    }
+
+	public void diagnosticsInitialize() {
+
+    }
+	
+	public void diagnosticsPeriodic() {
+
+    }
+	
+	public void diagnosticsCheck() {
+
+    }
+	
+	@Override
+    protected void initDefaultCommand() {
+
+    }
+    
+    @Override
+    public void periodic() {
+        updateBaseDashboard();
+    }
+
+
+
+    
+
+    @Override
+	public void injectDependencies(HashMap<Subsystems, BitBucketSubsystem[]> deps) {
+        // use like this, continuing with example from above:
+        // climbSubsystem = deps.get(Subsystems.CLIMB);
+        // shooterSubsystem = deps.get(Subsystems.SHOOTER)
+    };
+
+    @Override
+	public Subsystems getSubsystemID() {
+        // MAKE SURE TO REPLACE THIS WITH THE SUBSYSTEM BEING IMPLEMENTED
+        return Subsystems.;
+    };
+}
