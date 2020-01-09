@@ -37,6 +37,13 @@ deploy {
     }
 }
 
+repositories {
+    maven {
+        // this repo contains the FRCSim
+        url 'https://raw.githubusercontent.com/cpostbitbuckets/maven_repo/master'
+    }
+}
+
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
 
@@ -53,6 +60,15 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     testImplementation 'junit:junit:4.12'
+
+    // we only use this project at runtime when doing simulations
+    runtimeOnly "org.bitbuckets:simulator:2020.1.2-SNAPSHOT"
+
+    // If you have Talon motors, use this dependency as well
+    runtimeOnly "org.bitbuckets:simulator-ctre:2020.1.2-SNAPSHOT"
+
+    // // If you have Spark motors, use this dependency as well
+    runtimeOnly "org.bitbuckets:simulator-rev:2020.1.2-SNAPSHOT"
 
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging

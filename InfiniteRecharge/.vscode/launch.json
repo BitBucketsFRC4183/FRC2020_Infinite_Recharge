@@ -4,7 +4,16 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-
+    {
+      "type": "java",
+      "name": "SimMain - local",
+      "request": "launch",
+      "mainClass": "frc.robot.simulator.SimMain",
+      "vmArgs": "-Djava.library.path=build/tmp/jniExtractDir",
+      "env": {
+        "DYLD_LIBRARY_PATH": "build/tmp/jniExtractDir"
+      }
+    },
     {
       "type": "wpilib",
       "name": "WPILib Desktop Debug",
