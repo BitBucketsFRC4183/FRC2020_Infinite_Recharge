@@ -7,8 +7,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.RisingEdgeFilter;
 import frc.robot.utils.talonutils.TalonUtils;
 
@@ -34,11 +36,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private WPI_TalonSRX[] leftMotors;
     private WPI_TalonSRX[] rightMotors;
 
+    private final NavigationSubsystem NAVIGATION_SUBSYSTEM;
     private final OI OI;
 
-    public DriveSubsystem(OI oi) {
+    public DriveSubsystem(NavigationSubsystem navigationSubsystem, OI oi) {
         setName("DriveSubsystem");
 
+        NAVIGATION_SUBSYSTEM = navigationSubsystem;
         OI = oi;
     }
 
@@ -57,6 +61,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
         int leftLeader = DriveConstants.LEFT_MOTOR_IDS[0];
         int rightLeader = DriveConstants.RIGHT_MOTOR_IDS[0];
 
+        leftMotors = new WPI_TalonSRX[DriveConstants.MOTORS_PER_SIDE];
+        rightMotors = new WPI_TalonSRX[DriveConstants.MOTORS_PER_SIDE];
+        
         // initialize all motors
         for (int i = 0; i < DriveConstants.MOTORS_PER_SIDE; i++) {
             leftMotors[i] = new WPI_TalonSRX(DriveConstants.LEFT_MOTOR_IDS[i]);
@@ -199,5 +206,17 @@ public class DriveSubsystem extends BitBucketSubsystem {
         } else if (ds.isAutonomous()) {
             driveMethod = DriveMethod.AUTO; // please don't press any buttons during auto anyways :)))
         }
+
+
+
+        SmartDashboard.putNumber(getName() + "/Robot yaw", NAVIGATION_SUBSYSTEM.getYaw_deg());
+    }
+
+
+
+
+
+    public NavigationSubsystem getNavigation() {
+        return NAVIGATION_SUBSYSTEM;
     }
 }

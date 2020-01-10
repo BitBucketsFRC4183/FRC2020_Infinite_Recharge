@@ -130,4 +130,8 @@ public class DriveConstants {
     public static final int[] RIGHT_MOTOR_IDS = {
         3, 4
     };
+
+
+
+    public static final double ROTATION_DRIVE_RANGE_DEG = 20;
 }

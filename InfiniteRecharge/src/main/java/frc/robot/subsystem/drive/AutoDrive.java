@@ -4,6 +4,7 @@ package frc.robot.subsystem.drive;
 
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.drive.DriveSubsystem.DriveMethod;
+import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.CommandUtils;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -30,6 +31,7 @@ public class AutoDrive extends CommandBase {
 
 
 
+    @Override
     public boolean isFinished() {
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.VELOCITY) {
             return CommandUtils.stateChange(new VelocityDrive(DRIVE_SUBSYSTEM, OI));
