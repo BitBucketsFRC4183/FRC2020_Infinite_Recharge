@@ -12,13 +12,14 @@ import java.util.HashMap;
 import frc.robot.subsystem.SubsystemUtilities.DiagnosticsState;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
-public abstract class BitBucketSubsystem extends Subsystem {
+public abstract class BitBucketSubsystem extends SubsystemBase {
 	
 	protected static DriverStation ds = DriverStation.getInstance(); // Convenience
 
@@ -54,7 +55,7 @@ public abstract class BitBucketSubsystem extends Subsystem {
 	/** updateBaseDashboard - call from derived class periodic function */
 	protected void updateBaseDashboard() {
 		SmartDashboard.putNumber(getName() + "/PeriodicCounter", periodicCounter++);
-		SmartDashboard.putString(getName() + "/CurrentCommand",getCurrentCommandName());
+		SmartDashboard.putString(getName() + "/CurrentCommand", getCurrentCommand().getName());
 	}
 
 	/**
@@ -86,36 +87,17 @@ public abstract class BitBucketSubsystem extends Subsystem {
 		SmartDashboard.putBoolean(getName() + "/DiagnosticsEnabled", diagnosticsEnabled);
 	}
 
-	public abstract void initialize();		// Force all derived classes to have these interfaces
-
+	public void initialize() {
+		initializeBaseDashboard();
+	};
+	
+	// Force all derived classes to have these interfaces
 	public abstract void diagnosticsInitialize();
 	
 	public abstract void diagnosticsPeriodic();
 	
 	public abstract void diagnosticsCheck();
-	
-	@Override
-    protected abstract void initDefaultCommand();
     
     @Override
 	public abstract void periodic();
-	
-
-
-	/**
-	 * A way to let the subsystem access any other subsystems it may need to. Upon initialization of all
-	 * subsystems, the Robot class will call this method with a HashMap with every subsystem mapped by
-	 * its subsystem ID
-	 * 
-	 * @param deps HashMap with every subsystem mapped by its subsystem ID
-	 */
-	public abstract void injectDependencies(HashMap<Subsystems, BitBucketSubsystem> deps);
-
-	/**
-	 * Way to indictate to Robot class which Subsystem this is and to differentiate this Subsystem from
-	 * others in another Subsystem's dependencies
-	 * 
-	 * @return corresponding Subsystems enum value
-	 */
-	public abstract Subsystems getSubsystemID();
 }
