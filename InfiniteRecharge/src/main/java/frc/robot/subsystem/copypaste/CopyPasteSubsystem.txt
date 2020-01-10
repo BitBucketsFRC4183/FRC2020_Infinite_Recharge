@@ -15,7 +15,7 @@ public class CopyPasteSubsystem extends BitBucketSubsystem {
 
 
     public void initialize() {
-        initializeBaseDashboard();
+        super.initialize();
     }
 
 	public void diagnosticsInitialize() {
@@ -39,21 +39,4 @@ public class CopyPasteSubsystem extends BitBucketSubsystem {
     public void periodic() {
         updateBaseDashboard();
     }
-
-
-
-    
-
-    @Override
-	public void injectDependencies(HashMap<Subsystems, BitBucketSubsystem[]> deps) {
-        // use like this, continuing with example from above:
-        // climbSubsystem = deps.get(Subsystems.CLIMB);
-        // shooterSubsystem = deps.get(Subsystems.SHOOTER)
-    };
-
-    @Override
-	public Subsystems getSubsystemID() {
-        // MAKE SURE TO REPLACE THIS WITH THE SUBSYSTEM BEING IMPLEMENTED
-        return Subsystems.;
-    };
 }

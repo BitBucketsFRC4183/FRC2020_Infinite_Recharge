@@ -52,12 +52,6 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	@Override
-	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	protected void updateDashboard() {
 		//SmartDashboard.putNumber( getName() + "/Yaw Angle (deg)", getYaw_deg());
@@ -92,16 +86,4 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	public double getYawRate_degPerSec() {
 		return ahrs.getRate();
 	}
-
-
-
-	@Override
-	public void injectDependencies(HashMap<Subsystems, BitBucketSubsystem> deps) {
-
-	};
-	
-	@Override
-	public Subsystems getSubsystemID() {
-        return Subsystems.NAVIGATION;
-    };
 }
