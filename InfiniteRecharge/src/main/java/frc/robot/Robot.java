@@ -31,8 +31,8 @@ public class Robot extends TimedRobot {
 
     private final OI OI = new OI();
 
-    private DriveSubsystem driveSubsystem = new DriveSubsystem(OI);
-    private NavigationSubsystem navigationSubsystem = new NavigationSubsystem();
+    private NavigationSubsystem navigationSubsystem;
+    private DriveSubsystem driveSubsystem;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -40,11 +40,11 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        driveSubsystem = new DriveSubsystem(OI);
-        driveSubsystem.initialize();
-
         navigationSubsystem = new NavigationSubsystem();
         navigationSubsystem.initialize();
+
+        driveSubsystem = new DriveSubsystem(navigationSubsystem, OI);
+        driveSubsystem.initialize();
     }
 
     /**
