@@ -9,8 +9,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.operatorinterface.OI;
+import frc.robot.subsystem.drive.DriveSubsystem;
+import frc.robot.subsystem.navigation.NavigationSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
+import frc.robot.config.ConfigChooser;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 
 /**
@@ -28,16 +33,25 @@ public class Robot extends TimedRobot {
   private ShooterSubsystem shooterSubsystem;
   private Config config;
 
+  private final OI OI = new OI();
+
+  private NavigationSubsystem navigationSubsystem;
+  private DriveSubsystem driveSubsystem;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
+    config = ConfigChooser.getConfig();
+    navigationSubsystem = new NavigationSubsystem(config);
+    navigationSubsystem.initialize();
+
+    driveSubsystem = new DriveSubsystem(config, navigationSubsystem, OI);
+    driveSubsystem.initialize();
+
     SmartDashboard.putData("Auto choices", m_chooser);
-    config = new Config();
     shooterSubsystem = new ShooterSubsystem(config);
   }
 
@@ -52,6 +66,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
   }
 
   /**

@@ -11,7 +11,10 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
+import java.util.HashMap;
+
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.Subsystems;
 
 /**
  * Add your docs here.
@@ -51,12 +54,6 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	@Override
-	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	protected void updateDashboard() {
 		//SmartDashboard.putNumber( getName() + "/Yaw Angle (deg)", getYaw_deg());
@@ -91,6 +88,4 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	public double getYawRate_degPerSec() {
 		return ahrs.getRate();
 	}
-
-
 }

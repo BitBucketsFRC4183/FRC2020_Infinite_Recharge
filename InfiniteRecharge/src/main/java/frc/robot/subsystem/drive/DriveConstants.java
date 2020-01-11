@@ -75,9 +75,6 @@ public class DriveConstants {
     
     // Define some constants for using the motor controllers
     // TODO: move this to a common motor class or utility
-
-    public static final int PRIMARY_PID_LOOP  = 0; // Constants to support new Talon interface types
-	public static final int CASCADED_PID_LOOP = 1; // That should have been enumerated rather than int
 	public static final int CONTROLLER_TIMEOUT_MS = 100; // Default timeout to wait for configuration response
     
     public static final int SUPER_HIGH_STATUS_FRAME_PERIOD_MS  =   5;	// CAUTION!
@@ -86,21 +83,55 @@ public class DriveConstants {
 	public static final int MEDIUM_STATUS_FRAME_PERIOD_MS      =  50;
     public static final int LOW_STATUS_FRAME_PERIOD_MS         = 100;
 
-
-
-    // These Motion Magic values defined the shape of the trapezoidal profile for speed
-    // The cruise speed is the maximum speed during the profile and is chosen to keep
-    // below the maximum (which varies with battery voltage). The acceleration is the
-    // slope allowed to reach the cruise speed or zero (hence, a trapezoid)
-    //
-    // Setting this to 80% of maximum is a reasonable place to start;
-    // However, the acceleration is currently default to reach cruising speed within 1 second 
-    // and may need to be increased or decreased depending on static friction limits of tires
-        
-    public static final int DRIVE_MOTOR_MOTION_CRUISE_SPEED_NATIVE_TICKS = 0; // TODO
-    public static final int DRIVE_MOTOR_MOTION_ACCELERATION_NATIVE_TICKS = (int) (4346/1.5); // 0.26 g on wood//DRIVE_MOTOR_MOTION_CRUISE_SPEED_NATIVE_TICKS;
-
     
 
-	public static final double TURN_SIGN = 1.0;
+    public static final double TURN_SIGN = 1.0;
+
+
+
+    // not sure if we can use Double.POSITIVE_INFINITY so just be safe
+    public static final double MAX_LIN_ACCELERATION_IPSPS = 999999999;
+
+
+
+
+
+
+
+
+
+
+    // PID constants
+    
+    // Velocity control
+    public static final int VELOCITY_IDX = 0;
+
+    public static final double LEFT_VEL_KP = 0;
+    public static final double LEFT_VEL_KI = 0;
+    public static final double LEFT_VEL_KD = 0;
+    public static final double LEFT_VEL_KF = 0;
+    public static final int LEFT_VEL_IZONE = 0;
+
+    public static final double RIGHT_VEL_KP = 0;
+    public static final double RIGHT_VEL_KI = 0;
+    public static final double RIGHT_VEL_KD = 0;
+    public static final double RIGHT_VEL_KF = 0;
+    public static final int RIGHT_VEL_IZONE = 0;
+
+
+
+    // TODO: change
+    public static final int MOTORS_PER_SIDE = 2;
+
+    public static final int[] LEFT_MOTOR_IDS = {
+        1, 2
+    };
+
+    public static final int[] RIGHT_MOTOR_IDS = {
+        3, 4
+    };
+
+
+
+    public static final double ROTATION_DRIVE_RANGE_DEG = 20;
 }
