@@ -52,17 +52,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    protected void initDefaultCommand() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void periodic() {
         // TODO Auto-generated method stub
-        if(OI.driverControl.getRawButton(PS4Constants.SQUARE.getValue())){
-            ballPropulsionMotor.set(SmartDashboard.getNumber(getName() + "/Shooter Velocity", 0.2));
-        }
+        // if(OI.driverControl.getRawButton(PS4Constants.SQUARE.getValue())){
+        //     ballPropulsionMotor.set(SmartDashboard.getNumber(getName() + "/Shooter Velocity", 0.2));
+        // }
     }
 
 }
