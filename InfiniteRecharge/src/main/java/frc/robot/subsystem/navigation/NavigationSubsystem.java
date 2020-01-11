@@ -9,8 +9,10 @@ package frc.robot.subsystem.navigation;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.HashMap;
+
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.Subsystems;
 
 /**
  * Add your docs here.
@@ -18,17 +20,8 @@ import frc.robot.subsystem.BitBucketSubsystem;
 public class NavigationSubsystem extends BitBucketSubsystem {
   	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
-	  
-	// Singleton method; use NavigationSubsystem.instance() to get the NavigationSubsystem instance.
-	public static NavigationSubsystem instance() {
-		if(inst == null)
-			inst = new NavigationSubsystem();
-		return inst;
-	}
-	private static NavigationSubsystem inst;
 
-	private NavigationSubsystem()
-	{
+	public NavigationSubsystem() {
 		setName("NavigationSubsystem");
 	}
 
@@ -56,12 +49,6 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
 	@Override
 	public void diagnosticsCheck() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -99,6 +86,4 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	public double getYawRate_degPerSec() {
 		return ahrs.getRate();
 	}
-
-
 }

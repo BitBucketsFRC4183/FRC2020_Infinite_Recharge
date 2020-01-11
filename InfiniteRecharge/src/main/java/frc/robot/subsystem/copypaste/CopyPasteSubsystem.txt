@@ -1,0 +1,42 @@
+package frc.robot.subsystem.copypaste;
+
+import java.util.HashMap;
+
+import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.Subsystems;
+
+
+
+public class CopyPasteSubsystem extends BitBucketSubsystem {
+    public CopyPasteSubsystem() {
+        setName(INSERT NAME STRING HERE);
+    }
+
+
+
+    public void initialize() {
+        super.initialize();
+    }
+
+	public void diagnosticsInitialize() {
+
+    }
+	
+	public void diagnosticsPeriodic() {
+
+    }
+	
+	public void diagnosticsCheck() {
+
+    }
+	
+	@Override
+    protected void initDefaultCommand() {
+
+    }
+    
+    @Override
+    public void periodic() {
+        updateBaseDashboard();
+    }
+}
