@@ -7,16 +7,19 @@
 
 package frc.robot.subsystem;
 
+import java.util.HashMap;
+
 import frc.robot.subsystem.SubsystemUtilities.DiagnosticsState;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
-public abstract class BitBucketSubsystem extends Subsystem {
+public abstract class BitBucketSubsystem extends SubsystemBase {
 	
 	protected static DriverStation ds = DriverStation.getInstance(); // Convenience
 
@@ -41,8 +44,7 @@ public abstract class BitBucketSubsystem extends Subsystem {
 		
 	}
 
-	protected void initializeBaseDashboard()
-	{
+	protected void initializeBaseDashboard() {
 		SmartDashboard.putBoolean(getName()+"/TelemetryEnabled", telemetryEnabled);
 		SmartDashboard.putBoolean(getName()+"/DiagnosticsEnabled", diagnosticsEnabled);
 
@@ -51,10 +53,11 @@ public abstract class BitBucketSubsystem extends Subsystem {
 	}
 
 	/** updateBaseDashboard - call from derived class periodic function */
-	protected void updateBaseDashboard()
-	{
+	protected void updateBaseDashboard() {
 		SmartDashboard.putNumber(getName() + "/PeriodicCounter", periodicCounter++);
-		SmartDashboard.putString(getName() + "/CurrentCommand",getCurrentCommandName());
+        if (getCurrentCommand() != null) {
+            SmartDashboard.putString(getName() + "/CurrentCommand", getCurrentCommand().getName());
+        }
 	}
 
 	/**
@@ -62,17 +65,16 @@ public abstract class BitBucketSubsystem extends Subsystem {
 	 * NOTE: "Extended" Telemetry can be enabled any time at the expense of
 	 * network bandwidth
 	 */
-	public boolean getTelemetryEnabled()
-	{
+	public boolean getTelemetryEnabled() {
 		telemetryEnabled = SmartDashboard.getBoolean(getName() + "/TelemetryEnabled", false);
 		return telemetryEnabled;
 	}
+
 	/**
 	 * getDiagnosticsEnabled - returns the current dashboard state
 	 * NOTE: Diagnostics can only be enabled when the DriverStation is in test mode
 	 */
-	public boolean getDiagnosticsEnabled()
-	{
+	public boolean getDiagnosticsEnabled() {
 		diagnosticsEnabled = SmartDashboard.getBoolean(getName() + "/DiagnosticsEnabled", false);
 		if (! ds.isTest())
 		{
@@ -81,23 +83,23 @@ public abstract class BitBucketSubsystem extends Subsystem {
 		}
 		return diagnosticsEnabled;
 	}
-	public void clearDiagnosticsEnabled()
-	{
+
+	public void clearDiagnosticsEnabled() {
 		diagnosticsEnabled = false;
 		SmartDashboard.putBoolean(getName() + "/DiagnosticsEnabled", diagnosticsEnabled);
 	}
 
-	public abstract void initialize();		// Force all derived classes to have these interfaces
-
+	public void initialize() {
+		initializeBaseDashboard();
+	};
+	
+	// Force all derived classes to have these interfaces
 	public abstract void diagnosticsInitialize();
 	
 	public abstract void diagnosticsPeriodic();
 	
 	public abstract void diagnosticsCheck();
-	
-	@Override
-    protected abstract void initDefaultCommand();
     
     @Override
-    public abstract void periodic();
+	public abstract void periodic();
 }
