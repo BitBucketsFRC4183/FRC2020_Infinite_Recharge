@@ -9,15 +9,14 @@ public class OI {
 	
 
 
-	public OI() {
+	{
 		if (System.getProperty("xbox", null) != null) {
 			controllerMapper = ControllerMapper.xbox();
 		} else {
 			controllerMapper = ControllerMapper.ps4();
 		}
 
-		DRIVE_SPEED_AXIS = controllerMapper.getLeftStickY();
-		DRIVE_TURN_AXIS = controllerMapper.getRightStickX();
+		
 	}
 
 
@@ -32,8 +31,8 @@ public class OI {
 	// ****************************
 	// AXIS DEFINITIONS
 	// ****************************
-	private final int DRIVE_SPEED_AXIS;
-	private final int DRIVE_TURN_AXIS;
+	private final int DRIVE_SPEED_AXIS = controllerMapper.getLeftStickY();
+	private final int DRIVE_TURN_AXIS = controllerMapper.getRightStickX();
 
 
 
