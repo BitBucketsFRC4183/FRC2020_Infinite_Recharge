@@ -48,17 +48,18 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    SmartDashboard.putData("Auto choices", m_chooser);
     config = ConfigChooser.getConfig();
+
     navigationSubsystem = new NavigationSubsystem(config);
     navigationSubsystem.initialize();
 
     driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
     driveSubsystem.initialize();
 
-    SmartDashboard.putData("Auto choices", m_chooser);
-    config = ConfigChooser.getConfig();
     shooterSubsystem = new ShooterSubsystem(config);
     shooterSubsystem.initialize();
+    
     intakeSubsystem = new IntakeSubsystem(config);
     intakeSubsystem.initialize();
   }
@@ -119,18 +120,36 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    if (oi.driverControl.getRawButton(PS4Constants.SQUARE.getValue())) {
-      shooterSubsystem.shoot();
-    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Drive Subsystem
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Intake Subsystem
+    
+    // Intake on pressing circle.
     if (oi.driverControl.getRawButton(PS4Constants.CIRCLE.getValue())) {
       intakeSubsystem.intake();
+    } else{
+      intakeSubsystem.doNotIntake();
     }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Shooter Subsystem
+
+    // Shoot on pressing square.
+    if (oi.driverControl.getRawButton(PS4Constants.SQUARE.getValue())) {
+      shooterSubsystem.shoot();
+    } else{
+      shooterSubsystem.doNotShoot();
+    }
+
+    // Rotate the turret with the joystick.
     if (oi.driverControl.getRawButton(PS4Constants.TRIANGLE.getValue())) {
       shooterSubsystem.rotate(oi.driverControl.getRawAxis(PS4Constants.LEFT_STICK_X.getValue()));
     } else {
       shooterSubsystem.rotate(0);
     }
-
   }
 
   /**
