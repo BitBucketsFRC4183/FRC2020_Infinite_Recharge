@@ -47,13 +47,15 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     public void periodic() {        
         if(intaking){
             motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", 0.2));
-            intaking = false;
         } else {
             motor.set(0);
         }
     }
     public void intake() {
         intaking = true;
+    }
+    public void doNotIntake() {
+        intaking = false;
     }
 
 }
