@@ -16,6 +16,9 @@ import frc.robot.subsystem.navigation.NavigationSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
+import frc.robot.operatorinterface.OI;
+import frc.robot.operatorinterface.PS4Constants;
+import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 
 /**
@@ -31,9 +34,10 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private ShooterSubsystem shooterSubsystem;
+  private IntakeSubsystem intakeSubsystem;
   private Config config;
 
-  private final OI OI = new OI();
+  private final OI oi = new OI();
 
   private NavigationSubsystem navigationSubsystem;
   private DriveSubsystem driveSubsystem;
@@ -48,11 +52,15 @@ public class Robot extends TimedRobot {
     navigationSubsystem = new NavigationSubsystem(config);
     navigationSubsystem.initialize();
 
-    driveSubsystem = new DriveSubsystem(config, navigationSubsystem, OI);
+    driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
     driveSubsystem.initialize();
 
     SmartDashboard.putData("Auto choices", m_chooser);
+    config = ConfigChooser.getConfig();
     shooterSubsystem = new ShooterSubsystem(config);
+    shooterSubsystem.initialize();
+    intakeSubsystem = new IntakeSubsystem(config);
+    intakeSubsystem.initialize();
   }
 
   /**
@@ -66,6 +74,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    shooterSubsystem.periodic();
+    intakeSubsystem.periodic();
     CommandScheduler.getInstance().run();
   }
 
@@ -109,8 +119,18 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    // System.out.println("4183 is the best team!");
-    // Robot.win();
+    if (oi.driverControl.getRawButton(PS4Constants.SQUARE.getValue())) {
+      shooterSubsystem.shoot();
+    }
+    if (oi.driverControl.getRawButton(PS4Constants.CIRCLE.getValue())) {
+      intakeSubsystem.intake();
+    }
+    if (oi.driverControl.getRawButton(PS4Constants.TRIANGLE.getValue())) {
+      shooterSubsystem.rotate(oi.driverControl.getRawAxis(PS4Constants.LEFT_STICK_X.getValue()));
+    } else {
+      shooterSubsystem.rotate(0);
+    }
+
   }
 
   /**

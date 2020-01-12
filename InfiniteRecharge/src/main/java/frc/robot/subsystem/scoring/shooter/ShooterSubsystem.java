@@ -13,6 +13,10 @@ import frc.robot.subsystem.BitBucketSubsystem;
 public class ShooterSubsystem extends BitBucketSubsystem {
 
     //////////////////////////////////////////////////////////////////////////////
+    // Booleans
+    public boolean shooting = false;
+
+    //////////////////////////////////////////////////////////////////////////////
     // Talons
     protected WPI_TalonSRX azimuthMotor;
 
@@ -54,9 +58,22 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     @Override
     public void periodic() {
         // TODO Auto-generated method stub
-        // if(OI.driverControl.getRawButton(PS4Constants.SQUARE.getValue())){
-        //     ballPropulsionMotor.set(SmartDashboard.getNumber(getName() + "/Shooter Velocity", 0.2));
-        // }
+         if(shooting){
+            ballPropulsionMotor.set(SmartDashboard.getNumber(getName() + "/Shooter Velocity", 0.2));
+            shooting = false;
+        } else {
+            ballPropulsionMotor.set(0);
+        }
+    }
+    public void shoot() {
+        shooting = true;
+    }
+    public void rotate(double spinRate) {
+        
+        double finalSpinRate = spinRate * SmartDashboard.getNumber(getName() + "/Turret Speed Multiplier", 0.1);
+        
+        azimuthMotor.set(finalSpinRate);
+
     }
 
 }
