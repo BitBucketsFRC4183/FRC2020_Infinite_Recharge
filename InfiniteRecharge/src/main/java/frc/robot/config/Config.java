@@ -18,7 +18,6 @@ public class Config {
 
     //////////////////////////////////////////////////////////////////////////////
     // Stuff that makes this work
-
     public static class ShooterConfig {
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig intake = new MotorConfig();
@@ -31,7 +30,6 @@ public class Config {
 
     //////////////////////////////////////////////////////////////////////////////
     // IDs (Again)
-
         shooter.azimuth.id = AZIMUTH_MOTOR_ID;
         shooter.intake.id = INTAKE_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;

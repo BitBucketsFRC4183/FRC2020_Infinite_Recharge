@@ -4,10 +4,20 @@ import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
+
 import frc.robot.RobotMap;
+import frc.robot.config.MotorConfig;
 
 public class TalonUtils {
+
+    static int positionSlot = 0; // ALWAYS! Don't EVER set it to anything else.
+    static int velocitySlot = 1; // ALWAYS! Don't EVER set it to anything else.
 
     public static int MAX_STATUS_FRAME_PERIOD = 160;
     /**
@@ -107,6 +117,48 @@ public class TalonUtils {
         motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, pidLoop, timeout);
         motor.setSelectedSensorPosition(0,pidLoop, timeout);
         motor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, statusFramePeriod, timeout);
+
+    }
+
+    public static void motorInit(BaseTalon motor, MotorConfig motorConfig){
+       
+        motor.config_kF(positionSlot, motorConfig.positionPIDF.getKF());
+        motor.config_kP(positionSlot, motorConfig.positionPIDF.getKP());
+        motor.config_kI(positionSlot, motorConfig.positionPIDF.getKI());
+        motor.config_kD(positionSlot, motorConfig.positionPIDF.getKD());
+        motor.config_IntegralZone(positionSlot, (int) motorConfig.positionPIDF.getIZone());
+
+        motor.config_kF(velocitySlot, motorConfig.velocityPIDF.getKF());
+        motor.config_kP(velocitySlot, motorConfig.velocityPIDF.getKP());
+        motor.config_kI(velocitySlot, motorConfig.velocityPIDF.getKI());
+        motor.config_kD(velocitySlot, motorConfig.velocityPIDF.getKD());
+        motor.config_IntegralZone(velocitySlot, (int) motorConfig.velocityPIDF.getIZone());
+
+    }
+    public static void motorInit(CANSparkMax motor, MotorConfig motorConfig){
+        /* Configure Sensor Source for velocity PID */
+				CANEncoder encoder = motor.getEncoder(EncoderType.kQuadrature, 8192);
+				/* Zero the sensor */
+				encoder.setPosition(0);
+				// brushless motors can't be inverted
+				// encoder.setInverted(settings.sensorPhase);
+
+				/* Set acceleration and vcruise velocity - see documentation */
+				CANPIDController pidController = motor.getPIDController();
+
+				// configure position PID constants
+				pidController.setFF   (motorConfig.positionPIDF.getKF(),    positionSlot);
+				pidController.setP    (motorConfig.positionPIDF.getKP(),    positionSlot);
+				pidController.setD    (motorConfig.positionPIDF.getKD(),    positionSlot);
+				pidController.setI    (motorConfig.positionPIDF.getKI(),    positionSlot);
+				pidController.setIZone(motorConfig.positionPIDF.getIZone(), positionSlot);
+
+				// configure velocity PID constants
+				pidController.setFF   (motorConfig.velocityPIDF.getKF(),    velocitySlot);
+				pidController.setP    (motorConfig.velocityPIDF.getKP(),    velocitySlot);
+				pidController.setI    (motorConfig.velocityPIDF.getKD(),    velocitySlot);
+				pidController.setD    (motorConfig.velocityPIDF.getKI(),    velocitySlot);
+				pidController.setIZone(motorConfig.velocityPIDF.getIZone(), velocitySlot);
 
     }
 
