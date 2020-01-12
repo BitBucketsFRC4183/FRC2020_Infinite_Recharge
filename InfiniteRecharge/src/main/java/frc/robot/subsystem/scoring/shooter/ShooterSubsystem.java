@@ -9,6 +9,7 @@ import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
 import frc.robot.operatorinterface.PS4Constants;
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.utils.talonutils.MotorUtils;
 
 public class ShooterSubsystem extends BitBucketSubsystem {
 
@@ -35,6 +36,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void initialize() {
         azimuthMotor = new WPI_TalonSRX(config.shooter.azimuth.id);
         ballPropulsionMotor = new CANSparkMax(config.shooter.shooter.id, CANSparkMaxLowLevel.MotorType.kBrushless);
+
+        MotorUtils.motorInit(azimuthMotor, config.shooter.azimuth);
+        MotorUtils.motorInit(ballPropulsionMotor, config.shooter.shooter);
     }
 
     @Override
