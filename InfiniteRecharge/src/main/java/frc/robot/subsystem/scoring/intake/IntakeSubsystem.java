@@ -7,7 +7,7 @@ import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
 import frc.robot.operatorinterface.PS4Constants;
 import frc.robot.subsystem.BitBucketSubsystem;
-import frc.robot.utils.talonutils.TalonUtils;
+import frc.robot.utils.talonutils.MotorUtils;
 
 public class IntakeSubsystem extends BitBucketSubsystem {
 
@@ -23,7 +23,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     public void initialize() {
         // TODO Auto-generated method stub
         motor = new WPI_TalonSRX(config.shooter.intake.id);
-        TalonUtils.motorInit(motor, config.shooter.intake);
+        MotorUtils.motorInit(motor, config.shooter.intake);
 
     }
 
