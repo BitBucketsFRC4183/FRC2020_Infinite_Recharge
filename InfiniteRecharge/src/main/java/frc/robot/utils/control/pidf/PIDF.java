@@ -38,5 +38,9 @@ public class PIDF extends PID {
 
     
 
-    public double getKF() { return KF; }
+    public PIDF() {
+        this(0, 0, 0, 0);
+	}
+
+	public double getKF() { return KF; }
 }
