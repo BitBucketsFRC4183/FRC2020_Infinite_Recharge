@@ -7,21 +7,17 @@
 
 package frc.robot.subsystem;
 
-import frc.robot.config.Config;
-import java.util.HashMap;
-
-import frc.robot.subsystem.SubsystemUtilities.DiagnosticsState;
-
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.config.Config;
+import frc.robot.subsystem.SubsystemUtilities.DiagnosticsState;
 
 /**
  *
  */
 public abstract class BitBucketSubsystem extends SubsystemBase {
-	
+
 	protected static DriverStation driverStation = DriverStation.getInstance(); // Convenience
 
 	protected final Config config;
@@ -32,7 +28,7 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 	// reuturn to "OFF" at each reset. Because SendableChoosers remember
 	// their state in the NetworkTable (somewhere) we need to use
 	// boolean types for simple, resettable switches.
-	protected boolean telemetryEnabled = false;		// Really an "extended" telemetry set (more bandwidth)
+	protected boolean telemetryEnabled = false; // Really an "extended" telemetry set (more bandwidth)
 	protected boolean diagnosticsEnabled = false;
 
 	public DiagnosticsState lastKnownState = DiagnosticsState.UNKNOWN;
@@ -42,15 +38,15 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 	public static double period;
 
 	protected int periodicCounter = 0;
-	
+
 	public BitBucketSubsystem(Config config) {
 		setName(getClass().getSimpleName());
 		this.config = config;
 	}
 
 	protected void initializeBaseDashboard() {
-		SmartDashboard.putBoolean(getName()+"/TelemetryEnabled", telemetryEnabled);
-		SmartDashboard.putBoolean(getName()+"/DiagnosticsEnabled", diagnosticsEnabled);
+		SmartDashboard.putBoolean(getName() + "/TelemetryEnabled", telemetryEnabled);
+		SmartDashboard.putBoolean(getName() + "/DiagnosticsEnabled", diagnosticsEnabled);
 
 		initializedBase = true;
 		SmartDashboard.putBoolean(getName() + "/InitializedBase", initializedBase);
@@ -59,15 +55,16 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 	/** updateBaseDashboard - call from derived class periodic function */
 	protected void updateBaseDashboard() {
 		SmartDashboard.putNumber(getName() + "/PeriodicCounter", periodicCounter++);
-        if (getCurrentCommand() != null) {
-            SmartDashboard.putString(getName() + "/CurrentCommand", getCurrentCommand().getName());
-        }
+		if (getCurrentCommand() != null) {
+			SmartDashboard.putString(getName() + "/CurrentCommand", getCurrentCommand().getName());
+		}
 	}
 
 	/**
 	 * getTelementryEnabled - returns the current dashboard state
-	 * NOTE: "Extended" Telemetry can be enabled any time at the expense of
-	 * network bandwidth
+	 * 
+	 * NOTE: "Extended" Telemetry can be enabled any time at the expense of network
+	 * bandwidth
 	 */
 	public boolean getTelemetryEnabled() {
 		telemetryEnabled = SmartDashboard.getBoolean(getName() + "/TelemetryEnabled", false);
@@ -76,12 +73,12 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 
 	/**
 	 * getDiagnosticsEnabled - returns the current dashboard state
+	 * 
 	 * NOTE: Diagnostics can only be enabled when the DriverStation is in test mode
 	 */
 	public boolean getDiagnosticsEnabled() {
 		diagnosticsEnabled = SmartDashboard.getBoolean(getName() + "/DiagnosticsEnabled", false);
-		if (! driverStation.isTest())
-		{
+		if (!driverStation.isTest()) {
 			diagnosticsEnabled = false;
 			SmartDashboard.putBoolean(getName() + "/DiagnosticsEnabled", diagnosticsEnabled);
 		}
@@ -95,15 +92,16 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 
 	public void initialize() {
 		initializeBaseDashboard();
+		diagnosticsInitialize();
 	};
-	
+
 	// Force all derived classes to have these interfaces
 	public abstract void diagnosticsInitialize();
-	
+
 	public abstract void diagnosticsPeriodic();
-	
+
 	public abstract void diagnosticsCheck();
-    
-    @Override
+
+	@Override
 	public abstract void periodic();
 }
