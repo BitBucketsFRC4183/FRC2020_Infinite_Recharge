@@ -6,8 +6,6 @@ import com.revrobotics.CANSparkMaxLowLevel;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
-import frc.robot.operatorinterface.OI;
-import frc.robot.operatorinterface.PS4Constants;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
 
@@ -34,6 +32,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void initialize() {
+        initializeBaseDashboard();
         azimuthMotor = new WPI_TalonSRX(config.shooter.azimuth.id);
         ballPropulsionMotor = new CANSparkMax(config.shooter.shooter.id, CANSparkMaxLowLevel.MotorType.kBrushless);
 
@@ -43,8 +42,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void diagnosticsInitialize() {
-        // TODO Auto-generated method stub
-
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity", 0.2);
+        SmartDashboard.putNumber(getName() + "/Turret Speed Multiplier", 0.1);
     }
 
     @Override
@@ -61,24 +60,28 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void periodic() {
-        // TODO Auto-generated method stub
-         if(shooting){
+        if (shooting) {
             ballPropulsionMotor.set(SmartDashboard.getNumber(getName() + "/Shooter Velocity", 0.2));
-            
+            SmartDashboard.putString(getName() + "/Shooter State", "shooting");
         } else {
             ballPropulsionMotor.set(0);
+            SmartDashboard.putString(getName() + "/Shooter State", "not shooting");
         }
+        SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getAppliedOutput());
     }
+
     public void shoot() {
         shooting = true;
     }
+
     public void doNotShoot() {
         shooting = false;
     }
+
     public void rotate(double spinRate) {
-        
+
         double finalSpinRate = spinRate * SmartDashboard.getNumber(getName() + "/Turret Speed Multiplier", 0.1);
-        
+
         azimuthMotor.set(finalSpinRate);
 
     }

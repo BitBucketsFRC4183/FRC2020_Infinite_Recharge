@@ -1,8 +1,6 @@
 package frc.robot.utils.talonutils;
 
-import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -140,6 +138,7 @@ public class MotorUtils {
     public static void motorInit(CANSparkMax motor, MotorConfig motorConfig) {
         /* Configure Sensor Source for velocity PID */
         CANEncoder encoder = motor.getEncoder(EncoderType.kQuadrature, 8192);
+
         /* Zero the sensor */
         encoder.setPosition(0);
         // brushless motors can't be inverted
