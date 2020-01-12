@@ -1,13 +1,11 @@
 package frc.robot.subsystem.drive;
 
-
-
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
@@ -39,9 +37,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private final NavigationSubsystem NAVIGATION_SUBSYSTEM;
     private final OI OI;
 
-    public DriveSubsystem(NavigationSubsystem navigationSubsystem, OI oi) {
-        setName("DriveSubsystem");
-
+    public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, OI oi) {
+        super(config);
         NAVIGATION_SUBSYSTEM = navigationSubsystem;
         OI = oi;
     }

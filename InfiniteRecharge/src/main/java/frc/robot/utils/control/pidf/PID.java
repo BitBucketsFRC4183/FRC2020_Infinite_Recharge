@@ -18,7 +18,11 @@ public class PID {
 
     private int uses = 0;
 
-    
+
+    public PID() {
+        this(0, 0, 0);
+	}
+
 
     /**
      * Generate a set of PID constants

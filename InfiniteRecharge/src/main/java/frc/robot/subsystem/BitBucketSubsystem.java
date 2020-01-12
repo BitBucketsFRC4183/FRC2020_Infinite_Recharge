@@ -7,6 +7,7 @@
 
 package frc.robot.subsystem;
 
+import frc.robot.config.Config;
 import java.util.HashMap;
 
 import frc.robot.subsystem.SubsystemUtilities.DiagnosticsState;
@@ -21,7 +22,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public abstract class BitBucketSubsystem extends SubsystemBase {
 	
-	protected static DriverStation ds = DriverStation.getInstance(); // Convenience
+	protected static DriverStation driverStation = DriverStation.getInstance(); // Convenience
+
+	protected final Config config;
 
 	protected boolean initializedBase = false;
 
@@ -40,8 +43,9 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 
 	protected int periodicCounter = 0;
 	
-	public BitBucketSubsystem() {
-		
+	public BitBucketSubsystem(Config config) {
+		setName(getClass().getSimpleName());
+		this.config = config;
 	}
 
 	protected void initializeBaseDashboard() {
@@ -76,7 +80,7 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 	 */
 	public boolean getDiagnosticsEnabled() {
 		diagnosticsEnabled = SmartDashboard.getBoolean(getName() + "/DiagnosticsEnabled", false);
-		if (! ds.isTest())
+		if (! driverStation.isTest())
 		{
 			diagnosticsEnabled = false;
 			SmartDashboard.putBoolean(getName() + "/DiagnosticsEnabled", diagnosticsEnabled);

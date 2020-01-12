@@ -9,6 +9,8 @@ package frc.robot.subsystem.navigation;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.config.Config;
 import java.util.HashMap;
 
 import frc.robot.subsystem.BitBucketSubsystem;
@@ -18,11 +20,11 @@ import frc.robot.subsystem.Subsystems;
  * Add your docs here.
  */
 public class NavigationSubsystem extends BitBucketSubsystem {
-  	// Put methods for controlling this subsystem
+	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
 
-	public NavigationSubsystem() {
-		setName("NavigationSubsystem");
+	public NavigationSubsystem(Config config) {
+		super(config);
 	}
 
 	private AHRS ahrs;
