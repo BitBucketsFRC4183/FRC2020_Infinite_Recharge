@@ -15,7 +15,7 @@ public class ConfigChooser {
         TestDrive
     }
 
-    private static ConfigType configType = ConfigType.Junior;
+    private static ConfigType configType = ConfigType.Main;
 
     public static Config getConfig() {
         switch (configType) {

@@ -1,5 +1,7 @@
 package frc.robot.config;
 
+import frc.robot.utils.control.pidf.PIDF;
+
 public class Config {
 
 
@@ -8,14 +10,14 @@ public class Config {
 
     // Shooter
     public int AZIMUTH_MOTOR_ID = 1;
-    public int SHOOTER_MOTOR_ID = 2;
+    public int SHOOTER_MOTOR_ID = 13;
     public int INTAKE_MOTOR_ID = 3;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
 
     //////////////////////////////////////////////////////////////////////////////
-    // Categories & Stuff that makes this work
+    // Stuff that makes this work
 
     public static class ShooterConfig {
         public MotorConfig azimuth = new MotorConfig();
@@ -26,20 +28,28 @@ public class Config {
     public ShooterConfig shooter = new ShooterConfig();
 
     public Config() {
+
+    //////////////////////////////////////////////////////////////////////////////
+    // IDs (Again)
+
         shooter.azimuth.id = AZIMUTH_MOTOR_ID;
-        shooter.azimuth.kp = 1f;
-        shooter.azimuth.ki = 0.00001f;
-        shooter.azimuth.kd = 10f;
-        shooter.azimuth.kf = 1f;
-
         shooter.intake.id = INTAKE_MOTOR_ID;
-
         shooter.shooter.id = SHOOTER_MOTOR_ID;
-        shooter.shooter.kp = 1f;
-        shooter.shooter.ki = 0.00001f;
-        shooter.shooter.kd = 10f;
-        shooter.shooter.kf = 1f;
-        
+
+    //////////////////////////////////////////////////////////////////////////////
+    // PIDFs
+        shooter.azimuth.positionPIDF = new PIDF(
+        1, // P
+        1, // I
+        1, // D
+        1 /// F
+        );
+        shooter.shooter.velocityPIDF = new PIDF(
+        1, // P
+        1, // I
+        1, // D
+        1 /// F
+        );
     }
 
     
