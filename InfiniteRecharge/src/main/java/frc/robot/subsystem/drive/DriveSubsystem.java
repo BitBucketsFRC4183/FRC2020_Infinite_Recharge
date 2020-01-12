@@ -10,7 +10,7 @@ import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.RisingEdgeFilter;
-import frc.robot.utils.talonutils.TalonUtils;
+import frc.robot.utils.talonutils.MotorUtils;
 
 
 
@@ -67,8 +67,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
             rightMotors[i] = new WPI_TalonSRX(DriveConstants.RIGHT_MOTOR_IDS[i]);
 
             // reset to factory defaults
-            TalonUtils.initializeMotorDefaults(leftMotors[i]);
-            TalonUtils.initializeMotorDefaults(rightMotors[i]);
+            MotorUtils.initializeMotorDefaults(leftMotors[i]);
+            MotorUtils.initializeMotorDefaults(rightMotors[i]);
 
             // set follower to corresponding leader if not already the leader
             if (i != 0) {
@@ -81,7 +81,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         // initialize PID for leaders
 
-        TalonUtils.initializeMotorFPID(
+        MotorUtils.initializeMotorFPID(
             leftMotors[0],
             DriveConstants.LEFT_VEL_KF,
             DriveConstants.LEFT_VEL_KP,
@@ -91,7 +91,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
             DriveConstants.VELOCITY_IDX
         );
 
-        TalonUtils.initializeMotorFPID(
+        MotorUtils.initializeMotorFPID(
             rightMotors[0],
             DriveConstants.RIGHT_VEL_KF,
             DriveConstants.RIGHT_VEL_KP,
