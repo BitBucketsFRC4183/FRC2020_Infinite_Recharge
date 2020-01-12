@@ -15,4 +15,5 @@ public class MotorConfig {
     // ID
 
     public int id;
+    public int followingID = -1;
 }
