@@ -2,7 +2,7 @@ hideFollowers: true
 transmissions:
 - motors:
   - id: 1
-    name: Azimuth (1)
+    name: BAG (1)
     model: BAG
     kt: 0.0
     kv: 0.0
@@ -17,8 +17,72 @@ transmissions:
   gearRatio: 1.0
   efficiency: 1.0
 - motors:
+  - id: 3
+    name: BAG (3)
+    model: BAG
+    kt: 0.0
+    kv: 0.0
+    resistance: 0.0
+    inertia: 0.0
+    stallTorque: 0.4
+    stallCurrent: 53.0
+    voltage: 12.0
+    maxRPM: 13180
+    mass: 0.32
+    diameter: 0.0404
+  gearRatio: 1.0
+  efficiency: 1.0
+- motors:
+  - id: 2
+    name: BAG (2)
+    model: BAG
+    kt: 0.0
+    kv: 0.0
+    resistance: 0.0
+    inertia: 0.0
+    stallTorque: 0.4
+    stallCurrent: 53.0
+    voltage: 12.0
+    maxRPM: 13180
+    mass: 0.32
+    diameter: 0.0404
+  gearRatio: 1.0
+  efficiency: 1.0
+- motors:
+  - id: 4
+    name: BAG (4)
+    model: BAG
+    kt: 0.0
+    kv: 0.0
+    resistance: 0.0
+    inertia: 0.0
+    stallTorque: 0.4
+    stallCurrent: 53.0
+    voltage: 12.0
+    maxRPM: 13180
+    mass: 0.32
+    diameter: 0.0404
+  gearRatio: 1.0
+  efficiency: 1.0
+- motors:
+  - id: 15
+    name: Azimuth (15)
+    model: BAG
+    kt: 0.0
+    kv: 0.0
+    resistance: 0.0
+    inertia: 0.0
+    stallTorque: 0.4
+    stallCurrent: 53.0
+    voltage: 12.0
+    maxRPM: 13180
+    mass: 0.32
+    diameter: 0.0404
+  gearRatio: 139.29
+  efficiency: 1.0
+- motors:
   - id: 13
-    name: Shooter (13)
+    name: NEO (13)
     model: NEO
     kt: 0.0
     kv: 0.0
@@ -33,8 +97,8 @@ transmissions:
   gearRatio: 1.0
   efficiency: 1.0
 - motors:
-  - id: 3
-    name: Intake (3)
+  - id: 8
+    name: BAG (8)
     model: BAG
     kt: 0.0
     kv: 0.0
