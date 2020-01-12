@@ -8,16 +8,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.operatorinterface.OI;
-import frc.robot.subsystem.drive.DriveSubsystem;
-import frc.robot.subsystem.navigation.NavigationSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
 import frc.robot.operatorinterface.PS4Constants;
+import frc.robot.subsystem.drive.DriveSubsystem;
+import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 
@@ -29,10 +26,6 @@ import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private ShooterSubsystem shooterSubsystem;
   private IntakeSubsystem intakeSubsystem;
   private Config config;
@@ -48,7 +41,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    SmartDashboard.putData("Auto choices", m_chooser);
     config = ConfigChooser.getConfig();
 
     navigationSubsystem = new NavigationSubsystem(config);
@@ -94,9 +86,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
   }
 
   /**
@@ -104,15 +93,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-    case kCustomAuto:
-      // Put custom auto code here
-      break;
-    case kDefaultAuto:
-    default:
-      // Put default auto code here
-      break;
-    }
   }
 
   /**
