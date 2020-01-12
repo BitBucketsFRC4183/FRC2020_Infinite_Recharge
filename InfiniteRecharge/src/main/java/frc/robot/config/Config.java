@@ -9,9 +9,9 @@ public class Config {
     // Motors
 
     // Shooter
-    public int AZIMUTH_MOTOR_ID = 1;
+    public int AZIMUTH_MOTOR_ID = 15;
     public int SHOOTER_MOTOR_ID = 13;
-    public int INTAKE_MOTOR_ID = 3;
+    public int INTAKE_MOTOR_ID = 8;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision

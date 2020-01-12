@@ -60,13 +60,16 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // TODO Auto-generated method stub
          if(shooting){
             ballPropulsionMotor.set(SmartDashboard.getNumber(getName() + "/Shooter Velocity", 0.2));
-            shooting = false;
+            
         } else {
             ballPropulsionMotor.set(0);
         }
     }
     public void shoot() {
         shooting = true;
+    }
+    public void doNotShoot() {
+        shooting = false;
     }
     public void rotate(double spinRate) {
         
