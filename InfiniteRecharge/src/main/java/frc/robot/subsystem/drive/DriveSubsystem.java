@@ -50,6 +50,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
     public boolean velocityMode;
+
+
+
+    private double rawSpeed = 0, rawTurn = 0;
     
 
 
@@ -154,7 +158,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-        setDefaultCommand(new Idle(this, OI));
+        setDefaultCommand(new Idle(this));
     }
 
 
@@ -251,6 +255,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
         return (leftSpeed + rightSpeed) / 2.0;
     }
 
+//254
 
 
     public DriveMethod getDriveMethod() { return driveMethod; }
@@ -318,5 +323,25 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     public NavigationSubsystem getNavigation() {
         return NAVIGATION_SUBSYSTEM;
+    }
+
+
+
+
+
+    public void setDriverRawSpeed(double speed) {
+        rawSpeed = speed;
+    }
+
+    public double getDriverRawSpeed() {
+        return rawSpeed;
+    }
+
+    public void setDriverRawTurn(double turn) {
+        rawTurn = turn;
+    }
+
+    public double getDriverRawTurn() {
+        return rawTurn;
     }
 }
