@@ -35,27 +35,16 @@ public class VelocityDrive extends CommandBase {
         double rawSpeed = OI.speed();
         double rawTurn = OI.turn();
 
-        // Scale the input to physical units (with implied limits)
-		double speed_ips = MathUtils.map(rawSpeed,
-            -1.0,
-            1.0,
-            -DriveConstants.MAX_ALLOWED_SPEED_IPS,
-            DriveConstants.MAX_ALLOWED_SPEED_IPS
-        );
+        DRIVE_SUBSYSTEM.velocityDrive(rawSpeed, rawTurn);
 
-        double turn_radps = MathUtils.map(rawTurn,
-            -1.0,
-            1.0,
-            -DriveConstants.MAX_ALLOWED_TURN_RADPS,
-            DriveConstants.MAX_ALLOWED_TURN_RADPS
-        );
+        
 
         // limit acceleration if needed
-        speed_ips = SLEW_FILTER.calculate(speed_ips);
+        //speed_ips = SLEW_FILTER.calculate(speed_ips);
 
 
 
-        DRIVE_SUBSYSTEM.velocityDrive(speed_ips, turn_radps);
+        DRIVE_SUBSYSTEM.velocityDrive(rawSpeed, rawTurn);
     }
 
 

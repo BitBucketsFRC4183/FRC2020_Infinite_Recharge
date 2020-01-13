@@ -1,15 +1,19 @@
 package frc.robot.subsystem.drive;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
+import frc.robot.utils.JoystickScale;
 import frc.robot.utils.RisingEdgeFilter;
+import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
 
@@ -37,6 +41,20 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private final NavigationSubsystem NAVIGATION_SUBSYSTEM;
     private final OI OI;
 
+
+
+    // Allow the driver to try different scaling functions on the joysticks
+	private static SendableChooser<JoystickScale> forwardJoystickScaleChooser;
+    private static SendableChooser<JoystickScale> turnJoystickScaleChooser;
+
+
+
+    public boolean velocityMode;
+    
+
+
+
+
     public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, OI oi) {
         super(config);
         NAVIGATION_SUBSYSTEM = navigationSubsystem;
@@ -47,6 +65,25 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     public void initialize() {
         initializeBaseDashboard();
+
+
+
+        // Make joystick scale chooser and put it on the dashboard
+		forwardJoystickScaleChooser = new SendableChooser<JoystickScale>();
+		forwardJoystickScaleChooser.setDefaultOption("Linear", JoystickScale.LINEAR);
+		forwardJoystickScaleChooser.addOption("Square", JoystickScale.SQUARE);
+		forwardJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
+		forwardJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
+
+		SmartDashboard.putData(getName() + "/Forward Joystick Scale", forwardJoystickScaleChooser);
+
+		turnJoystickScaleChooser = new SendableChooser<JoystickScale>();
+		turnJoystickScaleChooser.addOption("Linear", JoystickScale.LINEAR);
+		turnJoystickScaleChooser.setDefaultOption("Square", JoystickScale.SQUARE);
+		turnJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
+		turnJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
+		
+		SmartDashboard.putData(getName() + "/Turn Joystick Scale", turnJoystickScaleChooser);
 
 
 
@@ -69,6 +106,14 @@ public class DriveSubsystem extends BitBucketSubsystem {
             // reset to factory defaults
             MotorUtils.initializeMotorDefaults(leftMotors[i]);
             MotorUtils.initializeMotorDefaults(rightMotors[i]);
+
+            leftMotors[i].setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 
+											DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
+                                            DriveConstants.CONTROLLER_TIMEOUT_MS);
+                                            
+            rightMotors[i].setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 
+											DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
+											DriveConstants.CONTROLLER_TIMEOUT_MS);
 
             // set follower to corresponding leader if not already the leader
             if (i != 0) {
@@ -104,6 +149,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
         leftMotors[0].setSensorPhase(DriveConstants.LEFT_DRIVE_MOTOR_SENSOR_PHASE);
         rightMotors[0].setSensorPhase(DriveConstants.RIGHT_DRIVE_MOTOR_SENSOR_PHASE);
 
+        leftMotors[0].setInverted(true);
+        leftMotors[1].setInverted(true);
+
 
 
         setDefaultCommand(new Idle(this, OI));
@@ -113,7 +161,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    public void velocityDrive(double ips, double radps) {
+    public void velocityDrive_auto(double ips, double radps) {
+        selectVelocityMode(true);
+
+
+
         double diffSpeed_ips = radps * DriveConstants.WHEEL_TRACK_INCHES / 2.0;
 
         // Compute, report, and limit lateral acceleration
@@ -129,11 +181,57 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		int diffSpeed_tickP100 = DriveConstants.ipsToTicksP100(diffSpeed_ips);
 
 		int leftSpeed_tickP100 = speed_tickP100 + diffSpeed_tickP100;
-		int rightSpeed_tickP100 = speed_tickP100 - diffSpeed_tickP100;
+        int rightSpeed_tickP100 = speed_tickP100 - diffSpeed_tickP100;
+        
+        SmartDashboard.putNumber(getName() + "/ls_tp100", leftSpeed_tickP100);
+        SmartDashboard.putNumber(getName() + "/rs_tp100", rightSpeed_tickP100);
 
 		leftMotors[0].set(ControlMode.Velocity, leftSpeed_tickP100);
-		rightMotors[0].set(ControlMode.Velocity, rightSpeed_tickP100);
+        rightMotors[0].set(ControlMode.Velocity, rightSpeed_tickP100);
+        
+        SmartDashboard.putNumber(getName() + "/commandedSpeed_ips", ips);
     }
+
+    public void velocityDrive(double speed, double turn) {
+        speed = forwardJoystickScaleChooser.getSelected().rescale(speed, DriveConstants.JOYSTICK_DEADBAND);
+        turn = turnJoystickScaleChooser.getSelected().rescale(turn, DriveConstants.JOYSTICK_DEADBAND);
+
+        //leftMotors[0].set(ControlMode.PercentOutput, speed + turn);
+        //rightMotors[0].set(ControlMode.PercentOutput, speed - turn);
+		double ips = MathUtils.map(speed,
+            -1.0,
+            1.0,
+            -DriveConstants.MAX_ALLOWED_SPEED_IPS,
+            DriveConstants.MAX_ALLOWED_SPEED_IPS
+        );
+
+        double radps = MathUtils.map(turn,
+            -1.0,
+            1.0,
+            -DriveConstants.MAX_ALLOWED_TURN_RADPS,
+            DriveConstants.MAX_ALLOWED_TURN_RADPS
+        );
+
+        velocityDrive_auto(ips, radps);
+    }
+
+
+
+    private void selectVelocityMode(boolean needVelocityMode) {
+		if (needVelocityMode && !velocityMode) {
+			for (int i = 0; i < DriveConstants.MOTORS_PER_SIDE; i++) {
+				leftMotors[i].selectProfileSlot(DriveConstants.VELOCITY_IDX, 
+				                                0);
+				rightMotors[i].selectProfileSlot(DriveConstants.VELOCITY_IDX, 
+				                                0);
+            }
+            
+			velocityMode = true;
+		} else {
+			velocityMode = false;
+        }
+    }
+	
 
 
 
@@ -207,6 +305,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
         SmartDashboard.putNumber(getName() + "/Robot yaw", NAVIGATION_SUBSYSTEM.getYaw_deg());
+
+        double leftSpeed = DriveConstants.ticksP100ToIps(leftMotors[0].getSelectedSensorVelocity());
+        double rightSpeed = DriveConstants.ticksP100ToIps(rightMotors[0].getSelectedSensorVelocity());
+        SmartDashboard.putNumber(getName() + "/leftSpeed_ips", leftSpeed);
+        SmartDashboard.putNumber(getName() + "/rightSpeed_ips", rightSpeed);
     }
 
 

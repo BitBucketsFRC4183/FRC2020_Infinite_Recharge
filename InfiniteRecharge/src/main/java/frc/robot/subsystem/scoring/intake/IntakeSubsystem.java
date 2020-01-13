@@ -18,6 +18,8 @@ public class IntakeSubsystem extends BitBucketSubsystem {
 
     @Override
     public void initialize() {
+        super.initialize();
+        
         initializeBaseDashboard();
         motor = new WPI_TalonSRX(config.shooter.intake.id);
         MotorUtils.motorInit(motor, config.shooter.intake);
