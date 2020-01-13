@@ -123,6 +123,7 @@ public class MotorUtils {
     }
 
     public static void motorInit(BaseTalon motor, MotorConfig motorConfig) {
+        motor.configFactoryDefault();
 
         motor.config_kF(positionSlot, motorConfig.positionPIDF.getKF());
         motor.config_kP(positionSlot, motorConfig.positionPIDF.getKP());

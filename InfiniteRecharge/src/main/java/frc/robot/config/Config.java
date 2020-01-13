@@ -1,6 +1,5 @@
 package frc.robot.config;
 
-import frc.robot.subsystem.drive.DriveConstants;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class Config {
@@ -34,8 +33,8 @@ public class Config {
         public int[] leftIDs = { 1, 2 };
         public int[] rightIDs = { 3, 4 };
 
-        public MotorConfig leftLeader = leftMotors[0];
-        public MotorConfig rightLeader = rightMotors[0];
+        public MotorConfig leftLeader;
+        public MotorConfig rightLeader;
 
         public DriveConfig() {
             for (int i = 0; i < MOTORS_PER_SIDE; i++) {
