@@ -9,9 +9,9 @@
       "name": "SimMain - local",
       "request": "launch",
       "mainClass": "frc.robot.simulator.SimMain",
-      "vmArgs": "-Djava.library.path=build/tmp/jniExtractDir",
       "env": {
-        "DYLD_LIBRARY_PATH": "build/tmp/jniExtractDir"
+        "DYLD_LIBRARY_PATH": "build/tmp/jniExtractDir",
+        "Path": "${env:Path};${workspaceFolder}\\build\\tmp/jniExtractDir"
       }
     },
     {
