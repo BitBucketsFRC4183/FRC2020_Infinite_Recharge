@@ -38,10 +38,6 @@ public class VelocityDrive extends CommandBase {
 
         // limit acceleration if needed
         //speed_ips = SLEW_FILTER.calculate(speed_ips);
-
-
-
-        DRIVE_SUBSYSTEM.velocityDrive(rawSpeed, rawTurn);
     }
 
 
