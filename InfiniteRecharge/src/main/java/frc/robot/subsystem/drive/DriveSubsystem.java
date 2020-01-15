@@ -188,10 +188,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     private void selectVelocityMode(boolean needVelocityMode) {
 		if (needVelocityMode && !velocityMode) {
-			for (int i = 0; i < DriveConstants.MOTORS_PER_SIDE; i++) {
-				leftMotors[i].selectProfileSlot(DriveConstants.VELOCITY_IDX, 
+			for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
+				leftMotors[i].selectProfileSlot(MotorUtils.velocitySlot,
 				                                0);
-				rightMotors[i].selectProfileSlot(DriveConstants.VELOCITY_IDX, 
+				rightMotors[i].selectProfileSlot(MotorUtils.velocitySlot,
 				                                0);
             }
             

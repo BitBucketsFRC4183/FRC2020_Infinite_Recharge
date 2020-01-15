@@ -102,42 +102,6 @@ public class DriveConstants {
 
 
     // PID constants
-    
-    // Velocity control
-    public static final int VELOCITY_IDX = 1;
-
-    public static double JUNIOR_VELOCITY_KF 	 = 0.05115; 
-    public static double JUNIOR_VELOCITY_KP 	 = 0.14014*4;
-    public static double JUNIOR_VELOCITY_KI 	 = 0.005;
-    public static double JUNIOR_VELOCITY_KD 	 = 10 * JUNIOR_VELOCITY_KP;	// Start with 10 x Kp for increased damping of overshoot
-    public static int    JUNIOR_VELOCITY_IZONE   = 400;
-
-    public static final double LEFT_VEL_KP = 0.14014*4;
-    public static final double LEFT_VEL_KI = 0.005;
-    public static final double LEFT_VEL_KD = 10 * JUNIOR_VELOCITY_KP;
-    public static final double LEFT_VEL_KF = 0.05115;
-    public static final int LEFT_VEL_IZONE = 400;
-
-    public static final double RIGHT_VEL_KP = 0.14014*4;
-    public static final double RIGHT_VEL_KI = 0.005;
-    public static final double RIGHT_VEL_KD = 10 * JUNIOR_VELOCITY_KP;
-    public static final double RIGHT_VEL_KF = 0.05115;
-    public static final int RIGHT_VEL_IZONE = 400;
-
-
-
-    // TODO: change
-    public static final int MOTORS_PER_SIDE = 2;
-
-    public static final int[] LEFT_MOTOR_IDS = {
-        1, 4
-    };
-
-    public static final int[] RIGHT_MOTOR_IDS = {
-        2, 3
-    };
-
-
 
     public static final double ROTATION_DRIVE_RANGE_DEG = 20;
 }
