@@ -18,7 +18,7 @@ transmissions:
   efficiency: 1.0
 - motors:
   - id: 3
-    name: BAG (3)
+    name: Drive Right (3)
     model: BAG
     kt: 0.0
     kv: 0.0
@@ -34,7 +34,7 @@ transmissions:
   efficiency: 1.0
 - motors:
   - id: 2
-    name: BAG (2)
+    name: Drive Left Follower (2)
     model: BAG
     kt: 0.0
     kv: 0.0
@@ -50,7 +50,7 @@ transmissions:
   efficiency: 1.0
 - motors:
   - id: 4
-    name: BAG (4)
+    name: Drive Right Follower (4)
     model: BAG
     kt: 0.0
     kv: 0.0
@@ -66,7 +66,7 @@ transmissions:
   efficiency: 1.0
 - motors:
   - id: 15
-    name: BAG (15)
+    name: Drive Left (15)
     model: BAG
     kt: 0.0
     kv: 0.0
@@ -82,7 +82,7 @@ transmissions:
   efficiency: 1.0
 - motors:
   - id: 13
-    name: NEO (13)
+    name: Shooter (13)
     model: NEO
     kt: 0.0
     kv: 0.0
@@ -98,7 +98,7 @@ transmissions:
   efficiency: 1.0
 - motors:
   - id: 8
-    name: BAG (8)
+    name: Loader (8)
     model: BAG
     kt: 0.0
     kv: 0.0

@@ -29,9 +29,10 @@ public class TestSubsystem extends BitBucketSubsystem {
 	public void diagnosticsCheck() {
 
     }
-    
+
     @Override
-    public void periodic() {
+    public void periodic(float deltaTime) {
         updateBaseDashboard();
     }
+
 }
