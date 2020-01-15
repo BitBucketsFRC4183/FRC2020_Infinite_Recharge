@@ -1,6 +1,7 @@
 package frc.robot.config;
 
-import frc.robot.config.urations.TestDriveConfiguration;
+import frc.robot.config.urations.Cal9000Configuration;
+import frc.robot.config.urations.JuniorConfiguration;
 
 public class ConfigChooser {
 
@@ -15,14 +16,17 @@ public class ConfigChooser {
         TestDrive
     }
 
+    //
+    // Change this type to pick config
+    //
     private static ConfigType configType = ConfigType.Main;
 
     public static Config getConfig() {
         switch (configType) {
         case Junior:
-            //return new JuniorConfiguration();
+            return new JuniorConfiguration();
         case TestDrive:
-            return new TestDriveConfiguration();
+            return new Cal9000Configuration();
         case Main:
         default:
             return new Config();

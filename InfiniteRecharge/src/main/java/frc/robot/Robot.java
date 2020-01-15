@@ -78,6 +78,7 @@ public class Robot extends TimedRobot {
     deltaTime = (currentTime - lastTime) / 1000f;
     SmartDashboard.putNumber("deltaTime", deltaTime);
 
+    driveSubsystem.periodic(deltaTime);
     shooterSubsystem.periodic(deltaTime);
     intakeSubsystem.periodic(deltaTime);
     CommandScheduler.getInstance().run();
