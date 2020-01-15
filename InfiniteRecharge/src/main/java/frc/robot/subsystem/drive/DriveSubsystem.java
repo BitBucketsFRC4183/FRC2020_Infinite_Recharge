@@ -30,7 +30,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    private DriverStation ds;
+    private DriverStation driverStation;
 
 
 
@@ -72,6 +72,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
+        driverStation = DriverStation.getInstance();
         // Make joystick scale chooser and put it on the dashboard
 		forwardJoystickScaleChooser = new SendableChooser<JoystickScale>();
 		forwardJoystickScaleChooser.setDefaultOption("Linear", JoystickScale.LINEAR);
@@ -91,25 +92,12 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-        ds = DriverStation.getInstance();
+        leftMotors = new WPI_TalonSRX[config.drive.MOTORS_PER_SIDE];
+        rightMotors = new WPI_TalonSRX[config.drive.MOTORS_PER_SIDE];
 
-
-
-        // left and right leader motor device IDs
-        int leftLeader = DriveConstants.LEFT_MOTOR_IDS[0];
-        int rightLeader = DriveConstants.RIGHT_MOTOR_IDS[0];
-
-        leftMotors = new WPI_TalonSRX[DriveConstants.MOTORS_PER_SIDE];
-        rightMotors = new WPI_TalonSRX[DriveConstants.MOTORS_PER_SIDE];
-        
-        // initialize all motors
-        for (int i = 0; i < DriveConstants.MOTORS_PER_SIDE; i++) {
-            leftMotors[i] = new WPI_TalonSRX(DriveConstants.LEFT_MOTOR_IDS[i]);
-            rightMotors[i] = new WPI_TalonSRX(DriveConstants.RIGHT_MOTOR_IDS[i]);
-
-            // reset to factory defaults
-            MotorUtils.initializeMotorDefaults(leftMotors[i]);
-            MotorUtils.initializeMotorDefaults(rightMotors[i]);
+        for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
+            leftMotors[i] = MotorUtils.makeSRX(config.drive.leftMotors[i]);
+            rightMotors[i] = MotorUtils.makeSRX(config.drive.rightMotors[i]);
 
             leftMotors[i].setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 
 											DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
@@ -122,39 +110,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
             MotorUtils.initializeQuadEncoderMotor(leftMotors[i]);
             MotorUtils.initializeQuadEncoderMotor(rightMotors[i]);
 
-            // set follower to corresponding leader if not already the leader
-            if (i != 0) {
-                leftMotors[i].set(ControlMode.Follower, leftLeader);
-                rightMotors[i].set(ControlMode.Follower, rightLeader);
-            }
         }
-
-
-
-        // initialize PID for leaders
-
-        MotorUtils.initializeMotorFPID(
-            leftMotors[0],
-            DriveConstants.LEFT_VEL_KF,
-            DriveConstants.LEFT_VEL_KP,
-            DriveConstants.LEFT_VEL_KI,
-            DriveConstants.LEFT_VEL_KD,
-            DriveConstants.LEFT_VEL_IZONE,
-            DriveConstants.VELOCITY_IDX
-        );
-
-        MotorUtils.initializeMotorFPID(
-            rightMotors[0],
-            DriveConstants.RIGHT_VEL_KF,
-            DriveConstants.RIGHT_VEL_KP,
-            DriveConstants.RIGHT_VEL_KI,
-            DriveConstants.RIGHT_VEL_KD,
-            DriveConstants.RIGHT_VEL_IZONE,
-            DriveConstants.VELOCITY_IDX
-        );
 
         leftMotors[0].setSensorPhase(DriveConstants.LEFT_DRIVE_MOTOR_SENSOR_PHASE);
         rightMotors[0].setSensorPhase(DriveConstants.RIGHT_DRIVE_MOTOR_SENSOR_PHASE);
+        leftMotors[0].selectProfileSlot(MotorUtils.velocitySlot, 0);
+        rightMotors[0].selectProfileSlot(MotorUtils.velocitySlot, 0);
+
 
         leftMotors[0].setInverted(true);
         leftMotors[1].setInverted(true);
@@ -258,7 +220,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
         return (leftSpeed + rightSpeed) / 2.0;
     }
 
-//254
 
 
     public DriveMethod getDriveMethod() { return driveMethod; }
@@ -280,7 +241,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    public void periodic() {
+    public void periodic(float deltaTime) {
         updateBaseDashboard();
 
 
@@ -288,9 +249,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
         boolean switchHeld = OI.rotationToVelocity();
         boolean doSwitch = driveMethodSwitchFilter.calculate(switchHeld);
 
-        if (ds.isOperatorControl()) {
+        if (driverStation.isOperatorControl()) {
             if (driveMethod == DriveMethod.AUTO || driveMethod == DriveMethod.IDLE) {
-                driveMethod = DriveMethod.VELOCITY;
+                driveMethod = DriveMethod.VELOCITY; //254
             }
 
             if (doSwitch) {
@@ -306,7 +267,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
                     default: // just keep it I guess? shouldn't get here anyways
                 }
             }
-        } else if (ds.isAutonomous()) {
+        } else if (driverStation.isAutonomous()) {
             driveMethod = DriveMethod.AUTO; // please don't press any buttons during auto anyways :)))
         }
 

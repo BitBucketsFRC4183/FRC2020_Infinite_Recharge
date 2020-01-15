@@ -61,8 +61,19 @@ public class RobotMap {
     * 								========== AUTONOMOUS CONSTANTS ==========
     * 								==========================================
     */
-    public static final boolean[] IS_EVIL = {false, true}; // ?????
-	public static final boolean HAS_ACHIEVED_SENTIENCE = false;
+	public static enum IS_EVIL{
+		FALSE,
+		TRUE,
+		MAYBE
+		};
+	public static enum HAS_ACHIEVED_SENTIENCE{
+		FALSE,
+		TRUE,
+		MAYBE
+	};
+	public static IS_EVIL isEvil = IS_EVIL.MAYBE;
+	public static HAS_ACHIEVED_SENTIENCE hasAchievedSentience = HAS_ACHIEVED_SENTIENCE.MAYBE;
+
     public static final double DRIVESTRAIGHT_MIN_DRIVE = 0;
     public static final double TURNBY_MIN_DRIVE = 0;
 
