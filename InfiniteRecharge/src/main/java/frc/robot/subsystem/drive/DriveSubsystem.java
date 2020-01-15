@@ -117,7 +117,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
                                             
             rightMotors[i].setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 
 											DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
-											DriveConstants.CONTROLLER_TIMEOUT_MS);
+                                            DriveConstants.CONTROLLER_TIMEOUT_MS);
+            
+            MotorUtils.initializeQuadEncoderMotor(leftMotors[i]);
+            MotorUtils.initializeQuadEncoderMotor(rightMotors[i]);
 
             // set follower to corresponding leader if not already the leader
             if (i != 0) {
