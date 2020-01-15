@@ -8,7 +8,7 @@ public class Config {
     // Motor IDs
 
     // Shooter
-    public int AZIMUTH_MOTOR_ID = 15;
+    public int AZIMUTH_MOTOR_ID = 1;
     public int SHOOTER_MOTOR_ID = 13;
     public int INTAKE_MOTOR_ID = 8;
 
@@ -20,6 +20,10 @@ public class Config {
     //////////////////////////////////////////////////////////////////////////////
     // Motor Configs
     public static class ShooterConfig {
+        public float gearRatio = 28f / 130f;
+        public int azimuthMotorTicks = 8192;
+        public float defaultTurnVelocityDeg = 10;
+
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig intake = new MotorConfig();
         public MotorConfig shooter = new MotorConfig();
@@ -30,7 +34,7 @@ public class Config {
         public MotorConfig leftMotors[] = new MotorConfig[MOTORS_PER_SIDE];
         public MotorConfig rightMotors[] = new MotorConfig[MOTORS_PER_SIDE];
 
-        public int[] leftIDs = { 1, 2 };
+        public int[] leftIDs = { 15, 2 };
         public int[] rightIDs = { 3, 4 };
 
         public MotorConfig leftLeader;
@@ -70,7 +74,7 @@ public class Config {
 
         // Shooter
         shooter.azimuth.positionPIDF = new PIDF(//
-                0, // P
+                0.05, // P
                 0, // I
                 0, // D
                 0 /// F

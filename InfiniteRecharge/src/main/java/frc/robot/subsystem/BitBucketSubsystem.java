@@ -102,6 +102,5 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 
 	public abstract void diagnosticsCheck();
 
-	@Override
-	public abstract void periodic();
+	public abstract void periodic(float deltaTime);
 }

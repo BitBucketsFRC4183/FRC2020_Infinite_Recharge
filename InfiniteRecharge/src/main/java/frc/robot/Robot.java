@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
@@ -30,6 +31,10 @@ public class Robot extends TimedRobot {
   private IntakeSubsystem intakeSubsystem;
   private Config config;
 
+  public float deltaTime;
+  public long currentTime;
+  public long lastTime;
+
   private final OI oi = new OI();
 
   private NavigationSubsystem navigationSubsystem;
@@ -51,9 +56,11 @@ public class Robot extends TimedRobot {
 
     shooterSubsystem = new ShooterSubsystem(config);
     shooterSubsystem.initialize();
-    
+
     intakeSubsystem = new IntakeSubsystem(config);
     intakeSubsystem.initialize();
+
+    lastTime = System.currentTimeMillis();
   }
 
   /**
@@ -67,9 +74,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    shooterSubsystem.periodic();
-    intakeSubsystem.periodic();
+    currentTime = System.currentTimeMillis();
+    deltaTime = (currentTime - lastTime) / 1000f;
+    SmartDashboard.putNumber("deltaTime", deltaTime);
+
+    shooterSubsystem.periodic(deltaTime);
+    intakeSubsystem.periodic(deltaTime);
     CommandScheduler.getInstance().run();
+
+    lastTime = currentTime;
   }
 
   /**
@@ -106,11 +119,11 @@ public class Robot extends TimedRobot {
 
     //////////////////////////////////////////////////////////////////////////////
     // Intake Subsystem
-    
+
     // Intake on pressing circle.
     if (oi.driverControl.getRawButton(PS4Constants.CIRCLE.getValue())) {
       intakeSubsystem.intake();
-    } else{
+    } else {
       intakeSubsystem.doNotIntake();
     }
 
@@ -120,7 +133,7 @@ public class Robot extends TimedRobot {
     // Shoot on pressing square.
     if (oi.driverControl.getRawButton(PS4Constants.SQUARE.getValue())) {
       shooterSubsystem.shoot();
-    } else{
+    } else {
       shooterSubsystem.doNotShoot();
     }
 
