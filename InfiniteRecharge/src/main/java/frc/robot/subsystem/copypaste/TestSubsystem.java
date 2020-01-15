@@ -5,11 +5,11 @@ import frc.robot.subsystem.BitBucketSubsystem;
 
 
 
-public class CopyPasteSubsystem extends BitBucketSubsystem {
+public class TestSubsystem extends BitBucketSubsystem {
     public TestSubsystem(Config config) {
         super(config);
 
-        setName(INSERT NAME STRING HERE);
+        setName("Test Subsystem");
     }
 
 
