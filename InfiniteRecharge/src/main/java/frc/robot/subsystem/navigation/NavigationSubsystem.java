@@ -61,7 +61,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	}
 
 	@Override
-	public void periodic() {
+	public void periodic(float deltaTime) {
 		clearDiagnosticsEnabled();		
 		updateBaseDashboard();
 		if (getTelemetryEnabled())
