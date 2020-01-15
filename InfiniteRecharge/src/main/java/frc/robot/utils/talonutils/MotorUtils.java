@@ -1,13 +1,16 @@
 package frc.robot.utils.talonutils;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.EncoderType;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.RobotMap;
 import frc.robot.config.MotorConfig;
@@ -15,7 +18,7 @@ import frc.robot.config.MotorConfig;
 public class MotorUtils {
 
     static final int positionSlot = 0; // ALWAYS! Don't EVER set it to anything else.
-    static final int velocitySlot = 1; // ALWAYS! Don't EVER set it to anything else.
+    public static final int velocitySlot = 1; // ALWAYS! Don't EVER set it to anything else.
 
     public static int MAX_STATUS_FRAME_PERIOD = 160;
 
@@ -120,6 +123,7 @@ public class MotorUtils {
     }
 
     public static void motorInit(BaseTalon motor, MotorConfig motorConfig) {
+        motor.configFactoryDefault();
 
         motor.config_kF(positionSlot, motorConfig.positionPIDF.getKF());
         motor.config_kP(positionSlot, motorConfig.positionPIDF.getKP());
@@ -132,6 +136,9 @@ public class MotorUtils {
         motor.config_kI(velocitySlot, motorConfig.velocityPIDF.getKI());
         motor.config_kD(velocitySlot, motorConfig.velocityPIDF.getKD());
         motor.config_IntegralZone(velocitySlot, (int) motorConfig.velocityPIDF.getIZone());
+        if (motorConfig.followingID != -1) {
+            motor.set(ControlMode.Follower, motorConfig.followingID);
+        }
 
     }
 
@@ -163,4 +170,21 @@ public class MotorUtils {
 
     }
 
+    public static WPI_TalonSRX makeSRX(MotorConfig motorConfig) {
+        WPI_TalonSRX motor = new WPI_TalonSRX(motorConfig.id);
+        motorInit(motor, motorConfig);
+        return motor;
+    }
+
+    public static WPI_TalonFX makeFX(MotorConfig motorConfig) {
+        WPI_TalonFX motor = new WPI_TalonFX(motorConfig.id);
+        motorInit(motor, motorConfig);
+        return motor;
+    }
+
+    public static CANSparkMax makeSpark(MotorConfig motorConfig) {
+        CANSparkMax motor = new CANSparkMax(motorConfig.id, MotorType.kBrushless);
+        motorInit(motor, motorConfig);
+        return motor;
+    }
 }

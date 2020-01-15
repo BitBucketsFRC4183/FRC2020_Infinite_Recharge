@@ -43,7 +43,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    public void periodic() {
+    public void periodic(float deltaTime) {
         if (intaking) {
             motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", 0.2));
             SmartDashboard.putString(getName() + "/IntakeState", "Intaking");
