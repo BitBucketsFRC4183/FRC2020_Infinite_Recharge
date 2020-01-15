@@ -31,8 +31,8 @@ public class Config {
 
     public static class DriveConfig {
         public int MOTORS_PER_SIDE = 2;
-        public MotorConfig leftMotors[] = new MotorConfig[MOTORS_PER_SIDE];
-        public MotorConfig rightMotors[] = new MotorConfig[MOTORS_PER_SIDE];
+        public MotorConfig leftMotors[];
+        public MotorConfig rightMotors[];
 
         public int[] leftIDs = { 15, 2 };
         public int[] rightIDs = { 3, 4 };
@@ -41,6 +41,15 @@ public class Config {
         public MotorConfig rightLeader;
 
         public DriveConfig() {
+            initMotorConfigArrays();
+        }
+
+        /**
+         * Based on the MOTORS_PER_SIDE
+         */
+        public void initMotorConfigArrays() {
+            leftMotors = new MotorConfig[MOTORS_PER_SIDE];
+            rightMotors = new MotorConfig[MOTORS_PER_SIDE];
             for (int i = 0; i < MOTORS_PER_SIDE; i++) {
                 leftMotors[i] = new MotorConfig();
                 leftMotors[i].id = leftIDs[i];
