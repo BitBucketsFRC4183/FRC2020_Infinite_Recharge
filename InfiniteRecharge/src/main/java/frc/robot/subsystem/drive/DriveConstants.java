@@ -34,7 +34,7 @@ public class DriveConstants {
 
     // TODO
     public static final double WHEEL_TRACK_INCHES = 23.5;
-    public static final double WHEEL_DIAMETER_INCHES = 6.0;
+    public static final double WHEEL_DIAMETER_INCHES = 4.0;
     public static final double WHEEL_CIRCUMFERENCE_INCHES = Math.PI*WHEEL_DIAMETER_INCHES;
 
     // Identify what type of feedback device we will use on this drive base
@@ -104,19 +104,25 @@ public class DriveConstants {
     // PID constants
     
     // Velocity control
-    public static final int VELOCITY_IDX = 0;
+    public static final int VELOCITY_IDX = 1;
 
-    public static final double LEFT_VEL_KP = 0;
-    public static final double LEFT_VEL_KI = 0;
-    public static final double LEFT_VEL_KD = 0;
-    public static final double LEFT_VEL_KF = 0;
-    public static final int LEFT_VEL_IZONE = 0;
+    public static double JUNIOR_VELOCITY_KF 	 = 0.05115; 
+    public static double JUNIOR_VELOCITY_KP 	 = 0.14014*4;
+    public static double JUNIOR_VELOCITY_KI 	 = 0.005;
+    public static double JUNIOR_VELOCITY_KD 	 = 10 * JUNIOR_VELOCITY_KP;	// Start with 10 x Kp for increased damping of overshoot
+    public static int    JUNIOR_VELOCITY_IZONE   = 400;
 
-    public static final double RIGHT_VEL_KP = 0;
-    public static final double RIGHT_VEL_KI = 0;
-    public static final double RIGHT_VEL_KD = 0;
-    public static final double RIGHT_VEL_KF = 0;
-    public static final int RIGHT_VEL_IZONE = 0;
+    public static final double LEFT_VEL_KP = 0.14014*4;
+    public static final double LEFT_VEL_KI = 0.005;
+    public static final double LEFT_VEL_KD = 10 * JUNIOR_VELOCITY_KP;
+    public static final double LEFT_VEL_KF = 0.05115;
+    public static final int LEFT_VEL_IZONE = 400;
+
+    public static final double RIGHT_VEL_KP = 0.14014*4;
+    public static final double RIGHT_VEL_KI = 0.005;
+    public static final double RIGHT_VEL_KD = 10 * JUNIOR_VELOCITY_KP;
+    public static final double RIGHT_VEL_KF = 0.05115;
+    public static final int RIGHT_VEL_IZONE = 400;
 
 
 
@@ -124,11 +130,11 @@ public class DriveConstants {
     public static final int MOTORS_PER_SIDE = 2;
 
     public static final int[] LEFT_MOTOR_IDS = {
-        1, 2
+        1, 4
     };
 
     public static final int[] RIGHT_MOTOR_IDS = {
-        3, 4
+        2, 3
     };
 
 

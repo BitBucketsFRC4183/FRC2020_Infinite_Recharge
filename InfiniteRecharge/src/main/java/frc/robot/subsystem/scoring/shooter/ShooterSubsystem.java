@@ -32,6 +32,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void initialize() {
+        super.initialize();
+        
         initializeBaseDashboard();
         azimuthMotor = new WPI_TalonSRX(config.shooter.azimuth.id);
         ballPropulsionMotor = new CANSparkMax(config.shooter.shooter.id, CANSparkMaxLowLevel.MotorType.kBrushless);
