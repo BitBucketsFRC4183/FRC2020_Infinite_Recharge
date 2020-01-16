@@ -16,14 +16,21 @@ public class JuniorConfiguration extends Config {
 
         // junior doesn't have these, but move the motor ids around so they
         // don't conflict with junior's drive motors
-        shooter.azimuth.id = AZIMUTH_MOTOR_ID;
+        shooter.azimuth.id = 1;
         shooter.intake.id = INTAKE_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
 
+        shooter.azimuth.positionPIDF = new PIDF(
+            0.1 * 1023 / 176 * 2 * 2 * 2 * 2,
+            0,
+            10 * 0.1 * 1023 / 176 * 2 * 2 * 2 * 2,
+            1023 / 2650
+        );
+
         // setup junior's drive motors and pid constants.
-        drive.MOTORS_PER_SIDE = 2;
-        drive.leftIDs = new int[]{1, 2};
-        drive.rightIDs = new int[]{ 3, 4 };
+        drive.MOTORS_PER_SIDE = 1;
+        drive.leftIDs = new int[]{1};
+        drive.rightIDs = new int[]{ 3 };
 
         drive.initMotorConfigArrays();
 
