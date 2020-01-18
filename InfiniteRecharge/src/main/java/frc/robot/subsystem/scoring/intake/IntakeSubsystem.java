@@ -21,8 +21,8 @@ public class IntakeSubsystem extends BitBucketSubsystem {
         super.initialize();
         
         initializeBaseDashboard();
-        motor = new WPI_TalonSRX(config.shooter.intake.id);
-        MotorUtils.motorInit(motor, config.shooter.intake);
+        // motor = new WPI_TalonSRX(config.shooter.intake.id);
+        // MotorUtils.motorInit(motor, config.shooter.intake);
     }
 
     @Override

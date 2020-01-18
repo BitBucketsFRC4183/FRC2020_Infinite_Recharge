@@ -10,7 +10,7 @@ public class Config {
     // Shooter
     public int AZIMUTH_MOTOR_ID = 1;
     public int SHOOTER_MOTOR_ID = 13;
-    public int INTAKE_MOTOR_ID = 8;
+    public int FEEDER_MOTOR_ID = 8;
 
     // Drive
 
@@ -21,11 +21,10 @@ public class Config {
     // Motor Configs
     public static class ShooterConfig {
         public float gearRatio = 28f / 130f;
-        public int azimuthMotorTicks = 8192;
         public float defaultTurnVelocityDeg = 10;
 
         public MotorConfig azimuth = new MotorConfig();
-        public MotorConfig intake = new MotorConfig();
+        public MotorConfig feeder = new MotorConfig();
         public MotorConfig shooter = new MotorConfig();
     }
 
@@ -75,7 +74,7 @@ public class Config {
         //////////////////////////////////////////////////////////////////////////////
         // IDs (Again)
         shooter.azimuth.id = AZIMUTH_MOTOR_ID;
-        shooter.intake.id = INTAKE_MOTOR_ID;
+        shooter.feeder.id = FEEDER_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
 
         //////////////////////////////////////////////////////////////////////////////
@@ -90,6 +89,12 @@ public class Config {
         );
         shooter.shooter.velocityPIDF = new PIDF(//
                 0, // P
+                0, // I
+                0, // D
+                0 /// F
+        );
+        shooter.feeder.velocityPIDF = new PIDF(//
+                0.1, // P
                 0, // I
                 0, // D
                 0 /// F
@@ -120,6 +125,10 @@ public class Config {
                 0, // D
                 0 /// F
         );
+
+        //////////////////////////////////////////////////////////////////////////////
+        // Ticks Per Revolution
+        shooter.azimuth.ticksPerRevolution = 8192;
     }
 
 }

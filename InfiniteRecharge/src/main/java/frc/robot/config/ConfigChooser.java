@@ -13,7 +13,7 @@ public class ConfigChooser {
         Junior,
 
         // The second robot if we build one.
-        TestDrive
+        Cal9000
     }
 
     //
@@ -25,7 +25,7 @@ public class ConfigChooser {
         switch (configType) {
         case Junior:
             return new JuniorConfiguration();
-        case TestDrive:
+        case Cal9000:
             return new Cal9000Configuration();
         case Main:
         default:
