@@ -147,6 +147,13 @@ public class Robot extends TimedRobot {
     } else {
       shooterSubsystem.rotate(0);
     }
+
+    // Feed on pressing circle.
+    if (oi.driverControl.getRawButton(PS4Constants.CIRCLE.getValue())) {
+      shooterSubsystem.feed();
+    } else {
+      shooterSubsystem.doNotFeed();
+    }
   }
 
   /**
@@ -156,6 +163,7 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 
+  // COMMANDS the robot to WIN!
   public static Robot win() {
     return new Robot();
   }
