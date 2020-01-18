@@ -1,14 +1,20 @@
 package frc.robot.utils.control.statespace.models.motor;
 
-import org.ejml.data.DMatrixRMaj;
+import org.ejml.simple.SimpleMatrix;
 
+import frc.robot.utils.control.statespace.StateSpaceException;
+import frc.robot.utils.control.statespace.models.lti.C2D;
 import frc.robot.utils.control.statespace.models.lti.LTIModel;
 import frc.robot.utils.control.statespace.models.motors.MotorType;
 
-
-
 public class MotorPosition extends LTIModel {
-    public MotorPosition(double t, MotorType type, double I, double ts, double tk) {
+    public MotorPosition(double t, MotorType type, double I, double ts, double tk) throws StateSpaceException {
+        super(getSys(t, type, I, ts, tk));
+    }
+
+
+
+    private static SimpleMatrix[] getSys(double t, MotorType type, double I, double ts, double tk) {
         double kw = type.getKW().getValue();
         double kt = type.getKT().getValue();
         double b = type.getB().getValue();
@@ -25,18 +31,21 @@ public class MotorPosition extends LTIModel {
         // a = (Kt/RI) V - (Kt Kw / RI + b/I) w - tf/I
         // x = [theta, velocity]
 
-        DMatrixRMaj Ac = new DMatrixRMaj(new double[][] {
+        SimpleMatrix Ac = new SimpleMatrix(new double[][] {
             new double[] {0, 1},
             new double[] {0, -(kt * kw / R + b)/I}
         });
 
-        DMatrixRMaj Bc = new DMatrixRMaj(new double[][] {
+        SimpleMatrix Bc = new SimpleMatrix(new double[][] {
             new double[] {0},
             new double[] {0, kt/(I*R)}
         });
 
-        DMatrixRMaj C = new DMatrixRMaj(new double[][] {
+        SimpleMatrix C = new SimpleMatrix(new double[][] {
             new double[] {1, 1}, // ehhh, can't ~technically~ measure velocity
         });
+
+        SimpleMatrix[] sys = C2D.c2d(Ac, Bc, t);
+        return new SimpleMatrix[] {sys[0], sys[1], C};
     }
 }

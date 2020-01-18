@@ -3,7 +3,7 @@ package frc.robot.utils.control.statespace.controllers;
 import frc.robot.utils.control.statespace.Reference;
 import frc.robot.utils.control.statespace.models.StateSpaceModel;
 
-import org.ejml.data.DMatrixRMaj;
+import org.ejml.simple.SimpleMatrix;
 
 
 
@@ -26,17 +26,15 @@ public abstract class StateSpaceController {
 
 
     /** get the state of the system */
-    public DMatrixRMaj getState() {
-        return MODEL.getState();
-    }
+    public abstract SimpleMatrix getState();
 
     /** get the input to apply given an output */
-    protected abstract DMatrixRMaj getInput(DMatrixRMaj state);
+    protected abstract SimpleMatrix getInput(SimpleMatrix state);
 
 
 
     /** get the input to apply */
-    public DMatrixRMaj getInput() {
+    public SimpleMatrix getInput() {
         return getInput(getState());
     }
 }
