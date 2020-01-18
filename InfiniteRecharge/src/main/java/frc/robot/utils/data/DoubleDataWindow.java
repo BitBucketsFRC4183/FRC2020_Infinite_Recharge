@@ -24,6 +24,6 @@ public class DoubleDataWindow extends DataWindow<Double> {
 
 
     public double getAverage() {
-        return sum / LENGTH;
+        return sum / numFilled;
     }
 }

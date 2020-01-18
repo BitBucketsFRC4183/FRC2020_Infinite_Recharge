@@ -9,6 +9,7 @@ public class DataWindow<T> {
 
     protected int next; // next index to replace
     protected boolean filled;
+    protected int numFilled = 0;
 
 
 
@@ -37,6 +38,10 @@ public class DataWindow<T> {
 
 
     public void add(T elm) {
+        if (numFilled != LENGTH) {
+            numFilled++;
+        }
+        
         data.set(next, elm);
         next++;
 
