@@ -1,114 +1,141 @@
+defaults:
+  ids:
+    ####
+    # main ids
+    ####
+     azimuth: 1
+     shooter: 13
+     feeder: 8
+     leftDriveLeader: 15
+     leftDriveFollower: 2
+     rightDriveLeader: 3
+     rightDriveFollower: 4
+
+    ####
+    # junior ids
+    ####
+#    azimuth: 5
+#    shooter: 6
+#    feeder: 7
+#    leftDriveLeader: 1
+#    leftDriveFollower: 2
+#    rightDriveLeader: 3
+#    rightDriveFollower: 4
+  bag:
+    stallTorque: 0.4
+    stallCurrent: 53.0
+    voltage: 12.0
+    maxRPM: 13180
+    mass: 0.32
+    diameter: 0.0404
+  neo:
+    stallTorque: 2.6
+    stallCurrent: 105
+    voltage: 12
+    maxRPM: 5676
+    mass: .425
+    diameter: .06
+  falcon:
+    stallTorque: 4.69
+    stallCurrent: 257
+    voltage: 12
+    maxRPM: 6380
+    mass: .5
+    diameter: .06
+  T775pro:
+    stallTorque: .71
+    stallCurrent: 134
+    voltage: 12
+    maxRPM: 18700
+    mass: 0.362874
+    diameter: .0423
+  shooterGearing: "{{ .48 / 1 }}"
+  juniorGearing: "{{ 242.0/27.0 }}"
+  azimuthGearing: "{{ 30.0/1.0 }}"
 hideFollowers: true
 transmissions:
 - motors:
-  - id: 1
-    name: Azimuth (1)
+  - id: "{{ defaults.ids.azimuth }}"
+    name: "Azimuth ({{ defaults.ids.azimuth }})"
     model: BAG
-    kt: 0.0
-    kv: 0.0
-    resistance: 0.0
-    inertia: 0.0
-    stallTorque: 0.4
-    stallCurrent: 53.0
-    voltage: 12.0
-    maxRPM: 13180
-    mass: 0.32
-    diameter: 0.0404
-  gearRatio: 30.0
+    stallTorque: "{{ defaults.bag.stallTorque }}"
+    stallCurrent: "{{ defaults.bag.stallCurrent }}"
+    voltage: "{{ defaults.bag.voltage }}"
+    maxRPM: "{{ defaults.bag.maxRPM }}"
+    mass: "{{ defaults.bag.mass }}"
+    diameter: "{{ defaults.bag.diameter }}"
+    encoderCountsPerRevolution: 1024
+  gearRatio: "{{ defaults.azimuthGearing }}"
   efficiency: 1.0
 - motors:
-  - id: 3
-    name: Drive Right (3)
+  - id: "{{ defaults.ids.leftDriveLeader }}"
+    name: Drive Left ({{ defaults.ids.leftDriveLeader }})
     model: BAG
-    kt: 0.0
-    kv: 0.0
-    resistance: 0.0
-    inertia: 0.0
-    stallTorque: 0.4
-    stallCurrent: 53.0
-    voltage: 12.0
-    maxRPM: 13180
-    mass: 0.32
-    diameter: 0.0404
-  gearRatio: 1.0
+    stallTorque: "{{ defaults.bag.stallTorque }}"
+    stallCurrent: "{{ defaults.bag.stallCurrent }}"
+    voltage: "{{ defaults.bag.voltage }}"
+    maxRPM: "{{ defaults.bag.maxRPM }}"
+    mass: "{{ defaults.bag.mass }}"
+    diameter: "{{ defaults.bag.diameter }}"
+  gearRatio: "{{ defaults.juniorGearing }}"
   efficiency: 1.0
 - motors:
-  - id: 2
-    name: Drive Left Follower (2)
+  - id: "{{ defaults.ids.leftDriveFollower }}"
+    name: Drive Left Follower ({{ defaults.ids.leftDriveFollower }})
     model: BAG
-    kt: 0.0
-    kv: 0.0
-    resistance: 0.0
-    inertia: 0.0
-    stallTorque: 0.4
-    stallCurrent: 53.0
-    voltage: 12.0
-    maxRPM: 13180
-    mass: 0.32
-    diameter: 0.0404
-  gearRatio: 1.0
+    stallTorque: "{{ defaults.bag.stallTorque }}"
+    stallCurrent: "{{ defaults.bag.stallCurrent }}"
+    voltage: "{{ defaults.bag.voltage }}"
+    maxRPM: "{{ defaults.bag.maxRPM }}"
+    mass: "{{ defaults.bag.mass }}"
+    diameter: "{{ defaults.bag.diameter }}"
+  gearRatio: "{{ defaults.juniorGearing }}"
   efficiency: 1.0
 - motors:
-  - id: 4
-    name: Drive Right Follower (4)
+  - id: "{{ defaults.ids.rightDriveLeader }}"
+    name: Drive Left Follower ({{ defaults.ids.rightDriveLeader }})
     model: BAG
-    kt: 0.0
-    kv: 0.0
-    resistance: 0.0
-    inertia: 0.0
-    stallTorque: 0.4
-    stallCurrent: 53.0
-    voltage: 12.0
-    maxRPM: 13180
-    mass: 0.32
-    diameter: 0.0404
-  gearRatio: 1.0
+    stallTorque: "{{ defaults.bag.stallTorque }}"
+    stallCurrent: "{{ defaults.bag.stallCurrent }}"
+    voltage: "{{ defaults.bag.voltage }}"
+    maxRPM: "{{ defaults.bag.maxRPM }}"
+    mass: "{{ defaults.bag.mass }}"
+    diameter: "{{ defaults.bag.diameter }}"
+  gearRatio: "{{ defaults.juniorGearing }}"
   efficiency: 1.0
 - motors:
-  - id: 15
-    name: Drive Left (15)
+  - id: "{{ defaults.ids.rightDriveFollower }}"
+    name: Drive Left Follower ({{ defaults.ids.rightDriveFollower }})
     model: BAG
-    kt: 0.0
-    kv: 0.0
-    resistance: 0.0
-    inertia: 0.0
-    stallTorque: 0.4
-    stallCurrent: 53.0
-    voltage: 12.0
-    maxRPM: 13180
-    mass: 0.32
-    diameter: 0.0404
-  gearRatio: 139.29
+    stallTorque: "{{ defaults.bag.stallTorque }}"
+    stallCurrent: "{{ defaults.bag.stallCurrent }}"
+    voltage: "{{ defaults.bag.voltage }}"
+    maxRPM: "{{ defaults.bag.maxRPM }}"
+    mass: "{{ defaults.bag.mass }}"
+    diameter: "{{ defaults.bag.diameter }}"
+  gearRatio: "{{ defaults.juniorGearing }}"
   efficiency: 1.0
 - motors:
-  - id: 13
-    name: Shooter (13)
-    model: NEO
-    kt: 0.0
-    kv: 0.0
-    resistance: 0.0
-    inertia: 0.0
-    stallTorque: 2.6
-    stallCurrent: 105.0
-    voltage: 12.0
-    maxRPM: 5676
-    mass: 0.425
-    diameter: 0.06
-  gearRatio: 1.0
+  - id: "{{ defaults.ids.shooter }}"
+    name: "Shooter ({{ defaults.ids.shooter }})"
+    model: Falcon
+    stallTorque: "{{ defaults.falcon.stallTorque }}"
+    stallCurrent: "{{ defaults.falcon.stallCurrent }}"
+    voltage: "{{ defaults.falcon.voltage }}"
+    maxRPM: "{{ defaults.falcon.maxRPM }}"
+    mass: "{{ defaults.falcon.mass }}"
+    diameter: "{{ defaults.falcon.diameter }}"
+  gearRatio: "{{ defaults.shooterGearing }}"
   efficiency: 1.0
 - motors:
-  - id: 8
-    name: Loader (8)
-    model: BAG
-    kt: 0.0
-    kv: 0.0
-    resistance: 0.0
-    inertia: 0.0
-    stallTorque: 0.4
-    stallCurrent: 53.0
-    voltage: 12.0
-    maxRPM: 13180
-    mass: 0.32
-    diameter: 0.0404
+  - id: "{{ defaults.ids.feeder }}"
+    name: "Feeder ({{ defaults.ids.feeder }})"
+    model: 775Pro
+    stallTorque: "{{ defaults.T775pro.stallTorque }}"
+    stallCurrent: "{{ defaults.T775pro.stallCurrent }}"
+    voltage: "{{ defaults.T775pro.voltage }}"
+    maxRPM: "{{ defaults.T775pro.maxRPM }}"
+    mass: "{{ defaults.T775pro.mass }}"
+    diameter: "{{ defaults.T775pro.diameter }}"
   gearRatio: 1.0
   efficiency: 1.0
