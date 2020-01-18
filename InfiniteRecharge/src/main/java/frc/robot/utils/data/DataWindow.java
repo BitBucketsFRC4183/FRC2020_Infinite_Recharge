@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 /** Unordered data window */
 public class DataWindow<T> {
-    private ArrayList<T> data;
-    private final int LENGTH;
+    protected ArrayList<T> data;
+    protected final int LENGTH;
 
-    private int next; // next index to replace
-    private boolean filled;
+    protected int next; // next index to replace
+    protected boolean filled;
 
 
 
