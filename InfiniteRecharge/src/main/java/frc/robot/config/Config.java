@@ -13,6 +13,10 @@ public class Config {
     public int FEEDER_MOTOR_ID = 8;
 
     // Drive
+    public int LEFT_DRIVE_LEADER_ID = 15;
+    public int LEFT_DRIVE_FOLLOWER_ID = 2;
+    public int RIGHT_DRIVE_LEADER_ID = 3;
+    public int RIGHT_DRIVE_FOLLOWER_ID = 4;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
@@ -33,14 +37,13 @@ public class Config {
         public MotorConfig leftMotors[];
         public MotorConfig rightMotors[];
 
-        public int[] leftIDs = { 15, 2 };
-        public int[] rightIDs = { 3, 4 };
+        public int[] leftIDs;
+        public int[] rightIDs;
 
         public MotorConfig leftLeader;
         public MotorConfig rightLeader;
 
         public DriveConfig() {
-            initMotorConfigArrays();
         }
 
         /**
@@ -77,6 +80,9 @@ public class Config {
         shooter.feeder.id = FEEDER_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
 
+        drive.leftIDs = new int[] { LEFT_DRIVE_LEADER_ID, LEFT_DRIVE_FOLLOWER_ID };
+        drive.rightIDs = new int[] { RIGHT_DRIVE_LEADER_ID, RIGHT_DRIVE_FOLLOWER_ID };
+
         //////////////////////////////////////////////////////////////////////////////
         // PIDFs
 
@@ -101,6 +107,8 @@ public class Config {
         );
 
         // Drive
+        drive.initMotorConfigArrays();
+
         drive.leftLeader.velocityPIDF = new PIDF(//
                 0.1, // P
                 0.1, // I

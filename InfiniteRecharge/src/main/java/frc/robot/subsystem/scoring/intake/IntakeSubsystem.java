@@ -21,8 +21,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
         super.initialize();
         
         initializeBaseDashboard();
-        // motor = new WPI_TalonSRX(config.shooter.intake.id);
-        // MotorUtils.motorInit(motor, config.shooter.intake);
+        // motor = MotorUtils.makeSRX(config.intake.intaker);
     }
 
     @Override
@@ -44,14 +43,14 @@ public class IntakeSubsystem extends BitBucketSubsystem {
 
     @Override
     public void periodic(float deltaTime) {
-        if (intaking) {
-            motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", 0.2));
-            SmartDashboard.putString(getName() + "/IntakeState", "Intaking");
-        } else {
-            motor.set(0);
-            SmartDashboard.putString(getName() + "/IntakeState", "Not Intaking");
-        }
-        SmartDashboard.putNumber(getName() + "/IntakeOut", motor.getMotorOutputPercent());
+        // if (intaking) {
+        //     motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", 0.2));
+        //     SmartDashboard.putString(getName() + "/IntakeState", "Intaking");
+        // } else {
+        //     motor.set(0);
+        //     SmartDashboard.putString(getName() + "/IntakeState", "Not Intaking");
+        // }
+        // SmartDashboard.putNumber(getName() + "/IntakeOut", motor.getMotorOutputPercent());
     }
 
     public void intake() {
