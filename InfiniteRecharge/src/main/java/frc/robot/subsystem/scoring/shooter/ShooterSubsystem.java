@@ -47,6 +47,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         super.initialize();
         azimuthMotor = MotorUtils.makeSRX(config.shooter.azimuth);
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
+        feeder = MotorUtils.makeSRX(config.shooter.feeder);
     }
 
     @Override

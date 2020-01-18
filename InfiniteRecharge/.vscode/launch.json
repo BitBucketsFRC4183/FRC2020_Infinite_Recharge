@@ -6,9 +6,10 @@
   "configurations": [
     {
       "type": "java",
-      "name": "SimMain - local",
+      "name": "Sim - local",
       "request": "launch",
-      "mainClass": "frc.robot.simulator.SimMain",
+      "mainClass": "frc.robot.Sim",
+      "projectName": "InfiniteRecharge",
       "env": {
         "DYLD_LIBRARY_PATH": "build/tmp/jniExtractDir",
         "Path": "${env:Path};${workspaceFolder}\\build\\tmp/jniExtractDir"
@@ -18,13 +19,13 @@
       "type": "wpilib",
       "name": "WPILib Desktop Debug",
       "request": "launch",
-      "desktop": true,
+      "desktop": true
     },
     {
       "type": "wpilib",
       "name": "WPILib roboRIO Debug",
       "request": "launch",
-      "desktop": false,
+      "desktop": false
     }
   ]
 }
