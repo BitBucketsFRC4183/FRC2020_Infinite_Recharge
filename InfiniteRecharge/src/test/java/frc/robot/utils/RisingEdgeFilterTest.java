@@ -2,6 +2,8 @@ package frc.robot.utils;
 
 import org.junit.Test;
 
+import frc.robot.utils.data.filters.RisingEdgeFilter;
+
 import static org.junit.Assert.*;
 
 public class RisingEdgeFilterTest {
