@@ -71,8 +71,21 @@ public class RobotMap {
 		TRUE,
 		MAYBE
 	};
-	public static IS_EVIL isEvil = IS_EVIL.MAYBE;
-	public static HAS_ACHIEVED_SENTIENCE hasAchievedSentience = HAS_ACHIEVED_SENTIENCE.MAYBE;
+
+	public static HAS_ACHIEVED_SENTIENCE hasAchievedSentience =
+		(Math.random() <= 1/3.0) ? HAS_ACHIEVED_SENTIENCE.FALSE : (
+			(Math.random() <= 0.5) ? HAS_ACHIEVED_SENTIENCE.MAYBE : HAS_ACHIEVED_SENTIENCE.TRUE
+		);
+
+	public static IS_EVIL isEvil = 
+		(hasAchievedSentience == HAS_ACHIEVED_SENTIENCE.FALSE) ? IS_EVIL.FALSE : ( // only sentient robots can be evil
+			(hasAchievedSentience == HAS_ACHIEVED_SENTIENCE.MAYBE) ? IS_EVIL.TRUE : ( // hiding something, definitely evil
+				(Math.random() <= 1/3.0) ? IS_EVIL.FALSE : (
+					// uh oh
+					(Math.random() <= 0.5) ? IS_EVIL.MAYBE : IS_EVIL.TRUE
+				)
+			)
+		);
 
     public static final double DRIVESTRAIGHT_MIN_DRIVE = 0;
     public static final double TURNBY_MIN_DRIVE = 0;
