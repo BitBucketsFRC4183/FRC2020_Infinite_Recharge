@@ -67,13 +67,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     // we only use this project at runtime when doing simulations
-    runtimeOnly "org.bitbuckets:simulator:2020.1.2-SNAPSHOT"
+    testImplementation "org.bitbuckets:simulator:2020.1.2-SNAPSHOT"
 
     // If you have Talon motors, use this dependency as well
-    runtimeOnly "org.bitbuckets:simulator-ctre:2020.1.2-SNAPSHOT"
+    testImplementation "org.bitbuckets:simulator-ctre:2020.1.2-SNAPSHOT"
 
     // // If you have Spark motors, use this dependency as well
-    runtimeOnly "org.bitbuckets:simulator-rev:2020.1.2-SNAPSHOT"
+    testImplementation "org.bitbuckets:simulator-rev:2020.1.2-SNAPSHOT"
 
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
