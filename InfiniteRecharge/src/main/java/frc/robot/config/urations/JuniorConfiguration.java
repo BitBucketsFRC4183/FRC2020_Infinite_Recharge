@@ -16,8 +16,8 @@ public class JuniorConfiguration extends Config {
 
         // junior doesn't have these, but move the motor ids around so they
         // don't conflict with junior's drive motors
-        shooter.azimuth.id = 1;
-        shooter.intake.id = INTAKE_MOTOR_ID;
+        shooter.azimuth.id = AZIMUTH_MOTOR_ID;
+        shooter.feeder.id = FEEDER_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
 
         shooter.azimuth.positionPIDF = new PIDF(
@@ -28,19 +28,18 @@ public class JuniorConfiguration extends Config {
         );
 
         // setup junior's drive motors and pid constants.
-        drive.MOTORS_PER_SIDE = 1;
-        drive.leftIDs = new int[]{1};
-        drive.rightIDs = new int[]{ 3 };
+        drive.MOTORS_PER_SIDE = 2;
+        drive.leftIDs = new int[] { 1, 2 };
+        drive.rightIDs = new int[] { 3, 4 };
 
         drive.initMotorConfigArrays();
 
-        double velocityKp 	 = 0.14014*4;
+        double velocityKp = 0.14014 * 4;
 
         // Drive
-        drive.leftLeader.velocityPIDF = new PIDF(
-                0.14014*4, // P
+        drive.leftLeader.velocityPIDF = new PIDF(0.14014 * 4, // P
                 0.005, // I
-                10 * velocityKp,	// D - Start with 10 x Kp for increased damping of overshoot
+                10 * velocityKp, // D - Start with 10 x Kp for increased damping of overshoot
                 0.05115, // F
                 400 // iZone
         );

@@ -1,6 +1,7 @@
 package frc.robot.subsystem.scoring.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -18,6 +19,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Booleans
     public boolean shooting = false;
+    public boolean feeding = false;
 
     // Integers
     int targetPosition;
@@ -28,9 +30,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Talons
     protected WPI_TalonSRX azimuthMotor;
+    protected WPI_TalonFX ballPropulsionMotor;
+    protected WPI_TalonSRX feeder;
 
     // Neos
-    protected CANSparkMax ballPropulsionMotor;
 
     //////////////////////////////////////////////////////////////////////////////
     // Methods
@@ -42,16 +45,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     @Override
     public void initialize() {
         super.initialize();
-        azimuthMotor = new WPI_TalonSRX(config.shooter.azimuth.id);
-        ballPropulsionMotor = new CANSparkMax(config.shooter.shooter.id, CANSparkMaxLowLevel.MotorType.kBrushless);
-
-        MotorUtils.motorInit(azimuthMotor, config.shooter.azimuth);
-        MotorUtils.motorInit(ballPropulsionMotor, config.shooter.shooter);
+        azimuthMotor = MotorUtils.makeSRX(config.shooter.azimuth);
+        ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
     }
 
     @Override
     public void diagnosticsInitialize() {
         SmartDashboard.putNumber(getName() + "/Shooter Velocity", 0.2);
+        SmartDashboard.putNumber(getName() + "/Feeder Speed", 0.2);
         SmartDashboard.putNumber(getName() + "/Turret Turn Rate", config.shooter.defaultTurnVelocityDeg);
     }
 
@@ -76,10 +77,27 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             ballPropulsionMotor.set(0);
             SmartDashboard.putString(getName() + "/Shooter State", "not shooting");
         }
-        SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getAppliedOutput());
+        SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
 
         targetPosition = (int) (targetPosition + (targetChange * deltaTime));
         azimuthMotor.set(ControlMode.MotionMagic, targetPosition);
+
+        if (feeding) {
+            feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Speed", 0.2));
+            SmartDashboard.putString(getName() + "/FeederState", "Feeding");
+        } else {
+            feeder.set(0);
+            SmartDashboard.putString(getName() + "/FeederState", "Not Feeding");
+        }
+        SmartDashboard.putNumber(getName() + "/FeederOut", feeder.getMotorOutputPercent());
+    }
+
+    public void feed() {
+        feeding = true;
+    }
+
+    public void doNotFeed() {
+        feeding = false;
     }
 
     public void shoot() {
@@ -91,14 +109,21 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void rotate(double spinRate) {
-        // Turn turret at a quantity of degrees per second configurable in the smart dashboard.
+        // Turn turret at a quantity of degrees per second configurable in the smart
+        // dashboard.
         double smartDashboardTurnRateTicks = MathUtils
                 .unitConverter(SmartDashboard.getNumber(getName() + "/Turret Turn Rate",
-                        config.shooter.defaultTurnVelocityDeg), 360, config.shooter.azimuthMotorTicks)
+                        config.shooter.defaultTurnVelocityDeg), 360, config.shooter.azimuth.ticksPerRevolution)
                 / config.shooter.gearRatio;
 
         // Target position changes by this number every time periodic is called.
         targetChange = (int) (smartDashboardTurnRateTicks * spinRate);
+    }
+
+    public void rotateToDeg(double targetPoint) {
+        double targetPointTicks = MathUtils.unitConverter(targetPoint, 360, config.shooter.azimuth.ticksPerRevolution);
+        targetPosition = (int) (targetPointTicks);
+        targetChange = 0;
     }
 
 }
