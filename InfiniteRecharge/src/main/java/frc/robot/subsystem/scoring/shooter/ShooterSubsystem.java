@@ -12,6 +12,8 @@ import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
+import frc.robot.utils.data.filters.RunningAverageFilter;
+
 public class ShooterSubsystem extends BitBucketSubsystem {
 
     //////////////////////////////////////////////////////////////////////////////
@@ -24,6 +26,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     // Integers
     int targetPosition;
     int targetChange;
+
+    // Class Declarations
+    RunningAverageFilter filter = new RunningAverageFilter(25);
 
     //////////////////////////////////////////////////////////////////////////////
     // Motors
@@ -125,6 +130,25 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         double targetPointTicks = MathUtils.unitConverter(targetPoint, 360, config.shooter.azimuth.ticksPerRevolution);
         targetPosition = (int) (targetPointTicks);
         targetChange = 0;
+    }
+
+    public void rotateByDeg(double degrees) {
+        rotateToDeg(getTargetTurretDegGivenOffset(degrees));
+    }
+    
+    public double getTurretDeg() {
+        double encoderDeg =  azimuthMotor.getSelectedSensorPosition() * (360.0 / config.shooter.azimuth.ticksPerRevolution);
+        double turretDeg = encoderDeg * config.shooter.gearRatio;
+        return turretDeg;
+    }
+
+    public double getTargetTurretDegGivenOffset(double offset) {
+        return getTurretDeg() - offset;
+    }
+
+    public void rotateTurretGivenLLOffset(double offset) {
+        double avgOffset = filter.calculate(getTargetTurretDegGivenOffset(offset));
+        rotateByDeg(avgOffset);
     }
 
 }
