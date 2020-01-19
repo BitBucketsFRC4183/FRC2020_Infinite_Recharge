@@ -128,7 +128,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void rotateByDeg(double offset) {
-        double targetDegrees = targetPosition + offset;
+        double encoderDeg =  azimuthMotor.getSelectedSensorPosition() * (360.0 / config.shooter.azimuth.ticksPerRevolution);
+        double turretDeg = encoderDeg * config.shooter.gearRatio;
+        double targetDegrees = turretDeg - offset;
         rotateToDeg(targetDegrees);
     }
 
