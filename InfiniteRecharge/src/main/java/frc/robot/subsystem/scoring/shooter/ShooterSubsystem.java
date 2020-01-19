@@ -127,4 +127,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         targetChange = 0;
     }
 
+    public void rotateByDeg(double offset) {
+        double targetDegrees = targetPosition + offset;
+        rotateToDeg(targetDegrees);
+    }
+
 }
