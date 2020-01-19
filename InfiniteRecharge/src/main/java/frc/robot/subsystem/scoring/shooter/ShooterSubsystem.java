@@ -148,10 +148,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         Returns target degrees of turret given an offset
     */
     public double getTargetTurretDegGivenOffset(double offset) {
-        if (ShooterConstants.USE_SENSOR_PHASE) // "left" is negative
-            return getTurretDeg() + offset;
-        else // "left" is negative for LL, "left" is positive for turret
-            return getTurretDeg() - offset;
+        return getTurretDeg() + offset;
     }
 
     public void rotateTurretGivenLLOffset(double offset) {
