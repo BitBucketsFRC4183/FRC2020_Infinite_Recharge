@@ -48,9 +48,9 @@ public class JuniorConfiguration extends Config {
 
         // Drive
         drive.leftLeader.velocityPIDF = new PIDF(
-                velocityKp, // P
-                0.005, // I
-                10 * velocityKp, // D - Start with 10 x Kp for increased damping of overshoot
+                0,//velocityKp, // P
+                0,//0.005, // I
+                0,//10 * velocityKp, // D - Start with 10 x Kp for increased damping of overshoot
                 0.05115, // F
                 400 // iZone
         );
