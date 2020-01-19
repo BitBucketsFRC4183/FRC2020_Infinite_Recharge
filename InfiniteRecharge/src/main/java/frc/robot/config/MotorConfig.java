@@ -11,6 +11,8 @@ public class MotorConfig {
 
     public boolean inverted;
 
+    public boolean sensorPhase;
+
     //////////////////////////////////////////////////////////////////////////////
     // PIDFs
 
