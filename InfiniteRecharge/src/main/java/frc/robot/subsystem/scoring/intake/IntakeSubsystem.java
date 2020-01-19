@@ -21,7 +21,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
         super.initialize();
         
         initializeBaseDashboard();
-        // motor = MotorUtils.makeSRX(config.intake.intaker);
+        motor = MotorUtils.makeSRX(config.intake.intake);
     }
 
     @Override
@@ -31,26 +31,24 @@ public class IntakeSubsystem extends BitBucketSubsystem {
 
     @Override
     public void diagnosticsPeriodic() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void diagnosticsCheck() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void periodic(float deltaTime) {
-        // if (intaking) {
-        //     motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", 0.2));
-        //     SmartDashboard.putString(getName() + "/IntakeState", "Intaking");
-        // } else {
-        //     motor.set(0);
-        //     SmartDashboard.putString(getName() + "/IntakeState", "Not Intaking");
-        // }
-        // SmartDashboard.putNumber(getName() + "/IntakeOut", motor.getMotorOutputPercent());
+        if (intaking) {
+            motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", 0.2));
+            SmartDashboard.putString(getName() + "/IntakeState", "Intaking");
+        } else {
+            motor.set(0);
+            SmartDashboard.putString(getName() + "/IntakeState", "Not Intaking");
+        }
+        SmartDashboard.putNumber(getName() + "/IntakeOut", motor.getMotorOutputPercent());
     }
 
     public void intake() {
@@ -59,6 +57,10 @@ public class IntakeSubsystem extends BitBucketSubsystem {
 
     public void doNotIntake() {
         intaking = false;
+    }
+
+    public void barDown(){
+          
     }
 
 }

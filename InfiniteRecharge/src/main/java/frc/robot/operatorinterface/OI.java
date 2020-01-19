@@ -4,22 +4,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystem.drive.DriveConstants;
 
 public class OI {
-	// Only use the xbox joystick if we explicitly request it.
-	private ControllerMapper controllerMapper;
-	
-
-
-	{
-		if (System.getProperty("xbox", null) != null) {
-			controllerMapper = ControllerMapper.xbox();
-		} else {
-			controllerMapper = ControllerMapper.ps4();
-		}
-
-		
-	}
-
-
 
 	private final int DRIVER_JOYSTICK_ID = 0;
 	private final int OPERATOR_JOYSTICK_ID = 1;
@@ -31,8 +15,8 @@ public class OI {
 	// ****************************
 	// AXIS DEFINITIONS
 	// ****************************
-	private final int DRIVE_SPEED_AXIS = controllerMapper.getLeftStickY();
-	private final int DRIVE_TURN_AXIS = controllerMapper.getRightStickX();
+	private final int DRIVE_SPEED_AXIS = PS4Constants.LEFT_STICK_Y.getValue();
+	private final int DRIVE_TURN_AXIS = PS4Constants.LEFT_STICK_X.getValue();
 
 
 
@@ -57,15 +41,15 @@ public class OI {
 	// ****************************
 	// BUTTON DEFINITIONS
 	// ****************************
-	private final int DRIVE_LOW_SENSITIVE_BUTTON = controllerMapper.getR1();
-	private final int DRIVE_INVERT_BUTTON = controllerMapper.getL1();
-	private final int DRIVE_ALIGN_LOCK_BUTTON = controllerMapper.getShare();
-	private final int DRIVE_LOCK_BUTTON = controllerMapper.getOption();
-	private final int DRIVE_AUTO_ALIGN = controllerMapper.getCross();
+	private final int DRIVE_LOW_SENSITIVE_BUTTON = PS4Constants.R1.getValue();
+	private final int DRIVE_INVERT_BUTTON = PS4Constants.L1.getValue();
+	private final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
+	private final int DRIVE_LOCK_BUTTON = PS4Constants.OPTIONS.getValue();
+	private final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
 
 	// forced Idle for corresponding subsystems
-	private final int DRIVER_IDLE = controllerMapper.getTrackpad();
-	private final int OPERATOR_IDLE = controllerMapper.getTrackpad();
+	private final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
+	private final int OPERATOR_IDLE = PS4Constants.TRACKPAD.getValue();
 
 	public boolean lowSpeed() {
 		return driverControl.getRawButton(DRIVE_LOW_SENSITIVE_BUTTON);
