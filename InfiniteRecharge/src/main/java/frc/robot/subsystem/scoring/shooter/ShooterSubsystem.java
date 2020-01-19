@@ -12,6 +12,9 @@ import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
+import frc.robot.utils.data.filters.RunningAverageFilter;
+import frc.robot.subsystem.scoring.shooter.ShooterConstants;
+
 public class ShooterSubsystem extends BitBucketSubsystem {
 
     //////////////////////////////////////////////////////////////////////////////
@@ -24,6 +27,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     // Integers
     int targetPosition;
     int targetChange;
+
+    // Class Declarations
+    RunningAverageFilter filter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
 
     //////////////////////////////////////////////////////////////////////////////
     // Motors
@@ -46,6 +52,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void initialize() {
         super.initialize();
         azimuthMotor = MotorUtils.makeSRX(config.shooter.azimuth);
+        azimuthMotor.setSensorPhase(ShooterConstants.USE_SENSOR_PHASE);
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
     }
@@ -123,8 +130,33 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public void rotateToDeg(double targetPoint) {
         double targetPointTicks = MathUtils.unitConverter(targetPoint, 360, config.shooter.azimuth.ticksPerRevolution);
-        targetPosition = (int) (targetPointTicks);
+        targetPosition = (int) (targetPointTicks / config.shooter.gearRatio);
         targetChange = 0;
+    }
+
+    public void rotateByDeg(double degrees) {
+        rotateToDeg(getTargetTurretDegGivenOffset(degrees));
+    }
+    
+    public double getTurretDeg() {
+        double encoderDeg = MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(), config.shooter.azimuth.ticksPerRevolution, 360.0);
+        double turretDeg = encoderDeg * config.shooter.gearRatio;
+        return turretDeg;
+    }
+
+    /*
+        Returns target degrees of turret given an offset
+    */
+    public double getTargetTurretDegGivenOffset(double offset) {
+        return getTurretDeg() + offset;
+    }
+
+    public void rotateTurretGivenLLOffset(double offset) {
+        double degrees = getTargetTurretDegGivenOffset(offset);
+        // The offset and thus the degrees might change, causing the robot to oscillate about its target. To prevent this, take an average.
+        // If enabled in the constants file, calculate the average of the last values passed in (up to 25, configurable in ShooterConstants.java).
+        degrees = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
+        rotateToDeg(degrees);
     }
 
 }
