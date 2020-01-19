@@ -13,6 +13,7 @@ import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
 import frc.robot.utils.data.filters.RunningAverageFilter;
+import frc.robot.subsystem.drive.DriveConstants;
 
 public class ShooterSubsystem extends BitBucketSubsystem {
 
@@ -28,7 +29,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     int targetChange;
 
     // Class Declarations
-    RunningAverageFilter filter = new RunningAverageFilter(25);
+    RunningAverageFilter filter = new RunningAverageFilter(DriveConstants.FILTER_LENGTH);
 
     //////////////////////////////////////////////////////////////////////////////
     // Motors
@@ -137,18 +138,24 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
     
     public double getTurretDeg() {
-        double encoderDeg =  azimuthMotor.getSelectedSensorPosition() * (360.0 / config.shooter.azimuth.ticksPerRevolution);
+        double encoderDeg = MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(), config.shooter.azimuth.ticksPerRevolution, 360.0);
         double turretDeg = encoderDeg * config.shooter.gearRatio;
         return turretDeg;
     }
 
+    /*
+        Returns target degrees of turret given an offset
+        Assuming both sides agree that "left" is a negative offset.
+    */
     public double getTargetTurretDegGivenOffset(double offset) {
-        return getTurretDeg() - offset;
+        return getTurretDeg() + offset;
     }
 
     public void rotateTurretGivenLLOffset(double offset) {
-        double avgOffset = filter.calculate(getTargetTurretDegGivenOffset(offset));
-        rotateByDeg(avgOffset);
+        // For LL, "left" is a negative offset. For the turret, "left" is a positive offset. For this reason, we have to subtract the offset instead of adding it.
+        // Calculate the average of the last values passed in (up to 25) in order to provide a more accurate number
+        double avgDegrees = filter.calculate(getTurretDeg() - offset);
+        rotateToDeg(avgDegrees  );
     }
 
 }
