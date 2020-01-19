@@ -11,6 +11,7 @@ public class Config {
     public int AZIMUTH_MOTOR_ID = 1;
     public int SHOOTER_MOTOR_ID = 13;
     public int FEEDER_MOTOR_ID = 8;
+    public int INTAKE_MOTOR_ID = 14;
 
     // Drive
     public int LEFT_DRIVE_LEADER_ID = 15;
@@ -30,6 +31,10 @@ public class Config {
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
         public MotorConfig shooter = new MotorConfig();
+    }
+    public static class IntakeConfig {
+       
+        public MotorConfig intake = new MotorConfig();
     }
 
     public static class DriveConfig {
@@ -71,6 +76,7 @@ public class Config {
 
     public ShooterConfig shooter = new ShooterConfig();
     public DriveConfig drive = new DriveConfig();
+    public IntakeConfig intake = new IntakeConfig();
 
     public Config() {
 
@@ -79,6 +85,7 @@ public class Config {
         shooter.azimuth.id = AZIMUTH_MOTOR_ID;
         shooter.feeder.id = FEEDER_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
+        intake.intake.id = INTAKE_MOTOR_ID;
 
         drive.leftIDs = new int[] { LEFT_DRIVE_LEADER_ID, LEFT_DRIVE_FOLLOWER_ID };
         drive.rightIDs = new int[] { RIGHT_DRIVE_LEADER_ID, RIGHT_DRIVE_FOLLOWER_ID };

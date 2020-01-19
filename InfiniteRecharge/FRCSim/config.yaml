@@ -10,6 +10,7 @@ defaults:
      leftDriveFollower: 2
      rightDriveLeader: 3
      rightDriveFollower: 4
+     intake: 14
 
     ####
     # junior ids
@@ -130,6 +131,18 @@ transmissions:
 - motors:
   - id: "{{ defaults.ids.feeder }}"
     name: "Feeder ({{ defaults.ids.feeder }})"
+    model: 775Pro
+    stallTorque: "{{ defaults.T775pro.stallTorque }}"
+    stallCurrent: "{{ defaults.T775pro.stallCurrent }}"
+    voltage: "{{ defaults.T775pro.voltage }}"
+    maxRPM: "{{ defaults.T775pro.maxRPM }}"
+    mass: "{{ defaults.T775pro.mass }}"
+    diameter: "{{ defaults.T775pro.diameter }}"
+  gearRatio: 1.0
+  efficiency: 1.0
+- motors:
+  - id: "{{ defaults.ids.intake }}"
+    name: "intake ({{ defaults.ids.intake }})"
     model: 775Pro
     stallTorque: "{{ defaults.T775pro.stallTorque }}"
     stallCurrent: "{{ defaults.T775pro.stallCurrent }}"
