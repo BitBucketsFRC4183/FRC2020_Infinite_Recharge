@@ -3,17 +3,16 @@ package frc.robot.utils.control.statespace.models.lti;
 import frc.robot.utils.control.statespace.StateSpaceException;
 import frc.robot.utils.control.statespace.models.StateSpaceModel;
 
-import org.ejml.dense.row.CommonOps_DDRM;
-import org.ejml.data.DMatrixRMaj;
+import org.ejml.simple.SimpleMatrix;
 
 
 
 /** LTI model + a constant K, without any dependence of control u on output y */
 public abstract class LTIKModel extends StateSpaceModel {
-    protected final DMatrixRMaj A;
-    protected final DMatrixRMaj B;
-    protected final DMatrixRMaj C;
-    protected final DMatrixRMaj K;
+    protected final SimpleMatrix A;
+    protected final SimpleMatrix B;
+    protected final SimpleMatrix C;
+    protected final SimpleMatrix K;
 
     protected final int STATE_DIM;
     protected final int INPUT_DIM;
@@ -21,51 +20,57 @@ public abstract class LTIKModel extends StateSpaceModel {
 
 
 
-    public LTIKModel(DMatrixRMaj A, DMatrixRMaj B, DMatrixRMaj C, DMatrixRMaj K) throws StateSpaceException {
-        STATE_DIM = A.getNumRows();
+    public LTIKModel(SimpleMatrix A, SimpleMatrix B, SimpleMatrix C, SimpleMatrix K) throws StateSpaceException {
+        if (C == null) {
+            C = SimpleMatrix.identity(A.numRows());
+        }
+        
+
+
+        STATE_DIM = A.numRows();
         // n x n matrix
-        if (A.getNumCols() != STATE_DIM) {
-            throw new StateSpaceException("A must be a square matrix. Got: " + STATE_DIM + "x" + A.getNumCols());
+        if (A.numCols() != STATE_DIM) {
+            throw new StateSpaceException("A must be a square matrix. Got: " + STATE_DIM + "x" + A.numCols());
         }
         this.A = A;
 
 
 
-        if (B.getNumRows() != STATE_DIM) {
-            throw new StateSpaceException("B must have " + STATE_DIM + " rows. Got: " + B.getNumRows() + "x" + B.getNumCols());
+        if (B.numRows() != STATE_DIM) {
+            throw new StateSpaceException("B must have " + STATE_DIM + " rows. Got: " + B.numRows() + "x" + B.numCols());
         }
         this.B = B;
 
-        INPUT_DIM = B.getNumCols();
+        INPUT_DIM = B.numCols();
 
 
 
-        if (C.getNumCols() != STATE_DIM) {
-            throw new StateSpaceException("C must have " + STATE_DIM + " columns. Got: " + C.getNumRows() + "x" + C.getNumCols());
+        if (C.numCols() != STATE_DIM) {
+            throw new StateSpaceException("C must have " + STATE_DIM + " columns. Got: " + C.numRows() + "x" + C.numCols());
         }
-        OUTPUT_DIM = C.getNumRows();
+        OUTPUT_DIM = C.numRows();
         this.C = C;
 
 
 
-        if (K.getNumRows() != STATE_DIM && K.getNumCols() != 1) {
+        if (K.numRows() != STATE_DIM && K.numCols() != 1) {
             throw new StateSpaceException("K must be a " + STATE_DIM + "-vector");
         }
         this.K = K;
     }
 
-    public LTIKModel(DMatrixRMaj A, DMatrixRMaj B, DMatrixRMaj K) throws StateSpaceException {
-        this(A, B, CommonOps_DDRM.identity(A.getNumRows()), K);
+    public LTIKModel(SimpleMatrix A, SimpleMatrix B, SimpleMatrix K) throws StateSpaceException {
+        this(A, B, SimpleMatrix.identity(A.numRows()), K);
+    }
+
+    public LTIKModel(SimpleMatrix[] mats) throws StateSpaceException {
+        this(mats[0], mats[1], (mats.length == 4) ? mats[2] : null, (mats.length == 4) ? mats[3] : mats[2]);
     }
 
 
 
-    public DMatrixRMaj getA() { return A; }
-    public DMatrixRMaj getB() { return B; }
-    public DMatrixRMaj getC() { return C; }
-    public DMatrixRMaj getK() { return K; }
-
-
-
-    public abstract DMatrixRMaj getOutput();
+    public SimpleMatrix getA() { return A; }
+    public SimpleMatrix getB() { return B; }
+    public SimpleMatrix getC() { return C; }
+    public SimpleMatrix getK() { return K; }
 }

@@ -12,7 +12,7 @@ import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.JoystickScale;
-import frc.robot.utils.RisingEdgeFilter;
+import frc.robot.utils.data.filters.RisingEdgeFilter;
 import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
