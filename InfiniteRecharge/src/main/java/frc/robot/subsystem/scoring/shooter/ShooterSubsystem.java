@@ -152,7 +152,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void rotateTurretGivenLLOffset(double offset) {
-        // For LL, "left" is a negative offset. For the turret, "left" is a positive offset. For this reason, we have to subtract the offset instead of adding it.
         double degrees = getTargetTurretDegGivenOffset(offset);
         // The offset and thus the degrees might change, causing the robot to oscillate about its target. To prevent this, take an average.
         // If enabled in the constants file, calculate the average of the last values passed in (up to 25, configurable in ShooterConstants.java).
