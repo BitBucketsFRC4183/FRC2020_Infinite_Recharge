@@ -136,6 +136,8 @@ public class MotorUtils {
         motor.config_kI(velocitySlot, motorConfig.velocityPIDF.getKI());
         motor.config_kD(velocitySlot, motorConfig.velocityPIDF.getKD());
         motor.config_IntegralZone(velocitySlot, (int) motorConfig.velocityPIDF.getIZone());
+        motor.setSensorPhase(motorConfig.sensorPhase);
+        motor.setInverted(motorConfig.inverted);
         if (motorConfig.followingID != -1) {
             motor.set(ControlMode.Follower, motorConfig.followingID);
         }
@@ -167,7 +169,7 @@ public class MotorUtils {
         pidController.setI(motorConfig.velocityPIDF.getKD(), velocitySlot);
         pidController.setD(motorConfig.velocityPIDF.getKI(), velocitySlot);
         pidController.setIZone(motorConfig.velocityPIDF.getIZone(), velocitySlot);
-
+        motor.setInverted(motorConfig.inverted);
     }
 
     public static WPI_TalonSRX makeSRX(MotorConfig motorConfig) {
