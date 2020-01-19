@@ -13,7 +13,7 @@ import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
 import frc.robot.utils.data.filters.RunningAverageFilter;
-import frc.robot.subsystem.drive.DriveConstants;
+import frc.robot.subsystem.scoring.shooter.ShooterConstants;
 
 public class ShooterSubsystem extends BitBucketSubsystem {
 
@@ -29,7 +29,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     int targetChange;
 
     // Class Declarations
-    RunningAverageFilter filter = new RunningAverageFilter(DriveConstants.FILTER_LENGTH);
+    RunningAverageFilter filter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
 
     //////////////////////////////////////////////////////////////////////////////
     // Motors
@@ -52,6 +52,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void initialize() {
         super.initialize();
         azimuthMotor = MotorUtils.makeSRX(config.shooter.azimuth);
+        azimuthMotor.setSensorPhase(ShooterConstants.USE_SENSOR_PHASE);
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
     }
@@ -129,7 +130,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public void rotateToDeg(double targetPoint) {
         double targetPointTicks = MathUtils.unitConverter(targetPoint, 360, config.shooter.azimuth.ticksPerRevolution);
-        targetPosition = (int) (targetPointTicks);
+        targetPosition = (int) (targetPointTicks / config.shooter.gearRatio);
         targetChange = 0;
     }
 
@@ -145,17 +146,21 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     /*
         Returns target degrees of turret given an offset
-        Assuming both sides agree that "left" is a negative offset.
     */
     public double getTargetTurretDegGivenOffset(double offset) {
-        return getTurretDeg() + offset;
+        if (ShooterConstants.USE_SENSOR_PHASE) // "left" is negative
+            return getTurretDeg() + offset;
+        else // "left" is negative for LL, "left" is positive for turret
+            return getTurretDeg() - offset;
     }
 
     public void rotateTurretGivenLLOffset(double offset) {
         // For LL, "left" is a negative offset. For the turret, "left" is a positive offset. For this reason, we have to subtract the offset instead of adding it.
-        // Calculate the average of the last values passed in (up to 25) in order to provide a more accurate number
-        double avgDegrees = filter.calculate(getTurretDeg() - offset);
-        rotateToDeg(avgDegrees  );
+        double degrees = getTargetTurretDegGivenOffset(offset);
+        // The offset and thus the degrees might change, causing the robot to oscillate about its target. To prevent this, take an average.
+        // If enabled in the constants file, calculate the average of the last values passed in (up to 25, configurable in ShooterConstants.java).
+        degrees = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
+        rotateToDeg(degrees);
     }
 
 }
