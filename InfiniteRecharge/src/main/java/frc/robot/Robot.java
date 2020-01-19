@@ -125,10 +125,14 @@ public class Robot extends TimedRobot {
     // Intake Subsystem
 
     // Intake on pressing circle.
-    if (oi.driverControl.getRawButton(PS4Constants.CIRCLE.getValue())) {
+    if (oi.intaking()) {
       intakeSubsystem.intake();
-    } else {
-      intakeSubsystem.doNotIntake();
+    } 
+    else if (oi.outaking()) {
+      intakeSubsystem.outake();
+    }
+    else{
+      intakeSubsystem.off();
     }
 
     //////////////////////////////////////////////////////////////////////////////
