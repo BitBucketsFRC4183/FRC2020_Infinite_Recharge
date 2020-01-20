@@ -106,25 +106,12 @@ public class DriveSubsystem extends BitBucketSubsystem {
             rightMotors[i].setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 
 											DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
                                             DriveConstants.CONTROLLER_TIMEOUT_MS);
-            
-            MotorUtils.initializeQuadEncoderMotor(leftMotors[i]);
-            MotorUtils.initializeQuadEncoderMotor(rightMotors[i]);
-
         }
 
         leftMotors[0].setSensorPhase(DriveConstants.LEFT_DRIVE_MOTOR_SENSOR_PHASE);
         rightMotors[0].setSensorPhase(DriveConstants.RIGHT_DRIVE_MOTOR_SENSOR_PHASE);
         leftMotors[0].selectProfileSlot(MotorUtils.velocitySlot, 0);
         rightMotors[0].selectProfileSlot(MotorUtils.velocitySlot, 0);
-
-
-        leftMotors[0].setInverted(true);
-        rightMotors[0].setInverted(false);
-        
-        leftMotors[1].setInverted(true);
-        rightMotors[1].setInverted(false);
-
-
 
         setDefaultCommand(new Idle(this));
     }
