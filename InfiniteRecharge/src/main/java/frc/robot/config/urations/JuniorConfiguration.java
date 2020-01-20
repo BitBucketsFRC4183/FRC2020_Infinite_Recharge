@@ -8,9 +8,9 @@ public class JuniorConfiguration extends Config {
 
     // Drive
     public int LEFT_DRIVE_LEADER_ID = 1;
-    public int LEFT_DRIVE_FOLLOWER_ID = 2;
-    public int RIGHT_DRIVE_LEADER_ID = 3;
-    public int RIGHT_DRIVE_FOLLOWER_ID = 4;
+    public int LEFT_DRIVE_FOLLOWER_ID = 4;
+    public int RIGHT_DRIVE_LEADER_ID = 2;
+    public int RIGHT_DRIVE_FOLLOWER_ID = 3;
 
     // Shooter
     public int AZIMUTH_MOTOR_ID = 5;
@@ -48,10 +48,10 @@ public class JuniorConfiguration extends Config {
 
         // Drive
         drive.leftLeader.velocityPIDF = new PIDF(
-                0,//velocityKp, // P
+                0.14014/4,//velocityKp, // P
                 0,//0.005, // I
-                0,//10 * velocityKp, // D - Start with 10 x Kp for increased damping of overshoot
-                0.05115, // F
+                10 * 0.14014/4,//10 * velocityKp, // D - Start with 10 x Kp for increased damping of overshoot
+                1023.0 / 17300, // F
                 400 // iZone
         );
         drive.rightLeader.velocityPIDF = drive.leftLeader.velocityPIDF;
