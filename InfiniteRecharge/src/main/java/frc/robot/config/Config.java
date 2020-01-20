@@ -49,8 +49,8 @@ public class Config {
         public MotorConfig leftLeader;
         public MotorConfig rightLeader;
 
-        public boolean isLeftInverted = true;
-        public boolean isRightInverted = false;
+        public boolean leftInverted = true;
+        public boolean rightInverted = false;
 
         public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Quadrature;
 
@@ -67,12 +67,12 @@ public class Config {
                 leftMotors[i] = new MotorConfig();
                 leftMotors[i].id = leftIDs[i];
                 leftMotors[i].encoderType = encoderType;
-                leftMotors[i].inverted = isLeftInverted;
+                leftMotors[i].inverted = leftInverted;
 
                 rightMotors[i] = new MotorConfig();
                 rightMotors[i].id = rightIDs[i];
                 rightMotors[i].encoderType = encoderType;
-                rightMotors[i].inverted = isRightInverted;
+                rightMotors[i].inverted = rightInverted;
 
                 if (i > 0) {
                     leftMotors[i].followingID = leftIDs[0];
