@@ -15,13 +15,14 @@ defaults:
     ####
     # junior ids
     ####
-#    azimuth: 5
-#    shooter: 6
-#    feeder: 7
-#    leftDriveLeader: 1
-#    leftDriveFollower: 2
-#    rightDriveLeader: 3
-#    rightDriveFollower: 4
+  #  azimuth: 5
+  #  shooter: 6
+  #  feeder: 7
+  #  intake: 8
+  #  leftDriveLeader: 1
+  #  leftDriveFollower: 2
+  #  rightDriveLeader: 3
+  #  rightDriveFollower: 4
   bag:
     stallTorque: 0.4
     stallCurrent: 53.0
@@ -94,7 +95,7 @@ transmissions:
   efficiency: 1.0
 - motors:
   - id: "{{ defaults.ids.rightDriveLeader }}"
-    name: Drive Left Follower ({{ defaults.ids.rightDriveLeader }})
+    name: Drive Right ({{ defaults.ids.rightDriveLeader }})
     model: BAG
     stallTorque: "{{ defaults.bag.stallTorque }}"
     stallCurrent: "{{ defaults.bag.stallCurrent }}"
@@ -106,7 +107,7 @@ transmissions:
   efficiency: 1.0
 - motors:
   - id: "{{ defaults.ids.rightDriveFollower }}"
-    name: Drive Left Follower ({{ defaults.ids.rightDriveFollower }})
+    name: Drive Right Follower ({{ defaults.ids.rightDriveFollower }})
     model: BAG
     stallTorque: "{{ defaults.bag.stallTorque }}"
     stallCurrent: "{{ defaults.bag.stallCurrent }}"
