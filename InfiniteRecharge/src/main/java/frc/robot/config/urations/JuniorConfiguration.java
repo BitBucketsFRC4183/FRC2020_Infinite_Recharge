@@ -7,8 +7,8 @@ import frc.robot.utils.control.pidf.PIDF;
 public class JuniorConfiguration extends Config {
 
     // Drive
-    public int LEFT_DRIVE_IDS[] = {1, 2};
-    public int RIGHT_DRIVE_IDS[] = {3, 4};
+    public int LEFT_DRIVE_IDS[] = {1, 4};
+    public int RIGHT_DRIVE_IDS[] = {2, 3};
 
     // Shooter
     public int AZIMUTH_MOTOR_ID = 5;
