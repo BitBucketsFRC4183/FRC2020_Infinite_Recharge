@@ -138,6 +138,32 @@ public class MotorUtils {
         motor.config_IntegralZone(velocitySlot, (int) motorConfig.velocityPIDF.getIZone());
         motor.setSensorPhase(motorConfig.sensorPhase);
         motor.setInverted(motorConfig.inverted);
+
+        switch (motorConfig.encoderType) {
+        case None:
+            motor.configSelectedFeedbackSensor(FeedbackDevice.None);
+            break;
+
+        case Quadrature:
+            motor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+            motor.setSelectedSensorPosition(0);
+            break;
+
+        case Relative:
+            motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+            motor.setSelectedSensorPosition(0);
+            break;
+
+        case Absolute:
+            motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+            break;
+
+        case Integrated:
+            motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+            motor.setSelectedSensorPosition(0);
+            break;
+        }
+
         if (motorConfig.followingID != -1) {
             motor.set(ControlMode.Follower, motorConfig.followingID);
         }
@@ -146,10 +172,8 @@ public class MotorUtils {
 
     public static void motorInit(CANSparkMax motor, MotorConfig motorConfig) {
         /* Configure Sensor Source for velocity PID */
-        CANEncoder encoder = motor.getEncoder(EncoderType.kQuadrature, 8192);
+        CANEncoder encoder;
 
-        /* Zero the sensor */
-        encoder.setPosition(0);
         // brushless motors can't be inverted
         // encoder.setInverted(settings.sensorPhase);
 
@@ -170,6 +194,29 @@ public class MotorUtils {
         pidController.setD(motorConfig.velocityPIDF.getKI(), velocitySlot);
         pidController.setIZone(motorConfig.velocityPIDF.getIZone(), velocitySlot);
         motor.setInverted(motorConfig.inverted);
+        switch (motorConfig.encoderType) {
+        case Quadrature:
+            encoder = motor.getEncoder(EncoderType.kQuadrature, 8192);
+            break;
+
+        case Relative:
+            encoder = motor.getEncoder(EncoderType.kQuadrature, 8192);
+            break;
+
+        case Absolute:
+            throw new RuntimeException("You used an absolute encoder type for a CAN Spark! You ABSOLUTE fool!");
+
+        case Integrated:
+            encoder = motor.getEncoder();
+            break;
+        case None:
+        default:
+            encoder = motor.getEncoder(EncoderType.kNoSensor, 8192);
+            break;
+
+        }
+        /* Zero the sensor */
+        encoder.setPosition(0);
     }
 
     public static WPI_TalonSRX makeSRX(MotorConfig motorConfig) {
