@@ -23,10 +23,12 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     // Booleans
     public boolean shooting = false;
     public boolean feeding = false;
+    public boolean feederVelocityControl = false;
+    public boolean shooterVelocityControl = false;
 
     // Integers
-    int targetPosition;
-    int targetChange;
+    public int targetPosition;
+    public int targetChange;
 
     // Class Declarations
     RunningAverageFilter filter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
@@ -55,12 +57,16 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         azimuthMotor.setSensorPhase(ShooterConstants.USE_SENSOR_PHASE);
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
+        feeder.selectProfileSlot(MotorUtils.velocitySlot, 0);
+        ballPropulsionMotor.selectProfileSlot(MotorUtils.velocitySlot, 0);
     }
 
     @Override
     public void diagnosticsInitialize() {
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity", 0.2);
-        SmartDashboard.putNumber(getName() + "/Feeder Speed", 0.2);
+        SmartDashboard.putNumber(getName() + "/Shooter Output Percent", 0.2);
+        SmartDashboard.putNumber(getName() + "/Feeder Output Percent", 0.2);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 60);
+        SmartDashboard.putNumber(getName() + "/Feeder Velocity RPM", 60);
         SmartDashboard.putNumber(getName() + "/Turret Turn Rate", config.shooter.defaultTurnVelocityDeg);
     }
 
@@ -78,38 +84,71 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void periodic(float deltaTime) {
-        if (shooting) {
-            ballPropulsionMotor.set(SmartDashboard.getNumber(getName() + "/Shooter Velocity", 0.2));
-            SmartDashboard.putString(getName() + "/Shooter State", "shooting");
+        if (shooting && !shooterVelocityControl) {
+
+            ballPropulsionMotor.set(SmartDashboard.getNumber(getName() + "/Shooter Output Percent", 0.2));
+            SmartDashboard.putString(getName() + "/Shooter State", "Shooting with percent output");
+
+        } else if (shooting && shooterVelocityControl) {
+
+            ballPropulsionMotor.set(ControlMode.Velocity,
+                    MathUtils.unitConverter(SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM", 60), 600,
+                            8192) / config.shooter.shooterGearRatio);
+            SmartDashboard.putString(getName() + "/Shooter State", "Shooting with velocity control");
+
         } else {
+
             ballPropulsionMotor.set(0);
-            SmartDashboard.putString(getName() + "/Shooter State", "not shooting");
+            SmartDashboard.putString(getName() + "/Shooter State", "Not shooting");
+
         }
         SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
+
+        //
 
         targetPosition = (int) (targetPosition + (targetChange * deltaTime));
         azimuthMotor.set(ControlMode.MotionMagic, targetPosition);
 
-        if (feeding) {
-            feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Speed", 0.2));
-            SmartDashboard.putString(getName() + "/FeederState", "Feeding");
+        if (feeding && !feederVelocityControl) {
+
+            feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent", 0.2));
+            SmartDashboard.putString(getName() + "/FeederState", "Feeding with percent output");
+
+        } else if (feeding && feederVelocityControl) {
+
+            feeder.set(ControlMode.Velocity, MathUtils
+                    .unitConverter(SmartDashboard.getNumber(getName() + "/Feeder Velocity RPM", 60), 600, 8192));
+            SmartDashboard.putString(getName() + "/FeederState", "Feeding with with velocity control");
+
         } else {
+
             feeder.set(0);
             SmartDashboard.putString(getName() + "/FeederState", "Not Feeding");
+
         }
-        SmartDashboard.putNumber(getName() + "/FeederOut", feeder.getMotorOutputPercent());
+        SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
     }
 
-    public void feed() {
+    public void feed(boolean hasVelocityControl) {
         feeding = true;
+        if (hasVelocityControl) {
+            feederVelocityControl = true;
+        } else {
+            feederVelocityControl = false;
+        }
     }
 
     public void doNotFeed() {
         feeding = false;
     }
 
-    public void shoot() {
+    public void shoot(boolean hasVelocityControl) {
         shooting = true;
+        if (hasVelocityControl) {
+            shooterVelocityControl = true;
+        } else {
+            shooterVelocityControl = false;
+        }
     }
 
     public void doNotShoot() {
@@ -122,15 +161,16 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         double smartDashboardTurnRateTicks = MathUtils
                 .unitConverter(SmartDashboard.getNumber(getName() + "/Turret Turn Rate",
                         config.shooter.defaultTurnVelocityDeg), 360, config.shooter.azimuth.ticksPerRevolution)
-                / config.shooter.gearRatio;
+                / config.shooter.azimuthGearRatio;
 
         // Target position changes by this number every time periodic is called.
         targetChange = (int) (smartDashboardTurnRateTicks * spinRate);
     }
 
     public void rotateToDeg(double targetPoint) {
-        double targetPointTicks = MathUtils.unitConverter(targetPoint, 360, config.shooter.azimuth.ticksPerRevolution);
-        targetPosition = (int) (targetPointTicks / config.shooter.gearRatio);
+        double targetPointTicks = MathUtils.unitConverter(targetPoint, 360, config.shooter.azimuth.ticksPerRevolution)
+                / config.shooter.azimuthGearRatio;
+        targetPosition = (int) (targetPointTicks);
         targetChange = 0;
     }
 
