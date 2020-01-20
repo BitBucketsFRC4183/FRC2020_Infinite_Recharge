@@ -1,6 +1,5 @@
 package frc.robot.config;
 
-import frc.robot.config.MotorConfig.EncoderType;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class Config {
