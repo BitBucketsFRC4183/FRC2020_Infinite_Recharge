@@ -7,10 +7,8 @@ import frc.robot.utils.control.pidf.PIDF;
 public class JuniorConfiguration extends Config {
 
     // Drive
-    public int LEFT_DRIVE_LEADER_ID = 1;
-    public int LEFT_DRIVE_FOLLOWER_ID = 4;
-    public int RIGHT_DRIVE_LEADER_ID = 2;
-    public int RIGHT_DRIVE_FOLLOWER_ID = 3;
+    public int LEFT_DRIVE_IDS[] = {1, 2};
+    public int RIGHT_DRIVE_IDS[] = {3, 4};
 
     // Shooter
     public int AZIMUTH_MOTOR_ID = 5;
@@ -39,8 +37,8 @@ public class JuniorConfiguration extends Config {
 
         // setup junior's drive motors and pid constants.
         drive.MOTORS_PER_SIDE = 2;
-        drive.leftIDs = new int[] { LEFT_DRIVE_LEADER_ID, LEFT_DRIVE_FOLLOWER_ID };
-        drive.rightIDs = new int[] { RIGHT_DRIVE_LEADER_ID, RIGHT_DRIVE_FOLLOWER_ID };
+        drive.leftIDs = LEFT_DRIVE_IDS;
+        drive.rightIDs = RIGHT_DRIVE_IDS;
 
         drive.initMotorConfigArrays();
 
