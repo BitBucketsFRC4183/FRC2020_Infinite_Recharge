@@ -46,6 +46,8 @@ public class OI {
 	private final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
 	private final int DRIVE_LOCK_BUTTON = PS4Constants.OPTIONS.getValue();
 	private final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
+	private final int INTAKE_IN_POV = 0;
+	private final int INTAKE_OUT_POV = 180; 
 
 	// forced Idle for corresponding subsystems
 	private final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
@@ -53,6 +55,13 @@ public class OI {
 
 	public boolean lowSpeed() {
 		return driverControl.getRawButton(DRIVE_LOW_SENSITIVE_BUTTON);
+	}
+
+	public boolean intaking(){
+		return operatorControl.getPOV() == INTAKE_IN_POV;
+	}
+	public boolean outaking(){
+		return operatorControl.getPOV() == INTAKE_OUT_POV;
 	}
 
 	/**

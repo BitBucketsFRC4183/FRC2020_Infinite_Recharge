@@ -125,10 +125,14 @@ public class Robot extends TimedRobot {
     // Intake Subsystem
 
     // Intake on pressing circle.
-    if (oi.driverControl.getRawButton(PS4Constants.CIRCLE.getValue())) {
+    if (oi.intaking()) {
       intakeSubsystem.intake();
-    } else {
-      intakeSubsystem.doNotIntake();
+    } 
+    else if (oi.outaking()) {
+      intakeSubsystem.outake();
+    }
+    else{
+      intakeSubsystem.off();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -136,9 +140,24 @@ public class Robot extends TimedRobot {
 
     // Shoot on pressing square.
     if (oi.driverControl.getRawButton(PS4Constants.SQUARE.getValue())) {
-      shooterSubsystem.shoot();
+      shooterSubsystem.shoot(false);
+    } else if (oi.driverControl.getRawButton(PS4Constants.L1.getValue())) {
+
+      // Shoot with velocity control on pressing L1.
+      shooterSubsystem.shoot(true);
     } else {
       shooterSubsystem.doNotShoot();
+    }
+
+    // Feed with velocity control on pressing R1.
+    if (oi.driverControl.getRawButton(PS4Constants.R1.getValue())) {
+      shooterSubsystem.feed(true);
+    } else if (oi.driverControl.getRawButton(PS4Constants.CIRCLE.getValue())) {
+
+      // Feed on pressing circle.
+      shooterSubsystem.feed(false);
+    } else {
+      shooterSubsystem.doNotFeed();
     }
 
     // Rotate the turret with the joystick.
@@ -146,13 +165,6 @@ public class Robot extends TimedRobot {
       shooterSubsystem.rotate(oi.driverControl.getRawAxis(PS4Constants.LEFT_STICK_X.getValue()));
     } else {
       shooterSubsystem.rotate(0);
-    }
-
-    // Feed on pressing circle.
-    if (oi.driverControl.getRawButton(PS4Constants.CIRCLE.getValue())) {
-      shooterSubsystem.feed();
-    } else {
-      shooterSubsystem.doNotFeed();
     }
   }
 

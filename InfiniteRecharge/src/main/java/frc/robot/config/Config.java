@@ -1,5 +1,6 @@
 package frc.robot.config;
 
+import frc.robot.config.MotorConfig.EncoderType;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class Config {
@@ -14,10 +15,8 @@ public class Config {
     public int INTAKE_MOTOR_ID = 14;
 
     // Drive
-    public int LEFT_DRIVE_LEADER_ID = 1;
-    public int LEFT_DRIVE_FOLLOWER_ID = 4;
-    public int RIGHT_DRIVE_LEADER_ID = 2;
-    public int RIGHT_DRIVE_FOLLOWER_ID = 3;
+    public int LEFT_DRIVE_IDS[] = { 15, 2 };
+    public int RIGHT_DRIVE_IDS[] = { 3, 4 };
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
@@ -25,15 +24,17 @@ public class Config {
     //////////////////////////////////////////////////////////////////////////////
     // Motor Configs
     public static class ShooterConfig {
-        public float gearRatio = 28f / 130f;
+        public float azimuthGearRatio = 28f / 130f;
+        public float shooterGearRatio = .48f / 1f;
         public float defaultTurnVelocityDeg = 10;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
         public MotorConfig shooter = new MotorConfig();
     }
+
     public static class IntakeConfig {
-       
+
         public MotorConfig intake = new MotorConfig();
     }
 
@@ -48,6 +49,11 @@ public class Config {
         public MotorConfig leftLeader;
         public MotorConfig rightLeader;
 
+        public boolean leftInverted = true;
+        public boolean rightInverted = false;
+
+        public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Quadrature;
+
         public DriveConfig() {
         }
 
@@ -60,9 +66,13 @@ public class Config {
             for (int i = 0; i < MOTORS_PER_SIDE; i++) {
                 leftMotors[i] = new MotorConfig();
                 leftMotors[i].id = leftIDs[i];
+                leftMotors[i].encoderType = encoderType;
+                leftMotors[i].inverted = leftInverted;
 
                 rightMotors[i] = new MotorConfig();
                 rightMotors[i].id = rightIDs[i];
+                rightMotors[i].encoderType = encoderType;
+                rightMotors[i].inverted = rightInverted;
 
                 if (i > 0) {
                     leftMotors[i].followingID = leftIDs[0];
@@ -87,8 +97,8 @@ public class Config {
         shooter.shooter.id = SHOOTER_MOTOR_ID;
         intake.intake.id = INTAKE_MOTOR_ID;
 
-        drive.leftIDs = new int[] { LEFT_DRIVE_LEADER_ID, LEFT_DRIVE_FOLLOWER_ID };
-        drive.rightIDs = new int[] { RIGHT_DRIVE_LEADER_ID, RIGHT_DRIVE_FOLLOWER_ID };
+        drive.leftIDs = LEFT_DRIVE_IDS;
+        drive.rightIDs = RIGHT_DRIVE_IDS;
 
         //////////////////////////////////////////////////////////////////////////////
         // PIDFs
@@ -101,7 +111,7 @@ public class Config {
                 0 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
-                0, // P
+                0.08, // P
                 0, // I
                 0, // D
                 0 /// F
