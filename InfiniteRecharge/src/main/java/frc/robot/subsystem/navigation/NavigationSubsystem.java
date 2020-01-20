@@ -88,4 +88,16 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	public double getYawRate_degPerSec() {
 		return ahrs.getRate();
 	}
+
+	public double getAccX() {
+		return ahrs.getRawAccelX();
+	}
+
+	public double getWorldAccX() {
+		return ahrs.getWorldLinearAccelX();
+	}
+
+	public double getGyro() {
+		return ahrs.getRawGyroZ();
+	}
 }

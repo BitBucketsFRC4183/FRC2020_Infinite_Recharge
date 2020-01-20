@@ -19,7 +19,7 @@ public class ConfigChooser {
     //
     // Change this type to pick config
     //
-    private static ConfigType configType = ConfigType.Main;
+    private static ConfigType configType = ConfigType.Junior;
 
     public static Config getConfig() {
         switch (configType) {

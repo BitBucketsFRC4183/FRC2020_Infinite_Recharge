@@ -113,7 +113,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
         leftMotors[0].selectProfileSlot(MotorUtils.velocitySlot, 0);
         rightMotors[0].selectProfileSlot(MotorUtils.velocitySlot, 0);
 
-
         setDefaultCommand(new Idle(this));
     }
 
@@ -265,11 +264,19 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
         SmartDashboard.putNumber(getName() + "/Robot yaw", NAVIGATION_SUBSYSTEM.getYaw_deg());
+        SmartDashboard.putNumber(getName() + "/Robot raw X accel", NAVIGATION_SUBSYSTEM.getAccX());
+        SmartDashboard.putNumber(getName() + "/Robot world X accel", NAVIGATION_SUBSYSTEM.getWorldAccX());
+        SmartDashboard.putNumber(getName() + "/Robot raw X gyro", NAVIGATION_SUBSYSTEM.getGyro());
 
         double leftSpeed = DriveConstants.ticksP100ToIps(leftMotors[0].getSelectedSensorVelocity());
         double rightSpeed = DriveConstants.ticksP100ToIps(rightMotors[0].getSelectedSensorVelocity());
         SmartDashboard.putNumber(getName() + "/leftSpeed_ips", leftSpeed);
         SmartDashboard.putNumber(getName() + "/rightSpeed_ips", rightSpeed);
+
+        SmartDashboard.putNumber(getName() + "/command %", leftMotors[0].getMotorOutputPercent());
+        SmartDashboard.putNumber(getName() + "/left vel", leftMotors[0].getSelectedSensorVelocity());
+        SmartDashboard.putNumber(getName() + "/speed error", leftMotors[0].getClosedLoopError());
+        SmartDashboard.putNumber(getName() + "/left setpoint", leftMotors[0].getClosedLoopTarget());
     }
 
 
