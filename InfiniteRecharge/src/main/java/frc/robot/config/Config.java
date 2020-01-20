@@ -1,5 +1,6 @@
 package frc.robot.config;
 
+import frc.robot.config.MotorConfig.EncoderType;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class Config {
@@ -48,6 +49,11 @@ public class Config {
         public MotorConfig leftLeader;
         public MotorConfig rightLeader;
 
+        public boolean isLeftInverted = true;
+        public boolean isRightInverted = false;
+
+        public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Quadrature;
+
         public DriveConfig() {
         }
 
@@ -60,9 +66,13 @@ public class Config {
             for (int i = 0; i < MOTORS_PER_SIDE; i++) {
                 leftMotors[i] = new MotorConfig();
                 leftMotors[i].id = leftIDs[i];
+                leftMotors[i].encoderType = encoderType;
+                leftMotors[i].inverted = isLeftInverted;
 
                 rightMotors[i] = new MotorConfig();
                 rightMotors[i].id = rightIDs[i];
+                rightMotors[i].encoderType = encoderType;
+                rightMotors[i].inverted = isRightInverted;
 
                 if (i > 0) {
                     leftMotors[i].followingID = leftIDs[0];
