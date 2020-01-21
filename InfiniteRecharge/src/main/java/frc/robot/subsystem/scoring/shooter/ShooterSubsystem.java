@@ -180,7 +180,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     
     public double getTurretDeg() {
         double encoderDeg = MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(), config.shooter.azimuth.ticksPerRevolution, 360.0);
-        double turretDeg = encoderDeg * config.shooter.gearRatio;
+        double turretDeg = encoderDeg * config.shooter.azimuthGearRatio;
         return turretDeg;
     }
 
