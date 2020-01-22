@@ -26,4 +26,16 @@ public class DoubleDataWindow extends DataWindow<Double> {
     public double getAverage() {
         return sum / numFilled;
     }
+
+    public double getVariance() {
+        double avg = getAverage();
+
+        double var = 0;
+
+        for (int i = 0; i < LENGTH; i++) {
+            var += Math.pow(get(i) - avg, 2);
+        }
+
+        return var / LENGTH;
+    }
 }
