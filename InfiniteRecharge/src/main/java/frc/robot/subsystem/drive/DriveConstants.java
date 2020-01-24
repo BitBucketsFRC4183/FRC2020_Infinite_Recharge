@@ -92,19 +92,5 @@ public class DriveConstants {
     // not sure if we can use Double.POSITIVE_INFINITY so just be safe
     public static final double MAX_LIN_ACCELERATION_IPSPS = 999999999;
 
-
-    
-
-
-
-
-
-
-
-
-
-
-    // PID constants
-
     public static final double ROTATION_DRIVE_RANGE_DEG = 20;
 }
