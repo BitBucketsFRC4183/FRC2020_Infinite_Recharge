@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.utils.data.DoubleDataWindow;
 
 /**
  * Add your docs here.
@@ -21,6 +22,13 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
 
+
+
+    DoubleDataWindow imuAcc = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
+    DoubleDataWindow imuGyro = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
+
+
+    
 	public NavigationSubsystem(Config config) {
 		super(config);
 	}
@@ -61,15 +69,42 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	@Override
 	public void periodic(float deltaTime) {
 		clearDiagnosticsEnabled();		
-		updateBaseDashboard();
-		if (getTelemetryEnabled())
-		{
+        updateBaseDashboard();
+        
+
+
+        double acc = Math.sqrt(
+            Math.pow(getWorldAccX(), 2) + 
+            Math.pow(getWorldAccY(), 2) + 
+            Math.pow(getWorldAccZ(), 2)
+        );
+
+        double gyro = getGyro();
+
+
+        imuAcc.add(acc);
+        imuGyro.add(gyro);
+
+
+
+		if (getTelemetryEnabled()) {
+			SmartDashboard.putNumber(getName() + "/Robot yaw", getYaw_deg());
+            SmartDashboard.putNumber(getName() + "/Robot raw X accel", getAccX());
+            SmartDashboard.putNumber(getName() + "/Robot world X accel", getWorldAccX());
+            SmartDashboard.putNumber(getName() + "/Robot raw X gyro", gyro);
+            SmartDashboard.putNumber(getName() + "/Robot accel", acc);
+
+            double accVar = imuAcc.getVariance();
+            double gyroVar = imuGyro.getVariance();
+
+            SmartDashboard.putNumber(getName() + "/Aceleration variance", accVar);
+            SmartDashboard.putNumber(getName() + "/Gyro variance",        gyroVar);
+        }
+        
+		if (getDiagnosticsEnabled()) {
 			
-		}
-		if (getDiagnosticsEnabled())
-		{
-			
-		}		
+        }
+
 		updateDashboard();
 		
 	}
@@ -93,6 +128,22 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
 	public double getWorldAccX() {
 		return ahrs.getWorldLinearAccelX();
+    }
+    
+    public double getAccY() {
+		return ahrs.getRawAccelY();
+	}
+
+	public double getWorldAccY() {
+		return ahrs.getWorldLinearAccelY();
+    }
+    
+    public double getAccZ() {
+		return ahrs.getRawAccelZ();
+	}
+
+	public double getWorldAccZ() {
+		return ahrs.getWorldLinearAccelZ();
 	}
 
 	public double getGyro() {
