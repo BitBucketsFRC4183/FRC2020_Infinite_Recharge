@@ -10,15 +10,13 @@ WHEEL_RADIUS = 0.0762; % in m
 
 X = 1;
 Y = 2;
-V = 3;
-THETA = 4;
-OMEGA = 5;
-OMEGA_LT = 6;
-OMEGA_LB = 7;
-OMEGA_RT = 8;
-OMEGA_RB = 9;
+THETA = 3;
+OMEGA_LT = 4;
+OMEGA_LB = 5;
+OMEGA_RT = 6;
+OMEGA_RB = 7;
 
-STATE_SIZE = 9;
+STATE_SIZE = 7;
 
 
 
