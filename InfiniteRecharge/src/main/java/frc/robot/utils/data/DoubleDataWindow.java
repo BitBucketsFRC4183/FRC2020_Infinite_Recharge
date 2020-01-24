@@ -32,10 +32,10 @@ public class DoubleDataWindow extends DataWindow<Double> {
 
         double var = 0;
 
-        for (int i = 0; i < LENGTH; i++) {
+        for (int i = 0; i < numFilled; i++) {
             var += Math.pow(get(i) - avg, 2);
         }
 
-        return var / LENGTH;
+        return var / numFilled;
     }
 }

@@ -263,20 +263,22 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-        SmartDashboard.putNumber(getName() + "/Robot yaw", NAVIGATION_SUBSYSTEM.getYaw_deg());
-        SmartDashboard.putNumber(getName() + "/Robot raw X accel", NAVIGATION_SUBSYSTEM.getAccX());
-        SmartDashboard.putNumber(getName() + "/Robot world X accel", NAVIGATION_SUBSYSTEM.getWorldAccX());
-        SmartDashboard.putNumber(getName() + "/Robot raw X gyro", NAVIGATION_SUBSYSTEM.getGyro());
+        if (getTelemetryEnabled()) {
+            double leftSpeed = DriveConstants.ticksP100ToIps(leftMotors[0].getSelectedSensorVelocity());
+            double rightSpeed = DriveConstants.ticksP100ToIps(rightMotors[0].getSelectedSensorVelocity());
+            SmartDashboard.putNumber(getName() + "/leftSpeed_ips", leftSpeed);
+            SmartDashboard.putNumber(getName() + "/rightSpeed_ips", rightSpeed);
 
-        double leftSpeed = DriveConstants.ticksP100ToIps(leftMotors[0].getSelectedSensorVelocity());
-        double rightSpeed = DriveConstants.ticksP100ToIps(rightMotors[0].getSelectedSensorVelocity());
-        SmartDashboard.putNumber(getName() + "/leftSpeed_ips", leftSpeed);
-        SmartDashboard.putNumber(getName() + "/rightSpeed_ips", rightSpeed);
+            SmartDashboard.putNumber(getName() + "/command %", leftMotors[0].getMotorOutputPercent());
+            SmartDashboard.putNumber(getName() + "/left vel", leftMotors[0].getSelectedSensorVelocity());
+            SmartDashboard.putNumber(getName() + "/speed error", leftMotors[0].getClosedLoopError());
+            SmartDashboard.putNumber(getName() + "/left setpoint", leftMotors[0].getClosedLoopTarget());
 
-        SmartDashboard.putNumber(getName() + "/command %", leftMotors[0].getMotorOutputPercent());
-        SmartDashboard.putNumber(getName() + "/left vel", leftMotors[0].getSelectedSensorVelocity());
-        SmartDashboard.putNumber(getName() + "/speed error", leftMotors[0].getClosedLoopError());
-        SmartDashboard.putNumber(getName() + "/left setpoint", leftMotors[0].getClosedLoopTarget());
+
+
+            SmartDashboard.putNumber(getName() + "/Velocity (in/s)", getApproxV());
+            SmartDashboard.putNumber(getName() + "/Omega (rad/s)", getApproxOmega());
+        }
     }
 
 
@@ -305,5 +307,19 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     public double getDriverRawTurn() {
         return rawTurn;
+    }
+
+
+
+    public double getApproxV() {
+        return 
+            (DriveConstants.WHEEL_DIAMETER_INCHES / 2) * 
+            (rightMotors[0].getSelectedSensorVelocity() + leftMotors[0].getSelectedSensorVelocity()) / 2.0;
+    }
+
+    public double getApproxOmega() {
+        return
+            (DriveConstants.WHEEL_DIAMETER_INCHES / 2) * 
+            (rightMotors[0].getSelectedSensorVelocity() - leftMotors[0].getSelectedSensorVelocity()) / (DriveConstants.WHEEL_TRACK_INCHES / 2.0);
     }
 }
