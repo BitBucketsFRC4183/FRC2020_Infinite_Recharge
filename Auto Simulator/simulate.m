@@ -3,9 +3,7 @@ physicsConstants;
 state = [
     0; % x
     0; % y
-    0; % v
     pi/2; % heading, theta
-    0; % omega of robot
     0; % omega of left front
     0; % omega of left back
     0; % omega of right front
@@ -14,7 +12,7 @@ state = [
 
 
 
-u = [1, 1, 1, 1]';
+u = [-6, -6, 10, 10]';
 T=0.05;
 
 i = 0;
@@ -23,13 +21,13 @@ ys = zeros(1, 15/T + 1);
 
 ws = zeros(4, 15/T + 1);
 
-for t=0:T:15
+for t=0:T:(2*T);
     i = i + 1;
     
     xs(i) = state(X);
     ys(i) = state(Y);
     
-    ws(1:4, i) = state(6:9);
+    ws(1:4, i) = state(OMEGA_LT:OMEGA_RB);
     
     Ac = getSysMatPhysics(state);
     Bc = getInpMatPhysics(state);
