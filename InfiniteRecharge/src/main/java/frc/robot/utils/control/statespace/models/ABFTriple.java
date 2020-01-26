@@ -1,0 +1,29 @@
+package frc.robot.utils.control.statespace.models;
+
+import org.ejml.simple.SimpleMatrix;
+
+public class ABFTriple {
+    private SimpleMatrix A;
+    private SimpleMatrix B;
+    private SimpleMatrix F;
+
+
+
+    public ABFTriple(SimpleMatrix A, SimpleMatrix B, SimpleMatrix F) {
+        this.A = A;
+        this.B = B;
+        this.F = F;
+    }
+
+
+
+    public SimpleMatrix getA() { return A; }
+    public SimpleMatrix getB() { return B; }
+    public SimpleMatrix getF() { return F; }
+
+
+
+    public ABCouple getCouple() {
+        return new ABCouple(A, B);
+    }
+}
