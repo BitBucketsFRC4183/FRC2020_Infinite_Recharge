@@ -55,6 +55,13 @@ defaults:
   juniorGearing: "{{ 242.0/27.0 }}"
   azimuthGearing: "{{ 30.0/1.0 }}"
 hideFollowers: true
+driveBase:
+  mass: 39.3051396
+  radius: 0.3145536
+  wheelRadius: 0.07762
+  robotInertia: 2.1621037
+  wheelInertia: 1.0E-4
+  viscousFriction: 0.04666464678901319
 transmissions:
 - motors:
   - id: "{{ defaults.ids.azimuth }}"
@@ -79,6 +86,8 @@ transmissions:
     maxRPM: "{{ defaults.bag.maxRPM }}"
     mass: "{{ defaults.bag.mass }}"
     diameter: "{{ defaults.bag.diameter }}"
+    leftDrive: true
+    encoderCountsPerRevolution: 2048
   gearRatio: "{{ defaults.juniorGearing }}"
   efficiency: 1.0
 - motors:
@@ -91,6 +100,8 @@ transmissions:
     maxRPM: "{{ defaults.bag.maxRPM }}"
     mass: "{{ defaults.bag.mass }}"
     diameter: "{{ defaults.bag.diameter }}"
+    leftDrive: true
+    encoderCountsPerRevolution: 2048
   gearRatio: "{{ defaults.juniorGearing }}"
   efficiency: 1.0
 - motors:
@@ -103,6 +114,8 @@ transmissions:
     maxRPM: "{{ defaults.bag.maxRPM }}"
     mass: "{{ defaults.bag.mass }}"
     diameter: "{{ defaults.bag.diameter }}"
+    rightDrive: true
+    encoderCountsPerRevolution: 2048
   gearRatio: "{{ defaults.juniorGearing }}"
   efficiency: 1.0
 - motors:
@@ -115,6 +128,7 @@ transmissions:
     maxRPM: "{{ defaults.bag.maxRPM }}"
     mass: "{{ defaults.bag.mass }}"
     diameter: "{{ defaults.bag.diameter }}"
+    rightDrive: true
   gearRatio: "{{ defaults.juniorGearing }}"
   efficiency: 1.0
 - motors:
