@@ -6,14 +6,23 @@ import frc.robot.utils.control.pidf.PIDF;
 
 public class JuniorConfiguration extends Config {
 
+    // either for driving or shooting
+    private boolean forDriving = true;
+
     // Drive
-    public int LEFT_DRIVE_IDS[] = {1, 4};
-    public int RIGHT_DRIVE_IDS[] = {2, 3};
+    public int LEFT_DRIVE_IDS[] =
+        (forDriving) ? (new int[]{1, 4})
+        :              (new int[]{5, 8});
+        
+        
+    public int RIGHT_DRIVE_IDS[] =
+        (forDriving) ? (new int[]{2, 3})
+        :              (new int[]{6, 7});
 
     // Shooter
     public int AZIMUTH_MOTOR_ID = 5;
-    public int SHOOTER_MOTOR_ID = 6;
-    public int FEEDER_MOTOR_ID = 7;
+    public int SHOOTER_MOTOR_ID = (forDriving) ? 6 : 13;
+    public int FEEDER_MOTOR_ID = (forDriving) ? 7 : 2;
     
     // Intake
     public int INTAKE_MOTOR_ID = 8;

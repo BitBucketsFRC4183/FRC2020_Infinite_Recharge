@@ -30,6 +30,10 @@ public class Config {
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
         public MotorConfig shooter = new MotorConfig();
+
+        public ShooterConfig() {
+            shooter.encoderType = MotorConfig.EncoderType.Integrated;
+        }
     }
 
     public static class IntakeConfig {
