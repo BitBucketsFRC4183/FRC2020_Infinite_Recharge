@@ -21,27 +21,27 @@ public abstract class CLinearizedModel extends LinearizedModel {
 
 
     @Override
-    protected SimpleMatrix updateA(SimpleMatrix stateVector, SimpleMatrix inputVector, double t) { return null; }
+    protected SimpleMatrix updateA(SimpleMatrix stateVector, double t, int k) { return null; }
 
     @Override
-    protected SimpleMatrix updateB(SimpleMatrix stateVector, SimpleMatrix inputVector, double t) { return null; }
+    protected SimpleMatrix updateB(SimpleMatrix stateVector, double t, int k) { return null; }
 
     @Override
-    protected SimpleMatrix updateF(SimpleMatrix stateVector, SimpleMatrix inputVector, double t) { return null; }
+    protected SimpleMatrix updateF(SimpleMatrix stateVector, double t, int k) { return null; }
     
 
 
-    public abstract SimpleMatrix updateAc(SimpleMatrix stateVector, SimpleMatrix inputVector, double t);
-    public abstract SimpleMatrix updateBc(SimpleMatrix stateVector, SimpleMatrix inputVector, double t);
-    public abstract SimpleMatrix updateFc(SimpleMatrix stateVector, SimpleMatrix inputVector, double t);
+    public abstract SimpleMatrix updateAc(SimpleMatrix stateVector, double t, int k);
+    public abstract SimpleMatrix updateBc(SimpleMatrix stateVector, double t, int k);
+    public abstract SimpleMatrix updateFc(SimpleMatrix stateVector, double t, int k);
 
 
 
     @Override
-    public ABFTriple getDiscreteSystem(SimpleMatrix stateVector, SimpleMatrix inputVector, double t) {
-        SimpleMatrix Ac = updateAc(stateVector, inputVector, t);
-        SimpleMatrix Bc = updateBc(stateVector, inputVector, t);
-        SimpleMatrix Fc = updateFc(stateVector, inputVector, t);
+    public ABFTriple getDiscreteSystem(SimpleMatrix stateVector, double t, int k) {
+        SimpleMatrix Ac = updateAc(stateVector, t, k);
+        SimpleMatrix Bc = updateBc(stateVector, t, k);
+        SimpleMatrix Fc = updateFc(stateVector, t, k);
 
         return C2D.c2d(Ac, Bc, Fc, DT);
     }
