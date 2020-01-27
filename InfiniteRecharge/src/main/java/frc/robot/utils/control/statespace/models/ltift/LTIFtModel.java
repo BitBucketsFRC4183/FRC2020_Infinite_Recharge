@@ -27,20 +27,20 @@ public abstract class LTIFtModel extends LinearizedModel {
 
 
     @Override
-    protected SimpleMatrix updateA(SimpleMatrix stateVector, SimpleMatrix inputVector, double t) {
+    protected SimpleMatrix updateA(SimpleMatrix stateVector, double t, int k) {
         return AB.getA();
     }
 
     @Override
-    protected SimpleMatrix updateB(SimpleMatrix stateVector, SimpleMatrix inputVector, double t) {
+    protected SimpleMatrix updateB(SimpleMatrix stateVector, double t, int k) {
         return AB.getB();
     }
 
     // F does have to be provided, but is only time varying
     @Override
-    protected SimpleMatrix updateF(SimpleMatrix stateVector, SimpleMatrix inputVector, double t) {
-        return updateF(t);
+    protected SimpleMatrix updateF(SimpleMatrix stateVector, double t, int k) {
+        return updateF(t, k);
     }
 
-    protected abstract SimpleMatrix updateF(double t);
+    protected abstract SimpleMatrix updateF(double t, int k);
 }
