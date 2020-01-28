@@ -106,7 +106,17 @@ public class DriveSubsystem extends BitBucketSubsystem {
             rightMotors[i].setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 
 											DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
                                             DriveConstants.CONTROLLER_TIMEOUT_MS);
+
+
+
+            leftMotors[0].enableVoltageCompensation(true);
+            leftMotors[0].configVoltageCompSaturation(DriveConstants.MAX_VOLTS);
+
+            rightMotors[0].enableVoltageCompensation(true);
+            rightMotors[0].configVoltageCompSaturation(DriveConstants.MAX_VOLTS);
         }
+
+
 
         leftMotors[0].setSensorPhase(DriveConstants.LEFT_DRIVE_MOTOR_SENSOR_PHASE);
         rightMotors[0].setSensorPhase(DriveConstants.RIGHT_DRIVE_MOTOR_SENSOR_PHASE);

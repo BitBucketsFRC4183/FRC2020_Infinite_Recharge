@@ -10,16 +10,16 @@ public abstract class KalmanFilter {
     private final LinearizedModel MODEL;
 
     private SimpleMatrix P;
-    private SimpleMatrix P_next;
+    private SimpleMatrix P_apriori;
 
-    private SimpleMatrix xhat_next;
+    private SimpleMatrix x_apriori;
 
 
 
     public KalmanFilter(SimpleMatrix P0, LinearizedModel model) {
         MODEL = model;
         this.P = P0;
-        this.P_next = P0;
+        this.P_apriori = P0;
     }
 
 
@@ -29,24 +29,57 @@ public abstract class KalmanFilter {
 
     protected abstract SimpleMatrix getQ(SimpleMatrix state, SimpleMatrix input, double t);
     protected abstract SimpleMatrix getR(SimpleMatrix state, SimpleMatrix input, double t);
+    protected abstract SimpleMatrix getG(SimpleMatrix state, SimpleMatrix input, double t);
 
 
 
-    private SimpleMatrix predict(double dt) {
+    /**
+     * 
+     * @param dt
+     * @return
+     */
+    /*
+     * https://en.wikipedia.org/wiki/Kalman_filter#Predict
+     * https://ocw.mit.edu/courses/mechanical-engineering/2-160-identification-estimation-and-learning-spring-2006/lecture-notes/lecture_6.pdf
+     */
+    public SimpleMatrix predict(double dt) {
         // model already has a state, so predict based on that
-        xhat_next = MODEL.update();
+        x_apriori = MODEL.update();
 
         ABFTriple abf = MODEL.getLastSystem();
-        P_next = abf.getA().mult(P).mult(abf.getA().transpose());
+        P_apriori = 
+            // APA' + Q
+            abf.getA().mult(P).mult(
+                abf.getA().transpose()
+                .plus(getR(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime()))
+            );
 
-        return xhat_next;
+        return x_apriori;
     }
 
-    public SimpleMatrix innovate(SimpleMatrix y) {
-        //SimpleMatrix xap = predict(MODEL.getState(), MODEL.getInput());//, t);
-        //ABFTriple ABF = MODEL.getDiscreteSystem(t);
+    public SimpleMatrix update(SimpleMatrix y) {
+        ABFTriple abf = MODEL.getLastSystem();
 
-        return null;
+        // PA'(APA'+R)^-1
+        SimpleMatrix K = P_apriori.mult(
+            abf.getA().transpose()).mult(
+                abf.getA().mult(P_apriori.mult(abf.getA().transpose()))
+                .plus(getR(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime())
+                .invert()
+            )
+        );
+
+        SimpleMatrix x_posteriori = x_apriori.plus(
+            K.mult(
+                y.minus(
+                    getC(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime())
+                )
+            )
+        );
+
+        MODEL.setState(x_posteriori);
+
+        return x_posteriori;
     }
 
 
