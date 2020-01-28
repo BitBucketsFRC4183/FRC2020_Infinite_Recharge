@@ -33,7 +33,7 @@ public class DriveConstants {
     public static final double MAX_LAT_ACCELERATION_IPSPS = STANDARD_G_FTPSPS * 12.0;
 
     // TODO
-    public static final double WHEEL_TRACK_INCHES = 23.5;
+    public static final double WHEEL_TRACK_INCHES = 12*1.53;
     public static final double WHEEL_DIAMETER_INCHES = 4.0;
     public static final double WHEEL_CIRCUMFERENCE_INCHES = Math.PI*WHEEL_DIAMETER_INCHES;
 
@@ -93,4 +93,25 @@ public class DriveConstants {
     public static final double MAX_LIN_ACCELERATION_IPSPS = 999999999;
 
     public static final double ROTATION_DRIVE_RANGE_DEG = 20;
+
+
+
+    /** for voltage compensation */
+    public static final double MAX_VOLTS = 11.9; // charge your batteries!!!
+
+    public static final double KS_VOLTS = 1.63;
+
+    public static final double KV_VOLT_S_PER_FT = 0.521;
+    // 1/ft * 1ft/12in * 1 rad/radius in
+    public static final double KV_VOLT_S_PER_RAD = KV_VOLT_S_PER_FT / 12 / (WHEEL_DIAMETER_INCHES / 2);
+    // 1V = (1V/VOLTAGE) * VOLTAGE
+    // 1V = (1V/VOLTAGE) * 1023 voltage increments
+    // 1V * 1023 voltage increments / (battery voltage) volts
+    // S * 10 (100ms) / S
+    // rad * 1 rev/(2pi rad) * EPR ticks/rev
+    public static final double KV_100MS_PER_TICK /* WHY */ = KV_VOLT_S_PER_RAD * 10 / (2 * Math.PI) / DRIVE_MOTOR_NATIVE_TICKS_PER_REV / MAX_VOLTS;
+
+    public static final double KP_VOLT_S_PER_FT = 0.00332;
+    public static final double KP_VOLT_S_PER_RAD = KP_VOLT_S_PER_FT / 12 / (WHEEL_DIAMETER_INCHES / 2);
+    public static final double KP_100MS_PER_TICK_PERCENT /* WHY */ = KP_VOLT_S_PER_RAD * 10 / (2 * Math.PI) / DRIVE_MOTOR_NATIVE_TICKS_PER_REV / MAX_VOLTS;
 }
