@@ -41,7 +41,7 @@ public abstract class CLTIFtModel extends LTIFtModel {
 
     
     @Override
-    protected SimpleMatrix updateF(double t) {
+    protected SimpleMatrix updateF(double t, int k) {
         return GAMMA.mult(updateFc(t));
     }
 
