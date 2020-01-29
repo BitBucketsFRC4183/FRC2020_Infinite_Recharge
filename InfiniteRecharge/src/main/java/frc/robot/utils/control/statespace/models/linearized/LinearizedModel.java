@@ -1,9 +1,9 @@
 package frc.robot.utils.control.statespace.models.linearized;
 
-
-
 import frc.robot.utils.control.statespace.models.StateSpaceModel;
 import frc.robot.utils.control.statespace.models.ABFTriple;
+
+import java.io.IOException;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -60,14 +60,14 @@ public abstract class LinearizedModel extends StateSpaceModel {
         input = new SimpleMatrix(NUM_INPUTS, 1);
 
         // default to this so methods have something
-        t0 = Timer.getFPGATimestamp();
+        t0 = getTotalTime();
         k = 0;
     }
 
 
 
     public void resetTimer() {
-        t0 = Timer.getFPGATimestamp();
+        t0 = getTotalTime();
         lastTime = 0;
         k = 0;
     }
@@ -76,8 +76,19 @@ public abstract class LinearizedModel extends StateSpaceModel {
         return k;
     }
 
+    private double getTotalTime() {
+        return System.nanoTime() * 1000000;
+        //return System.currentTimeMillis() / 1000.0;
+        //return Timer.getFPGATimestamp();
+        /*try {
+            return Timer.getFPGATimestamp();
+        } finally {
+            return System.currentTimeMillis() / 1000;
+        }*/
+    }
+
     public double getTime() {
-        return Timer.getFPGATimestamp() - t0;
+        return getTotalTime() - t0;
     }
 
     public double getLastTime() {

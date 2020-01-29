@@ -43,4 +43,18 @@ public abstract class LTIFtModel extends LinearizedModel {
     }
 
     protected abstract SimpleMatrix updateF(double t, int k);
+
+
+
+    public ABCouple getABCouple() {
+        return AB;
+    }
+
+    public SimpleMatrix getA() {
+        return AB.getA();
+    }
+
+    public SimpleMatrix getB() {
+        return AB.getB();
+    }
 }
