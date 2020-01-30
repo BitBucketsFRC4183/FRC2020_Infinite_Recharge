@@ -164,19 +164,19 @@ public class ModelTester {
             //System.out.println(dt + "ms");
 
             window.add(dt);
-            try {
-                if (20 > dt) {
-                    Thread.sleep(20 - (long) dt);
-                }
+            // try {
+            //     if (20 > dt) {
+            //         Thread.sleep(20 - (long) dt);
+            //     }
                 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            // } catch (InterruptedException e) {
+            //     e.printStackTrace();
+            // }
         }
 
         System.out.println("Average calculation time: " + window.getAverage() + "ms");
         double var = window.getVariance();
         System.out.println("Calculation time variance: " + var + "ms^2");
-        System.out.println("Calculation time standard deviation: " + Math.sqrt(var) + "ms");
+        System.out.println("Calculation time deviation: " + Math.sqrt(var) + "ms");
     }
 }
