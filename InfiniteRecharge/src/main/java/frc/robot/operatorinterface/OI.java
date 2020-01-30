@@ -45,9 +45,10 @@ public class OI {
 	private final int DRIVE_INVERT_BUTTON = PS4Constants.L1.getValue();
 	private final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
 	private final int DRIVE_LOCK_BUTTON = PS4Constants.OPTIONS.getValue();
-	private final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
+    private final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
 	private final int INTAKE_IN_POV = 0;
-	private final int INTAKE_OUT_POV = 180; 
+    private final int INTAKE_OUT_POV = 180; 
+    private final int INTAKE_TOGGLE = PS4Constants.PS4.getValue();
 
 	// forced Idle for corresponding subsystems
 	private final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
@@ -62,7 +63,10 @@ public class OI {
 	}
 	public boolean outaking(){
 		return operatorControl.getPOV() == INTAKE_OUT_POV;
-	}
+    }
+    public boolean barDownButtonPressed(){
+        return operatorControl.getRawButtonPressed(INTAKE_TOGGLE);
+    }
 
 	/**
 	 * invertDrive - a private function used by speed() to invert the speed joystick

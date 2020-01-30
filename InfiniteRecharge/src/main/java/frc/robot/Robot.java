@@ -124,6 +124,8 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Intake Subsystem
 
+        
+
         // Intake on pressing circle.
         if (oi.intaking()) {
             intakeSubsystem.intake();
