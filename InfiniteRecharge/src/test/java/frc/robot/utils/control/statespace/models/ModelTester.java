@@ -6,14 +6,14 @@ import org.ejml.data.DMatrixRMaj;
 import org.ejml.simple.SimpleMatrix;
 import org.junit.Test;
 
+import frc.robot.subsystem.navigation.RobotSystem;
 import frc.robot.utils.control.statespace.models.motor.MotorPosition;
 import frc.robot.utils.control.statespace.models.motor.MotorVelocity;
 import frc.robot.utils.control.statespace.models.motors.MotorType;
+import frc.robot.utils.data.DoubleDataWindow;
 
 public class ModelTester {
     private static final double TOLERANCE = 0.000001;
-
-
 
     @Test
     public void c2d() {
@@ -25,39 +25,19 @@ public class ModelTester {
 
         double dt = 0.2;
 
-        SimpleMatrix A = new SimpleMatrix(new double[][] {
-            new double[] {0, 1},
-            new double[] {0, 0}
-        });
+        SimpleMatrix A = new SimpleMatrix(new double[][] { new double[] { 0, 1 }, new double[] { 0, 0 } });
 
-        SimpleMatrix B = new SimpleMatrix(new double[][] {
-            new double[] {0},
-            new double[] {1/m}
-        });
+        SimpleMatrix B = new SimpleMatrix(new double[][] { new double[] { 0 }, new double[] { 1 / m } });
 
-        SimpleMatrix F = new SimpleMatrix(new double[][] {
-            new double[] {0},
-            new double[] {Ff/m}
-        });
+        SimpleMatrix F = new SimpleMatrix(new double[][] { new double[] { 0 }, new double[] { Ff / m } });
 
-        
+        SimpleMatrix Ad = new SimpleMatrix(new double[][] { new double[] { 1, dt }, new double[] { 0, 1 } });
 
-        SimpleMatrix Ad = new SimpleMatrix(new double[][] {
-            new double[] {1, dt},
-            new double[] {0, 1}
-        });
+        SimpleMatrix Bd = new SimpleMatrix(
+                new double[][] { new double[] { 1 / (2 * m) * dt * dt }, new double[] { 1 / m * dt } });
 
-        SimpleMatrix Bd = new SimpleMatrix(new double[][] {
-            new double[] {1/(2*m) * dt * dt},
-            new double[] {1/m * dt}
-        });
-
-        SimpleMatrix Fd = new SimpleMatrix(new double[][] {
-            new double[] {1/(2*m) * dt * dt * Ff},
-            new double[] {1/m * dt * Ff}
-        });
-
-
+        SimpleMatrix Fd = new SimpleMatrix(
+                new double[][] { new double[] { 1 / (2 * m) * dt * dt * Ff }, new double[] { 1 / m * dt * Ff } });
 
         ABFTriple abf = new ABFTriple(A, B, F);
         double t0 = System.currentTimeMillis();
@@ -84,11 +64,9 @@ public class ModelTester {
         assertTrue("F wasn't discretized correctly", abf.getF().isIdentical(Fd, TOLERANCE));
     }
 
-
-
     @Test
     public void motorPosition() {
-        double t0 = System.currentTimeMillis();
+        double t0 = System.nanoTime();
 
         MotorType type = MotorType.Falcon500;
         double I = 2;
@@ -98,60 +76,48 @@ public class ModelTester {
         double Kt = type.getKT().getValue();
         double R = type.getR().getValue();
 
-        double A = -(b/I + Kw * Kt / (R * I));
+        double A = -(b / I + Kw * Kt / (R * I));
         double B = Kt / (I * R);
 
-
-
         double dt = 0.02;
-        double t1 = System.currentTimeMillis();
+        double t1 = System.nanoTime();
 
+        /*
+         * SimpleMatrix Ac = new SimpleMatrix(new double[][] { new double[] {0, 1}, new
+         * double[] {0, A} });
+         * 
+         * SimpleMatrix Bc = new SimpleMatrix(new double[][] { new double[] {0}, new
+         * double[] {B} });
+         */
 
+        DMatrixRMaj Ad, Bd;
 
-        
+        double t2 = System.nanoTime();
 
-        /*SimpleMatrix Ac = new SimpleMatrix(new double[][] {
-            new double[] {0, 1},
-            new double[] {0, A}
-        });
-
-        SimpleMatrix Bc = new SimpleMatrix(new double[][] {
-            new double[] {0},
-            new double[] {B}
-        });*/
-
-        double t2 = System.currentTimeMillis();
-
-        DMatrixRMaj Ad = new DMatrixRMaj(2, 2, true, new double[] {1, (Math.exp(dt * A) - 1) / A, 0, Math.exp(dt * A)});
-        //new double[][] {
-        //     new double[] {1, (Math.exp(dt * A) - 1) / A},
-        //     new double[] {0, Math.exp(dt * A)}
+        Ad = new DMatrixRMaj(2, 2, true, new double[] { 1, (Math.exp(dt * A) - 1) / A, 0, Math.exp(dt * A) });
+        // new double[][] {
+        // new double[] {1, (Math.exp(dt * A) - 1) / A},
+        // new double[] {0, Math.exp(dt * A)}
         // });
 
-        DMatrixRMaj Bd = new DMatrixRMaj(2, 1, true, new double[] {((Math.exp(A * dt) - 1) /(A*A) - dt/A) * B, (Math.exp(A * dt) - 1) / A * B});
-        //});
+        Bd = new DMatrixRMaj(2, 1, true,
+                new double[] { ((Math.exp(A * dt) - 1) / (A * A) - dt / A) * B, (Math.exp(A * dt) - 1) / A * B });
+        // });
 
-        double t3 = System.currentTimeMillis();
+        double t3 = System.nanoTime();
 
-        
-        System.out.println("Setup time: " + (t1 - t0) + "ms");
-        System.out.println("Continuous system creation time: " + (t2 - t1) + "ms");
-        System.out.println("Discrete system creation time: " + (t3 - t2) + "ms");
-        System.out.println("Total time: " + (t3 - t0) + "ms");
-
-
+        System.out.println("Setup time: " + (t1 - t0) / 1000000.0 + "ms");
+        System.out.println("Continuous system creation time: " + (t2 - t1) / 1000000.0 + "ms");
+        System.out.println("Discrete system creation time: " + (t3 - t2) / 1000000.0 + "ms");
+        System.out.println("Total time: " + (t3 - t0) / 1000000.0 + "ms");
 
         MotorPosition model = new MotorPosition(dt, type, I);
 
-        //assertTrue(Ac.isIdentical(MotorPosition.getA(type, I), TOLERANCE));
-        //assertTrue(Bc.isIdentical(MotorPosition.getB(type, I), TOLERANCE));
-        //assertTrue(Ad.isIdentical(model.getA(), TOLERANCE));
-        //assertTrue(Bd.isIdentical(model.getB(), TOLERANCE));
+        // assertTrue(Ac.isIdentical(MotorPosition.getA(type, I), TOLERANCE));
+        // assertTrue(Bc.isIdentical(MotorPosition.getB(type, I), TOLERANCE));
+        // assertTrue(Ad.isIdentical(model.getA(), TOLERANCE));
+        // assertTrue(Bd.isIdentical(model.getB(), TOLERANCE));
     }
-
-
-
-
 
     @Test
     public void motorVelocity() {
@@ -163,38 +129,54 @@ public class ModelTester {
         double Kt = type.getKT().getValue();
         double R = type.getR().getValue();
 
-        double A = -(b/I + Kw * Kt / (R * I));
+        double A = -(b / I + Kw * Kt / (R * I));
         double B = Kt / (I * R);
-
-
 
         double dt = 0.02;
 
-
-
         MotorVelocity model = new MotorVelocity(dt, type, I);
 
-        SimpleMatrix Ac = new SimpleMatrix(new double[][] {
-            new double[] {A}
-        });
+        SimpleMatrix Ac = new SimpleMatrix(new double[][] { new double[] { A } });
         assertTrue(Ac.isIdentical(MotorVelocity.getA(type, I), TOLERANCE));
 
-        SimpleMatrix Bc = new SimpleMatrix(new double[][] {
-            new double[] {B}
-        });
+        SimpleMatrix Bc = new SimpleMatrix(new double[][] { new double[] { B } });
         assertTrue(Bc.isIdentical(MotorVelocity.getB(type, I), TOLERANCE));
 
-        
+        SimpleMatrix Ad = new SimpleMatrix(new double[][] { new double[] { Math.exp(dt * A) } });
 
-        SimpleMatrix Ad = new SimpleMatrix(new double[][] {
-            new double[] {Math.exp(dt * A)}
-        });
-
-        SimpleMatrix Bd = new SimpleMatrix(new double[][] {
-            new double[] {(Math.exp(A * dt) - 1) / A * B}
-        });
+        SimpleMatrix Bd = new SimpleMatrix(new double[][] { new double[] { (Math.exp(A * dt) - 1) / A * B } });
 
         assertTrue(Ad.isIdentical(model.getA(), TOLERANCE));
         assertTrue(Bd.isIdentical(model.getB(), TOLERANCE));
+    }
+
+    @Test
+    public void robotSystem() {
+        RobotSystem sys = new RobotSystem();
+
+        DoubleDataWindow window = new DoubleDataWindow(50);
+
+        for (int i = 0; i < 50*15; i++) {
+            double t0 = System.nanoTime();
+            sys.getModel();
+            double t1 = System.nanoTime();
+            double dt = (t1 - t0) / 1000000;
+            //System.out.println(dt + "ms");
+
+            window.add(dt);
+            try {
+                if (20 > dt) {
+                    Thread.sleep(20 - (long) dt);
+                }
+                
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Average calculation time: " + window.getAverage() + "ms");
+        double var = window.getVariance();
+        System.out.println("Calculation time variance: " + var + "ms^2");
+        System.out.println("Calculation time standard deviation: " + Math.sqrt(var) + "ms");
     }
 }

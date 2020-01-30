@@ -20,4 +20,8 @@ public class LTIFModel extends LTIFtModel {
     protected SimpleMatrix updateF(double t, int k) {
         return F;
     }
+
+    public SimpleMatrix getF() {
+        return F;
+    }
 }

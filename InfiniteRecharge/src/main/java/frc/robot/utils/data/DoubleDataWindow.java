@@ -15,7 +15,10 @@ public class DoubleDataWindow extends DataWindow<Double> {
 
     @Override
     public void add(Double elm) {
-        sum -= data.get(next);
+        if (isFilled()) {
+            sum -= data.get(next);
+        }
+
         sum += elm;
 
         super.add(elm);
