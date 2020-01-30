@@ -87,6 +87,7 @@ public class RobotMap {
 			)
 		);
 
+
     public static final double DRIVESTRAIGHT_MIN_DRIVE = 0;
     public static final double TURNBY_MIN_DRIVE = 0;
 
@@ -103,4 +104,8 @@ public class RobotMap {
     public static final double MINIMUM_MOTOR_CURR = 1.25; 
     public static final double MOTOR_TEST_PERCENT = 0.5;
     public static final double TIMEOUT_GAME_INFO_SEC = 5;
+
+	public static final int INTAKE_PNEUMATIC_OPEN_CHANNEL = 0;
+
+	public static final int INTAKE_PNEUMATIC_CLOSED_CHANNEL = 1; 
 }
