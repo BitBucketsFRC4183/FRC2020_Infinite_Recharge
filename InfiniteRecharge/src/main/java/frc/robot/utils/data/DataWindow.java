@@ -42,7 +42,12 @@ public class DataWindow<T> {
             numFilled++;
         }
         
-        data.set(next, elm);
+        if (isFilled()) {
+            data.set(next, elm);
+        } else {
+            data.add(elm);
+        }
+        
         next++;
 
         if (next == LENGTH) {
