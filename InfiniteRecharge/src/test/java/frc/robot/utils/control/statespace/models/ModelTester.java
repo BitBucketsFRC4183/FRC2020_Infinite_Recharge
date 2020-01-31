@@ -156,7 +156,7 @@ public class ModelTester {
 
         DoubleDataWindow window = new DoubleDataWindow(50);
 
-        for (int i = 0; i < 50*15; i++) {
+        for (int i = 0; i < 1; i++) {
             double t0 = System.nanoTime();
             sys.getModel();
             double t1 = System.nanoTime();
@@ -164,18 +164,18 @@ public class ModelTester {
             //System.out.println(dt + "ms");
 
             window.add(dt);
-            try {
-                if (20 > dt) {
-                    Thread.sleep(20 - (long) dt);
-                }
+            // try {
+            //     if (20 > dt) {
+            //         Thread.sleep(20 - (long) dt);
+            //     }
                 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            // } catch (InterruptedException e) {
+            //     e.printStackTrace();
+            // }
         }
 
         System.out.println("Average calculation time: " + window.getAverage() + "ms");
-        double var = window.getVariance();
+        double var = window.getVariance2();
         System.out.println("Calculation time variance: " + var + "ms^2");
         System.out.println("Calculation time standard deviation: " + Math.sqrt(var) + "ms");
     }
