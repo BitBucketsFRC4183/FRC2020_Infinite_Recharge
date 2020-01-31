@@ -8,14 +8,14 @@ public class Config {
     // Motor IDs
 
     // Shooter
-    public int AZIMUTH_MOTOR_ID = 1;
+    public int AZIMUTH_MOTOR_ID = 12;
     public int SHOOTER_MOTOR_ID = 13;
     public int FEEDER_MOTOR_ID = 8;
     public int INTAKE_MOTOR_ID = 14;
 
     // Drive
-    public int LEFT_DRIVE_IDS[] = { 15, 2 };
-    public int RIGHT_DRIVE_IDS[] = { 3, 4 };
+    public int LEFT_DRIVE_IDS[] = { 1, 4 };
+    public int RIGHT_DRIVE_IDS[] = { 2, 3 };
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
@@ -55,7 +55,7 @@ public class Config {
         public boolean leftInverted = true;
         public boolean rightInverted = false;
 
-        public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Quadrature;
+        public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Integrated;
 
         public DriveConfig() {
         }
@@ -130,10 +130,10 @@ public class Config {
         drive.initMotorConfigArrays();
 
         drive.leftLeader.velocityPIDF = new PIDF(//
-                0.1, // P
-                0.1, // I
-                0.1, // D
-                0.1 /// F
+                0.1 * 1023 / 1000 / 4, // P
+                0.0, // I
+                0.1 * 1023 / 1000 / 4 * 10, // D
+                1023 / 21740f /// F
         );
         drive.leftLeader.positionPIDF = new PIDF(//
                 0, // P
@@ -142,10 +142,10 @@ public class Config {
                 0 /// F
         );
         drive.rightLeader.velocityPIDF = new PIDF(//
-                0.1, // P
-                0.1, // I
-                0.1, // D
-                0.1 /// F
+                0.1 * 1023 / 1000 / 4, // P
+                0.0, // I
+                0.1 * 1023 / 1000 / 4 * 10, // D
+                1023 / 21340f /// F
         );
         drive.rightLeader.positionPIDF = new PIDF(//
                 0, // P
