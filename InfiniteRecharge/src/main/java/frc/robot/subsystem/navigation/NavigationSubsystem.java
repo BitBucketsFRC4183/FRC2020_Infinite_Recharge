@@ -94,8 +94,8 @@ public class NavigationSubsystem extends BitBucketSubsystem {
             SmartDashboard.putNumber(getName() + "/Robot raw X gyro", gyro);
             SmartDashboard.putNumber(getName() + "/Robot accel", acc);
 
-            double accVar = imuAcc.getVariance();
-            double gyroVar = imuGyro.getVariance();
+            double accVar = imuAcc.getVariance2();
+            double gyroVar = imuGyro.getVariance2();
 
             SmartDashboard.putNumber(getName() + "/Aceleration variance", accVar);
             SmartDashboard.putNumber(getName() + "/Gyro variance",        gyroVar);
