@@ -175,8 +175,8 @@ public class ModelTester {
         }
 
         System.out.println("Average calculation time: " + window.getAverage() + "ms");
-        double var = window.getVariance();
+        double var = window.getVariance2();
         System.out.println("Calculation time variance: " + var + "ms^2");
-        System.out.println("Calculation time deviation: " + Math.sqrt(var) + "ms");
+        System.out.println("Calculation time standard deviation: " + Math.sqrt(var) + "ms");
     }
 }
