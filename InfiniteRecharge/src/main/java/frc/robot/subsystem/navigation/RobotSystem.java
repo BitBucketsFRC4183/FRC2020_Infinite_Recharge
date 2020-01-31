@@ -42,9 +42,11 @@ public class RobotSystem {
         double Cv = -(Kw * Kt * G * G * e / (R * R_W * R_W) + b * G * G * e / (R_W * R_W));
         double CV = G * e * Kt / (R * R_W);
 
-        double theta0 = 0;//2*Math.PI * Math.random();
-        double v0 = 0;//15*(2 * Math.random() - 1);
+        double theta0 = 0.01;//2*Math.PI * Math.random();
+        double v0 = 0.01;//15*(2 * Math.random() - 1);
 
+        // x' = (vl + vr)/2 cos theta
+        // x' = 1/2 cos theta vl + 1/2 cos theta vr / 2 - (vl + vr)/2 sin theta * theta + (vl+vr)/2 sin theta * theta0
         SimpleMatrix Ac = new SimpleMatrix(new double[][] {
             new double[] {0, 0, -v0 * Math.sin(theta0), Math.cos(theta0) / 2, Math.cos(theta0) / 2},
             new double[] {0, 0, v0 * Math.cos(theta0), Math.sin(theta0) / 2, Math.sin(theta0) / 2},
@@ -61,8 +63,6 @@ public class RobotSystem {
             new double[] {bM*CV, aM*CV}
         });
 
-        System.out.println(Bc);
-
         SimpleMatrix Fc = new SimpleMatrix(new double[][] {
             new double[] {v0 * theta0 * Math.sin(theta0)},
             new double[] {-v0 * theta0 * Math.cos(theta0)},
@@ -74,6 +74,8 @@ public class RobotSystem {
         //System.out.println("RobotSystem continuous matrix time: " + (t2 - t1) / 1000000 + "ms");
 
         model = new CLTIFModel(Ac, Bc, Fc, 0.02);
+
+        System.out.println(model.getA());
 
         return model;
     }
