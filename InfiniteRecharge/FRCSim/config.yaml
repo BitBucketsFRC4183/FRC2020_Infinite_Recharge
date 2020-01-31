@@ -3,13 +3,13 @@ defaults:
     ####
     # main ids
     ####
-     azimuth: 1
+     leftDriveLeader: 1
+     leftDriveFollower: 4
+     rightDriveLeader: 2
+     rightDriveFollower: 3
+     azimuth: 12
      shooter: 13
      feeder: 8
-     leftDriveLeader: 15
-     leftDriveFollower: 2
-     rightDriveLeader: 3
-     rightDriveFollower: 4
      intake: 14
 
     ####
@@ -53,6 +53,7 @@ defaults:
     diameter: .0423
   shooterGearing: "{{ .48 / 1 }}"
   juniorGearing: "{{ 242.0/27.0 }}"
+  driveMotorsToWheelsGearRatio: "{{ 10.888 }}"
   azimuthGearing: "{{ 30.0/1.0 }}"
 hideFollowers: true
 driveBase:
@@ -79,57 +80,57 @@ transmissions:
 - motors:
   - id: "{{ defaults.ids.leftDriveLeader }}"
     name: Drive Left ({{ defaults.ids.leftDriveLeader }})
-    model: BAG
-    stallTorque: "{{ defaults.bag.stallTorque }}"
-    stallCurrent: "{{ defaults.bag.stallCurrent }}"
-    voltage: "{{ defaults.bag.voltage }}"
-    maxRPM: "{{ defaults.bag.maxRPM }}"
-    mass: "{{ defaults.bag.mass }}"
-    diameter: "{{ defaults.bag.diameter }}"
+    model: Falcon
+    stallTorque: "{{ defaults.falcon.stallTorque }}"
+    stallCurrent: "{{ defaults.falcon.stallCurrent }}"
+    voltage: "{{ defaults.falcon.voltage }}"
+    maxRPM: "{{ defaults.falcon.maxRPM }}"
+    mass: "{{ defaults.falcon.mass }}"
+    diameter: "{{ defaults.falcon.diameter }}"
     leftDrive: true
     encoderCountsPerRevolution: 2048
-  gearRatio: "{{ defaults.juniorGearing }}"
+  gearRatio: "{{ defaults.driveMotorsToWheelsGearRatio }}"
   efficiency: 1.0
 - motors:
   - id: "{{ defaults.ids.leftDriveFollower }}"
     name: Drive Left Follower ({{ defaults.ids.leftDriveFollower }})
-    model: BAG
-    stallTorque: "{{ defaults.bag.stallTorque }}"
-    stallCurrent: "{{ defaults.bag.stallCurrent }}"
-    voltage: "{{ defaults.bag.voltage }}"
-    maxRPM: "{{ defaults.bag.maxRPM }}"
-    mass: "{{ defaults.bag.mass }}"
-    diameter: "{{ defaults.bag.diameter }}"
+    model: Falcon
+    stallTorque: "{{ defaults.falcon.stallTorque }}"
+    stallCurrent: "{{ defaults.falcon.stallCurrent }}"
+    voltage: "{{ defaults.falcon.voltage }}"
+    maxRPM: "{{ defaults.falcon.maxRPM }}"
+    mass: "{{ defaults.falcon.mass }}"
+    diameter: "{{ defaults.falcon.diameter }}"
     leftDrive: true
     encoderCountsPerRevolution: 2048
-  gearRatio: "{{ defaults.juniorGearing }}"
+  gearRatio: "{{ defaults.driveMotorsToWheelsGearRatio }}"
   efficiency: 1.0
 - motors:
   - id: "{{ defaults.ids.rightDriveLeader }}"
     name: Drive Right ({{ defaults.ids.rightDriveLeader }})
-    model: BAG
-    stallTorque: "{{ defaults.bag.stallTorque }}"
-    stallCurrent: "{{ defaults.bag.stallCurrent }}"
-    voltage: "{{ defaults.bag.voltage }}"
-    maxRPM: "{{ defaults.bag.maxRPM }}"
-    mass: "{{ defaults.bag.mass }}"
-    diameter: "{{ defaults.bag.diameter }}"
+    model: Falcon
+    stallTorque: "{{ defaults.falcon.stallTorque }}"
+    stallCurrent: "{{ defaults.falcon.stallCurrent }}"
+    voltage: "{{ defaults.falcon.voltage }}"
+    maxRPM: "{{ defaults.falcon.maxRPM }}"
+    mass: "{{ defaults.falcon.mass }}"
+    diameter: "{{ defaults.falcon.diameter }}"
     rightDrive: true
     encoderCountsPerRevolution: 2048
-  gearRatio: "{{ defaults.juniorGearing }}"
+  gearRatio: "{{ defaults.driveMotorsToWheelsGearRatio }}"
   efficiency: 1.0
 - motors:
   - id: "{{ defaults.ids.rightDriveFollower }}"
     name: Drive Right Follower ({{ defaults.ids.rightDriveFollower }})
-    model: BAG
-    stallTorque: "{{ defaults.bag.stallTorque }}"
-    stallCurrent: "{{ defaults.bag.stallCurrent }}"
-    voltage: "{{ defaults.bag.voltage }}"
-    maxRPM: "{{ defaults.bag.maxRPM }}"
-    mass: "{{ defaults.bag.mass }}"
-    diameter: "{{ defaults.bag.diameter }}"
+    model: Falcon
+    stallTorque: "{{ defaults.falcon.stallTorque }}"
+    stallCurrent: "{{ defaults.falcon.stallCurrent }}"
+    voltage: "{{ defaults.falcon.voltage }}"
+    maxRPM: "{{ defaults.falcon.maxRPM }}"
+    mass: "{{ defaults.falcon.mass }}"
+    diameter: "{{ defaults.falcon.diameter }}"
     rightDrive: true
-  gearRatio: "{{ defaults.juniorGearing }}"
+  gearRatio: "{{ defaults.driveMotorsToWheelsGearRatio }}"
   efficiency: 1.0
 - motors:
   - id: "{{ defaults.ids.shooter }}"
