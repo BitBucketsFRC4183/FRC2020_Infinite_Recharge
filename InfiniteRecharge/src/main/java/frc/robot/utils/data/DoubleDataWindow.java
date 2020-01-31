@@ -3,7 +3,8 @@ package frc.robot.utils.data;
 
 
 public class DoubleDataWindow extends DataWindow<Double> {
-    double sum = 0;
+    double sumX = 0;
+    double sumX2 = 0;
 
 
 
@@ -16,10 +17,14 @@ public class DoubleDataWindow extends DataWindow<Double> {
     @Override
     public void add(Double elm) {
         if (isFilled()) {
-            sum -= data.get(next);
+            double x = data.get(next);
+
+            sumX -= x;
+            sumX2 -= x * x;
         }
 
-        sum += elm;
+        sumX += elm;
+        sumX2 += elm * elm;
 
         super.add(elm);
     }
@@ -27,7 +32,7 @@ public class DoubleDataWindow extends DataWindow<Double> {
 
 
     public double getAverage() {
-        return sum / numFilled;
+        return sumX / numFilled;
     }
 
     public double getVariance() {
@@ -40,5 +45,16 @@ public class DoubleDataWindow extends DataWindow<Double> {
         }
 
         return var / numFilled;
+    }
+
+    // unbiased, using Bessel correction
+    public double getVariance2() {
+        if (numFilled <= 1) {
+            return 0;
+        }
+
+        // numerically unstable but we're ignoring that :))
+        // thanks Bessel
+        return (sumX2/numFilled - Math.pow(getAverage(), 2)) * (1 + 1.0/(numFilled - 1));
     }
 }
