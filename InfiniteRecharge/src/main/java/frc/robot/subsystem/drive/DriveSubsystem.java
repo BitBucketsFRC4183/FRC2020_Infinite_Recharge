@@ -2,6 +2,7 @@ package frc.robot.subsystem.drive;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -35,8 +36,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
     // TODO: CHANGE TO FX WHEN WE GET GOOD BOT
-    private WPI_TalonSRX[] leftMotors;
-    private WPI_TalonSRX[] rightMotors;
+    private WPI_TalonFX[] leftMotors;
+    private WPI_TalonFX[] rightMotors;
 
     private final NavigationSubsystem NAVIGATION_SUBSYSTEM;
     private final OI OI;
@@ -92,12 +93,12 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-        leftMotors = new WPI_TalonSRX[config.drive.MOTORS_PER_SIDE];
-        rightMotors = new WPI_TalonSRX[config.drive.MOTORS_PER_SIDE];
+        leftMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
+        rightMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
 
         for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
-            leftMotors[i] = MotorUtils.makeSRX(config.drive.leftMotors[i]);
-            rightMotors[i] = MotorUtils.makeSRX(config.drive.rightMotors[i]);
+            leftMotors[i] = MotorUtils.makeFX(config.drive.leftMotors[i]);
+            rightMotors[i] = MotorUtils.makeFX(config.drive.rightMotors[i]);
 
             leftMotors[i].setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 
 											DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
@@ -165,8 +166,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
         speed = forwardJoystickScaleChooser.getSelected().rescale(speed, DriveConstants.JOYSTICK_DEADBAND);
         turn = turnJoystickScaleChooser.getSelected().rescale(turn, DriveConstants.JOYSTICK_DEADBAND);
 
-        //leftMotors[0].set(ControlMode.PercentOutput, speed + turn);
-        //rightMotors[0].set(ControlMode.PercentOutput, speed - turn);
+        // leftMotors[0].set(ControlMode.PercentOutput, speed + turn);
+        // rightMotors[0].set(ControlMode.PercentOutput, speed - turn);
 		double ips = MathUtils.map(speed,
             -1.0,
             1.0,
@@ -279,10 +280,15 @@ public class DriveSubsystem extends BitBucketSubsystem {
             SmartDashboard.putNumber(getName() + "/leftSpeed_ips", leftSpeed);
             SmartDashboard.putNumber(getName() + "/rightSpeed_ips", rightSpeed);
 
-            SmartDashboard.putNumber(getName() + "/command %", leftMotors[0].getMotorOutputPercent());
+            SmartDashboard.putNumber(getName() + "/left command %", leftMotors[0].getMotorOutputPercent());
             SmartDashboard.putNumber(getName() + "/left vel", leftMotors[0].getSelectedSensorVelocity());
-            SmartDashboard.putNumber(getName() + "/speed error", leftMotors[0].getClosedLoopError());
+            SmartDashboard.putNumber(getName() + "/left speed error", leftMotors[0].getClosedLoopError());
             SmartDashboard.putNumber(getName() + "/left setpoint", leftMotors[0].getClosedLoopTarget());
+
+            SmartDashboard.putNumber(getName() + "/right command %", rightMotors[0].getMotorOutputPercent());
+            SmartDashboard.putNumber(getName() + "/right  vel", rightMotors[0].getSelectedSensorVelocity());
+            SmartDashboard.putNumber(getName() + "/right speed error", rightMotors[0].getClosedLoopError());
+            SmartDashboard.putNumber(getName() + "/right  setpoint", rightMotors[0].getClosedLoopTarget());
 
 
 
