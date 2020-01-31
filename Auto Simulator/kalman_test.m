@@ -14,9 +14,12 @@ e = 1;%0.9;
 C1 = -(Kt*Kw*G*G)/(R*r*r);
 C2 = G*Kt/(R*r);
 
+theta0 = 0.01;
+v0 = 0.01;
+
 Ac = [
-    0, 0, 0, 0, 0;
-    0, 0, 0, 0, 0;
+    0, 0, -v0*sin(theta0), cos(theta0)/2, cos(theta0)/2;
+    0, 0, v0*cos(theta0), sin(theta0)/2, sin(theta0)/2;
     0, 0, 0, -1/(2*rb), 1/(2*rb);
     0, 0, 0, (1/m + rb * rb / J)*C1, (1/m - rb * rb / J)*C1;
     0, 0, 0, (1/m - rb * rb / J)*C1, (1/m + rb * rb / J)*C1;
@@ -29,3 +32,6 @@ Bc = [
     (1/m + rb * rb / J)*C2, (1/m - rb * rb / J)*C2;
     (1/m - rb * rb / J)*C2, (1/m + rb * rb / J)*C2;
 ];
+
+sysc = ss(Ac, Bc, eye(5), zeros(5, 2));
+sysd = c2d(sysc, 0.02);
