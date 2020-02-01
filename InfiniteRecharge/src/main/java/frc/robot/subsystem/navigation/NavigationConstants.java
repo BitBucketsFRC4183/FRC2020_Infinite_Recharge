@@ -11,5 +11,5 @@ package frc.robot.subsystem.navigation;
  * Add your docs here.
  */
 public class NavigationConstants {
-    public static final int IMU_DATA_SIZE = 100;
+    public static final int IMU_DATA_SIZE = 50;
 }

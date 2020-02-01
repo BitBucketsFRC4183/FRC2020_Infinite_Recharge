@@ -4,36 +4,27 @@ V_MAX = 4.8768;
 
 nC = 0;
 nO = 0;
-n = 10000;
+n = 1000;
 
-C = [
-    1, 0, 0;
-    0, 1, 0;
-    0, 0, 1;
-];
+C = eye(5);
 
 for i = 1:n
     x = (2*rand - 1) * W;
     y = (2*rand - 1) * H;
     theta = (2*rand-1)*2*pi;
-    omegaL = (2*rand-1)*V_MAX;
-    omegaR = (2*rand-1)*V_MAX;
+    vl = (2*rand-1)*V_MAX;
+    vr = (2*rand-1)*V_MAX;
     
-    u = [omegaL; omegaL; omegaR; omegaR];
+    state = [x; y; theta; vl; vr;];
     
-    r = sqrt(x^2 + y^2);
-    theta_r = atan2(y, x);
+    Ac = getSysMatPhysics(state);
+    Bc = getInpMatPhysics(state);
     
-    state = [r; theta_r; theta;];
-    
-    Ac = getSysMatControl(state, u);
-    Bc = getInpMatControl(state);
-    
-    if (rank(ctrb(Ac, Bc)) == 3)
+    if (rank(ctrb(Ac, Bc)) == 5)
         nC = nC + 1;
     end
     
-    if (rank(obsv(Ac, C)) == 3)
+    if (rank(obsv(Ac, C)) == 5)
         nO = nO + 1;
     end
 end

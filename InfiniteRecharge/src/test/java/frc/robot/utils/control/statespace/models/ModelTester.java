@@ -156,9 +156,9 @@ public class ModelTester {
 
         DoubleDataWindow window = new DoubleDataWindow(50);
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 51; i++) {
             double t0 = System.nanoTime();
-            sys.getModel();
+            sys.getModel(0.01, 0.02);
             double t1 = System.nanoTime();
             double dt = (t1 - t0) / 1000000;
             //System.out.println(dt + "ms");

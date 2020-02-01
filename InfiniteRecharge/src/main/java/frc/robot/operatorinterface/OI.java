@@ -21,8 +21,6 @@ public class OI {
     private final int OPERATOR_MANUAL_AZIMUTH_AXIS = PS4Constants.RIGHT_STICK_X.getValue();
     private final int OPERATOR_MANUAL_ELEVATION_AXIS = PS4Constants.RIGHT_STICK_Y.getValue();
 
-
-
 	public double speed() {
 		// Default to -1 to make up-stick positive because raw up-stick is negative
 		return (invertDrive() ? 1.0 : -1.0) * driverControl.getRawAxis(DRIVE_SPEED_AXIS);
@@ -49,11 +47,12 @@ public class OI {
 	private final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
 	private final int DRIVE_LOCK_BUTTON = PS4Constants.OPTIONS.getValue();
 	private final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
-	private final int INTAKE_IN_POV = 0;
-    private final int INTAKE_OUT_POV = 180; 
-    private final int OPERATOR_SPINUP = PS4Constants.R2.getValue();
-    private final int OPERATOR_AUTO_AIM = PS4Constants.L1.getValue();
-    private final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
+	private final int INTAKE_IN_POV = 180;
+	private final int INTAKE_OUT_POV = 0;
+	private final int INTAKE_TOGGLE = PS4Constants.PS4.getValue();
+  private final int OPERATOR_SPINUP = PS4Constants.R2.getValue();
+  private final int OPERATOR_AUTO_AIM = PS4Constants.L1.getValue();
+  private final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
 
 	// forced Idle for corresponding subsystems
 	private final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
@@ -86,11 +85,16 @@ public class OI {
 		return driverControl.getRawButton(DRIVE_LOW_SENSITIVE_BUTTON);
 	}
 
-	public boolean intaking(){
+	public boolean intaking() {
 		return operatorControl.getPOV() == INTAKE_IN_POV;
 	}
-	public boolean outaking(){
+
+	public boolean outaking() {
 		return operatorControl.getPOV() == INTAKE_OUT_POV;
+	}
+
+	public boolean barDownButtonPressed() {
+		return operatorControl.getRawButtonPressed(INTAKE_TOGGLE);
 	}
 
 	/**

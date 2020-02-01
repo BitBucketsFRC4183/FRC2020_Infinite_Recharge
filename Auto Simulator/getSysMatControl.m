@@ -1,4 +1,4 @@
-function A = getSysMatControl(state, u)
+function A = getSysMatControl(state)
     controlConstants;
     
     A = zeros(STATE_SIZE, STATE_SIZE);
