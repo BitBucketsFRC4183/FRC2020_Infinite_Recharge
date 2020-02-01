@@ -96,7 +96,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                     MathUtils.unitConverter(SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM", 60), 600,
                             8192) / config.shooter.shooterGearRatio);
             SmartDashboard.putString(getName() + "/Shooter State", "Shooting with velocity control");
-            SmartDashboard.putNumber(getName() + "/Velocity Error");
+            SmartDashboard.putNumber(getName() + "/Velocity Error", ballPropulsionMotor.getClosedLoopError());
 
         } else {
 
