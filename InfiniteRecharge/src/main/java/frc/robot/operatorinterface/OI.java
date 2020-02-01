@@ -5,8 +5,8 @@ import frc.robot.subsystem.drive.DriveConstants;
 
 public class OI {
 
-private final int DRIVER_JOYSTICK_ID = 0;
-private final int OPERATOR_JOYSTICK_ID = 1;
+	private final int DRIVER_JOYSTICK_ID = 0;
+	private final int OPERATOR_JOYSTICK_ID = 1;
 
 	// TODO: Make a get/set function instead of setting to public
 	public final Joystick driverControl = new Joystick(DRIVER_JOYSTICK_ID);
