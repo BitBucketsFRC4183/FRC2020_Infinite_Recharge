@@ -81,6 +81,8 @@ public class Robot extends TimedRobot {
         driveSubsystem.periodic(deltaTime);
         shooterSubsystem.periodic(deltaTime);
         intakeSubsystem.periodic(deltaTime);
+        navigationSubsystem.periodic(deltaTime);
+
         CommandScheduler.getInstance().run();
 
         lastTime = currentTime;

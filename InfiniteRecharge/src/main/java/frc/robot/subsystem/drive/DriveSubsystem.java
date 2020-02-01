@@ -294,6 +294,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
             SmartDashboard.putNumber(getName() + "/Velocity (in/s)", getApproxV());
             SmartDashboard.putNumber(getName() + "/Omega (rad/s)", getApproxOmega());
+
+            SmartDashboard.putNumber(getName() + "/left ticks", leftMotors[0].getSelectedSensorPosition());
+            SmartDashboard.putNumber(getName() + "/right ticks", rightMotors[0].getSelectedSensorPosition());
         }
     }
 

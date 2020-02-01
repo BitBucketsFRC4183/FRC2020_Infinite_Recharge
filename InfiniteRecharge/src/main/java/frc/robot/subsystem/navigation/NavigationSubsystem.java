@@ -24,8 +24,11 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
 
 
-    DoubleDataWindow imuAcc = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
-    DoubleDataWindow imuGyro = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
+    private DoubleDataWindow imuAcc = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
+    private DoubleDataWindow imuGyro = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
+    private DoubleDataWindow dts = new DoubleDataWindow(50);
+
+    private RobotSystem sys;
 
 
     
@@ -45,8 +48,10 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
 	@Override
 	public void initialize() {
-		initializeBaseDashboard();
-		ahrs = BitBucketsAHRS.instance();
+        super.initialize();
+
+        ahrs = BitBucketsAHRS.instance();
+        sys = new RobotSystem();
 	}
 
   	@Override
@@ -81,24 +86,45 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
         double gyro = getGyro();
 
+        
 
-        imuAcc.add(acc);
-        imuGyro.add(gyro);
+
+        //imuAcc.add(acc);
+        //imuGyro.add(gyro);
+
+        double t0 = System.nanoTime();
+        double yaw = ahrs.getYaw();
+
+        double v0 = 0.01;
+
+        sys.getModel(v0, yaw);
+
+        double t1 = System.nanoTime();
+        double dt = (t1 - t0) / 1000000000;
+
+        dts.add(dt);
+        SmartDashboard.putNumber(getName() + "/processing time (ms)", (t1 - t0) / 1000000);
 
 
 
 		if (getTelemetryEnabled()) {
-			SmartDashboard.putNumber(getName() + "/Robot yaw", getYaw_deg());
+			SmartDashboard.putNumber(getName() + "/Robot yaw", ahrs.getYaw());
             SmartDashboard.putNumber(getName() + "/Robot raw X accel", getAccX());
             SmartDashboard.putNumber(getName() + "/Robot world X accel", getWorldAccX());
             SmartDashboard.putNumber(getName() + "/Robot raw X gyro", gyro);
             SmartDashboard.putNumber(getName() + "/Robot accel", acc);
 
-            double accVar = imuAcc.getVariance2();
-            double gyroVar = imuGyro.getVariance2();
+            SmartDashboard.putNumber(getName() + "/processing time avg", dts.getAverage());
+            SmartDashboard.putNumber(getName() + "/processing time var", dts.getVariance2());
 
-            SmartDashboard.putNumber(getName() + "/Aceleration variance", accVar);
-            SmartDashboard.putNumber(getName() + "/Gyro variance",        gyroVar);
+            //double accVar = imuAcc.getVariance2();
+            //double gyroVar = imuGyro.getVariance2();
+
+            //SmartDashboard.putNumber(getName() + "/Acceleration variance", accVar);
+            //SmartDashboard.putNumber(getName() + "/Gyro variance",        gyroVar);
+
+            //SmartDashboard.putNumber(getName() + "/Acceleration avg", imuAcc.getAverage());
+            //SmartDashboard.putNumber(getName() + "/Gyro avg",        imuGyro.getAverage());
         }
         
 		if (getDiagnosticsEnabled()) {
