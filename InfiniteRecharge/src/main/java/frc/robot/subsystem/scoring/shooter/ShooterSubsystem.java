@@ -65,12 +65,13 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void diagnosticsInitialize() {
         SmartDashboard.putNumber(getName() + "/Shooter Output Percent", 0.2);
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", 0.2);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 60);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 500);
         SmartDashboard.putNumber(getName() + "/Feeder Velocity RPM", 60);
         SmartDashboard.putNumber(getName() + "/Turret Turn Rate", config.shooter.defaultTurnVelocityDeg);
     }
 
     @Override
+
     public void diagnosticsPeriodic() {
         // TODO Auto-generated method stub
 
@@ -95,6 +96,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                     MathUtils.unitConverter(SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM", 60), 600,
                             8192) / config.shooter.shooterGearRatio);
             SmartDashboard.putString(getName() + "/Shooter State", "Shooting with velocity control");
+            SmartDashboard.putNumber(getName() + "/Velocity Error");
 
         } else {
 
@@ -103,6 +105,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         }
         SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Output",
+                ballPropulsionMotor.getSelectedSensorVelocity());
 
         //
 
@@ -177,24 +181,27 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void rotateByDeg(double degrees) {
         rotateToDeg(getTargetTurretDegGivenOffset(degrees));
     }
-    
+
     public double getTurretDeg() {
-        double encoderDeg = MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(), config.shooter.azimuth.ticksPerRevolution, 360.0);
+        double encoderDeg = MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(),
+                config.shooter.azimuth.ticksPerRevolution, 360.0);
         double turretDeg = encoderDeg * config.shooter.azimuthGearRatio;
         return turretDeg;
     }
 
     /*
-        Returns target degrees of turret given an offset
-    */
+     * Returns target degrees of turret given an offset
+     */
     public double getTargetTurretDegGivenOffset(double offset) {
         return getTurretDeg() + offset;
     }
 
     public void rotateTurretGivenLLOffset(double offset) {
         double degrees = getTargetTurretDegGivenOffset(offset);
-        // The offset and thus the degrees might change, causing the robot to oscillate about its target. To prevent this, take an average.
-        // If enabled in the constants file, calculate the average of the last values passed in (up to 25, configurable in ShooterConstants.java).
+        // The offset and thus the degrees might change, causing the robot to oscillate
+        // about its target. To prevent this, take an average.
+        // If enabled in the constants file, calculate the average of the last values
+        // passed in (up to 25, configurable in ShooterConstants.java).
         degrees = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
         rotateToDeg(degrees);
     }
