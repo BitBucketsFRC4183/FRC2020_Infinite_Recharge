@@ -98,6 +98,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
         else if (armState == Value.kOff){
             armState = Value.kForward;
         }
+        intakePivet.set(Value.kReverse);
     }
 
 }
