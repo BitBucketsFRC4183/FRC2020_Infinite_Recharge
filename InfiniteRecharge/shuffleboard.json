@@ -72,6 +72,60 @@
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0
             }
+          },
+          "10,3": {
+            "size": [
+              6,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/NavigationSubsystem/Robot yaw",
+              "_title": "SmartDashboard/NavigationSubsystem/Robot yaw"
+            }
+          },
+          "10,6": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/NavigationSubsystem/processing time (ms)",
+              "_title": "SmartDashboard/NavigationSubsystem/processing time (ms)",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/NavigationSubsystem/processing time (ms)": true
+            }
+          },
+          "14,6": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/NavigationSubsystem/processing time avg",
+              "_title": "SmartDashboard/NavigationSubsystem/processing time avg",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/NavigationSubsystem/processing time avg": true
+            }
+          },
+          "6,7": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/NavigationSubsystem/processing time var",
+              "_title": "SmartDashboard/NavigationSubsystem/processing time var"
+            }
           }
         }
       }
@@ -1197,6 +1251,90 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/DriveSubsystem/rightSpeed_ips",
               "_title": "SmartDashboard/DriveSubsystem/rightSpeed_ips"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tab 10",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Feeder Output Percent",
+              "_title": "SmartDashboard/ShooterSubsystem/Feeder Output Percent"
+            }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Feeder Output",
+              "_title": "SmartDashboard/ShooterSubsystem/Feeder Output"
+            }
+          },
+          "3,2": {
+            "size": [
+              5,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Velocity Output",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity Output",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/ShooterSubsystem/Shooter Velocity Output": true
+            }
+          },
+          "5,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Velocity RPM",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity RPM"
+            }
+          },
+          "8,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/TelemetryEnabled",
+              "_title": "SmartDashboard/ShooterSubsystem/TelemetryEnabled"
+            }
+          },
+          "7,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Velocity Error",
+              "_title": "SmartDashboard/ShooterSubsystem/Velocity Error"
             }
           }
         }
