@@ -6,6 +6,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
@@ -26,6 +29,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public boolean feeding = false;
     public boolean feederVelocityControl = false;
     public boolean shooterVelocityControl = false;
+    public boolean validTarget = false;
 
     // Integers
     public int targetPosition;
@@ -33,6 +37,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Floats
     // TODO float rootBeer = good
+
+    // Doubles
+    public double degreesToRotate = 0.0;
 
     // Class Declarations
     RunningAverageFilter filter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
@@ -92,6 +99,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void periodic(float deltaTime) {
+        
+        autoAim();
 
         targetPosition = (int) (targetPosition + (targetChange * deltaTime));
         azimuthMotor.set(ControlMode.MotionMagic, targetPosition);
@@ -100,6 +109,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Output", ballPropulsionMotor.getSelectedSensorVelocity());
+        SmartDashboard.putNumber(getName() + "/Degrees to Rotate", degreesToRotate);
+        SmartDashboard.putNumber(getName() + "/Target Position ", targetPosition);
+        SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
     }
 
     public void spinUp() {
@@ -167,19 +179,40 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     /*
      * Returns target degrees of turret given an offset
-     */
+    */
     public double getTargetTurretDegGivenOffset(double offset) {
         return getTurretDeg() + offset;
     }
 
-    public void rotateTurretGivenLLOffset(double offset) {
-        double degrees = getTargetTurretDegGivenOffset(offset);
-        // The offset and thus the degrees might change, causing the robot to oscillate
-        // about its target. To prevent this, take an average.
-        // If enabled in the constants file, calculate the average of the last values
-        // passed in (up to 25, configurable in ShooterConstants.java).
-        degrees = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
-        rotateToDeg(degrees);
+    public void rotateTurretWithLLOffset() {
+        rotateToDeg(degreesToRotate);
+    }
+
+	public void autoAim() {
+        double defaultVal = 0;
+
+        NetworkTableInstance tableInstance = NetworkTableInstance.getDefault();
+        tableInstance.startClientTeam(4183);
+
+        NetworkTable limelightTable = tableInstance.getTable("limelight");
+        double tx = limelightTable.getEntry("tx").getDouble(defaultVal);
+        double ty = limelightTable.getEntry("ty").getDouble(defaultVal);
+
+        double tv = limelightTable.getEntry("tv").getDouble(defaultVal);
+        if (tv == 1) {
+            validTarget = true;
+        } else {
+            validTarget = false;
+        }
+
+        if (validTarget) {
+            double degrees = getTargetTurretDegGivenOffset(tx);
+            // The offset and thus the degrees might change, causing the robot to oscillate
+            // about its target. To prevent this, take an average.
+            // If enabled in the constants file, calculate the average of the last values
+            // passed in (up to 25, configurable in ShooterConstants.java).
+            degreesToRotate = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
+        }
     }
 
 }

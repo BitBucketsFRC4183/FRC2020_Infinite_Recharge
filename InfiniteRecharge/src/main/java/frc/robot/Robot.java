@@ -165,6 +165,10 @@ public class Robot extends TimedRobot {
         } else {
             shooterSubsystem.rotate(0);
         }
+
+        if (oi.aimBot()) {
+            shooterSubsystem.rotateTurretWithLLOffset();
+        }
     }
 
     /**
