@@ -143,31 +143,25 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
 
-        // Shoot on pressing square.
-        if (oi.driverControl.getRawButton(PS4Constants.SQUARE.getValue())) {
-            shooterSubsystem.shoot(false);
-        } else if (oi.driverControl.getRawButton(PS4Constants.L1.getValue())) {
+        SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
 
-            // Shoot with velocity control on pressing L1.
-            shooterSubsystem.shoot(true);
+        // Spin up on pressing [spinUp]
+        if (oi.spinUp()) {
+            shooterSubsystem.spinUp();
         } else {
-            shooterSubsystem.doNotShoot();
+            shooterSubsystem.stopSpinningUp();
         }
 
-        // Feed with velocity control on pressing R1.
-        if (oi.driverControl.getRawButton(PS4Constants.R1.getValue())) {
-            shooterSubsystem.feed(true);
-        } else if (oi.driverControl.getRawButton(PS4Constants.CIRCLE.getValue())) {
-
-            // Feed on pressing circle.
-            shooterSubsystem.feed(false);
+        // Fire on pressing [fire]
+        if (oi.fire()) {
+            shooterSubsystem.fire();
         } else {
-            shooterSubsystem.doNotFeed();
+            shooterSubsystem.holdFire();
         }
 
-        // Rotate the turret with the joystick.
-        if (oi.driverControl.getRawButton(PS4Constants.TRIANGLE.getValue())) {
-            shooterSubsystem.rotate(oi.driverControl.getRawAxis(PS4Constants.LEFT_STICK_X.getValue()));
+        // Rotate the turret with [manualAzimuthAxis]
+        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband) {
+            shooterSubsystem.rotate(oi.manualAzimuthAxis());
         } else {
             shooterSubsystem.rotate(0);
         }
