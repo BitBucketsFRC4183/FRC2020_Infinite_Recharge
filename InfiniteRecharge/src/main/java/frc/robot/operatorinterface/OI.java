@@ -47,12 +47,14 @@ public class OI {
     private final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
     private final int DRIVE_LOCK_BUTTON = PS4Constants.OPTIONS.getValue();
     private final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
-    private final int INTAKE_IN_POV = 180;
-    private final int INTAKE_OUT_POV = 0;
-    private final int INTAKE_TOGGLE = PS4Constants.PS4.getValue();
+    private final int OPERATOR_INTAKE_IN_POV = 180;
+    private final int OPERATOR_INTAKE_OUT_POV = 0;
+    private final int OPERATOR_INTAKE_TOGGLE = PS4Constants.PS4.getValue();
     private final int OPERATOR_SPINUP = PS4Constants.R2.getValue();
     private final int OPERATOR_AUTO_AIM = PS4Constants.L1.getValue();
     private final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
+    private final int OPERATOR_CLIMB_PULL_RAISE = PS4Constants.TRIANGLE.getValue();
+    private final int OPERATOR_CLIMB_RAISE = PS4Constants.CROSS.getValue();
 
     // forced Idle for corresponding subsystems
     private final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
@@ -87,15 +89,15 @@ public class OI {
     }
 
     public boolean intaking() {
-        return operatorControl.getPOV() == INTAKE_IN_POV;
+        return operatorControl.getPOV() == OPERATOR_INTAKE_IN_POV;
     }
 
     public boolean outaking() {
-        return operatorControl.getPOV() == INTAKE_OUT_POV;
+        return operatorControl.getPOV() == OPERATOR_INTAKE_OUT_POV;
     }
 
     public boolean barDownButtonPressed() {
-        return operatorControl.getRawButtonPressed(INTAKE_TOGGLE);
+        return operatorControl.getRawButtonPressed(OPERATOR_INTAKE_TOGGLE);
     }
 
     /**
