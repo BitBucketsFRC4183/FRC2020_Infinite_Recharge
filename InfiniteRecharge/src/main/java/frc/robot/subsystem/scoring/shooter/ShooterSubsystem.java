@@ -91,6 +91,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void periodic(float deltaTime) {
+
+        targetPosition = (int) (targetPosition + (targetChange * deltaTime));
+        azimuthMotor.set(ControlMode.MotionMagic, targetPosition);
+
         // Put the outputs on the smart dashboard.
         SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());

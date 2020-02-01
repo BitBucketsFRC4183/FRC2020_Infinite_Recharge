@@ -138,22 +138,23 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
 
-        // spin up then fire on pressing square.
-        if (oi.driverControl.getRawButton(PS4Constants.SQUARE.getValue())) {
+        // Spin up on pressing [spinUp]
+        if (oi.spinUp()) {
             shooterSubsystem.spinUp();
         } else {
             shooterSubsystem.stopSpinningUp();
         }
 
-        if (oi.driverControl.getRawButton(PS4Constants.L1.getValue())) {
+        // Fire on pressing [fire]
+        if (oi.fire()) {
             shooterSubsystem.fire();
         } else {
             shooterSubsystem.holdFire();
         }
 
-        // Rotate the turret with the joystick.
-        if (oi.driverControl.getRawButton(PS4Constants.TRIANGLE.getValue())) {
-            shooterSubsystem.rotate(oi.driverControl.getRawAxis(PS4Constants.LEFT_STICK_X.getValue()));
+        // Rotate the turret with [manualAzimuthAxis]
+        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband) {
+            shooterSubsystem.rotate(oi.manualAzimuthAxis());
         } else {
             shooterSubsystem.rotate(0);
         }

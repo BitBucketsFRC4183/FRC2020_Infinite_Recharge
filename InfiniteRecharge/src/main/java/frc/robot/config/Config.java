@@ -27,6 +27,7 @@ public class Config {
         public float azimuthGearRatio = 28f / 130f;
         public float shooterGearRatio = .48f / 1f;
         public float defaultTurnVelocityDeg = 10;
+        public double manualAzimuthDeadband = 0.2;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
