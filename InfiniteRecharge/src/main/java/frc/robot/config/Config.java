@@ -1,5 +1,6 @@
 package frc.robot.config;
 
+import frc.robot.config.Config.ShooterConfig.BallManagementConfig;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class Config {
@@ -30,6 +31,14 @@ public class Config {
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
         public MotorConfig shooter = new MotorConfig();
+
+        public static class BallManagementConfig {
+            public MotorConfig spinner = new MotorConfig();
+
+            public BallManagementConfig() {
+                spinner.encoderType = MotorConfig.EncoderType.None;
+            }
+        }
 
         public ShooterConfig() {
             shooter.encoderType = MotorConfig.EncoderType.Integrated;
@@ -88,6 +97,7 @@ public class Config {
     }
 
     public ShooterConfig shooter = new ShooterConfig();
+    public BallManagementConfig ballManagement = new BallManagementConfig();
     public DriveConfig drive = new DriveConfig();
     public IntakeConfig intake = new IntakeConfig();
 

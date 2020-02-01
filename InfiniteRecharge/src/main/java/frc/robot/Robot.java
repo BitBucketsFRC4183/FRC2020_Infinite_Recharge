@@ -127,37 +127,28 @@ public class Robot extends TimedRobot {
         // Intake on pressing circle.
         if (oi.intaking()) {
             intakeSubsystem.intake();
-        } 
-        else if (oi.outaking()) {
+        } else if (oi.outaking()) {
             intakeSubsystem.outake();
-        }
-        else{
+        } else {
             intakeSubsystem.off();
         }
 
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
 
-        // Shoot on pressing square.
-        if (oi.driverControl.getRawButton(PS4Constants.SQUARE.getValue())) {
-            shooterSubsystem.shoot(false);
-        } else if (oi.driverControl.getRawButton(PS4Constants.L1.getValue())) {
+        SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
 
-            // Shoot with velocity control on pressing L1.
-            shooterSubsystem.shoot(true);
+        // spin up then fire on pressing square.
+        if (oi.driverControl.getRawButton(PS4Constants.SQUARE.getValue())) {
+            shooterSubsystem.spinUp();
         } else {
-            shooterSubsystem.doNotShoot();
+            shooterSubsystem.stopSpinningUp();
         }
 
-        // Feed with velocity control on pressing R1.
-        if (oi.driverControl.getRawButton(PS4Constants.R1.getValue())) {
-            shooterSubsystem.feed(true);
-        } else if (oi.driverControl.getRawButton(PS4Constants.CIRCLE.getValue())) {
-
-            // Feed on pressing circle.
-            shooterSubsystem.feed(false);
+        if (oi.driverControl.getRawButton(PS4Constants.L1.getValue())) {
+            shooterSubsystem.fire();
         } else {
-            shooterSubsystem.doNotFeed();
+            shooterSubsystem.holdFire();
         }
 
         // Rotate the turret with the joystick.
