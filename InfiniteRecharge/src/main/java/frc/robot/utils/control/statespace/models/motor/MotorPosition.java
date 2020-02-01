@@ -16,7 +16,7 @@ public class MotorPosition extends CLTIModel {
 
 
 
-    private static SimpleMatrix getA(MotorType type, double I) {
+    public static SimpleMatrix getA(MotorType type, double I) {
         double kw = type.getKW().getValue();
         double kt = type.getKT().getValue();
         double b = type.getB().getValue();
@@ -28,13 +28,13 @@ public class MotorPosition extends CLTIModel {
         });
     }
 
-    private static SimpleMatrix getB(MotorType type, double I) {
+    public static SimpleMatrix getB(MotorType type, double I) {
         double kt = type.getKT().getValue();
         double R = type.getR().getValue();
 
         return new SimpleMatrix(new double[][] {
             new double[] {0},
-            new double[] {0, kt/(I*R)}
+            new double[] {kt/(I*R)}
         });
     }
 }

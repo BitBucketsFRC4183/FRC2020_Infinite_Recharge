@@ -1,9 +1,9 @@
 physicsConstants;
 
 state = [
-    0; % x
-    0; % y
-    pi/2; % heading, theta
+    10; % x
+    5; % y
+    3*pi/2; % heading, theta
     0; % omega of left front
     0; % omega of left back
     0; % omega of right front
@@ -12,7 +12,7 @@ state = [
 
 
 
-u = [-6, -6, 10, 10]';
+u = [0; 0; 0; 0];
 T=0.05;
 
 i = 0;
@@ -31,7 +31,7 @@ Q = [
 
 R = [1; 1; 1; 1;];
 
-for t=0:T:15
+for t=0:T:10*T
     i = i + 1;
     
     xs(i) = state(X);
@@ -48,6 +48,9 @@ for t=0:T:15
     
     syscF = ss(Ac, Fc, eye(STATE_SIZE), zeros(STATE_SIZE, 1));
     sysdF = c2d(syscF, T);
+    
+    %K = lqr(sysdControl, Q, R);
+    %u = K*state;
     
     state = sysd.A * state + sysd.B * u + sysdF.B;
 end

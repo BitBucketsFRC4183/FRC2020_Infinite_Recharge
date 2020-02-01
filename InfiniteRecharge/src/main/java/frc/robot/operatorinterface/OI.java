@@ -16,7 +16,7 @@ public class OI {
 	// AXIS DEFINITIONS
 	// ****************************
 	private final int DRIVE_SPEED_AXIS = PS4Constants.LEFT_STICK_Y.getValue();
-	private final int DRIVE_TURN_AXIS = PS4Constants.LEFT_STICK_X.getValue();
+	private final int DRIVE_TURN_AXIS = PS4Constants.RIGHT_STICK_X.getValue();
 
 
 
