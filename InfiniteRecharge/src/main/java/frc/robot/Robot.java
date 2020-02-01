@@ -129,12 +129,15 @@ public class Robot extends TimedRobot {
         // Intake on pressing circle.
         if (oi.intaking()) {
             intakeSubsystem.intake();
-        } 
-        else if (oi.outaking()) {
+        } else if (oi.outaking()) {
             intakeSubsystem.outake();
-        }
-        else{
+        } else {
             intakeSubsystem.off();
+        }
+
+        // Pivot Intake Bar
+        if (oi.barDownButtonPressed()) {
+            intakeSubsystem.toggleIntakeArm();
         }
 
         //////////////////////////////////////////////////////////////////////////////
