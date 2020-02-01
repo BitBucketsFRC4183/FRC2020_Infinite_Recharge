@@ -16,7 +16,10 @@ public class OI {
 	// AXIS DEFINITIONS
 	// ****************************
 	private final int DRIVE_SPEED_AXIS = PS4Constants.LEFT_STICK_Y.getValue();
-	private final int DRIVE_TURN_AXIS = PS4Constants.RIGHT_STICK_X.getValue();
+    private final int DRIVE_TURN_AXIS = PS4Constants.RIGHT_STICK_X.getValue();
+    private final int OPERATOR_MANUAL_SPINUP_AXIS = PS4Constants.LEFT_TRIGGER.getValue();
+    private final int OPERATOR_MANUAL_AZIMUTH_AXIS = PS4Constants.RIGHT_STICK_X.getValue();
+    private final int OPERATOR_MANUAL_ELEVATION_AXIS = PS4Constants.RIGHT_STICK_Y.getValue();
 
 	public double speed() {
 		// Default to -1 to make up-stick positive because raw up-stick is negative
@@ -47,10 +50,36 @@ public class OI {
 	private final int INTAKE_IN_POV = 180;
 	private final int INTAKE_OUT_POV = 0;
 	private final int INTAKE_TOGGLE = PS4Constants.PS4.getValue();
+  private final int OPERATOR_SPINUP = PS4Constants.R2.getValue();
+  private final int OPERATOR_AUTO_AIM = PS4Constants.L1.getValue();
+  private final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
 
 	// forced Idle for corresponding subsystems
 	private final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
-	private final int OPERATOR_IDLE = PS4Constants.TRACKPAD.getValue();
+    private final int OPERATOR_IDLE = PS4Constants.TRACKPAD.getValue();
+    public double manualSpinupAxis() {
+		return operatorControl.getRawAxis(OPERATOR_MANUAL_SPINUP_AXIS);
+	}
+    
+    public double manualElevationAxis() {
+		return operatorControl.getRawAxis(OPERATOR_MANUAL_ELEVATION_AXIS);
+	}
+    
+    public double manualAzimuthAxis() {
+		return operatorControl.getRawAxis(OPERATOR_MANUAL_AZIMUTH_AXIS);
+	}
+
+    public boolean aimBot() {
+		return operatorControl.getRawButton(OPERATOR_AUTO_AIM);
+	}
+    
+    public boolean fire() {
+		return operatorControl.getRawButton(OPERATOR_FIRE);
+	}
+    
+    public boolean spinUp() {
+		return operatorControl.getRawButton(OPERATOR_SPINUP);
+	}
 
 	public boolean lowSpeed() {
 		return driverControl.getRawButton(DRIVE_LOW_SENSITIVE_BUTTON);
