@@ -19,8 +19,8 @@ public class OI {
 	private final int DRIVE_TURN_AXIS = PS4Constants.RIGHT_STICK_X.getValue();
 
 	public double speed() {
-	// Default to -1 to make up-stick positive because raw up-stick is negative
-	return (invertDrive() ? 1.0 : -1.0) * driverControl.getRawAxis(DRIVE_SPEED_AXIS);
+		// Default to -1 to make up-stick positive because raw up-stick is negative
+		return (invertDrive() ? 1.0 : -1.0) * driverControl.getRawAxis(DRIVE_SPEED_AXIS);
 	}
 
 	/**
@@ -28,12 +28,12 @@ public class OI {
 	 * range [-1,1]
 	 */
 	public double turn() {
-	// Defult to -1 because right stick is naturally negative and we want that to
-	// really mean positive rate turn. Since traditional motion mechanics uses a
-	// RPY or NED reference frame where Y (yaw) or D (down) are both positive
-	// "down", right hand coordinate rules dictate that positive rotations are to
-	// the right (i.e. vectors R x P = Y and N x E = D)
-	return DriveConstants.TURN_SIGN * driverControl.getRawAxis(DRIVE_TURN_AXIS);
+		// Defult to -1 because right stick is naturally negative and we want that to
+		// really mean positive rate turn. Since traditional motion mechanics uses a
+		// RPY or NED reference frame where Y (yaw) or D (down) are both positive
+		// "down", right hand coordinate rules dictate that positive rotations are to
+		// the right (i.e. vectors R x P = Y and N x E = D)
+		return DriveConstants.TURN_SIGN * driverControl.getRawAxis(DRIVE_TURN_AXIS);
 	}
 
 	// ****************************
