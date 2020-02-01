@@ -3,41 +3,33 @@ b = 4.093255526065792E-5;
 R = 0.04666464678901319;
 Kt = 0.01823032208047652;
 Kw = 0.017857232059815025;
-I = 6E-5;
 
-ROBOT_RADIUS = 0.3048; % half of track width in meters
-WHEEL_RADIUS = 0.0762; % in m
+rb = 0.3145536;
+m = 39.3051396;
+J = 2.1621037;
+r = 0.0762;
 
+G = 10.88888888888888888;
+e = 1;%0.9;
+
+C1 = -(Kt*Kw*G*G)/(R*r*r);
+C2 = G*Kt/(R*r);
+
+Am = (1/m + rb * rb / J);
+Bm = (1/m - rb * rb / J);
+
+
+
+% robot state
 X = 1;
 Y = 2;
 THETA = 3;
-OMEGA_LT = 4;
-OMEGA_LB = 5;
-OMEGA_RT = 6;
-OMEGA_RB = 7;
+vL = 4;
+vR = 5;
 
-STATE_SIZE = 7;
+% robot input
+VL = 1;
+VR = 2;
 
-
-
-VOLTS_LT = 1;
-VOLTS_LB = 2;
-VOLTS_RT = 3;
-VOLTS_RB = 4;
-
-INPUT_SIZE = 4;
-
-
-
-M = 50; % in kg, 110 lbs approx
-I_ROBOT = 1/2 * M * ROBOT_RADIUS^2; % assume spherical cow
-
-
-
-
-
-F_W = -1/WHEEL_RADIUS * (Kt * Kw / R + b);
-F_V = 1/WHEEL_RADIUS * Kt/R;
-
-W_W = -(Kt * Kw / R + b) / I;
-W_V = Kt / (R * I);
+STATE_SIZE = 5;
+INPUT_SIZE = 2;

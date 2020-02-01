@@ -72,12 +72,13 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void diagnosticsInitialize() {
         SmartDashboard.putNumber(getName() + "/Shooter Output Percent", 0.2);
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", 0.2);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 60);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 500);
         SmartDashboard.putNumber(getName() + "/Feeder Velocity RPM", 60);
         SmartDashboard.putNumber(getName() + "/Turret Turn Rate", config.shooter.defaultTurnVelocityDeg);
     }
 
     @Override
+
     public void diagnosticsPeriodic() {
         // TODO Auto-generated method stub
 
@@ -98,6 +99,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // Put the outputs on the smart dashboard.
         SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Output", ballPropulsionMotor.getSelectedSensorVelocity());
     }
 
     public void spinUp() {

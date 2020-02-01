@@ -34,7 +34,7 @@ public class RobotSystem {
     public RobotSystem() {
     }
 
-    public CLTIFModel getModel() {
+    public CLTIFModel getModel(double v0, double theta0) {
         double aM = (1/M + R_R * R_R / I_R);
         double bM = (1/M - R_R * R_R / I_R);
         double cM = 1.0/(2*R_R);
@@ -42,9 +42,8 @@ public class RobotSystem {
         double Cv = -(Kw * Kt * G * G * e / (R * R_W * R_W) + b * G * G * e / (R_W * R_W));
         double CV = G * e * Kt / (R * R_W);
 
-        double theta0 = 0;//2*Math.PI * Math.random();
-        double v0 = 0;//15*(2 * Math.random() - 1);
-
+        // x' = (vl + vr)/2 cos theta
+        // x' = 1/2 cos theta vl + 1/2 cos theta vr / 2 - (vl + vr)/2 sin theta * theta + (vl+vr)/2 sin theta * theta0
         SimpleMatrix Ac = new SimpleMatrix(new double[][] {
             new double[] {0, 0, -v0 * Math.sin(theta0), Math.cos(theta0) / 2, Math.cos(theta0) / 2},
             new double[] {0, 0, v0 * Math.cos(theta0), Math.sin(theta0) / 2, Math.sin(theta0) / 2},
@@ -60,8 +59,6 @@ public class RobotSystem {
             new double[] {aM*CV, bM*CV},
             new double[] {bM*CV, aM*CV}
         });
-
-        System.out.println(Bc);
 
         SimpleMatrix Fc = new SimpleMatrix(new double[][] {
             new double[] {v0 * theta0 * Math.sin(theta0)},

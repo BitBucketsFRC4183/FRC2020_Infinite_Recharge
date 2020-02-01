@@ -81,6 +81,8 @@ public class Robot extends TimedRobot {
         driveSubsystem.periodic(deltaTime);
         shooterSubsystem.periodic(deltaTime);
         intakeSubsystem.periodic(deltaTime);
+        navigationSubsystem.periodic(deltaTime);
+
         CommandScheduler.getInstance().run();
 
         lastTime = currentTime;
@@ -131,6 +133,11 @@ public class Robot extends TimedRobot {
             intakeSubsystem.outake();
         } else {
             intakeSubsystem.off();
+        }
+
+        // Pivot Intake Bar
+        if (oi.barDownButtonPressed()) {
+            intakeSubsystem.toggleIntakeArm();
         }
 
         //////////////////////////////////////////////////////////////////////////////
