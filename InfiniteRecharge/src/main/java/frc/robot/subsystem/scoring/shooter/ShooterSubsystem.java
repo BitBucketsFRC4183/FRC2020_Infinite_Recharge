@@ -53,8 +53,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public ShooterSubsystem(Config config) {
         super(config);
-        ballManagementSubsystem = new BallManagementSubsystem(config);
-        ballManagementSubsystem.initialize();
+
     }
 
     @Override
@@ -65,6 +64,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
         feeder.selectProfileSlot(MotorUtils.velocitySlot, 0);
         ballPropulsionMotor.selectProfileSlot(MotorUtils.velocitySlot, 0);
+        ballManagementSubsystem = new BallManagementSubsystem(config);
+        ballManagementSubsystem.initialize();
     }
 
     @Override
