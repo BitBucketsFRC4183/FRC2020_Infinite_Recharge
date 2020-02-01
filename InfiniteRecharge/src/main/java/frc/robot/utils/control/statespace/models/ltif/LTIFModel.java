@@ -17,7 +17,11 @@ public class LTIFModel extends LTIFtModel {
     }
 
     @Override
-    protected SimpleMatrix updateF(double t) {
+    protected SimpleMatrix updateF(double t, int k) {
+        return F;
+    }
+
+    public SimpleMatrix getF() {
         return F;
     }
 }

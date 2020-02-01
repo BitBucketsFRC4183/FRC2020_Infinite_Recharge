@@ -27,7 +27,7 @@ public class MotorType {
 
     public MotorType(double b, double R, double Kt, double Kw) {
         this.b = new Quantity(b, Units.Nm.divide(Units.RAD_PER_S));
-        this.R = new Quantity(b, Units.Ohm);
+        this.R = new Quantity(R, Units.Ohm);
         K_T = new Quantity(Kt, Units.Nm.divide(Units.A));
         K_W = new Quantity(Kw, Units.V.divide(Units.RAD_PER_S));
     }
