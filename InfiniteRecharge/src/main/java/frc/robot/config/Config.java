@@ -33,6 +33,8 @@ public class Config {
         public float shooterGearRatio = .48f / 1f;
         public float defaultTurnVelocityDeg = 10;
         public double manualAzimuthDeadband = 0.2;
+        public float forwardAzimuthSoftLimit = 140;
+        public float backwardAzimuthSoftLimit = 140;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
@@ -138,7 +140,7 @@ public class Config {
                 0 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
-                1023/2984, // P
+                1023 / 2984, // P
                 0, // I
                 0, // D
                 0.04705 /// F
@@ -188,7 +190,7 @@ public class Config {
 
         //////////////////////////////////////////////////////////////////////////////
         // Ticks Per Revolution
-        shooter.azimuth.ticksPerRevolution = 8192;
+        shooter.azimuth.ticksPerRevolution = 4096;
     }
 
 }

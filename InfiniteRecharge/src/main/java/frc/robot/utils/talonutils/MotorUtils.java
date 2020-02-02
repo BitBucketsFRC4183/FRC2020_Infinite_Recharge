@@ -153,6 +153,9 @@ public class MotorUtils {
             break;
         }
 
+        motor.configMotionCruiseVelocity(motorConfig.motionMagicCruiseVelocity);
+        motor.configMotionAcceleration(motorConfig.motionMagicAcceleration);
+
         if (motorConfig.followingID != -1) {
             motor.set(ControlMode.Follower, motorConfig.followingID);
         }
