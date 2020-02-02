@@ -44,6 +44,10 @@ public class JuniorConfiguration extends Config {
             1023f / 2650
         );
 
+        shooter.azimuth.motionMagicAcceleration = 1350;
+        shooter.azimuth.motionMagicCruiseVelocity = 1350;
+        shooter.azimuth.inverted = true;
+
         // setup junior's drive motors and pid constants.
         drive.MOTORS_PER_SIDE = 2;
         drive.leftIDs = LEFT_DRIVE_IDS;
