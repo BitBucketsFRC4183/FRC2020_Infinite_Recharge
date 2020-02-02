@@ -35,6 +35,10 @@ public class MotorConfig {
 
     public boolean sensorPhase;
 
+    public int motionMagicAcceleration;
+
+	public int motionMagicCruiseVelocity;
+
     //////////////////////////////////////////////////////////////////////////////
     // PIDFs
 

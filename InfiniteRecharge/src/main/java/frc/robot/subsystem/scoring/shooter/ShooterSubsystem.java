@@ -35,6 +35,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Floats
     // TODO float rootBeer = good
+    public double forwardAzimuthSoftLimit;
+    public double backwardAzimuthSoftLimit;
 
     // Doubles
     public double degreesToRotate = 0.0;
@@ -71,6 +73,19 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         ballPropulsionMotor.selectProfileSlot(MotorUtils.velocitySlot, 0);
         ballManagementSubsystem = new BallManagementSubsystem(config);
         ballManagementSubsystem.initialize();
+
+        forwardAzimuthSoftLimit = MathUtils.unitConverter(config.shooter.forwardAzimuthSoftLimit, 360,
+                config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio;
+        backwardAzimuthSoftLimit = MathUtils.unitConverter(config.shooter.backwardAzimuthSoftLimit, 360,
+                config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio;
+
+        // TODO: Temporarily disabled to avoid conflicts.
+        // azimuthMotor.configForwardSoftLimitEnable(true);
+        // azimuthMotor.configForwardSoftLimitThreshold((int) forwardAzimuthSoftLimit);
+
+        // azimuthMotor.configReverseSoftLimitEnable(true);
+        // azimuthMotor.configReverseSoftLimitThreshold((int)
+        // -backwardAzimuthSoftLimit);
     }
 
     @Override
@@ -97,7 +112,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void periodic(float deltaTime) {
-        
+
         autoAim();
 
         targetPosition = (int) (targetPosition + (targetChange * deltaTime));
@@ -106,10 +121,20 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // Put the outputs on the smart dashboard.
         SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Output", ballPropulsionMotor.getSelectedSensorVelocity());
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Output",
+                ballPropulsionMotor.getSelectedSensorVelocity());
         SmartDashboard.putNumber(getName() + "/Degrees to Rotate", degreesToRotate);
         SmartDashboard.putNumber(getName() + "/Target Position ", targetPosition);
         SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
+        SmartDashboard.putNumber(getName() + "/Azimuth Position ", azimuthMotor.getSelectedSensorPosition());
+
+        SmartDashboard.putNumber(getName() + "/Target Position Deg ",
+                MathUtils.unitConverter(targetPosition, config.shooter.azimuth.ticksPerRevolution, 360)
+                        * config.shooter.azimuthGearRatio);
+
+        SmartDashboard.putNumber(getName() + "/Azimuth Position Deg ",
+                MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(),
+                        config.shooter.azimuth.ticksPerRevolution, 360) * config.shooter.azimuthGearRatio);
     }
 
     public void spinUp() {
@@ -177,7 +202,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     /*
      * Returns target degrees of turret given an offset
-    */
+     */
     public double getTargetTurretDegGivenOffset(double offset) {
         return getTurretDeg() + offset;
     }
@@ -186,7 +211,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         rotateToDeg(degreesToRotate);
     }
 
-	public void autoAim() {
+    public void autoAim() {
         double defaultVal = 0;
 
         NetworkTableInstance tableInstance = NetworkTableInstance.getDefault();
