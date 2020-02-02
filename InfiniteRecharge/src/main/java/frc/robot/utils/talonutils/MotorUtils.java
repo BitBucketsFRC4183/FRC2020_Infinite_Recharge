@@ -125,17 +125,6 @@ public class MotorUtils {
     public static void motorInit(BaseTalon motor, MotorConfig motorConfig) {
         motor.configFactoryDefault();
 
-        motor.config_kF(positionSlot, motorConfig.positionPIDF.getKF());
-        motor.config_kP(positionSlot, motorConfig.positionPIDF.getKP());
-        motor.config_kI(positionSlot, motorConfig.positionPIDF.getKI());
-        motor.config_kD(positionSlot, motorConfig.positionPIDF.getKD());
-        motor.config_IntegralZone(positionSlot, (int) motorConfig.positionPIDF.getIZone());
-
-        motor.config_kF(velocitySlot, motorConfig.velocityPIDF.getKF());
-        motor.config_kP(velocitySlot, motorConfig.velocityPIDF.getKP());
-        motor.config_kI(velocitySlot, motorConfig.velocityPIDF.getKI());
-        motor.config_kD(velocitySlot, motorConfig.velocityPIDF.getKD());
-        motor.config_IntegralZone(velocitySlot, (int) motorConfig.velocityPIDF.getIZone());
         motor.setSensorPhase(motorConfig.sensorPhase);
         motor.setInverted(motorConfig.inverted);
 
@@ -167,6 +156,18 @@ public class MotorUtils {
         if (motorConfig.followingID != -1) {
             motor.set(ControlMode.Follower, motorConfig.followingID);
         }
+
+        motor.config_kF(positionSlot, motorConfig.positionPIDF.getKF());
+        motor.config_kP(positionSlot, motorConfig.positionPIDF.getKP());
+        motor.config_kI(positionSlot, motorConfig.positionPIDF.getKI());
+        motor.config_kD(positionSlot, motorConfig.positionPIDF.getKD());
+        motor.config_IntegralZone(positionSlot, (int) motorConfig.positionPIDF.getIZone());
+
+        motor.config_kF(velocitySlot, motorConfig.velocityPIDF.getKF());
+        motor.config_kP(velocitySlot, motorConfig.velocityPIDF.getKP());
+        motor.config_kI(velocitySlot, motorConfig.velocityPIDF.getKI());
+        motor.config_kD(velocitySlot, motorConfig.velocityPIDF.getKD());
+        motor.config_IntegralZone(velocitySlot, (int) motorConfig.velocityPIDF.getIZone());
 
     }
 
