@@ -169,7 +169,7 @@ public class Config {
 
         //////////////////////////////////////////////////////////////////////////////
         // Ticks Per Revolution
-        shooter.azimuth.ticksPerRevolution = 8192;
+        shooter.azimuth.ticksPerRevolution = 4096;
     }
 
 }
