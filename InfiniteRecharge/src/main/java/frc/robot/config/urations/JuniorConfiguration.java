@@ -7,7 +7,7 @@ import frc.robot.utils.control.pidf.PIDF;
 public class JuniorConfiguration extends Config {
 
     // either for driving or shooting
-    private boolean forDriving = true;
+    private boolean forDriving = false;
 
     // Drive
     public int LEFT_DRIVE_IDS[] =
@@ -20,7 +20,7 @@ public class JuniorConfiguration extends Config {
         :              (new int[]{6, 7});
 
     // Shooter
-    public int AZIMUTH_MOTOR_ID = 5;
+    public int AZIMUTH_MOTOR_ID = 3;
     public int SHOOTER_MOTOR_ID = (forDriving) ? 6 : 13;
     public int FEEDER_MOTOR_ID = (forDriving) ? 7 : 2;
     
@@ -38,11 +38,15 @@ public class JuniorConfiguration extends Config {
         shooter.shooter.id = SHOOTER_MOTOR_ID;
 
         shooter.azimuth.positionPIDF = new PIDF(
-            0.1 * 1023 / 176 * 2 * 2 * 2 * 2,
+            0.1 * 1023f / 176 * 2 * 2 * 2 * 2,
             0,
-            10 * 0.1 * 1023 / 176 * 2 * 2 * 2 * 2,
-            1023 / 2650
+            10 * 0.1 * 1023f / 176 * 2 * 2 * 2 * 2,
+            1023f / 2650
         );
+
+        shooter.azimuth.motionMagicAcceleration = 1350;
+        shooter.azimuth.motionMagicCruiseVelocity = 1350;
+        shooter.azimuth.inverted = true;
 
         // setup junior's drive motors and pid constants.
         drive.MOTORS_PER_SIDE = 2;

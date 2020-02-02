@@ -15,16 +15,20 @@ import edu.wpi.first.wpilibj.RobotBase;
  * the parameter class to the startRobot call.
  */
 public final class Main {
-  private Main() {
-  }
+    private Main() {
+    }
 
-  /**
-   * Main initialization function. Do not perform any initialization here.
-   *
-   * <p>
-   * If you change your main robot class, change the parameter type.
-   */
-  public static void main(String... args) {
-    RobotBase.startRobot(Robot::win);
-  }
+    /**
+     * Main initialization function. Do not perform any initialization here.
+     *
+     * <p>
+     * If you change your main robot class, change the parameter type.
+     */
+    public static void main(String... args) {
+        if (Math.random() < 0.5) {
+            RobotBase.startRobot(Robot::beat254);
+        } else {
+            RobotBase.startRobot(Robot::win);
+        }
+    }
 }
