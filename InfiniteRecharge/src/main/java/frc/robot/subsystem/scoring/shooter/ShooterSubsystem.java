@@ -84,7 +84,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // azimuthMotor.configForwardSoftLimitThreshold((int) forwardAzimuthSoftLimit);
 
         // azimuthMotor.configReverseSoftLimitEnable(true);
-        // azimuthMotor.configReverseSoftLimitThreshold((int) -backwardAzimuthSoftLimit);
+        // azimuthMotor.configReverseSoftLimitThreshold((int)
+        // -backwardAzimuthSoftLimit);
     }
 
     @Override
@@ -125,6 +126,15 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Degrees to Rotate", degreesToRotate);
         SmartDashboard.putNumber(getName() + "/Target Position ", targetPosition);
         SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
+        SmartDashboard.putNumber(getName() + "/Azimuth Position ", azimuthMotor.getSelectedSensorPosition());
+
+        SmartDashboard.putNumber(getName() + "/Target Position Deg ",
+                MathUtils.unitConverter(targetPosition, config.shooter.azimuth.ticksPerRevolution, 360)
+                        * config.shooter.azimuthGearRatio);
+
+        SmartDashboard.putNumber(getName() + "/Azimuth Position Deg ",
+                MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(),
+                        config.shooter.azimuth.ticksPerRevolution, 360) * config.shooter.azimuthGearRatio);
     }
 
     public void spinUp() {
