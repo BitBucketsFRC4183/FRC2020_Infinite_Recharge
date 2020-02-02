@@ -12,11 +12,16 @@ public class Config {
     public int AZIMUTH_MOTOR_ID = 12;
     public int SHOOTER_MOTOR_ID = 13;
     public int FEEDER_MOTOR_ID = 8;
+
+    // Intake
     public int INTAKE_MOTOR_ID = 14;
 
     // Drive
     public int LEFT_DRIVE_IDS[] = { 1, 4 };
     public int RIGHT_DRIVE_IDS[] = { 2, 3 };
+
+    // SpinnyBoi
+    public int SPINNYBOI_MOTOR_ID = 5;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
@@ -28,6 +33,8 @@ public class Config {
         public float shooterGearRatio = .48f / 1f;
         public float defaultTurnVelocityDeg = 10;
         public double manualAzimuthDeadband = 0.2;
+        public float forwardAzimuthSoftLimit = 140;
+        public float backwardAzimuthSoftLimit = 140;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
@@ -49,6 +56,10 @@ public class Config {
     public static class IntakeConfig {
 
         public MotorConfig intake = new MotorConfig();
+    }
+
+    public static class SpinnyBoiConfig {
+        public MotorConfig spinner = new MotorConfig();
     }
 
     public static class DriveConfig {
@@ -101,6 +112,7 @@ public class Config {
     public BallManagementConfig ballManagement = new BallManagementConfig();
     public DriveConfig drive = new DriveConfig();
     public IntakeConfig intake = new IntakeConfig();
+    public SpinnyBoiConfig spinnyboi = new SpinnyBoiConfig();
 
     public Config() {
 
@@ -109,7 +121,10 @@ public class Config {
         shooter.azimuth.id = AZIMUTH_MOTOR_ID;
         shooter.feeder.id = FEEDER_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
+
         intake.intake.id = INTAKE_MOTOR_ID;
+
+        spinnyboi.spinner.id = SPINNYBOI_MOTOR_ID;
 
         drive.leftIDs = LEFT_DRIVE_IDS;
         drive.rightIDs = RIGHT_DRIVE_IDS;
@@ -125,13 +140,21 @@ public class Config {
                 0 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
-                1023/2984, // P
+                1023 / 2984, // P
                 0, // I
                 0, // D
                 0.04705 /// F
         );
         shooter.feeder.velocityPIDF = new PIDF(//
                 0.1, // P
+                0, // I
+                0, // D
+                0 /// F
+        );
+
+        // SpinnyBoi
+        spinnyboi.spinner.positionPIDF = new PIDF(//
+                0.05, // P
                 0, // I
                 0, // D
                 0 /// F
@@ -167,7 +190,7 @@ public class Config {
 
         //////////////////////////////////////////////////////////////////////////////
         // Ticks Per Revolution
-        shooter.azimuth.ticksPerRevolution = 8192;
+        shooter.azimuth.ticksPerRevolution = 4096;
     }
 
 }
