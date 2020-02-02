@@ -14,6 +14,7 @@ import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
 import frc.robot.operatorinterface.PS4Constants;
+import frc.robot.subsystem.spinnyboi.SpinnyBoiSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
@@ -29,6 +30,7 @@ import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 public class Robot extends TimedRobot {
     private ShooterSubsystem shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
+    private SpinnyBoiSubsystem spinnyBoiSubsystem;
     private Config config;
 
     public float deltaTime;
@@ -60,6 +62,9 @@ public class Robot extends TimedRobot {
         intakeSubsystem = new IntakeSubsystem(config);
         intakeSubsystem.initialize();
 
+        spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
+        spinnyBoiSubsystem.initialize();
+
         lastTime = System.currentTimeMillis();
     }
 
@@ -82,6 +87,7 @@ public class Robot extends TimedRobot {
         shooterSubsystem.periodic(deltaTime);
         intakeSubsystem.periodic(deltaTime);
         navigationSubsystem.periodic(deltaTime);
+        spinnyBoiSubsystem.periodic(deltaTime);
 
         CommandScheduler.getInstance().run();
 
