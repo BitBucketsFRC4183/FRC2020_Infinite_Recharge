@@ -1,37 +1,59 @@
-b = 4.093255526065792E-5;
-R = 0.04666464678901319;
-Kt = 0.01823032208047652;
-Kw = 0.017857232059815025;
+state = [1; 2; pi/6; 3; 4;];
 
-rb = 0.3145536;
-m = 39.3051396;
-J = 2.1621037;
-r = 0.0762;
+Ac = getSysMatPhysics(state);
+Bc = getInpMatPhysics(state);
+Fc = getFPhysics(state);
 
-G = 10.88888888888888888;
-e = 1;%0.9;
+sysc = ss(Ac, Bc, eye(STATE_SIZE), zeros(STATE_SIZE, INPUT_SIZE));
+sysd = c2d(sysc, T);
 
-C1 = -(Kt*Kw*G*G)/(R*r*r);
-C2 = G*Kt/(R*r);
+syscF = ss(Ac, Fc, eye(STATE_SIZE), zeros(STATE_SIZE, 1));
+sysdF = c2d(syscF, T);
 
-theta0 = 0.01;
-v0 = 0.01;
+Ad = sysd.A;
+Bd = sysd.B;
+Fd = sysdF.B;
 
-Ac = [
-    0, 0, -v0*sin(theta0), cos(theta0)/2, cos(theta0)/2;
-    0, 0, v0*cos(theta0), sin(theta0)/2, sin(theta0)/2;
-    0, 0, 0, -1/(2*rb), 1/(2*rb);
-    0, 0, 0, (1/m + rb * rb / J)*C1, (1/m - rb * rb / J)*C1;
-    0, 0, 0, (1/m - rb * rb / J)*C1, (1/m + rb * rb / J)*C1;
+C = eye(5);
+
+u = [0.5; -0.2;];
+
+P = [
+    1, 0, 0, 0, 0;
+    0, 2, 0, 0, 0;
+    0, 0, 6, 0, 0;
+    0, 0, 0, 4, 0;
+    0, 0, 0, 0, 5;
 ];
 
-Bc = [
-    0, 0;
-    0, 0;
-    0, 0;
-    (1/m + rb * rb / J)*C2, (1/m - rb * rb / J)*C2;
-    (1/m - rb * rb / J)*C2, (1/m + rb * rb / J)*C2;
+y = [1.069; 2.047; 0.53; 2.5; pi;];
+
+K = P*C'/(C*P*C'+R);
+
+G = [
+    1, 2, 3, 4, 5;
+    6, 7, 8, 9, 10;
+    11, 12, 13, 14, 15;
+    16, 17, 18, 19, 20;
+    21, 22, 23, 24, 25;
 ];
 
-sysc = ss(Ac, Bc, eye(5), zeros(5, 2));
-sysd = c2d(sysc, 0.02);
+Q = [
+    1.1, 0, 0, 0, 0;
+    0, 1.2, 0, 0, 0;
+    0, 0, 1.3, 0, 0;
+    0, 0, 0, 1.4, 0;
+    0, 0, 0, 0, 1.5;
+];
+
+R = [
+    0.1, 0, 0, 0, 0;
+    0, 0.2, 0, 0, 0;
+    0, 0, 0.3, 0, 0;
+    0, 0, 0, 0.4, 0;
+    0, 0, 0, 0, 0.5;
+];
+
+state = state + K * (y - C * state);
+
+P = (eye(5) - K*C)*P;
