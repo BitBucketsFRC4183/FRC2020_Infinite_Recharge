@@ -4,9 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
@@ -16,6 +13,10 @@ import frc.robot.utils.talonutils.MotorUtils;
 import frc.robot.utils.data.filters.RunningAverageFilter;
 import frc.robot.subsystem.scoring.shooter.ShooterConstants;
 import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementSubsystem;
+
+import frc.robot.subsystem.vision.VisionSubsystem;
+
+import frc.robot.utils.data.filters.RunningAverageFilter;
 
 public class ShooterSubsystem extends BitBucketSubsystem {
 
@@ -39,11 +40,12 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public double backwardAzimuthSoftLimit;
 
     // Doubles
-    public double degreesToRotate = 0.0;
+    private double absoluteDegreesToRotate = 0;
 
     // Class Declarations
     RunningAverageFilter filter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
     public BallManagementSubsystem ballManagementSubsystem;
+    private VisionSubsystem visionSubsystem;
 
     //////////////////////////////////////////////////////////////////////////////
     // Motors
@@ -58,8 +60,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     //////////////////////////////////////////////////////////////////////////////
     // Methods
 
-    public ShooterSubsystem(Config config) {
+    public ShooterSubsystem(Config config, VisionSubsystem visionSubsystem) {
         super(config);
+        this.visionSubsystem = visionSubsystem;
 
     }
 
@@ -115,8 +118,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     @Override
     public void periodic(float deltaTime) {
 
-        autoAim();
-
         targetPosition = (int) (targetPosition + (targetChange * deltaTime));
         azimuthMotor.set(ControlMode.MotionMagic, targetPosition);
 
@@ -125,9 +126,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Output",
                 ballPropulsionMotor.getSelectedSensorVelocity());
-        SmartDashboard.putNumber(getName() + "/Degrees to Rotate", degreesToRotate);
         SmartDashboard.putNumber(getName() + "/Target Position ", targetPosition);
-        SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
+        SmartDashboard.putNumber(getName() + "/Absolute Degrees to Rotate", absoluteDegreesToRotate);
         SmartDashboard.putNumber(getName() + "/Azimuth Position ", azimuthMotor.getSelectedSensorPosition());
 
         SmartDashboard.putNumber(getName() + "/Target Position Deg ",
@@ -207,35 +207,32 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         return getTurretDeg() + offset;
     }
 
-    public void rotateTurretWithLLOffset() {
-        rotateToDeg(degreesToRotate);
+    public void autoAimAzimuth() {
+        rotateToDeg(absoluteDegreesToRotate);
+    }
+
+    public void autoAimVelocity() {
+        double feetPerSecVelocity = visionSubsystem.getShooterVelocityForTarget();
+        double ticksVelocity = (feetPerSecVelocity * 12 * config.shooter.shooter.ticksPerRevolution) 
+        / (ShooterConstants.SHOOTER_FLYWHEEL_RADIUS * 2 * Math.PI * 10);
+        
+        ballPropulsionMotor.set(ControlMode.Velocity, ticksVelocity);
     }
 
     public void autoAim() {
-        double defaultVal = 0;
+        autoAimAzimuth();
+        autoAimVelocity();
+    }
 
-        NetworkTableInstance tableInstance = NetworkTableInstance.getDefault();
-        tableInstance.startClientTeam(4183);
-
-        NetworkTable limelightTable = tableInstance.getTable("limelight");
-        double tx = limelightTable.getEntry("tx").getDouble(defaultVal);
-        double ty = limelightTable.getEntry("ty").getDouble(defaultVal);
-
-        double tv = limelightTable.getEntry("tv").getDouble(defaultVal);
-        if (tv == 1) {
-            validTarget = true;
-        } else {
-            validTarget = false;
-        }
-
+    public void calculateAbsoluteDegreesToRotate() {
         if (validTarget) {
+            double tx = visionSubsystem.getTx();
             double degrees = getTargetTurretDegGivenOffset(tx);
             // The offset and thus the degrees might change, causing the robot to oscillate
             // about its target. To prevent this, take an average.
             // If enabled in the constants file, calculate the average of the last values
             // passed in (up to 25, configurable in ShooterConstants.java).
-            degreesToRotate = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
+            absoluteDegreesToRotate = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
         }
     }
-
 }

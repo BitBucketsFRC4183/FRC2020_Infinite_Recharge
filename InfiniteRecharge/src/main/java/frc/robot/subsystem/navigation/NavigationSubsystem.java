@@ -15,6 +15,8 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.data.DoubleDataWindow;
 
+import frc.robot.subsystem.vision.VisionSubsystem;
+
 /**
  * Add your docs here.
  */
@@ -22,7 +24,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
 
-
+	private VisionSubsystem visionSubsystem;
 
     private DoubleDataWindow imuAcc = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
     private DoubleDataWindow imuGyro = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
@@ -32,8 +34,9 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
 
     
-	public NavigationSubsystem(Config config) {
+	public NavigationSubsystem(Config config, VisionSubsystem visionSubsystem) {
 		super(config);
+		this.visionSubsystem = visionSubsystem;
 	}
 
 	private AHRS ahrs;
