@@ -6,6 +6,25 @@ import frc.robot.utils.control.statespace.estimators.LuenbergerObserver;
 import frc.robot.utils.control.statespace.models.ABFTriple;
 import frc.robot.utils.control.statespace.models.linearized.LinearizedModel;
 
+
+/*
+ * Kalman Filters are an effective way to fuse data from multiple sensors to remove errors
+ * Every sensor has some error, but by using the data in a very specific way, you can
+ * filter out the most amount of error.
+ * 
+ * The Kalman Fitler is optimal for linear systems. Modifications such as the Extended
+ * Kalman Filters (which linearizes about estimates) can be used for nonlinear systems, but
+ * are guaranteed to be suboptimal but still retain a good amount of performance and are
+ * (when compared to other methods) easy to implement.
+ * 
+ * Some very useful links to learn more:
+ *   https://en.wikipedia.org/wiki/Kalman_filter#Predict
+ *   https://en.wikipedia.org/wiki/Extended_Kalman_filter#Discrete-time_predict_and_update_equations
+ *   https://ocw.mit.edu/courses/mechanical-engineering/2-160-identification-estimation-and-learning-spring-2006/lecture-notes/lecture_6.pdf
+ *   https://www.mathworks.com/help/control/ug/kalman-filtering.html
+ * Each of these links sucks and leaves out important things, but by reading all of them
+ * you can get the entire truth. It's kind of like a Kalman Filter :)))
+ */
 public abstract class KalmanFilter {
     private final LinearizedModel MODEL;
 
@@ -38,11 +57,7 @@ public abstract class KalmanFilter {
      * @param dt
      * @return
      */
-    /*
-     * https://en.wikipedia.org/wiki/Kalman_filter#Predict
-     * https://ocw.mit.edu/courses/mechanical-engineering/2-160-identification-estimation-and-learning-spring-2006/lecture-notes/lecture_6.pdf
-     */
-    public SimpleMatrix predict(double dt) {
+    public SimpleMatrix predict() {
         // model already has a state, so predict based on that
         x_apriori = MODEL.update();
 
@@ -58,13 +73,14 @@ public abstract class KalmanFilter {
     }
 
     public SimpleMatrix update(SimpleMatrix y) {
-        ABFTriple abf = MODEL.getLastSystem();
+        SimpleMatrix C = getC(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime());
+        SimpleMatrix R = getR(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime());
 
-        // PA'(APA'+R)^-1
+        // PC'(CPC'+R)^-1
         SimpleMatrix K = P_apriori.mult(
-            abf.getA().transpose()).mult(
-                abf.getA().mult(P_apriori.mult(abf.getA().transpose()))
-                .plus(getR(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime())
+            C.transpose().mult(
+                C.mult(P_apriori.mult(C.transpose()))
+                .plus(R)
                 .invert()
             )
         );
