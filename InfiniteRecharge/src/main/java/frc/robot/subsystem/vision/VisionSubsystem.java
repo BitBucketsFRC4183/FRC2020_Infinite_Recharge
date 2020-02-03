@@ -4,7 +4,6 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.subsystem.scoring.shooter.ShooterConstants;
 import frc.robot.utils.math.MathUtils;
 import edu.wpi.first.networktables.NetworkTable;
@@ -94,6 +93,10 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
     public double getTx() {
         return tx;
+    }
+
+    public boolean getValidTarget() {
+        return validTarget;
     }
 
 }
