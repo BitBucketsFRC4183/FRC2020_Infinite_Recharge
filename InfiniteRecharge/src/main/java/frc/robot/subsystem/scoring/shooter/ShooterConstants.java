@@ -11,5 +11,7 @@ public class ShooterConstants {
     
     public static final double BALL_SHOOTING_ANGLE = 30; // wild guess
     public static final double SHOOTER_FLYWHEEL_RADIUS = 2; // inches
-
+  
+    public static final double FEEDER_OUTPUT_PERCENT = 0.8;
+	  public static final int MAX_VOLTS = 12;
 }
