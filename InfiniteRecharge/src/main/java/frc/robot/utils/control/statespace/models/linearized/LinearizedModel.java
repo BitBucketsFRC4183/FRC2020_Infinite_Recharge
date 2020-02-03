@@ -136,12 +136,16 @@ public abstract class LinearizedModel extends StateSpaceModel {
     }
 
     public SimpleMatrix update() {
+        System.out.println(lastSystem.toString());
+        
         return (lastSystem.getA().mult(state))
             .plus(lastSystem.getB().mult(input))
             .plus(lastSystem.getF());
     }
 
     public void apply(SimpleMatrix inputVector) {
+        getDiscreteSystem();
+
         input = inputVector;
 
         state = update();
