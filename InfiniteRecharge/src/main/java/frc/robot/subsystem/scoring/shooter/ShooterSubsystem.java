@@ -142,14 +142,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         targetPositionAzimuth = (int) (targetPositionAzimuth + (targetChangeAzimuth * deltaTime));
         targetPositionElevation = (int) (targetPositionElevation + (targetChangeElevation * deltaTime));
 
-        if (forwardAzimuthSoftLimit == -1 && backwardAzimuthSoftLimit == -1) {
+        if (forwardAzimuthSoftLimit != -1 && backwardAzimuthSoftLimit != -1) {
             if (targetPositionAzimuth > forwardAzimuthSoftLimit) {
                 targetPositionAzimuth = (int) forwardAzimuthSoftLimit;
             } else if (targetPositionAzimuth < -backwardAzimuthSoftLimit) {
                 targetPositionAzimuth = (int) backwardAzimuthSoftLimit;
             }
         }
-        if (forwardElevationSoftLimit == -1 && backwardElevationSoftLimit == -1) {
+        if (forwardElevationSoftLimit != -1 && backwardElevationSoftLimit != -1) {
             if (targetPositionElevation > forwardElevationSoftLimit) {
                 targetPositionElevation = (int) forwardElevationSoftLimit;
             } else if (targetPositionAzimuth < -backwardElevationSoftLimit) {
