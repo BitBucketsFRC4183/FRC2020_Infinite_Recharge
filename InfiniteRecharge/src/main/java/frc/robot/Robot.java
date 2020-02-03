@@ -15,6 +15,7 @@ import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
 import frc.robot.operatorinterface.PS4Constants;
 import frc.robot.subsystem.spinnyboi.SpinnyBoiSubsystem;
+import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
@@ -31,6 +32,9 @@ public class Robot extends TimedRobot {
     private ShooterSubsystem shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
     private SpinnyBoiSubsystem spinnyBoiSubsystem;
+    private NavigationSubsystem navigationSubsystem;
+    private DriveSubsystem driveSubsystem;
+    private VisionSubsystem visionSubsystem;
     private Config config;
 
     public float deltaTime;
@@ -39,8 +43,7 @@ public class Robot extends TimedRobot {
 
     private final OI oi = new OI();
 
-    private NavigationSubsystem navigationSubsystem;
-    private DriveSubsystem driveSubsystem;
+    
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -50,13 +53,16 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         config = ConfigChooser.getConfig();
 
-        navigationSubsystem = new NavigationSubsystem(config);
+        visionSubsystem = new VisionSubsystem(config);
+        visionSubsystem.initialize();
+
+        navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
         navigationSubsystem.initialize();
 
         driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
         driveSubsystem.initialize();
 
-        shooterSubsystem = new ShooterSubsystem(config);
+        shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
         shooterSubsystem.initialize();
 
         intakeSubsystem = new IntakeSubsystem(config);
@@ -179,14 +185,18 @@ public class Robot extends TimedRobot {
         }
 
         // Rotate the turret with [manualAzimuthAxis]
-        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband) {
-            shooterSubsystem.rotate(oi.manualAzimuthAxis());
+        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
+            shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
         } else {
-            shooterSubsystem.rotate(0);
+            shooterSubsystem.rotate(0, 0);
         }
 
         if (oi.aimBot()) {
-            shooterSubsystem.rotateTurretWithLLOffset();
+            shooterSubsystem.autoAim();
+        }
+
+        if (oi.zero()) {
+            shooterSubsystem.rotateToDeg(0, 0);
         }
     }
 
