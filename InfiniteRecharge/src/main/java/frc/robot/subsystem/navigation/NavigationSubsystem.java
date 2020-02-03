@@ -36,6 +36,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
     
 	public NavigationSubsystem(Config config, VisionSubsystem visionSubsystem) {
 		super(config);
+		this.visionSubsystem = visionSubsystem;
 	}
 
 	private AHRS ahrs;
