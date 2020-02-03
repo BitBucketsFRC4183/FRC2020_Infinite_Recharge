@@ -91,7 +91,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    public void diagnosticsInitialize() {
+    public void testInit() {
         SmartDashboard.putNumber(getName() + "/Shooter Output Percent", 0.2);
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 500);
@@ -101,7 +101,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
 
-    public void diagnosticsPeriodic() {
+    public void testPeriodic() {
         // TODO Auto-generated method stub
 
     }
