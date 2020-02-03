@@ -82,25 +82,19 @@ public class ModelTester {
         double dt = 0.02;
         double t1 = System.nanoTime();
 
-        /*
-         * SimpleMatrix Ac = new SimpleMatrix(new double[][] { new double[] {0, 1}, new
-         * double[] {0, A} });
-         * 
-         * SimpleMatrix Bc = new SimpleMatrix(new double[][] { new double[] {0}, new
-         * double[] {B} });
-         */
+        SimpleMatrix Ac = new SimpleMatrix(new double[][] { new double[] {0, 1}, new double[] {0, A} });
 
-        DMatrixRMaj Ad, Bd;
+        SimpleMatrix Bc = new SimpleMatrix(new double[][] { new double[] {0}, new double[] {B} });
 
         double t2 = System.nanoTime();
 
-        Ad = new DMatrixRMaj(2, 2, true, new double[] { 1, (Math.exp(dt * A) - 1) / A, 0, Math.exp(dt * A) });
+        SimpleMatrix Ad = new SimpleMatrix(2, 2, true, new double[] { 1, (Math.exp(dt * A) - 1) / A, 0, Math.exp(dt * A) });
         // new double[][] {
         // new double[] {1, (Math.exp(dt * A) - 1) / A},
         // new double[] {0, Math.exp(dt * A)}
         // });
 
-        Bd = new DMatrixRMaj(2, 1, true,
+        SimpleMatrix Bd = new SimpleMatrix(2, 1, true,
                 new double[] { ((Math.exp(A * dt) - 1) / (A * A) - dt / A) * B, (Math.exp(A * dt) - 1) / A * B });
         // });
 
@@ -113,10 +107,10 @@ public class ModelTester {
 
         MotorPosition model = new MotorPosition(dt, type, I);
 
-        // assertTrue(Ac.isIdentical(MotorPosition.getA(type, I), TOLERANCE));
-        // assertTrue(Bc.isIdentical(MotorPosition.getB(type, I), TOLERANCE));
-        // assertTrue(Ad.isIdentical(model.getA(), TOLERANCE));
-        // assertTrue(Bd.isIdentical(model.getB(), TOLERANCE));
+        assertTrue(Ac.isIdentical(MotorPosition.getA(type, I), TOLERANCE));
+        assertTrue(Bc.isIdentical(MotorPosition.getB(type, I), TOLERANCE));
+        assertTrue(Ad.isIdentical(model.getA(), TOLERANCE));
+        assertTrue(Bd.isIdentical(model.getB(), TOLERANCE));
     }
 
     @Test
