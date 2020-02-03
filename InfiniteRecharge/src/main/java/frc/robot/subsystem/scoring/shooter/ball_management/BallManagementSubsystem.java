@@ -32,11 +32,11 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
         motor = MotorUtils.makeSRX(config.ballManagement.spinner);
     }
 
-    public void diagnosticsInitialize() {
+    public void testInit() {
 
     }
 
-    public void diagnosticsPeriodic() {
+    public void testPeriodic() {
 
     }
 

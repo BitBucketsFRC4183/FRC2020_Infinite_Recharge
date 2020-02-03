@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -15,6 +18,7 @@ import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
 import frc.robot.operatorinterface.PS4Constants;
 import frc.robot.subsystem.spinnyboi.SpinnyBoiSubsystem;
+import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
@@ -41,6 +45,7 @@ public class Robot extends TimedRobot {
 
     private NavigationSubsystem navigationSubsystem;
     private DriveSubsystem driveSubsystem;
+    private List<BitBucketSubsystem> subsystems = new ArrayList<>();
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -51,19 +56,21 @@ public class Robot extends TimedRobot {
         config = ConfigChooser.getConfig();
 
         navigationSubsystem = new NavigationSubsystem(config);
-        navigationSubsystem.initialize();
-
         driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
-        driveSubsystem.initialize();
-
         shooterSubsystem = new ShooterSubsystem(config);
-        shooterSubsystem.initialize();
-
         intakeSubsystem = new IntakeSubsystem(config);
-        intakeSubsystem.initialize();
-
         spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
-        spinnyBoiSubsystem.initialize();
+        
+
+        subsystems.add(navigationSubsystem);
+        subsystems.add(intakeSubsystem);
+        subsystems.add(shooterSubsystem);
+        subsystems.add(driveSubsystem);
+        subsystems.add(spinnyBoiSubsystem);
+
+        for (BitBucketSubsystem subsystem : subsystems){
+            subsystem.initialize();
+        }
 
         lastTime = System.currentTimeMillis();
     }
@@ -84,16 +91,15 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("deltaTime", deltaTime);
 
         double t0 = System.nanoTime();
-        driveSubsystem.periodic(deltaTime);
         double t1 = System.nanoTime();
-        shooterSubsystem.periodic(deltaTime);
         double t2 = System.nanoTime();
-        intakeSubsystem.periodic(deltaTime);
         double t3 = System.nanoTime();
-        navigationSubsystem.periodic(deltaTime);
         double t4 = System.nanoTime();
-        spinnyBoiSubsystem.periodic(deltaTime);
         double t5 = System.nanoTime();
+
+        for (BitBucketSubsystem subsystem : subsystems){
+            subsystem.periodic(deltaTime);
+        }
         //System.out.println("Drive: " + (t1 - t0) / 1000000 + "ms");
         //System.out.println("Shooter: " + (t2 - t1) / 1000000 + "ms");
         //System.out.println("Intake: " + (t3 - t2) / 1000000 + "ms");
@@ -189,12 +195,21 @@ public class Robot extends TimedRobot {
             shooterSubsystem.rotateTurretWithLLOffset();
         }
     }
+    @Override
+    public void testInit() {
+        for (BitBucketSubsystem subsystem : subsystems){
+            subsystem.testInit();
+        }
+    }
 
     /**
      * This function is called periodically during test mode.
      */
     @Override
     public void testPeriodic() {
+        for (BitBucketSubsystem subsystem : subsystems){
+            subsystem.testPeriodic();
+        }
     }
 
     // COMMANDS the robot to WIN!

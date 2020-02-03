@@ -21,11 +21,11 @@ public class SpinnyBoiSubsystem extends BitBucketSubsystem {
         motor = MotorUtils.makeSRX(config.spinnyboi.spinner);
     }
 
-	public void diagnosticsInitialize() {
+	public void testInit() {
 
     }
 	
-	public void diagnosticsPeriodic() {
+	public void testPeriodic() {
 
     }
 	

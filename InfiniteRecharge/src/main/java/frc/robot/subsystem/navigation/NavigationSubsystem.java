@@ -55,7 +55,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	}
 
   	@Override
-	public void diagnosticsInitialize() {
+	public void testInit() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -136,7 +136,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	}
 
 	@Override
-	public void diagnosticsPeriodic() {
+	public void testPeriodic() {
 		// TODO Auto-generated method stub
 		
 	}
