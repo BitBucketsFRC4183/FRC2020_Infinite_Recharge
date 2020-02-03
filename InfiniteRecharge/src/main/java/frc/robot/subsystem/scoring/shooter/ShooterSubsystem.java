@@ -62,6 +62,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public ShooterSubsystem(Config config, VisionSubsystem visionSubsystem) {
         super(config);
+        this.visionSubsystem = visionSubsystem;
 
     }
 
