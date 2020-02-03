@@ -55,6 +55,7 @@ public class OI {
     private final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
     private final int OPERATOR_CLIMB_PULL_RAISE = PS4Constants.TRIANGLE.getValue();
     private final int OPERATOR_CLIMB_RAISE = PS4Constants.CROSS.getValue();
+    private final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
 
     // forced Idle for corresponding subsystems
     private final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
@@ -70,6 +71,10 @@ public class OI {
 
     public double manualAzimuthAxis() {
         return operatorControl.getRawAxis(OPERATOR_MANUAL_AZIMUTH_AXIS);
+    }
+
+    public boolean zero() {
+        return operatorControl.getRawButton(OPERATOR_TURRET_ZERO);
     }
 
     public boolean aimBot() {
