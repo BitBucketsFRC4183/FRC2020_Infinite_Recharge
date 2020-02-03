@@ -169,7 +169,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Output",
                 ballPropulsionMotor.getSelectedSensorVelocity());
         SmartDashboard.putNumber(getName() + "/Target Position ", targetPositionAzimuth);
-        SmartDashboard.putNumber(getName() + "/Absolute Degrees to Rotate", absoluteDegreesToRotate);
+        SmartDashboard.putNumber(getName() + "/Absolute Degrees to Rotate", absoluteDegreesToRotateAzimuth);
         SmartDashboard.putNumber(getName() + "/Azimuth Position ", azimuthMotor.getSelectedSensorPosition());
 
         SmartDashboard.putNumber(getName() + "/Azimuth Target Position Deg ",
@@ -295,7 +295,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void calculateAbsoluteDegreesToRotate() {
         if (validTarget) {
             double tx = visionSubsystem.getTx();
-            double degrees = getTargetTurretDegGivenOffset(tx);
+            double degrees = getTargetAzimuthDegGivenOffset(tx);
             // The offset and thus the degrees might change, causing the robot to oscillate
             // about its target. To prevent this, take an average.
             // If enabled in the constants file, calculate the average of the last values
