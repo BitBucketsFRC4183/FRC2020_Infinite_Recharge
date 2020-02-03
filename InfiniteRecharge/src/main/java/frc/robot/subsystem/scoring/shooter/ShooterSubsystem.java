@@ -71,6 +71,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         azimuthMotor = MotorUtils.makeSRX(config.shooter.azimuth);
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
+        feeder.enableVoltageCompensation(true);
+        feeder.configVoltageCompSaturation(ShooterConstants.MAX_VOLTS);
         feeder.selectProfileSlot(MotorUtils.velocitySlot, 0);
         ballPropulsionMotor.selectProfileSlot(MotorUtils.velocitySlot, 0);
         ballManagementSubsystem = new BallManagementSubsystem(config);
@@ -93,7 +95,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     @Override
     public void diagnosticsInitialize() {
         SmartDashboard.putNumber(getName() + "/Shooter Output Percent", 0.2);
-        SmartDashboard.putNumber(getName() + "/Feeder Output Percent", 0.2);
+        SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 500);
         SmartDashboard.putNumber(getName() + "/Feeder Velocity RPM", 60);
         SmartDashboard.putNumber(getName() + "/Turret Turn Rate", config.shooter.defaultTurnVelocityDeg);
@@ -137,10 +139,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void spinUp() {
-
         // Spin up the feeder.
-        feeder.set(ControlMode.Velocity,
-                MathUtils.unitConverter(SmartDashboard.getNumber(getName() + "/Feeder Velocity RPM", 60), 600, 8192));
+        feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT));
         SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
 
         // Spin up the shooter.
