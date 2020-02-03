@@ -28,7 +28,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public boolean feeding = false;
     public boolean feederVelocityControl = false;
     public boolean shooterVelocityControl = false;
-    public boolean validTarget = false;
 
     // Integers
     public int targetPositionAzimuth;
@@ -141,6 +140,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void periodic(float deltaTime) {
+
+        calculateAbsoluteDegreesToRotate();
 
         targetPositionAzimuth = (int) (targetPositionAzimuth + (targetChangeAzimuth * deltaTime));
         targetPositionElevation = (int) (targetPositionElevation + (targetChangeElevation * deltaTime));
@@ -293,6 +294,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void calculateAbsoluteDegreesToRotate() {
+        boolean validTarget = visionSubsystem.getValidTarget();
         if (validTarget) {
             double tx = visionSubsystem.getTx();
             double degrees = getTargetAzimuthDegGivenOffset(tx);
