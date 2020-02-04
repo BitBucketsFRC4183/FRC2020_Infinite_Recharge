@@ -114,4 +114,9 @@ public class DriveConstants {
     public static final double KP_VOLT_S_PER_FT = 0.00332;
     public static final double KP_VOLT_S_PER_RAD = KP_VOLT_S_PER_FT / 12 / (WHEEL_DIAMETER_INCHES / 2);
     public static final double KP_100MS_PER_TICK_PERCENT /* WHY */ = KP_VOLT_S_PER_RAD * 10 / (2 * Math.PI) / DRIVE_MOTOR_NATIVE_TICKS_PER_REV / MAX_VOLTS;
+
+
+
+    public static final double ROTATION_DRIVE_MAX_OFFSET_DEG = 45;
+    public static final double ROTATION_DRIVE_KP = 5;
 }

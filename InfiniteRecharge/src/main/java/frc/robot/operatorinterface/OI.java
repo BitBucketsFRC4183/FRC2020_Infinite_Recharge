@@ -47,6 +47,8 @@ public class OI {
     private final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
     private final int DRIVE_LOCK_BUTTON = PS4Constants.OPTIONS.getValue();
     private final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
+    private final int DRIVE_METHOD_SWITCH_BUTTON = PS4Constants.L1.getValue();
+
     private final int OPERATOR_INTAKE_IN_POV = 180;
     private final int OPERATOR_INTAKE_OUT_POV = 0;
     private final int OPERATOR_INTAKE_TOGGLE = PS4Constants.PS4.getValue();
@@ -131,6 +133,6 @@ public class OI {
     }
 
     public boolean rotationToVelocity() {
-        return false;
+        return driverControl.getRawButton(DRIVE_METHOD_SWITCH_BUTTON);
     }
 }
