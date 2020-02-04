@@ -214,7 +214,19 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
         double yaw = NAVIGATION_SUBSYSTEM.getYaw_deg();
-        double yawError = (yaw - offset + 2*Math.PI) % (2*Math.PI);
+        SmartDashboard.putNumber(getName() + "/yaw", yaw);
+        double yawCommand = yaw0 + offset;
+        SmartDashboard.putNumber(getName() + "/yaw command", yawCommand);
+
+        double yawError = yaw - yawCommand;
+        SmartDashboard.putNumber(getName() + "/yaw error", yawError);
+
+        yawError = (yawError + 720.0) % (360.0);
+        if (yawError > 180) {
+            // additional = yawError - 180
+            // -180 + additional
+            yawError -= 360;
+        }
 
         double omega = yawError*DriveConstants.ROTATION_DRIVE_KP;
 
@@ -334,6 +346,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
             SmartDashboard.putNumber(getName() + "/left ticks", leftMotors[0].getSelectedSensorPosition());
             SmartDashboard.putNumber(getName() + "/right ticks", rightMotors[0].getSelectedSensorPosition());
+
+            SmartDashboard.putString(getName() + "/drive method", driveMethod.toString());
         }
     }
 

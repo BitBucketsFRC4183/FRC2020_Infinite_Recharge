@@ -118,5 +118,5 @@ public class DriveConstants {
 
 
     public static final double ROTATION_DRIVE_MAX_OFFSET_DEG = 45;
-    public static final double ROTATION_DRIVE_KP = 5;
+    public static final double ROTATION_DRIVE_KP = 5*2*Math.PI/360;
 }
