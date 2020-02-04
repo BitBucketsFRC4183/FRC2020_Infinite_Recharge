@@ -1,5 +1,7 @@
 package frc.robot.utils.control.statespace.estimators.kalman;
 
+import static org.junit.Assert.assertTrue;
+
 import org.ejml.simple.SimpleMatrix;
 import org.junit.Test;
 
@@ -9,8 +11,12 @@ import frc.robot.utils.control.statespace.models.motors.MotorType;
 
 
 public class KalmanFilterTest {
+    private static final double TOLERANCE = 0.000001;
+
     @Test
     public void motor() {
+        double t0 = System.nanoTime();
+
         double I = 0.001;
         MotorType type = MotorType.Falcon500;
         double dt = 0.02;
@@ -46,9 +52,10 @@ public class KalmanFilterTest {
             new double[] {3, 4}
         });
 
+        // idk what kind of encoder gives us this but don't judge
         SimpleMatrix C = new SimpleMatrix(new double[][] {
-            new double[] {1, 0},
-            new double[] {0, 1}
+            new double[] {2, 3},
+            new double[] {-0.1, 5}
         });
 
         SimpleMatrix D = new SimpleMatrix(2, 2);
@@ -80,6 +87,41 @@ public class KalmanFilterTest {
             }
         };
 
+        model.setState(new SimpleMatrix(2, 1, true, new double[] {Math.PI, Math.PI / 100}));
+
+
+
         model.apply(new SimpleMatrix(1, 1, true, new double[] {8}));
+        filter.predict();
+
+        SimpleMatrix y = new SimpleMatrix(2, 1, true, new double[] {181, 295});
+        filter.update(y);
+
+        assertTrue(model.getState().isIdentical(new SimpleMatrix(2, 1, true, new double[] {
+            2.650741871503023, 58.865022680661937
+        }), TOLERANCE));
+
+
+
+        model.apply(new SimpleMatrix(1, 1, true, new double[] {6}));
+        filter.predict();
+
+        y = new SimpleMatrix(2, 1, true, new double[] {295, 470});
+        filter.update(y);
+
+        assertTrue(model.getState().isIdentical(new SimpleMatrix(2, 1, true, new double[] {
+            5.338061309893673, 94.364827040089935
+        }), TOLERANCE));
+
+        double t1 = System.nanoTime();
+
+        System.out.println((t1 - t0) / 1000000 + "ms to run");
+    }
+
+    @Test
+    public void motor_time() {
+        for (int i = 0; i < 100; i++) {
+            motor();
+        }
     }
 }

@@ -33,12 +33,16 @@ public abstract class KalmanFilter {
 
     private SimpleMatrix x_apriori;
 
+    private final SimpleMatrix I;
+
 
 
     public KalmanFilter(SimpleMatrix P0, LinearizedModel model) {
         MODEL = model;
         this.P = P0;
         this.P_apriori = P0;
+
+        I = SimpleMatrix.identity(model.getNumStates());
     }
 
 
@@ -59,14 +63,17 @@ public abstract class KalmanFilter {
      */
     public SimpleMatrix predict() {
         // model already has a state, so predict based on that
-        x_apriori = MODEL.update();
+        x_apriori = MODEL.getState();
 
         ABFTriple abf = MODEL.getLastSystem();
+
+        SimpleMatrix Q = getQ(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime());
+        SimpleMatrix G = getG(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime());
+
         P_apriori = 
-            // APA' + Q
-            abf.getA().mult(P).mult(
-                abf.getA().transpose()
-                .plus(getR(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime()))
+            // APA' + GQG'
+            abf.getA().mult(P).mult(abf.getA().transpose()).plus(
+                G.mult(Q.mult(G.transpose()))
             );
 
         return x_apriori;
@@ -88,14 +95,17 @@ public abstract class KalmanFilter {
         SimpleMatrix x_posteriori = x_apriori.plus(
             K.mult(
                 y.minus(
-                    getC(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime())
+                    getC(MODEL.getState(), MODEL.getInput(), MODEL.getLastTime()).mult(MODEL.getState())
                 )
             )
         );
 
+        // posteriori covariance estimate
+        P = (I.minus(K.mult(C))).mult(P_apriori);
+
         MODEL.setState(x_posteriori);
 
-        return x_posteriori;
+        return P;
     }
 
 
