@@ -126,6 +126,22 @@
               "_source0": "network_table:///SmartDashboard/NavigationSubsystem/processing time var",
               "_title": "SmartDashboard/NavigationSubsystem/processing time var"
             }
+          },
+          "10,0": {
+            "size": [
+              6,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/NavigationSubsystem/Robot yaw",
+              "_title": "SmartDashboard/NavigationSubsystem/Robot yaw",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/NavigationSubsystem/Robot yaw": true
+            }
           }
         }
       }
@@ -1266,7 +1282,7 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "3,1": {
+          "5,0": {
             "size": [
               1,
               1
@@ -1277,7 +1293,7 @@
               "_title": "SmartDashboard/ShooterSubsystem/Feeder Output Percent"
             }
           },
-          "4,1": {
+          "6,0": {
             "size": [
               1,
               1
@@ -1288,7 +1304,7 @@
               "_title": "SmartDashboard/ShooterSubsystem/Feeder Output"
             }
           },
-          "3,2": {
+          "5,1": {
             "size": [
               5,
               2
@@ -1304,7 +1320,7 @@
               "Visible data/SmartDashboard/ShooterSubsystem/Shooter Velocity Output": true
             }
           },
-          "5,1": {
+          "7,0": {
             "size": [
               2,
               1
@@ -1315,7 +1331,7 @@
               "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity RPM"
             }
           },
-          "8,1": {
+          "10,0": {
             "size": [
               1,
               1
@@ -1326,7 +1342,7 @@
               "_title": "SmartDashboard/ShooterSubsystem/TelemetryEnabled"
             }
           },
-          "7,1": {
+          "9,0": {
             "size": [
               1,
               1
@@ -1336,14 +1352,59 @@
               "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Velocity Error",
               "_title": "SmartDashboard/ShooterSubsystem/Velocity Error"
             }
+          },
+          "0,0": {
+            "size": [
+              5,
+              5
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/periodic time",
+              "_title": "SmartDashboard/periodic time",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/periodic time": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tab 11",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              11,
+              5
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/NavigationSubsystem/processing time (ms)",
+              "_title": "SmartDashboard/NavigationSubsystem/processing time (ms)",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/NavigationSubsystem/processing time (ms)": true
+            }
           }
         }
       }
     }
   ],
   "windowGeometry": {
-    "x": -8.0,
-    "y": -8.0,
+    "x": -40.0,
+    "y": 305.0,
     "width": 1620.0,
     "height": 920.0
   }
