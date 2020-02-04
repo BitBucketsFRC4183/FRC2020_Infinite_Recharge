@@ -37,7 +37,7 @@ public class RotationDrive extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (DRIVE_SUBSYSTEM.getDriveMethod() != DriveSubsystem.DriveMethod.IDLE) {
+        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.IDLE) {
             return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
         }
 
