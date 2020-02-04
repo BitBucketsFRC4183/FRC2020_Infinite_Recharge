@@ -1,7 +1,6 @@
 package frc.robot.subsystem.drive;
 
-
-
+import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.CommandUtils;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -10,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class RotationDrive extends CommandBase {
     private final DriveSubsystem DRIVE_SUBSYSTEM;
+    private final NavigationSubsystem NAVIGATION_SUBSYSTEM;
+
+    private double yaw0;
 
 
 
@@ -17,12 +19,18 @@ public class RotationDrive extends CommandBase {
         addRequirements(driveSubsystem);
 
         DRIVE_SUBSYSTEM = driveSubsystem;
+        NAVIGATION_SUBSYSTEM = DRIVE_SUBSYSTEM.getNavigation();
+
+        yaw0 = NAVIGATION_SUBSYSTEM.getYaw_deg();
     }
 
 
 
     public void execute() {
+        double rawSpeed = DRIVE_SUBSYSTEM.getDriverRawSpeed();
+        double rawTurn = DRIVE_SUBSYSTEM.getDriverRawTurn();
 
+        DRIVE_SUBSYSTEM.rotationDrive(rawSpeed, rawTurn, yaw0);
     }
 
 
