@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.io.IOException;
+import java.awt.*;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -12,6 +13,7 @@ import frc.robot.simulator.network.proto.RobotProto.MotorOutputs.MotorOutput;
 import frc.robot.simulator.sim.RobotPosition;
 import frc.robot.simulator.sim.RobotPosition.Type;
 import frc.robot.simulator.sim.events.EventManager;
+import frc.robot.simulator.sim.events.FieldRenderEvent;
 import frc.robot.simulator.sim.events.RobotInitializedEvent;
 
 public class Sim {
@@ -22,6 +24,9 @@ public class Sim {
     private double targetY = 8.35;
     private double aziumthMotorPositionInRadians = 0;
 
+    // the angle the limelight can see a target, 60 degrees in either direction is probably too much, but...
+    private static final double LIMELIGHT_VIEWING_ANGLE = 60 / (Math.PI / 2);
+
     public static void main(String[] args) throws InterruptedException, IOException {
         // create a new BitBuckets sim object to respond to simulator events
         Sim bitbucketsSim = new Sim();
@@ -30,6 +35,7 @@ public class Sim {
         EventManager.subscribeToRobotInitializedEvents(bitbucketsSim::onRobotInitialized);
         EventManager.subscribeToMotorOutputsEvents(bitbucketsSim::onMotorOutputsUpdated);
         EventManager.subscribeToRobotPositionEvents(bitbucketsSim::onRobotPositionUpdated);
+        EventManager.subscribeToFieldRenderEvents(bitbucketsSim::onFieldRender);
 
         // start the sim
         SimMain.main(args);
@@ -60,8 +66,6 @@ public class Sim {
         tableInstance.startClientTeam(4183);
 
         limelightTable = tableInstance.getTable("limelight");
-
-        // TODO: do limelight network table setup here
     }
 
     void onRobotPositionUpdated(RobotPosition robotPosition) {
@@ -91,7 +95,7 @@ public class Sim {
 
                 // TODO: Figure out ty based on distance to target
 
-                if (Math.abs(txDegrees) < 45) {
+                if (Math.abs(txDegrees) < LIMELIGHT_VIEWING_ANGLE) {
                     limelightTable.getEntry("tv").forceSetNumber(1);
                 } else {
                     limelightTable.getEntry("tv").forceSetNumber(0);
@@ -100,6 +104,9 @@ public class Sim {
         }
     }
 
+    /**
+     * This event is triggered anytime the sim updates the outputs of the motors, basically every 1ms
+     */
     void onMotorOutputsUpdated(MotorOutputs outputs) {
         if (robotInitialized) {
             for (MotorOutput motorOutput : outputs.getMotorOutputList()) {
@@ -111,4 +118,32 @@ public class Sim {
         }
     }
 
+    /**
+     * Hook into the FieldRenderEvent to render our turret
+     * @param fieldRenderEvent
+     */
+    private void onFieldRender(FieldRenderEvent fieldRenderEvent) {
+        if (robotInitialized) {
+            Graphics2D g2d = fieldRenderEvent.getG2d();
+            Rectangle robotRect = fieldRenderEvent.getRobotRect();
+
+            // our turret is a red circle in the middle of the robot
+            int size = (int) (robotRect.width * .75);
+            int x = robotRect.x + size / 4;
+            int y = robotRect.y + size / 4;
+            g2d.setColor(Color.RED);
+            g2d.fillOval(x, y, size, size);
+            g2d.setColor(Color.DARK_GRAY);
+            g2d.drawOval(x, y, size, size);
+
+            // Draw a line showing the direction the turret is facing.
+            g2d.setColor(Color.YELLOW);
+            double turretHeading = (aziumthMotorPositionInRadians * config.shooter.azimuthGearRatio) + fieldRenderEvent.getHeading();
+            int startX = x + size / 2;
+            int startY = y + size / 2;
+            int endX = startX + (int) (Math.cos(turretHeading - Math.PI / 2) * (robotRect.width / 2));
+            int endY = startY + (int) (Math.sin(turretHeading - Math.PI / 2) * (robotRect.width / 2));
+            g2d.drawLine(startX, startY, endX, endY);
+        }
+    }
 }
