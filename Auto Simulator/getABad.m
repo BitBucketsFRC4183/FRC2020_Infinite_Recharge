@@ -1,7 +1,7 @@
 function A = getABad(state)
     physicsConstants;
 
-    theta = x(THETA);
+    theta = state(THETA);
 
     A = [
         0, 0, 0, cos(theta)/2, cos(theta)/2;

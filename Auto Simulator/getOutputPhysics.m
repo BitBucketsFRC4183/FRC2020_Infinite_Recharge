@@ -8,8 +8,8 @@ function y = getOutputPhysics(state)
     xLL = x + rLL * cos(thetaR + thetaLL);
     yLL = y + rLL * cos(thetaR + thetaLL);
     
-    d = sqrt((xLL - xT)^2 + (yLL - yT)^2) + 0.125*(2*rand-1);
-    tx = thetaR - atan2(yT - yLL, xT - xLL - xT) + pi/1800*(2*rand-1);
+    d = sqrt((xLL - xT)^2 + (yLL - yT)^2);% + 0.125*(2*rand-1);
+    tx = thetaR - atan2(yT - yLL, xT - xLL - xT);% + pi/1800*(2*rand-1);
     
     y = [
         d;
