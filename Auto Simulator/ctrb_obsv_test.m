@@ -6,14 +6,15 @@ nC = 0;
 nO = 0;
 n = 1000;
 
-C = eye(5);
-
 for i = 1:n
     x = (2*rand - 1) * W;
     y = (2*rand - 1) * H;
     theta = (2*rand-1)*2*pi;
     vl = (2*rand-1)*V_MAX;
     vr = (2*rand-1)*V_MAX;
+    
+    d = sqrt(x^2 + y^2);
+    sq = sqrt(1 + x^2 / y^2);
     
     state = [x; y; theta; vl; vr;];
     
@@ -23,6 +24,13 @@ for i = 1:n
     if (rank(ctrb(Ac, Bc)) == 5)
         nC = nC + 1;
     end
+    
+    C = [
+        1/d, 1/d, 0, 0, 0;
+        1/(y*sq), -x/(y^2*sq), -1, 0, 0;
+        0, 0, 0, 1, 0;
+        0, 0, 0, 0, 1;
+    ];
     
     if (rank(obsv(Ac, C)) == 5)
         nO = nO + 1;
