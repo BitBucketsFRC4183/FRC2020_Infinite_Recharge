@@ -1,24 +1,32 @@
 physicsConstants;
 
 state = [
-    0.0; % x
+    -1; % x
     0.0; % y
-    0.0; % heading, theta
-    0;
-    0;
+    pi/4; % heading, theta
+    0.00;
+    0.00;
 ];
 
-state_hat = [5; 5; pi/3; 0; 0;];
+state_hat = state;%[-0.80; 0.2; pi/4 + 0.01; 0.0; 0.0;];
 
-P = 0.01*eye(5);
+P = zeros(5);
+%[
+%    0.05, 0, 0, 0, 0;
+%    0, 0.05, 0, 0, 0;
+%    0, 0, 2*pi/180, 0, 0;
+%    0, 0, 0, 0, 0;
+%    0, 0, 0, 0, 0;
+%];
+%0.01*eye(5);
 
 Q = [
-    0.125, 0;
-    0, 0.125;
+    0.1, 0;
+    0, 0.1;
 ];
 
 R = [
-    0.125, 0, 0, 0;
+    0.0508, 0, 0, 0;
     0, pi/1800, 0, 0;
     0, 0, 0.0001, 0; % pretty certain about velocities
     0, 0, 0, 0.0001;
@@ -31,7 +39,7 @@ T=0.02;
 
 i = 0;
 
-TMAX = 1;
+TMAX = 15;
 
 xs = zeros(1, TMAX/T + 1);
 ys = zeros(1, TMAX/T + 1);
@@ -69,46 +77,9 @@ for t=0:T:TMAX
     
     
     
-    Ac = getSysMatPhysics(state);
+    Ac = getABad(state);%getSysMatPhysics(state);
     Bc = getInpMatPhysics(state);
-    Fc = getFPhysics(state);
-
-    sysc = ss(Ac, Bc, eye(STATE_SIZE), zeros(STATE_SIZE, INPUT_SIZE));
-    sysd = c2d(sysc, T);
-    
-    %syscF = ss(Ac, Fc, eye(STATE_SIZE), zeros(STATE_SIZE, 1));
-    %sysdF = c2d(syscF, T);
-    
-    A = sysd.A;
-    B = sysd.B;
-    F = zeros(5, 1);%sysdF.B;
-    
-    lerr = state(vL) - vLfinal;
-    rerr = state(vR) - vRfinal;
-    
-    %u(1) = kF*vLfinal + kP*lerr;
-    %u(2) = kF*vRfinal + kP*rerr;
-    
-    u(1) = 0;
-    u(2) = 0;
-
-    %u(1) + 0.05*(2*rand-1);
-    %u(2) + 0.05*(2*rand-1);
-    
-    us(1:2, i) = u;
-    
-    % move state forward in time
-    %state = badUpdate(state, T);
-    state = A*state + B*u + F;
-    %state(THETA) = mod(state(THETA), 2*pi);
-    
-    states(1:5, i) = state;
-    
-    
-    
-    Ac = getSysMatPhysics(state_hat);
-    Bc = getInpMatPhysics(state_hat);
-    Fc = getFPhysics(state_hat);
+    Fc = zeros(STATE_SIZE, 1);%getFPhysics(state);
 
     sysc = ss(Ac, Bc, eye(STATE_SIZE), zeros(STATE_SIZE, INPUT_SIZE));
     sysd = c2d(sysc, T);
@@ -118,14 +89,55 @@ for t=0:T:TMAX
     
     A = sysd.A;
     B = sysd.B;
+    F = sysdF.B;
+
     G = B;
+    
+    lerr = state(vL) - vLfinal;
+    rerr = state(vR) - vRfinal;
+    
+    u(1) = kF*vLfinal + kP*lerr;
+    u(2) = kF*vRfinal + kP*rerr;
+    
+    %u(1) = 0;
+    %u(2) = 0;
+
+    %u(1) + 0.05*(2*rand-1);
+    %u(2) + 0.05*(2*rand-1);
+    
+    us(1:2, i) = u;
+    
+    % move state forward in time
+    %state = badUpdate(state, T);
+    state_ap = state;
+    state = A*state + B*u + F + B*mvnrnd(zeros(2, 1), Q, 1)';
+    %state(THETA) = mod(state(THETA), 2*pi);
+    
+    states(1:5, i) = state;
+    
+    
+    
+    %state_hat = state_ap;
+
+    Ac = getABad(state_hat);%getSysMatPhysics(state_hat);
+    Bc = getInpMatPhysics(state_hat);
+    Fc = zeros(STATE_SIZE, 1);%getFPhysics(state_hat);
+
+    sysc = ss(Ac, Bc, eye(STATE_SIZE), zeros(STATE_SIZE, INPUT_SIZE));
+    sysd = c2d(sysc, T);
+    
+    syscF = ss(Ac, Fc, eye(STATE_SIZE), zeros(STATE_SIZE, 1));
+    sysdF = c2d(syscF, T);
+    
+    A = sysd.A;
+    B = sysd.B;
     
     % predict
     state_hat = A*state_hat + B*u + sysdF.B;
     P = A*P*A' + G*Q*G';
     
     % measure
-    y = getOutputPhysics(state);
+    y = getOutputPhysics(state) + mvnrnd(zeros(4, 1), R, 1)';
     
     % update
     C = getCPhysics(state_hat);
@@ -155,17 +167,22 @@ hold off;
 
 figure(2);
 plot(0:T:TMAX, states(vL:vR, 1:(1 + TMAX/T)));
-title("Velocity over time");
+title("Velocity and estimated velocity over time");
+hold on;
+plot(0:T:TMAX, states_hat(vL:vR, 1:(1 + TMAX/T)));
+hold off;
 
 figure(3);
-plot(0:T:TMAX, states(THETA, 1:(1 + TMAX/T)));
-title("Heading over time");
+plot(0:T:TMAX, states(THETA, 1:(1 + TMAX/T))*180/pi);
+hold on;
+plot(0:T:TMAX, states_hat(THETA, 1:(1 + TMAX/T))*180/pi);
+hold off;
+title("Heading and estimated heading (deg) over time");
+
+figure(4);
+plot(0:T:TMAX, us);
+title("Control effort over time");
 
 figure(5);
-plot(0:T:TMAX, us);
-
-figure(6);
-plot(0:T:TMAX, states(4:5, 1:(TMAX/T + 1)));
-
-figure(7);
-plot(0:T:TMAX, es*12/0.3048);
+plot(0:T:TMAX, es*100);
+title("cm error over time");
