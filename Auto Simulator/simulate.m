@@ -8,7 +8,7 @@ state = [
     0.00;
 ];
 
-state_hat = state;%[-0.80; 0.2; pi/4 + 0.01; 0.0; 0.0;];
+state_hat = [-3; 0.2; 0; 0.0; 0.0;];
 
 P = zeros(5);
 %[
@@ -34,12 +34,12 @@ R = [
 
 
 
-u = [7; 10;];
+u = [0; 0;];
 T=0.02;
 
 i = 0;
 
-TMAX = 15;
+TMAX = 3;
 
 xs = zeros(1, TMAX/T + 1);
 ys = zeros(1, TMAX/T + 1);
@@ -64,8 +64,8 @@ kF = 2.551777109743181;
 lastVLerr = 0;
 lastVRerr = 0;
 
-vLfinal = 3;
-vRfinal = 5;
+vLfinal = 0;%3;
+vRfinal = 0;%5;
 
 
 
@@ -110,7 +110,7 @@ for t=0:T:TMAX
     % move state forward in time
     %state = badUpdate(state, T);
     state_ap = state;
-    state = A*state + B*u + F + B*mvnrnd(zeros(2, 1), Q, 1)';
+    state = A*state + B*u + F;% + B*mvnrnd(zeros(2, 1), Q, 1)';
     %state(THETA) = mod(state(THETA), 2*pi);
     
     states(1:5, i) = state;
@@ -137,7 +137,7 @@ for t=0:T:TMAX
     P = A*P*A' + G*Q*G';
     
     % measure
-    y = getOutputPhysics(state) + mvnrnd(zeros(4, 1), R, 1)';
+    y = getOutputPhysics(state);% + mvnrnd(zeros(4, 1), R, 1)';
     
     % update
     C = getCPhysics(state_hat);
