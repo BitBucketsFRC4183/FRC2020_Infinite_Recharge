@@ -100,13 +100,16 @@ public class Robot extends TimedRobot {
         double t4 = System.nanoTime();
         spinnyBoiSubsystem.periodic(deltaTime);
         double t5 = System.nanoTime();
+        visionSubsystem.periodic(deltaTime);
+        double t6 = System.nanoTime();
         //System.out.println("Drive: " + (t1 - t0) / 1000000 + "ms");
         //System.out.println("Shooter: " + (t2 - t1) / 1000000 + "ms");
         //System.out.println("Intake: " + (t3 - t2) / 1000000 + "ms");
         //System.out.println("Navigation: " + (t4 - t3) / 1000000 + "ms");
         //System.out.println("Spinny Boi: " + (t5 - t4) / 1000000 + "ms");
+        //System.out.println("Vision: " + (t6 - t5) / 1000000 + "ms");
 
-        SmartDashboard.putNumber("periodic time", (t5 - t0) / 1000000);
+        SmartDashboard.putNumber("periodic time", (t6 - t0) / 1000000);
 
         CommandScheduler.getInstance().run();
 
