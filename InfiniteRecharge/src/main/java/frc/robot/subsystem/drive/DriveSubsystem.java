@@ -250,7 +250,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		if (needVelocityMode && !velocityMode) {
 			for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
 				leftMotors[i].selectProfileSlot(MotorUtils.velocitySlot,
-				                                0);
+                                                0);
+// 254
 				rightMotors[i].selectProfileSlot(MotorUtils.velocitySlot,
 				                                0);
             }
