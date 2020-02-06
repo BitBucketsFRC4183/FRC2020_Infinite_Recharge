@@ -434,7 +434,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-	public Supplier<DifferentialDriveWheelSpeeds> getWheelSpeeds() {
+	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
 		return null;
 	}
 
@@ -446,7 +446,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-	public BiConsumer<Double, Double> tankVolts() {
-		return null;
+	public void tankVolts(double leftVolts, double rightVolts) {
+		
 	}
 }
