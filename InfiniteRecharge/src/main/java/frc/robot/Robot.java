@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
 
         driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
         driveSubsystem.initialize();
+        navigationSubsystem.setDrive(driveSubsystem); // Java
 
         shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
         shooterSubsystem.initialize();
