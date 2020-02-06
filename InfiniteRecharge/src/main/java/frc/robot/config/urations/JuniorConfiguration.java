@@ -2,6 +2,7 @@
 package frc.robot.config.urations;
 
 import frc.robot.config.Config;
+import frc.robot.config.MotorConfig.EncoderType;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class JuniorConfiguration extends Config {
@@ -55,6 +56,8 @@ public class JuniorConfiguration extends Config {
 
         drive.gearRatio = 1;
         drive.ticksPerRevolution = 8192;
+
+        drive.encoderType = EncoderType.Quadrature;
 
         drive.initMotorConfigArrays();
 
