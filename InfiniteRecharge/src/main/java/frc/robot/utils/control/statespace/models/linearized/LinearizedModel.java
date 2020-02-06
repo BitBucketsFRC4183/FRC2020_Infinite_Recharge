@@ -142,6 +142,8 @@ public abstract class LinearizedModel extends StateSpaceModel {
     }
 
     public void apply(SimpleMatrix inputVector) {
+        getDiscreteSystem();
+
         input = inputVector;
 
         state = update();
@@ -156,4 +158,7 @@ public abstract class LinearizedModel extends StateSpaceModel {
     public ABFTriple getLastSystem() { return lastSystem; }
 
     public void setState(SimpleMatrix state) { this.state = state; }
+
+    public int getNumInputs() { return NUM_INPUTS; }
+    public int getNumStates() { return NUM_STATES; }
 }

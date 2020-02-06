@@ -19,6 +19,7 @@ import frc.robot.operatorinterface.OI;
 import frc.robot.operatorinterface.PS4Constants;
 import frc.robot.subsystem.spinnyboi.SpinnyBoiSubsystem;
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
@@ -35,6 +36,9 @@ public class Robot extends TimedRobot {
     private ShooterSubsystem shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
     private SpinnyBoiSubsystem spinnyBoiSubsystem;
+    private NavigationSubsystem navigationSubsystem;
+    private DriveSubsystem driveSubsystem;
+    private VisionSubsystem visionSubsystem;
     private Config config;
 
     public float deltaTime;
@@ -56,6 +60,7 @@ public class Robot extends TimedRobot {
         config = ConfigChooser.getConfig();
 
         navigationSubsystem = new NavigationSubsystem(config);
+        visionSubsystem = new VisionSubsystem(config);
         driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
         shooterSubsystem = new ShooterSubsystem(config);
         intakeSubsystem = new IntakeSubsystem(config);
@@ -105,8 +110,9 @@ public class Robot extends TimedRobot {
         //System.out.println("Intake: " + (t3 - t2) / 1000000 + "ms");
         //System.out.println("Navigation: " + (t4 - t3) / 1000000 + "ms");
         //System.out.println("Spinny Boi: " + (t5 - t4) / 1000000 + "ms");
+        //System.out.println("Vision: " + (t6 - t5) / 1000000 + "ms");
 
-        SmartDashboard.putNumber("periodic time", (t5 - t0) / 1000000);
+        SmartDashboard.putNumber("periodic time", (t6 - t0) / 1000000);
 
         CommandScheduler.getInstance().run();
 
@@ -185,14 +191,18 @@ public class Robot extends TimedRobot {
         }
 
         // Rotate the turret with [manualAzimuthAxis]
-        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband) {
-            shooterSubsystem.rotate(oi.manualAzimuthAxis());
+        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
+            shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
         } else {
-            shooterSubsystem.rotate(0);
+            shooterSubsystem.rotate(0, 0);
         }
 
         if (oi.aimBot()) {
-            shooterSubsystem.rotateTurretWithLLOffset();
+            shooterSubsystem.autoAim();
+        }
+
+        if (oi.zero()) {
+            shooterSubsystem.rotateToDeg(0, 0);
         }
     }
     @Override

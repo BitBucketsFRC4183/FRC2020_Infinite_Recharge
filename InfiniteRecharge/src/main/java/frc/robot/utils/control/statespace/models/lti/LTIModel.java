@@ -14,6 +14,6 @@ public class LTIModel extends LTIFModel {
     }
 
     public LTIModel(SimpleMatrix A, SimpleMatrix B) {
-        super(new ABFTriple(A, B, new SimpleMatrix(A.numRows(), A.numRows())));
+        super(new ABFTriple(A, B, new SimpleMatrix(A.numRows(), 1)));
     }
 }

@@ -1,21 +1,32 @@
 package frc.robot.subsystem.drive;
 
-
-
 import frc.robot.subsystem.drive.DriveSubsystem.DriveMethod;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.CommandUtils;
+import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 
 
-public class AutoDrive extends CommandBase {
+public class AutoDrive extends RamseteCommand {
     private final DriveSubsystem DRIVE_SUBSYSTEM;
 
 
 
     public AutoDrive(DriveSubsystem driveSubsystem) {
-        addRequirements(driveSubsystem);
+        super(
+            driveSubsystem.getAutoTrajectory(),
+            driveSubsystem::getPose,
+            new RamseteController(),
+            driveSubsystem.getCharacterization(),
+            driveSubsystem.getKinematics(),
+            driveSubsystem::getWheelSpeeds,
+            driveSubsystem.getLeftPID(),
+            driveSubsystem.getLeftPID(),
+            driveSubsystem::tankVolts,
+            driveSubsystem
+        );
 
         DRIVE_SUBSYSTEM = driveSubsystem;
     }

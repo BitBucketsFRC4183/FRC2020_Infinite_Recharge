@@ -4,6 +4,9 @@ import org.ejml.simple.SimpleMatrix;
 import edu.wpi.first.wpiutil.math.SimpleMatrixUtils;
 
 public class MathUtils {
+
+	public static final double G = 32.17405;
+
 	public static double unitConverter(double quantity, double unitToBeConverted, double intoThisOne) {
 		return quantity * (intoThisOne / unitToBeConverted);
 	}
