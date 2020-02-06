@@ -65,6 +65,8 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.powermock:powermock-module-junit4:2.0.2'
+    testImplementation 'org.powermock:powermock-api-mockito2:2.0.2'
 
     // we only use this project at runtime when doing simulations
     testImplementation "org.bitbuckets:simulator:2020.1.2-SNAPSHOT"

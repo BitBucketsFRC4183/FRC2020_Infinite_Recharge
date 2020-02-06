@@ -47,6 +47,8 @@ public class OI {
     private final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
     private final int DRIVE_LOCK_BUTTON = PS4Constants.OPTIONS.getValue();
     private final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
+    private final int DRIVE_METHOD_SWITCH_BUTTON = PS4Constants.LEFT_TRIGGER.getValue();
+
     private final int OPERATOR_INTAKE_IN_POV = 180;
     private final int OPERATOR_INTAKE_OUT_POV = 0;
     private final int OPERATOR_INTAKE_TOGGLE = PS4Constants.PS4.getValue();
@@ -55,6 +57,7 @@ public class OI {
     private final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
     private final int OPERATOR_CLIMB_PULL_RAISE = PS4Constants.TRIANGLE.getValue();
     private final int OPERATOR_CLIMB_RAISE = PS4Constants.CROSS.getValue();
+    private final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
 
     // forced Idle for corresponding subsystems
     private final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
@@ -70,6 +73,10 @@ public class OI {
 
     public double manualAzimuthAxis() {
         return operatorControl.getRawAxis(OPERATOR_MANUAL_AZIMUTH_AXIS);
+    }
+
+    public boolean zero() {
+        return operatorControl.getRawButton(OPERATOR_TURRET_ZERO);
     }
 
     public boolean aimBot() {
@@ -126,6 +133,6 @@ public class OI {
     }
 
     public boolean rotationToVelocity() {
-        return false;
+        return driverControl.getRawButton(DRIVE_METHOD_SWITCH_BUTTON);
     }
 }

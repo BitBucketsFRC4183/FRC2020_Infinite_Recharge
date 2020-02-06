@@ -10,6 +10,7 @@ public class Config {
 
     // Shooter
     public int AZIMUTH_MOTOR_ID = 12;
+    public int ELEVATION_MOTOR_ID = 15;
     public int SHOOTER_MOTOR_ID = 13;
     public int FEEDER_MOTOR_ID = 8;
 
@@ -30,13 +31,24 @@ public class Config {
     // Motor Configs
     public static class ShooterConfig {
         public float azimuthGearRatio = 28f / 130f;
+
+        public float elevationGearRatio = 1f / 1f;
+
         public float shooterGearRatio = .48f / 1f;
-        public float defaultTurnVelocityDeg = 10;
+
+        public float defaultAzimuthTurnVelocityDeg = 10;
+        public float defaultElevationTurnVelocityDeg = 10;
+
         public double manualAzimuthDeadband = 0.2;
-        public float forwardAzimuthSoftLimit = 140;
-        public float backwardAzimuthSoftLimit = 140;
+        public double manualElevationDeadband = 0.2;
+
+        public float forwardAzimuthSoftLimit = 45;
+        public float backwardAzimuthSoftLimit = 45;
+        public float forwardElevationSoftLimit = -1;
+        public float backwardElevationSoftLimit = -1;
 
         public MotorConfig azimuth = new MotorConfig();
+        public MotorConfig elevation = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
         public MotorConfig shooter = new MotorConfig();
 
@@ -50,6 +62,15 @@ public class Config {
 
         public ShooterConfig() {
             shooter.encoderType = MotorConfig.EncoderType.Integrated;
+
+            azimuth.motionMagicAcceleration = 1350;
+            azimuth.motionMagicCruiseVelocity = 1350;
+
+            elevation.motionMagicAcceleration = 1350;
+            elevation.motionMagicCruiseVelocity = 1350;
+
+            azimuth.inverted = true;
+            elevation.inverted = false;
         }
     }
 
@@ -77,6 +98,10 @@ public class Config {
         public boolean rightInverted = false;
 
         public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Integrated;
+
+        /** Gear ratio from encoder to wheel. gearRatio encoder turns = 1 wheel turn */
+        public double gearRatio = (10 + 8.0/9);
+        public double ticksPerRevolution = 2048;
 
         public DriveConfig() {
         }
@@ -118,14 +143,20 @@ public class Config {
 
         //////////////////////////////////////////////////////////////////////////////
         // IDs (Again)
+
+        // Shooter
         shooter.azimuth.id = AZIMUTH_MOTOR_ID;
+        shooter.elevation.id = ELEVATION_MOTOR_ID;
         shooter.feeder.id = FEEDER_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
 
+        // Intake
         intake.intake.id = INTAKE_MOTOR_ID;
 
+        // SpinnyBoi
         spinnyboi.spinner.id = SPINNYBOI_MOTOR_ID;
 
+        // Drive
         drive.leftIDs = LEFT_DRIVE_IDS;
         drive.rightIDs = RIGHT_DRIVE_IDS;
 
@@ -134,10 +165,16 @@ public class Config {
 
         // Shooter
         shooter.azimuth.positionPIDF = new PIDF(//
-                0.05, // P
+                0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // P
                 0, // I
-                0, // D
-                0 /// F
+                10 * 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // D
+                1023f / 2650 /// F
+        );
+        shooter.elevation.positionPIDF = new PIDF(//
+                0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // P
+                0, // I
+                10 * 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // D
+                1023f / 2650 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
                 1023 / 2984, // P
@@ -191,6 +228,7 @@ public class Config {
         //////////////////////////////////////////////////////////////////////////////
         // Ticks Per Revolution
         shooter.azimuth.ticksPerRevolution = 4096;
+        shooter.elevation.ticksPerRevolution = 8192;
     }
 
 }

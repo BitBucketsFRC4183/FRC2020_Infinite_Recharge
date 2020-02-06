@@ -1,13 +1,22 @@
 package frc.robot.subsystem.drive;
 
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
@@ -47,6 +56,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     // Allow the driver to try different scaling functions on the joysticks
 	private static SendableChooser<JoystickScale> forwardJoystickScaleChooser;
     private static SendableChooser<JoystickScale> turnJoystickScaleChooser;
+    private static SendableChooser<JoystickScale> rotationJoystickScaleChooser;
 
 
 
@@ -89,7 +99,15 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		turnJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
 		turnJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
 		
-		SmartDashboard.putData(getName() + "/Turn Joystick Scale", turnJoystickScaleChooser);
+        SmartDashboard.putData(getName() + "/Turn Joystick Scale", turnJoystickScaleChooser);
+        
+        rotationJoystickScaleChooser = new SendableChooser<JoystickScale>();
+        rotationJoystickScaleChooser.addOption("Linear", JoystickScale.LINEAR);
+		rotationJoystickScaleChooser.setDefaultOption("Square", JoystickScale.SQUARE);
+		rotationJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
+		rotationJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
+		
+        SmartDashboard.putData(getName() + "/Rotation Joystick Scale", turnJoystickScaleChooser);
 
 
 
@@ -185,6 +203,47 @@ public class DriveSubsystem extends BitBucketSubsystem {
         velocityDrive_auto(ips, radps);
     }
 
+    public void rotationDrive(double speed, double turn, double yaw0) {
+        speed = forwardJoystickScaleChooser.getSelected().rescale(speed, DriveConstants.JOYSTICK_DEADBAND);
+        turn = rotationJoystickScaleChooser.getSelected().rescale(turn, DriveConstants.JOYSTICK_DEADBAND);
+
+        double ips = MathUtils.map(speed,
+            -1.0,
+            1.0,
+            -DriveConstants.MAX_ALLOWED_SPEED_IPS,
+            DriveConstants.MAX_ALLOWED_SPEED_IPS
+        );
+
+        double offset = MathUtils.map(turn,
+            -1.0,
+            1.0,
+            -DriveConstants.ROTATION_DRIVE_MAX_OFFSET_DEG,
+            DriveConstants.ROTATION_DRIVE_MAX_OFFSET_DEG
+        );
+
+
+        double yaw = NAVIGATION_SUBSYSTEM.getYaw_deg();
+        SmartDashboard.putNumber(getName() + "/yaw", yaw);
+        double yawCommand = yaw0 + offset;
+        SmartDashboard.putNumber(getName() + "/yaw command", yawCommand);
+
+        double yawError = yaw - yawCommand;
+        SmartDashboard.putNumber(getName() + "/yaw error", yawError);
+
+        yawError = (yawError + 720.0) % (360.0);
+        if (yawError > 180) {
+            // additional = yawError - 180
+            // -180 + additional
+            yawError -= 360;
+        }
+
+        double omega = yawError*DriveConstants.ROTATION_DRIVE_KP;
+
+
+
+        velocityDrive_auto(ips, omega);
+    }
+
 
 
     private void selectVelocityMode(boolean needVelocityMode) {
@@ -209,7 +268,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
         leftMotors[0].set(ControlMode.PercentOutput, 0.0);
 		rightMotors[0].set(ControlMode.PercentOutput, 0.0);
     }
-
 
 
 
@@ -252,7 +310,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         if (driverStation.isOperatorControl()) {
             if (driveMethod == DriveMethod.AUTO || driveMethod == DriveMethod.IDLE) {
-                driveMethod = DriveMethod.VELOCITY; //254
+                driveMethod = DriveMethod.VELOCITY;
             }
 
             if (doSwitch) {
@@ -297,6 +355,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
             SmartDashboard.putNumber(getName() + "/left ticks", leftMotors[0].getSelectedSensorPosition());
             SmartDashboard.putNumber(getName() + "/right ticks", rightMotors[0].getSelectedSensorPosition());
+
+            SmartDashboard.putString(getName() + "/drive method", driveMethod.toString());
         }
     }
 
@@ -341,4 +401,52 @@ public class DriveSubsystem extends BitBucketSubsystem {
             (DriveConstants.WHEEL_DIAMETER_INCHES / 2) * 
             (rightMotors[0].getSelectedSensorVelocity() - leftMotors[0].getSelectedSensorVelocity()) / (DriveConstants.WHEEL_TRACK_INCHES / 2.0);
     }
+
+
+
+    public double getLeftDistance_meters() {
+        return leftMotors[0].getSelectedSensorPosition() * DriveConstants.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METER_PER_INCH;
+    }
+
+    public double getRightDistance_meters() {
+        return rightMotors[0].getSelectedSensorPosition() * DriveConstants.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METER_PER_INCH;
+    }
+
+	public Trajectory getAutoTrajectory() {
+		return null;
+    }
+    
+    public Pose2d getPose() {
+        return NAVIGATION_SUBSYSTEM.getPose();
+    }
+
+
+
+	public SimpleMotorFeedforward getCharacterization() {
+		return null;
+	}
+
+
+
+	public DifferentialDriveKinematics getKinematics() {
+		return null;
+	}
+
+
+
+	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+		return null;
+	}
+
+
+
+	public PIDController getLeftPID() {
+		return null;
+	}
+
+
+
+	public void tankVolts(double leftVolts, double rightVolts) {
+		
+	}
 }

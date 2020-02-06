@@ -26,4 +26,10 @@ public class ABFTriple {
     public ABCouple getCouple() {
         return new ABCouple(A, B);
     }
+
+
+
+    public String toString() {
+        return "A:\n" + A.toString() + "\n\nB:\n" + B.toString() + "\n\nF:\n" + F.toString();
+    }
 }
