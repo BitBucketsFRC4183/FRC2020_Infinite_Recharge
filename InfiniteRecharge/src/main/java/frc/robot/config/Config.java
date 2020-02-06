@@ -99,6 +99,10 @@ public class Config {
 
         public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Integrated;
 
+        /** Gear ratio from encoder to wheel. gearRatio encoder turns = 1 wheel turn */
+        public double gearRatio = (10 + 8.0/9);
+        public double ticksPerRevolution = 2048;
+
         public DriveConfig() {
         }
 

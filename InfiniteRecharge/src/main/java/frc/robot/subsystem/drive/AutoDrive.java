@@ -17,14 +17,14 @@ public class AutoDrive extends RamseteCommand {
     public AutoDrive(DriveSubsystem driveSubsystem) {
         super(
             driveSubsystem.getAutoTrajectory(),
-            driveSubsystem::getPose(),
+            driveSubsystem::getPose,
             new RamseteController(),
             driveSubsystem.getCharacterization(),
             driveSubsystem.getKinematics(),
-            driveSubsystem::getWheelSpeeds(),
+            null,//driveSubsystem::getWheelSpeeds(),
             driveSubsystem.getLeftPID(),
-            driveSubsystem.getRightPID(),
-            drive::tankVolts(),
+            driveSubsystem.getLeftPID(),
+            null,//driveSubsystem::tankVolts(),
             driveSubsystem
         );
 

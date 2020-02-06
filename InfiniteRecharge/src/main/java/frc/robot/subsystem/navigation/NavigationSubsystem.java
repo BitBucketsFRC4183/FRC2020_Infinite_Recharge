@@ -9,10 +9,14 @@ package frc.robot.subsystem.navigation;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.utils.data.DoubleDataWindow;
 
 import frc.robot.subsystem.vision.VisionSubsystem;
@@ -24,22 +28,34 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
 
-	private VisionSubsystem visionSubsystem;
+    private AHRS ahrs;
 
     private DoubleDataWindow imuAcc = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
     private DoubleDataWindow imuGyro = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
     private DoubleDataWindow dts = new DoubleDataWindow(50);
 
+    private DriveSubsystem driveSubsystem;
+    private VisionSubsystem visionSubsystem;
+
     private RobotSystem sys;
+
+
+
+    private DifferentialDriveOdometry odometry;
 
 
     
 	public NavigationSubsystem(Config config, VisionSubsystem visionSubsystem) {
-		super(config);
+        super(config);
+        
 		this.visionSubsystem = visionSubsystem;
-	}
+    }
+    
+    public void setDrive(DriveSubsystem drive) {
+        driveSubsystem = drive;
+    }
 
-	private AHRS ahrs;
+	
 
 	// TODO: provide an accessor that fetches the most current state (6-DOF)
 	// and returns it in a structure for reference; this allows consumer
@@ -55,6 +71,10 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
         ahrs = BitBucketsAHRS.instance();
         sys = new RobotSystem();
+
+        odometry = new DifferentialDriveOdometry(
+            Rotation2d.fromDegrees(ahrs.getYaw())
+        );
 	}
 
   	@Override
@@ -78,6 +98,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	public void periodic(float deltaTime) {
 		clearDiagnosticsEnabled();		
         updateBaseDashboard();
+
         
 
 
@@ -110,7 +131,13 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
 
 
-		if (getTelemetryEnabled()) {
+        odometry.update(
+            Rotation2d.fromDegrees(ahrs.getYaw()),
+            driveSubsystem.getLeftDistance_meters(),
+            driveSubsystem.getRightDistance_meters()
+        );
+
+        if (getTelemetryEnabled()) {
 			SmartDashboard.putNumber(getName() + "/Robot yaw", ahrs.getYaw());
             SmartDashboard.putNumber(getName() + "/Robot raw X accel", getAccX());
             SmartDashboard.putNumber(getName() + "/Robot world X accel", getWorldAccX());
@@ -177,5 +204,11 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
 	public double getGyro() {
 		return ahrs.getRawGyroZ();
-	}
+    }
+    
+
+
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
 }
