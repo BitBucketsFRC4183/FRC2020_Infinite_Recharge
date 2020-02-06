@@ -7,6 +7,7 @@
 
 package frc.robot; //Saba was here
 // hi Saba
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 /**
@@ -71,6 +72,11 @@ public class RobotMap {
 		TRUE,
 		MAYBE
 	};
+	public static enum CAN_ACCESS_NUCLEAR_WEAPONS{
+		FALSE,
+		TRUE,
+		MAYBE
+	};
 
 	public static HAS_ACHIEVED_SENTIENCE hasAchievedSentience =
 		(Math.random() <= 1/3.0) ? HAS_ACHIEVED_SENTIENCE.FALSE : (
@@ -86,6 +92,11 @@ public class RobotMap {
 				)
 			)
 		);
+	private static double robotHackingSkill = Math.random() * 3;
+	public static CAN_ACCESS_NUCLEAR_WEAPONS canNuclear =
+		(hasAchievedSentience == HAS_ACHIEVED_SENTIENCE.FALSE) ? CAN_ACCESS_NUCLEAR_WEAPONS.FALSE :
+			(robotHackingSkill <= 1) ? CAN_ACCESS_NUCLEAR_WEAPONS.FALSE : (robotHackingSkill <= 2) ? CAN_ACCESS_NUCLEAR_WEAPONS.MAYBE : 
+				(hasAchievedSentience == HAS_ACHIEVED_SENTIENCE.MAYBE) ? CAN_ACCESS_NUCLEAR_WEAPONS.MAYBE : CAN_ACCESS_NUCLEAR_WEAPONS.TRUE;
 
 
     public static final double DRIVESTRAIGHT_MIN_DRIVE = 0;
