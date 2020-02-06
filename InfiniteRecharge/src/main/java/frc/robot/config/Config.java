@@ -42,8 +42,8 @@ public class Config {
         public double manualAzimuthDeadband = 0.2;
         public double manualElevationDeadband = 0.2;
 
-        public float forwardAzimuthSoftLimit = 45;
-        public float backwardAzimuthSoftLimit = 45;
+        public float rightAzimuthSoftLimit = 45;
+        public float leftAzimuthSoftLimit = 45;
         public float forwardElevationSoftLimit = -1;
         public float backwardElevationSoftLimit = -1;
 
