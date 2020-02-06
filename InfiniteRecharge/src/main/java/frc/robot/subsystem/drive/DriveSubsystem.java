@@ -435,19 +435,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-		return null;
-	}
-
-
-
-	public PIDController getLeftPID() {
-		return null;
-	}
-
-
-
-	public void tankVolts(double leftVolts, double rightVolts) {
-		
+	public void setWheelSpeeds(double leftSpeed_mps, double rightSpeed_mps) {
+        
 	}
 }
