@@ -38,8 +38,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Floats
     // TODO float rootBeer = good
-    public double forwardAzimuthSoftLimit;
-    public double backwardAzimuthSoftLimit;
+    public double rightAzimuthSoftLimit;
+    public double leftAzimuthSoftLimit;
 
     public double forwardElevationSoftLimit;
     public double backwardElevationSoftLimit;
@@ -89,9 +89,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         ballManagementSubsystem = new BallManagementSubsystem(config);
         ballManagementSubsystem.initialize();
 
-        forwardAzimuthSoftLimit = MathUtils.unitConverter(config.shooter.forwardAzimuthSoftLimit, 360,
+        rightAzimuthSoftLimit = MathUtils.unitConverter(config.shooter.rightAzimuthSoftLimit, 360,
                 config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio;
-        backwardAzimuthSoftLimit = MathUtils.unitConverter(config.shooter.backwardAzimuthSoftLimit, 360,
+        leftAzimuthSoftLimit = MathUtils.unitConverter(config.shooter.leftAzimuthSoftLimit, 360,
                 config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio;
 
         forwardElevationSoftLimit = MathUtils.unitConverter(config.shooter.forwardElevationSoftLimit, 360,
@@ -99,14 +99,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         backwardElevationSoftLimit = MathUtils.unitConverter(config.shooter.backwardElevationSoftLimit, 360,
                 config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio;
 
-        if (config.shooter.forwardAzimuthSoftLimit == -1 || config.shooter.backwardAzimuthSoftLimit == -1) {
+        if (config.shooter.rightAzimuthSoftLimit != -1 && config.shooter.leftAzimuthSoftLimit != -1) {
             azimuthMotor.configForwardSoftLimitEnable(true);
-            azimuthMotor.configForwardSoftLimitThreshold((int) forwardAzimuthSoftLimit);
+            azimuthMotor.configForwardSoftLimitThreshold((int) rightAzimuthSoftLimit);
 
             azimuthMotor.configReverseSoftLimitEnable(true);
-            azimuthMotor.configReverseSoftLimitThreshold((int) -backwardAzimuthSoftLimit);
+            azimuthMotor.configReverseSoftLimitThreshold((int) -leftAzimuthSoftLimit);
         }
-        if (config.shooter.forwardElevationSoftLimit == -1 || config.shooter.backwardElevationSoftLimit == -1) {
+        if (config.shooter.forwardElevationSoftLimit != -1 && config.shooter.backwardElevationSoftLimit != -1) {
             elevationMotor.configForwardSoftLimitEnable(true);
             elevationMotor.configForwardSoftLimitThreshold((int) forwardElevationSoftLimit);
 
@@ -146,18 +146,18 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         targetPositionAzimuth = (int) (targetPositionAzimuth + (targetChangeAzimuth * deltaTime));
         targetPositionElevation = (int) (targetPositionElevation + (targetChangeElevation * deltaTime));
 
-        if (forwardAzimuthSoftLimit != -1 && backwardAzimuthSoftLimit != -1) {
-            if (targetPositionAzimuth > forwardAzimuthSoftLimit) {
-                targetPositionAzimuth = (int) forwardAzimuthSoftLimit;
-            } else if (targetPositionAzimuth < -backwardAzimuthSoftLimit) {
-                targetPositionAzimuth = (int) backwardAzimuthSoftLimit;
+        if (rightAzimuthSoftLimit != -1 && leftAzimuthSoftLimit != -1) {
+            if (targetPositionAzimuth > rightAzimuthSoftLimit) {
+                targetPositionAzimuth = (int) rightAzimuthSoftLimit;
+            } else if (targetPositionAzimuth < -leftAzimuthSoftLimit) {
+                targetPositionAzimuth = (int) -leftAzimuthSoftLimit;
             }
         }
         if (forwardElevationSoftLimit != -1 && backwardElevationSoftLimit != -1) {
             if (targetPositionElevation > forwardElevationSoftLimit) {
                 targetPositionElevation = (int) forwardElevationSoftLimit;
             } else if (targetPositionAzimuth < -backwardElevationSoftLimit) {
-                targetPositionElevation = (int) backwardElevationSoftLimit;
+                targetPositionElevation = (int) -backwardElevationSoftLimit;
             }
         }
 
@@ -184,7 +184,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public void spinUp() {
         // Spin up the feeder.
-        feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT));
+        feeder.set(
+                SmartDashboard.getNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT));
         SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
 
         // Spin up the shooter.
@@ -282,9 +283,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public void autoAimVelocity() {
         double feetPerSecVelocity = visionSubsystem.getShooterVelocityForTarget();
-        double ticksVelocity = (feetPerSecVelocity * 12 * config.shooter.shooter.ticksPerRevolution) 
-        / (ShooterConstants.SHOOTER_FLYWHEEL_RADIUS * 2 * Math.PI * 10);
-        
+        double ticksVelocity = (feetPerSecVelocity * 12 * config.shooter.shooter.ticksPerRevolution)
+                / (ShooterConstants.SHOOTER_FLYWHEEL_RADIUS * 2 * Math.PI * 10);
+
         ballPropulsionMotor.set(ControlMode.Velocity, ticksVelocity);
     }
 
