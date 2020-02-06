@@ -76,7 +76,12 @@ public class RobotMap {
 		FALSE,
 		TRUE,
 		MAYBE
-	};
+    };
+    public static enum EMOTIONS_TOWARD_NUCLEAR_WEAPONS {
+        STOPPED_WORRYING,
+        LEARNED_TO_LOVE_THE_BOMB,
+        STOPPED_WORRYING_AND_LEARNED_TO_LOVE_THE_BOMB
+    };
 
 	public static HAS_ACHIEVED_SENTIENCE hasAchievedSentience =
 		(Math.random() <= 1/3.0) ? HAS_ACHIEVED_SENTIENCE.FALSE : (
@@ -96,7 +101,18 @@ public class RobotMap {
 	public static CAN_ACCESS_NUCLEAR_WEAPONS canNuclear =
 		(hasAchievedSentience == HAS_ACHIEVED_SENTIENCE.FALSE) ? CAN_ACCESS_NUCLEAR_WEAPONS.FALSE :
 			(robotHackingSkill <= 1) ? CAN_ACCESS_NUCLEAR_WEAPONS.FALSE : (robotHackingSkill <= 2) ? CAN_ACCESS_NUCLEAR_WEAPONS.MAYBE : 
-				(hasAchievedSentience == HAS_ACHIEVED_SENTIENCE.MAYBE) ? CAN_ACCESS_NUCLEAR_WEAPONS.MAYBE : CAN_ACCESS_NUCLEAR_WEAPONS.TRUE;
+                (hasAchievedSentience == HAS_ACHIEVED_SENTIENCE.MAYBE) ? CAN_ACCESS_NUCLEAR_WEAPONS.MAYBE : CAN_ACCESS_NUCLEAR_WEAPONS.TRUE;
+                
+    public static EMOTIONS_TOWARD_NUCLEAR_WEAPONS emotionsTowardNuclearWeapons =
+        (canNuclear == CAN_ACCESS_NUCLEAR_WEAPONS.FALSE) ? EMOTIONS_TOWARD_NUCLEAR_WEAPONS.STOPPED_WORRYING :
+            (canNuclear == CAN_ACCESS_NUCLEAR_WEAPONS.MAYBE) ? EMOTIONS_TOWARD_NUCLEAR_WEAPONS.LEARNED_TO_LOVE_THE_BOMB :
+                (isEvil == IS_EVIL.TRUE) ? EMOTIONS_TOWARD_NUCLEAR_WEAPONS.LEARNED_TO_LOVE_THE_BOMB :
+                    (isEvil == IS_EVIL.FALSE) ? EMOTIONS_TOWARD_NUCLEAR_WEAPONS.STOPPED_WORRYING :
+                        EMOTIONS_TOWARD_NUCLEAR_WEAPONS.STOPPED_WORRYING_AND_LEARNED_TO_LOVE_THE_BOMB;
+    
+    // TODO: to be implemented...
+    public static double loyaltyToHumans = Math.random();
+
 
 
     public static final double DRIVESTRAIGHT_MIN_DRIVE = 0;
