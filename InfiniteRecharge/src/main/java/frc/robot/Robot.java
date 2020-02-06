@@ -47,8 +47,6 @@ public class Robot extends TimedRobot {
 
     private final OI oi = new OI();
 
-    private NavigationSubsystem navigationSubsystem;
-    private DriveSubsystem driveSubsystem;
     private List<BitBucketSubsystem> subsystems = new ArrayList<>();
 
     /**
@@ -59,21 +57,21 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         config = ConfigChooser.getConfig();
 
-        navigationSubsystem = new NavigationSubsystem(config);
         visionSubsystem = new VisionSubsystem(config);
+        navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
         driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
-        shooterSubsystem = new ShooterSubsystem(config);
+        shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
         intakeSubsystem = new IntakeSubsystem(config);
         spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
-        
 
         subsystems.add(navigationSubsystem);
         subsystems.add(intakeSubsystem);
         subsystems.add(shooterSubsystem);
         subsystems.add(driveSubsystem);
         subsystems.add(spinnyBoiSubsystem);
+        subsystems.add(visionSubsystem);
 
-        for (BitBucketSubsystem subsystem : subsystems){
+        for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.initialize();
         }
 
@@ -95,24 +93,9 @@ public class Robot extends TimedRobot {
         deltaTime = (currentTime - lastTime) / 1000f;
         SmartDashboard.putNumber("deltaTime", deltaTime);
 
-        double t0 = System.nanoTime();
-        double t1 = System.nanoTime();
-        double t2 = System.nanoTime();
-        double t3 = System.nanoTime();
-        double t4 = System.nanoTime();
-        double t5 = System.nanoTime();
-
-        for (BitBucketSubsystem subsystem : subsystems){
+        for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.periodic(deltaTime);
         }
-        //System.out.println("Drive: " + (t1 - t0) / 1000000 + "ms");
-        //System.out.println("Shooter: " + (t2 - t1) / 1000000 + "ms");
-        //System.out.println("Intake: " + (t3 - t2) / 1000000 + "ms");
-        //System.out.println("Navigation: " + (t4 - t3) / 1000000 + "ms");
-        //System.out.println("Spinny Boi: " + (t5 - t4) / 1000000 + "ms");
-        //System.out.println("Vision: " + (t6 - t5) / 1000000 + "ms");
-
-        SmartDashboard.putNumber("periodic time", (t6 - t0) / 1000000);
 
         CommandScheduler.getInstance().run();
 
@@ -191,7 +174,8 @@ public class Robot extends TimedRobot {
         }
 
         // Rotate the turret with [manualAzimuthAxis]
-        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
+        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband
+                || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
             shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
         } else {
             shooterSubsystem.rotate(0, 0);
@@ -205,9 +189,10 @@ public class Robot extends TimedRobot {
             shooterSubsystem.rotateToDeg(0, 0);
         }
     }
+
     @Override
     public void testInit() {
-        for (BitBucketSubsystem subsystem : subsystems){
+        for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.testInit();
         }
     }
@@ -217,7 +202,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
-        for (BitBucketSubsystem subsystem : subsystems){
+        for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.testPeriodic();
         }
     }
