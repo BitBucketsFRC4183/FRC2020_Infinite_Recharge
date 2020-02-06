@@ -53,6 +53,9 @@ public class JuniorConfiguration extends Config {
         drive.leftIDs = LEFT_DRIVE_IDS;
         drive.rightIDs = RIGHT_DRIVE_IDS;
 
+        drive.gearRatio = 1;
+        drive.ticksPerRevolution = 8192;
+
         drive.initMotorConfigArrays();
 
         double velocityKp = 0.14014 * 4;

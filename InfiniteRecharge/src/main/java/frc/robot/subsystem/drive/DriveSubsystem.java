@@ -1,13 +1,22 @@
 package frc.robot.subsystem.drive;
 
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
@@ -392,4 +401,52 @@ public class DriveSubsystem extends BitBucketSubsystem {
             (DriveConstants.WHEEL_DIAMETER_INCHES / 2) * 
             (rightMotors[0].getSelectedSensorVelocity() - leftMotors[0].getSelectedSensorVelocity()) / (DriveConstants.WHEEL_TRACK_INCHES / 2.0);
     }
+
+
+
+    public double getLeftDistance_meters() {
+        return leftMotors[0].getSelectedSensorPosition() * DriveConstants.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METER_PER_INCH;
+    }
+
+    public double getRightDistance_meters() {
+        return rightMotors[0].getSelectedSensorPosition() * DriveConstants.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METER_PER_INCH;
+    }
+
+	public Trajectory getAutoTrajectory() {
+		return null;
+    }
+    
+    public Pose2d getPose() {
+        return NAVIGATION_SUBSYSTEM.getPose();
+    }
+
+
+
+	public SimpleMotorFeedforward getCharacterization() {
+		return null;
+	}
+
+
+
+	public DifferentialDriveKinematics getKinematics() {
+		return null;
+	}
+
+
+
+	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+		return null;
+	}
+
+
+
+	public PIDController getLeftPID() {
+		return null;
+	}
+
+
+
+	public void tankVolts(double leftVolts, double rightVolts) {
+		
+	}
 }
