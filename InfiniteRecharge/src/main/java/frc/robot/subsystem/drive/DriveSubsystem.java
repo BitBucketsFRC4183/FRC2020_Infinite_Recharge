@@ -158,8 +158,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
         
 
 
-        int speed_tickP100 = DriveConstants.ipsToTicksP100(ips);
-		int diffSpeed_tickP100 = DriveConstants.ipsToTicksP100(diffSpeed_ips);
+        int speed_tickP100 = DriveUtils.ipsToTicksP100(ips);
+		int diffSpeed_tickP100 = DriveUtils.ipsToTicksP100(diffSpeed_ips);
 
 		int leftSpeed_tickP100 = speed_tickP100 + diffSpeed_tickP100;
         int rightSpeed_tickP100 = speed_tickP100 - diffSpeed_tickP100;
@@ -267,8 +267,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
     public double getSpeed_ips() {
-        double leftSpeed = DriveConstants.ticksP100ToIps(leftMotors[0].getSelectedSensorVelocity());
-        double rightSpeed = DriveConstants.ticksP100ToIps(rightMotors[0].getSelectedSensorVelocity());
+        double leftSpeed = DriveUtils.ticksP100ToIps(leftMotors[0].getSelectedSensorVelocity());
+        double rightSpeed = DriveUtils.ticksP100ToIps(rightMotors[0].getSelectedSensorVelocity());
 
         return (leftSpeed + rightSpeed) / 2.0;
     }
@@ -327,8 +327,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
         if (getTelemetryEnabled()) {
-            double leftSpeed = DriveConstants.ticksP100ToIps(leftMotors[0].getSelectedSensorVelocity());
-            double rightSpeed = DriveConstants.ticksP100ToIps(rightMotors[0].getSelectedSensorVelocity());
+            double leftSpeed = DriveUtils.ticksP100ToIps(leftMotors[0].getSelectedSensorVelocity());
+            double rightSpeed = DriveUtils.ticksP100ToIps(rightMotors[0].getSelectedSensorVelocity());
             SmartDashboard.putNumber(getName() + "/leftSpeed_ips", leftSpeed);
             SmartDashboard.putNumber(getName() + "/rightSpeed_ips", rightSpeed);
 
@@ -399,11 +399,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
     public double getLeftDistance_meters() {
-        return leftMotors[0].getSelectedSensorPosition() * DriveConstants.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
+        return leftMotors[0].getSelectedSensorPosition() * DriveUtils.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
     }
 
     public double getRightDistance_meters() {
-        return rightMotors[0].getSelectedSensorPosition() * DriveConstants.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
+        return rightMotors[0].getSelectedSensorPosition() * DriveUtils.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
     }
 
 	public Trajectory getAutoTrajectory() {
@@ -417,8 +417,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 	public void setWheelSpeeds(double leftSpeed_mps, double rightSpeed_mps) {
-        double leftTps = DriveConstants.ipsToTicksP100(leftSpeed_mps / DriveConstants.METERS_PER_INCH);
-        double rightTps = DriveConstants.ipsToTicksP100(rightSpeed_mps / DriveConstants.METERS_PER_INCH);
+        double leftTps = DriveUtils.ipsToTicksP100(leftSpeed_mps / DriveConstants.METERS_PER_INCH);
+        double rightTps = DriveUtils.ipsToTicksP100(rightSpeed_mps / DriveConstants.METERS_PER_INCH);
 
         leftMotors[0].set(ControlMode.Velocity, leftTps);
         rightMotors[0].set(ControlMode.Velocity, rightTps);
