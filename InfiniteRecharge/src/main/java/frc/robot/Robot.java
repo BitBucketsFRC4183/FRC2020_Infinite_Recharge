@@ -13,11 +13,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
-import frc.robot.operatorinterface.PS4Constants;
 import frc.robot.subsystem.spinnyboi.SpinnyBoiSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
-import frc.robot.subsystem.drive.DriveConstants;
 import frc.robot.subsystem.drive.DriveSubsystem;
+import frc.robot.subsystem.drive.DriveUtils;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
@@ -53,7 +52,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         config = ConfigChooser.getConfig();
-        DriveConstants.setConfig(config);
+        DriveUtils.setConfig(config);
 
         visionSubsystem = new VisionSubsystem(config);
         visionSubsystem.initialize();
