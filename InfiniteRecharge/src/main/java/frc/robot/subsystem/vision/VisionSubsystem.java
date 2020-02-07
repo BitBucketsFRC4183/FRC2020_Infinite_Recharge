@@ -4,7 +4,6 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystem.scoring.shooter.ShooterConstants;
 import frc.robot.utils.math.MathUtils;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,7 +16,8 @@ public class VisionSubsystem extends BitBucketSubsystem {
     private double defaultVal = 0;
     NetworkTable limelightTable;
 
-    public double tx = 0;
+    private double tx = 0;
+    private double ty = 0;
 
     public VisionSubsystem(Config config) {
         super(config);
@@ -48,16 +48,17 @@ public class VisionSubsystem extends BitBucketSubsystem {
     public void periodic(float deltaTime) {
 
         updateTargetInfo();
+        double distance = approximateDistanceFromTarget(ty);
 
         SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
+        SmartDashboard.putNumber(getName() + "/Estimated Distance ", distance);
     }
 
     public double getShooterVelocityForTarget() {
-        double ty = queryLimelightNetworkTable("ty");
-        
+              
         double d = approximateDistanceFromTarget(ty);
-        double h = ShooterConstants.TARGET_HEIGHT_INCHES;
-        double angle = ShooterConstants.BALL_SHOOTING_ANGLE;
+        double h = VisionConstants.TARGET_HEIGHT_INCHES;
+        double angle = VisionConstants.BALL_SHOOTING_ANGLE;
 
         double numerator = MathUtils.G * Math.pow(d, 2);
         double denominator = 2 * (d * Math.tan(angle) - h) * Math.pow(Math.cos(angle), 2);
@@ -68,7 +69,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
     }
 
     public double approximateDistanceFromTarget(double ty) {
-        return (ShooterConstants.TARGET_HEIGHT_INCHES - ShooterConstants.CAMERA_HEIGHT_INCHES) / Math.tan(ShooterConstants.CAMERA_MOUNTING_ANGLE + ty);
+        return (VisionConstants.TARGET_HEIGHT_INCHES - VisionConstants.CAMERA_HEIGHT_INCHES) / Math.tan(VisionConstants.CAMERA_MOUNTING_ANGLE + ty);
     }
 
     public double queryLimelightNetworkTable(String value) {
@@ -85,6 +86,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
         }
 
         tx = queryLimelightNetworkTable("tx");
+        ty = queryLimelightNetworkTable("ty");
     }
 
     public double getDegreesToRotate() {
