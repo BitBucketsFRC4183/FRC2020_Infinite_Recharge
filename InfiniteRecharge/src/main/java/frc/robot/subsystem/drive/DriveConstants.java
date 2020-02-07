@@ -8,8 +8,6 @@
 package frc.robot.subsystem.drive;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 /**
  * Add your docs here.
  */
@@ -80,10 +78,6 @@ public class DriveConstants {
     public static final double KS_VOLTS = 1.63;
 
     public static final double KV_VOLT_S_PER_FT = 0.521;
-
-
-
-    public static DifferentialDriveKinematics KINEMATICS;
 
 
 
