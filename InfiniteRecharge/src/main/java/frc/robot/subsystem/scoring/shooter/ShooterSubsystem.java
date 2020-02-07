@@ -299,10 +299,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         if (validTarget) {
             double tx = visionSubsystem.getTx();
             double degrees = getTargetAzimuthDegGivenOffset(tx);
-            // The offset and thus the degrees might change, causing the robot to oscillate
-            // about its target. To prevent this, take an average.
+            
+            // We believed the offset and thus the degrees might change, causing the robot
+            // to possibly oscillate about its target. To prevent this, take an average.
+            // Didn't make a difference, so we've disabled it. But code remains in case we want 
+            // to use it again.
+            
             // If enabled in the constants file, calculate the average of the last values
-            // passed in (up to 25, configurable in ShooterConstants.java).
+            // passed in (up to what FILTER_LENGTH is in ShooterConstants.java).
             absoluteDegreesToRotateAzimuth = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
         }
     }
