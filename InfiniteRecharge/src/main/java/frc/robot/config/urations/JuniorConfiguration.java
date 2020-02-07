@@ -56,8 +56,9 @@ public class JuniorConfiguration extends Config {
 
         drive.gearRatio = 1;
         drive.ticksPerRevolution = 8192;
-
         drive.encoderType = EncoderType.Quadrature;
+        drive.wheelRadius_in = 2;
+        drive.trackWidth_in = 18.72;
 
         drive.initMotorConfigArrays();
 
