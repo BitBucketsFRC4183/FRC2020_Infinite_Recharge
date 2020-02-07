@@ -19,7 +19,7 @@ public class AutoDrive extends RamseteCommand {
             driveSubsystem.getAutoTrajectory(),
             driveSubsystem::getPose,
             new RamseteController(),
-            DriveConstants.KINEMATICS,
+            driveSubsystem.getKinematics(),
             driveSubsystem::setWheelSpeeds,
             driveSubsystem
         );

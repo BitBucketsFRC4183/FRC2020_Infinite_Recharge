@@ -52,7 +52,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         config = ConfigChooser.getConfig();
-        DriveUtils.setConfig(config);
 
         visionSubsystem = new VisionSubsystem(config);
         visionSubsystem.initialize();
