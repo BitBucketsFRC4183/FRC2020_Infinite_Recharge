@@ -29,6 +29,9 @@ public class FocusedExcellenceConfiguration extends Config {
 
         drive.gearRatio = 1;
         drive.ticksPerRevolution = 8192;
+        drive.encoderType = EncoderType.Quadrature;
+        drive.wheelRadius_in = 3;
+        drive.trackWidth_in = 23.5;
 
         drive.leftLeader.velocityPIDF = new PIDF(
             0.5115/2/1.5,

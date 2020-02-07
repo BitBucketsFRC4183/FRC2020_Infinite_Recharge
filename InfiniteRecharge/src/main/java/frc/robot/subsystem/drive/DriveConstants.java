@@ -8,10 +8,23 @@
 package frc.robot.subsystem.drive;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import frc.robot.config.Config;
 /**
  * Add your docs here.
  */
 public class DriveConstants {
+    private static Config config;
+    public static void setConfig(Config c) {
+        config = c;
+
+        WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI*c.drive.wheelRadius_in;
+        KINEMATICS = new DifferentialDriveKinematics(c.drive.trackWidth_in * METERS_PER_INCH);
+    }
+    
+
+
     public static final double JOYSTICK_DEADBAND = 0.15;
 
     // Set velocity follower type to false when independent gear boxes are being used
@@ -33,18 +46,14 @@ public class DriveConstants {
     public static final double MAX_LAT_ACCELERATION_IPSPS = STANDARD_G_FTPSPS * 12.0;
 
     // TODO
-    public static final double WHEEL_TRACK_INCHES = 12*1.53;
-    public static final double WHEEL_DIAMETER_INCHES = 4.0;
-    public static final double WHEEL_CIRCUMFERENCE_INCHES = Math.PI*WHEEL_DIAMETER_INCHES;
+    // defined when given a config
+    public static double WHEEL_CIRCUMFERENCE_INCHES;
 
     // Identify what type of feedback device we will use on this drive base
     // Assume that all feedback devices are the same type on all axels that
     // need to be measured.
     // TODO
     public static final FeedbackDevice DRIVE_MOTOR_FEEDBACK_DEVICE = FeedbackDevice.QuadEncoder;
-
-    // Speed constants
-    public static final double DRIVE_MOTOR_NATIVE_TICKS_PER_REV = 8192;
 
     // The motor controllers we use (TalonSRX) return velocity in terms of native ticks per 100 ms 
     // and expect commands to be similarly dimensioned.
@@ -55,11 +64,11 @@ public class DriveConstants {
     public static int ipsToTicksP100(double ips)
     {
         double rps = ips / WHEEL_CIRCUMFERENCE_INCHES;
-        return (int)(DRIVE_MOTOR_NATIVE_TICKS_PER_REV * rps / 10.0);
+        return (int) (config.drive.ticksPerRevolution * rps / 10.0);
     }
     public static double ticksP100ToIps(int ticksP100)
     {
-        double rps = ticksP100 * 10.0 / DRIVE_MOTOR_NATIVE_TICKS_PER_REV;
+        double rps = ticksP100 * 10.0 / (config.drive.ticksPerRevolution);
         return rps * WHEEL_CIRCUMFERENCE_INCHES;
     }
 
@@ -97,23 +106,16 @@ public class DriveConstants {
 
 
     /** for voltage compensation */
+    // TODO: add to config
     public static final double MAX_VOLTS = 11.9; // charge your batteries!!!
 
     public static final double KS_VOLTS = 1.63;
 
     public static final double KV_VOLT_S_PER_FT = 0.521;
-    // 1/ft * 1ft/12in * 1 rad/radius in
-    public static final double KV_VOLT_S_PER_RAD = KV_VOLT_S_PER_FT / 12 / (WHEEL_DIAMETER_INCHES / 2);
-    // 1V = (1V/VOLTAGE) * VOLTAGE
-    // 1V = (1V/VOLTAGE) * 1023 voltage increments
-    // 1V * 1023 voltage increments / (battery voltage) volts
-    // S * 10 (100ms) / S
-    // rad * 1 rev/(2pi rad) * EPR ticks/rev
-    public static final double KV_100MS_PER_TICK /* WHY */ = KV_VOLT_S_PER_RAD * 10 / (2 * Math.PI) / DRIVE_MOTOR_NATIVE_TICKS_PER_REV / MAX_VOLTS;
 
-    public static final double KP_VOLT_S_PER_FT = 0.00332;
-    public static final double KP_VOLT_S_PER_RAD = KP_VOLT_S_PER_FT / 12 / (WHEEL_DIAMETER_INCHES / 2);
-    public static final double KP_100MS_PER_TICK_PERCENT /* WHY */ = KP_VOLT_S_PER_RAD * 10 / (2 * Math.PI) / DRIVE_MOTOR_NATIVE_TICKS_PER_REV / MAX_VOLTS;
+
+
+    public static DifferentialDriveKinematics KINEMATICS;
 
 
 
@@ -122,5 +124,5 @@ public class DriveConstants {
 
 
 
-    public static final double METER_PER_INCH = 254 / 10000.0; // haha 254
+    public static final double METERS_PER_INCH = 254 / 10000.0; // haha 254
 }

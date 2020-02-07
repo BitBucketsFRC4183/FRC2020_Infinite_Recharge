@@ -1,19 +1,12 @@
 package frc.robot.subsystem.drive;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
@@ -154,7 +147,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-        double diffSpeed_ips = radps * DriveConstants.WHEEL_TRACK_INCHES / 2.0;
+        double diffSpeed_ips = radps * config.drive.trackWidth_in / 2.0;
 
         // Compute, report, and limit lateral acceleration
 		if (Math.abs(radps * ips) > DriveConstants.MAX_LAT_ACCELERATION_IPSPS) {
@@ -393,24 +386,24 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     public double getApproxV() {
         return 
-            (DriveConstants.WHEEL_DIAMETER_INCHES / 2) * 
+            config.drive.wheelRadius_in * 
             (rightMotors[0].getSelectedSensorVelocity() + leftMotors[0].getSelectedSensorVelocity()) / 2.0;
     }
 
     public double getApproxOmega() {
         return
-            (DriveConstants.WHEEL_DIAMETER_INCHES / 2) * 
-            (rightMotors[0].getSelectedSensorVelocity() - leftMotors[0].getSelectedSensorVelocity()) / (DriveConstants.WHEEL_TRACK_INCHES / 2.0);
+            config.drive.wheelRadius_in * 
+            (rightMotors[0].getSelectedSensorVelocity() - leftMotors[0].getSelectedSensorVelocity()) / (config.drive.trackWidth_in / 2.0);
     }
 
 
 
     public double getLeftDistance_meters() {
-        return leftMotors[0].getSelectedSensorPosition() * DriveConstants.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METER_PER_INCH;
+        return leftMotors[0].getSelectedSensorPosition() * DriveConstants.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
     }
 
     public double getRightDistance_meters() {
-        return rightMotors[0].getSelectedSensorPosition() * DriveConstants.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METER_PER_INCH;
+        return rightMotors[0].getSelectedSensorPosition() * DriveConstants.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
     }
 
 	public Trajectory getAutoTrajectory() {
@@ -423,19 +416,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-	public SimpleMotorFeedforward getCharacterization() {
-		return null;
-	}
-
-
-
-	public DifferentialDriveKinematics getKinematics() {
-		return null;
-	}
-
-
-
 	public void setWheelSpeeds(double leftSpeed_mps, double rightSpeed_mps) {
-        
+        double leftTps = DriveConstants.ipsToTicksP100(leftSpeed_mps / DriveConstants.METERS_PER_INCH);
+        double rightTps = DriveConstants.ipsToTicksP100(rightSpeed_mps / DriveConstants.METERS_PER_INCH);
+
+        leftMotors[0].set(ControlMode.Velocity, leftTps);
+        rightMotors[0].set(ControlMode.Velocity, rightTps);
 	}
 }

@@ -102,6 +102,8 @@ public class Config {
         /** Gear ratio from encoder to wheel. gearRatio encoder turns = 1 wheel turn */
         public double gearRatio = (10 + 8.0/9);
         public double ticksPerRevolution = 2048;
+        public double wheelRadius_in = 3;
+        public double trackWidth_in = 22.65;
 
         public DriveConfig() {
         }
