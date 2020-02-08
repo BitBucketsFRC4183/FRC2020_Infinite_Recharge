@@ -10,42 +10,41 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class VisionSubsystem extends BitBucketSubsystem {
 
-    private double degreesToRotate = 0.0;
-    private boolean validTarget = false;    
-
-    private double defaultVal = 0;
+    private boolean validTarget = false;
+    
+    private final double defaultVal = 0.0;
     private NetworkTable limelightTable;
 
     private double tx = 0;
     private double ty = 0;
 
-    public VisionSubsystem(Config config) {
+    public VisionSubsystem(final Config config) {
         super(config);
     }
 
     public void initialize() {
         super.initialize();
 
-        NetworkTableInstance tableInstance = NetworkTableInstance.getDefault();
+        final NetworkTableInstance tableInstance = NetworkTableInstance.getDefault();
         tableInstance.startClientTeam(4183);
 
         limelightTable = tableInstance.getTable("limelight");
     }
 
-	public void diagnosticsInitialize() {
+    public void diagnosticsInitialize() {
 
     }
-	
-	public void diagnosticsPeriodic() {
+
+    public void diagnosticsPeriodic() {
 
     }
-	
-	public void diagnosticsCheck() {
+
+    public void diagnosticsCheck() {
 
     }
 
     @Override
-    public void periodic(float deltaTime) {
+    public void periodic(final float deltaTime) {
 
         updateTargetInfo();
         final double distance = approximateDistanceFromTarget(ty);
@@ -55,7 +54,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
     }
 
     public double getShooterVelocityForTarget() {
-              
+
         final double d = approximateDistanceFromTarget(ty);
         final double h = VisionConstants.TARGET_HEIGHT_INCHES;
         final double angle = VisionConstants.BALL_SHOOTING_ANGLE;
@@ -68,11 +67,12 @@ public class VisionSubsystem extends BitBucketSubsystem {
         return vel;
     }
 
-    public double approximateDistanceFromTarget(double ty) {
-        return (VisionConstants.TARGET_HEIGHT_INCHES - VisionConstants.CAMERA_HEIGHT_INCHES) / Math.tan(VisionConstants.CAMERA_MOUNTING_ANGLE + ty);
+    public double approximateDistanceFromTarget(final double ty) {
+        return (VisionConstants.TARGET_HEIGHT_INCHES - VisionConstants.CAMERA_HEIGHT_INCHES)
+                / Math.tan(VisionConstants.CAMERA_MOUNTING_ANGLE + ty);
     }
 
-    public double queryLimelightNetworkTable(String value) {
+    public double queryLimelightNetworkTable(final String value) {
         return limelightTable.getEntry(value).getDouble(defaultVal);
     }
 
@@ -87,10 +87,6 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
         tx = queryLimelightNetworkTable("tx");
         ty = queryLimelightNetworkTable("ty");
-    }
-
-    public double getDegreesToRotate() {
-        return degreesToRotate;
     }
 
     public double getTx() {
