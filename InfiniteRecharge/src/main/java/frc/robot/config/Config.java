@@ -36,16 +36,16 @@ public class Config {
 
         public float shooterGearRatio = .48f / 1f;
 
-        public float defaultAzimuthTurnVelocityDeg = 10;
-        public float defaultElevationTurnVelocityDeg = 10;
+        public float defaultAzimuthTurnVelocity_deg = 10;
+        public float defaultElevationTurnVelocity_deg = 10;
 
         public double manualAzimuthDeadband = 0.2;
         public double manualElevationDeadband = 0.2;
 
-        public float rightAzimuthSoftLimit = 45;
-        public float leftAzimuthSoftLimit = 45;
-        public float forwardElevationSoftLimit = -1;
-        public float backwardElevationSoftLimit = -1;
+        public float rightAzimuthSoftLimit_deg = 45;
+        public float leftAzimuthSoftLimit_deg = 45;
+        public float forwardElevationSoftLimit_deg = -1;
+        public float backwardElevationSoftLimit_deg = -1;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();
