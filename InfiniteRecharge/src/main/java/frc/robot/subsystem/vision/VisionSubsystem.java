@@ -14,7 +14,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
     private boolean validTarget = false;    
 
     private double defaultVal = 0;
-    NetworkTable limelightTable;
+    private NetworkTable limelightTable;
 
     private double tx = 0;
     private double ty = 0;
@@ -48,7 +48,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
     public void periodic(float deltaTime) {
 
         updateTargetInfo();
-        double distance = approximateDistanceFromTarget(ty);
+        final double distance = approximateDistanceFromTarget(ty);
 
         SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
         SmartDashboard.putNumber(getName() + "/Estimated Distance ", distance);
@@ -56,14 +56,14 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
     public double getShooterVelocityForTarget() {
               
-        double d = approximateDistanceFromTarget(ty);
-        double h = VisionConstants.TARGET_HEIGHT_INCHES;
-        double angle = VisionConstants.BALL_SHOOTING_ANGLE;
+        final double d = approximateDistanceFromTarget(ty);
+        final double h = VisionConstants.TARGET_HEIGHT_INCHES;
+        final double angle = VisionConstants.BALL_SHOOTING_ANGLE;
 
-        double numerator = MathUtils.G * Math.pow(d, 2);
-        double denominator = 2 * (d * Math.tan(angle) - h) * Math.pow(Math.cos(angle), 2);
+        final double numerator = MathUtils.G * Math.pow(d, 2);
+        final double denominator = 2 * (d * Math.tan(angle) - h) * Math.pow(Math.cos(angle), 2);
 
-        double vel = Math.sqrt(numerator / denominator);
+        final double vel = Math.sqrt(numerator / denominator);
 
         return vel;
     }
@@ -78,7 +78,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
 	public void updateTargetInfo() {
         
-        double tv = queryLimelightNetworkTable("tv");
+        final double tv = queryLimelightNetworkTable("tv");
         if (tv == 1) {
             validTarget = true;
         } else {
