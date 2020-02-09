@@ -15,7 +15,7 @@ public class Config {
     public int FEEDER_MOTOR_ID = 8;
 
     // Intake
-    public int INTAKE_MOTOR_ID = 14;
+    public int INTAKE_MOTOR_ID = 5;
 
     // Drive
     public int LEFT_DRIVE_IDS[] = { 1, 4 };
@@ -23,6 +23,7 @@ public class Config {
 
     // SpinnyBoi
     public int SPINNYBOI_MOTOR_ID = 5;
+    public int BALLMANAGEMENT_MOTOR_ID = 10;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
@@ -151,6 +152,7 @@ public class Config {
         shooter.elevation.id = ELEVATION_MOTOR_ID;
         shooter.feeder.id = FEEDER_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
+        ballManagement.spinner.id = BALLMANAGEMENT_MOTOR_ID;
 
         // Intake
         intake.intake.id = INTAKE_MOTOR_ID;
