@@ -6,6 +6,17 @@ import frc.robot.utils.control.pidf.PIDF;
 public class Config {
 
     //////////////////////////////////////////////////////////////////////////////
+    // Subsystem Enablers
+    
+    public boolean ENABLE_SHOOTER_SUBSYSTEM = true;
+    public boolean ENABLE_BALL_MANAGEMENT_SUBSYSTEM = true;
+    public boolean ENABLE_DRIVE_SUBSYSTEM = true;
+    public boolean ENABLE_CLIMB_SUBSYSTEM = true;
+    public boolean ENABLE_INTAKE_SUBSYSTEM = true;
+    public boolean ENABLE_SPINNYBOI_SUBSYSTEM = true;
+
+
+    //////////////////////////////////////////////////////////////////////////////
     // Motor IDs
 
     // Shooter

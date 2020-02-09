@@ -87,8 +87,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         feeder.selectProfileSlot(MotorUtils.velocitySlot, 0);
 
         ballPropulsionMotor.selectProfileSlot(MotorUtils.velocitySlot, 0);
-        ballManagementSubsystem = new BallManagementSubsystem(config);
-        ballManagementSubsystem.initialize();
+
+        if (config.ENABLE_BALL_MANAGEMENT_SUBSYSTEM) {
+            ballManagementSubsystem = new BallManagementSubsystem(config);
+            ballManagementSubsystem.initialize();
+        }
 
         rightAzimuthSoftLimit_ticks = MathUtils.unitConverter(config.shooter.rightAzimuthSoftLimit_deg, 360,
                 config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio;
@@ -190,17 +193,19 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 / config.shooter.shooterGearRatio;
 
         // Spin up the feeder.
-        if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity + config.shooter.feederSpinUpDeadband
-                && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity - config.shooter.feederSpinUpDeadband) {
+        if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
+                + config.shooter.feederSpinUpDeadband
+                && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
+                        - config.shooter.feederSpinUpDeadband) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     ShooterConstants.FEEDER_OUTPUT_PERCENT));
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
+            upToSpeed = true;
         }
 
         // Spin up the shooter.
         ballPropulsionMotor.set(ControlMode.Velocity, targetShooterVelocity);
         SmartDashboard.putString(getName() + "/Shooter State", "Shooting");
-        upToSpeed = true;
     }
 
     public void stopSpinningUp() {
@@ -216,12 +221,16 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void fire() {
-        ballManagementSubsystem.fire(
-                (float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent", 50) / 100);
+        if (config.ENABLE_BALL_MANAGEMENT_SUBSYSTEM) {
+            ballManagementSubsystem.fire(
+                    (float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent", 50) / 100);
+        }
     }
 
     public void holdFire() {
-        ballManagementSubsystem.doNotFire();
+        if (config.ENABLE_BALL_MANAGEMENT_SUBSYSTEM) {
+            ballManagementSubsystem.doNotFire();
+        }
     }
 
     public void rotate(double spinRateAzimuth, double spinRateElevation) {

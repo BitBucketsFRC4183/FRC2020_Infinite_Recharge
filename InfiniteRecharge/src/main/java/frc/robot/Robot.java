@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
 
     private final OI oi = new OI();
 
-    
+    //
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -59,18 +59,27 @@ public class Robot extends TimedRobot {
         navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
         navigationSubsystem.initialize();
 
-        driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
-        driveSubsystem.initialize();
+        if (config.ENABLE_DRIVE_SUBSYSTEM) {
+            driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
+            driveSubsystem.initialize();
+        }
+
         navigationSubsystem.setDrive(driveSubsystem); // Java
 
-        shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
-        shooterSubsystem.initialize();
+        if (config.ENABLE_SHOOTER_SUBSYSTEM) {
+            shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
+            shooterSubsystem.initialize();
+        }
 
-        intakeSubsystem = new IntakeSubsystem(config);
-        intakeSubsystem.initialize();
+        if (config.ENABLE_INTAKE_SUBSYSTEM) {
+            intakeSubsystem = new IntakeSubsystem(config);
+            intakeSubsystem.initialize();
+        }
 
-        spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
-        spinnyBoiSubsystem.initialize();
+        if (config.ENABLE_SPINNYBOI_SUBSYSTEM) {
+            spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
+            spinnyBoiSubsystem.initialize();
+        }
 
         lastTime = System.currentTimeMillis();
     }
@@ -91,24 +100,34 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("deltaTime", deltaTime);
 
         double t0 = System.nanoTime();
-        driveSubsystem.periodic(deltaTime);
+        if (config.ENABLE_DRIVE_SUBSYSTEM) {
+            driveSubsystem.periodic(deltaTime);
+        }
         double t1 = System.nanoTime();
-        shooterSubsystem.periodic(deltaTime);
+        if (config.ENABLE_SHOOTER_SUBSYSTEM) {
+            shooterSubsystem.periodic(deltaTime);
+        }
         double t2 = System.nanoTime();
-        intakeSubsystem.periodic(deltaTime);
+        if (config.ENABLE_INTAKE_SUBSYSTEM) {
+            intakeSubsystem.periodic(deltaTime);
+        }
         double t3 = System.nanoTime();
-        navigationSubsystem.periodic(deltaTime);
+        if (config.ENABLE_DRIVE_SUBSYSTEM) {
+            navigationSubsystem.periodic(deltaTime);
+        }
         double t4 = System.nanoTime();
-        spinnyBoiSubsystem.periodic(deltaTime);
+        if (config.ENABLE_SPINNYBOI_SUBSYSTEM) {
+            spinnyBoiSubsystem.periodic(deltaTime);
+        }
         double t5 = System.nanoTime();
         visionSubsystem.periodic(deltaTime);
         double t6 = System.nanoTime();
-        //System.out.println("Drive: " + (t1 - t0) / 1000000 + "ms");
-        //System.out.println("Shooter: " + (t2 - t1) / 1000000 + "ms");
-        //System.out.println("Intake: " + (t3 - t2) / 1000000 + "ms");
-        //System.out.println("Navigation: " + (t4 - t3) / 1000000 + "ms");
-        //System.out.println("Spinny Boi: " + (t5 - t4) / 1000000 + "ms");
-        //System.out.println("Vision: " + (t6 - t5) / 1000000 + "ms");
+        // System.out.println("Drive: " + (t1 - t0) / 1000000 + "ms");
+        // System.out.println("Shooter: " + (t2 - t1) / 1000000 + "ms");
+        // System.out.println("Intake: " + (t3 - t2) / 1000000 + "ms");
+        // System.out.println("Navigation: " + (t4 - t3) / 1000000 + "ms");
+        // System.out.println("Spinny Boi: " + (t5 - t4) / 1000000 + "ms");
+        // System.out.println("Vision: " + (t6 - t5) / 1000000 + "ms");
 
         SmartDashboard.putNumber("periodic time", (t6 - t0) / 1000000);
 
@@ -149,58 +168,65 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Drive Subsystem
 
-        driveSubsystem.setDriverRawSpeed(oi.speed());
-        driveSubsystem.setDriverRawTurn(oi.turn());
+        if (config.ENABLE_DRIVE_SUBSYSTEM) {
+            driveSubsystem.setDriverRawSpeed(oi.speed());
+            driveSubsystem.setDriverRawTurn(oi.turn());
+        }
 
         //////////////////////////////////////////////////////////////////////////////
         // Intake Subsystem
 
-        // Intake on pressing circle.
-        if (oi.intaking()) {
-            intakeSubsystem.intake();
-        } else if (oi.outaking()) {
-            intakeSubsystem.outake();
-        } else {
-            intakeSubsystem.off();
-        }
+        if (config.ENABLE_INTAKE_SUBSYSTEM) {
+            // Intake on pressing circle.
+            if (oi.intaking()) {
+                intakeSubsystem.intake();
+            } else if (oi.outaking()) {
+                intakeSubsystem.outake();
+            } else {
+                intakeSubsystem.off();
+            }
 
-        // Pivot Intake Bar
-        if (oi.barDownButtonPressed()) {
-            intakeSubsystem.toggleIntakeArm();
+            // Pivot Intake Bar
+            if (oi.barDownButtonPressed()) {
+                intakeSubsystem.toggleIntakeArm();
+            }
         }
 
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
 
-        SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
+        if (config.ENABLE_SHOOTER_SUBSYSTEM) {
+            SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
 
-        // Spin up on pressing [spinUp]
-        if (oi.spinUp()) {
-            shooterSubsystem.spinUp();
-        } else {
-            shooterSubsystem.stopSpinningUp();
-        }
+            // Spin up on pressing [spinUp]
+            if (oi.spinUp()) {
+                shooterSubsystem.spinUp();
+            } else {
+                shooterSubsystem.stopSpinningUp();
+            }
 
-        // Fire on pressing [fire]
-        if (oi.fire()) {
-            shooterSubsystem.fire();
-        } else {
-            shooterSubsystem.holdFire();
-        }
+            // Fire on pressing [fire]
+            if (oi.fire()) {
+                shooterSubsystem.fire();
+            } else {
+                shooterSubsystem.holdFire();
+            }
 
-        // Rotate the turret with [manualAzimuthAxis]
-        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
-            shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
-        } else {
-            shooterSubsystem.rotate(0, 0);
-        }
+            // Rotate the turret with [manualAzimuthAxis]
+            if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband
+                    || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
+                shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
+            } else {
+                shooterSubsystem.rotate(0, 0);
+            }
 
-        if (oi.aimBot()) {
-            shooterSubsystem.autoAim();
-        }
+            if (oi.aimBot()) {
+                shooterSubsystem.autoAim();
+            }
 
-        if (oi.zero()) {
-            shooterSubsystem.rotateToDeg(0, 0);
+            if (oi.zero()) {
+                shooterSubsystem.rotateToDeg(0, 0);
+            }
         }
     }
 
