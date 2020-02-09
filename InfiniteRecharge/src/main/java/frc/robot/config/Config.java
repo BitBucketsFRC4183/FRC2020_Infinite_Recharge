@@ -12,7 +12,7 @@ public class Config {
     // Shooter
     public int AZIMUTH_MOTOR_ID = 11;
     public int ELEVATION_MOTOR_ID = 14;
-    public int SHOOTER_MOTOR_ID = 8;
+    public int SHOOTER_MOTOR_ID = 13;
     public int FEEDER_MOTOR_ID = 9;
 
     // Intake
