@@ -10,20 +10,21 @@ public class Config {
     // Motor IDs
 
     // Shooter
-    public int AZIMUTH_MOTOR_ID = 12;
-    public int ELEVATION_MOTOR_ID = 15;
-    public int SHOOTER_MOTOR_ID = 13;
-    public int FEEDER_MOTOR_ID = 8;
+    public int AZIMUTH_MOTOR_ID = 11;
+    public int ELEVATION_MOTOR_ID = 14;
+    public int SHOOTER_MOTOR_ID = 8;
+    public int FEEDER_MOTOR_ID = 9;
 
     // Intake
-    public int INTAKE_MOTOR_ID = 14;
+    public int INTAKE_MOTOR_ID = 5;
 
     // Drive
     public int LEFT_DRIVE_IDS[] = { 1, 4 };
     public int RIGHT_DRIVE_IDS[] = { 2, 3 };
 
     // SpinnyBoi
-    public int SPINNYBOI_MOTOR_ID = 5;
+    public int SPINNYBOI_MOTOR_ID = 6;
+    public int BALLMANAGEMENT_MOTOR_ID = 10;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
@@ -101,7 +102,7 @@ public class Config {
         public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Integrated;
 
         /** Gear ratio from encoder to wheel. gearRatio encoder turns = 1 wheel turn */
-        public double gearRatio = (10 + 8.0/9);
+        public double gearRatio = (10 + 8.0 / 9);
         public double ticksPerRevolution = 2048;
         public double wheelRadius_in = 3;
         public double trackWidth_in = 22.65;
@@ -154,6 +155,7 @@ public class Config {
         shooter.elevation.id = ELEVATION_MOTOR_ID;
         shooter.feeder.id = FEEDER_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
+        ballManagement.spinner.id = BALLMANAGEMENT_MOTOR_ID;
 
         // Intake
         intake.intake.id = INTAKE_MOTOR_ID;
