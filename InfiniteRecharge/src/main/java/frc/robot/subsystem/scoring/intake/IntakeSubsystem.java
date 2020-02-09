@@ -66,12 +66,12 @@ public class IntakeSubsystem extends BitBucketSubsystem {
             break;
 
         case Intaking:
-            motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", 0.2));
+            motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", IntakeConstants.INTAKE_OUTPUT));
             SmartDashboard.putString(getName() + "/IntakeState", "Intaking");
             break;
 
         case Outaking:
-            motor.set(-SmartDashboard.getNumber(getName() + "/Intake Speed", 0.2));
+            motor.set(-SmartDashboard.getNumber(getName() + "/Intake Speed", IntakeConstants.OUTAKE_OUTPUT));
             SmartDashboard.putString(getName() + "/IntakeState", "Outaking");
             break;
         }
