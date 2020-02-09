@@ -189,8 +189,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		int leftSpeed_tickP100 = speed_tickP100 + diffSpeed_tickP100;
         int rightSpeed_tickP100 = speed_tickP100 - diffSpeed_tickP100;
         
-        SmartDashboard.putNumber(getName() + "/ls_tp100", leftSpeed_tickP100);
-        SmartDashboard.putNumber(getName() + "/rs_tp100", rightSpeed_tickP100);
+        SmartDashboard.putNumber(getName() + "/ls_tp100", leftSpeed_tickP100 * config.drive.gearRatio);
+        SmartDashboard.putNumber(getName() + "/rs_tp100", rightSpeed_tickP100 * config.drive.gearRatio);
 
 		leftMotors[0].set(ControlMode.Velocity, leftSpeed_tickP100);
         rightMotors[0].set(ControlMode.Velocity, rightSpeed_tickP100);
