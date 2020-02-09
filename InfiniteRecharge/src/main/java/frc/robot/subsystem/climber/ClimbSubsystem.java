@@ -14,11 +14,11 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         super.initialize();
     }
 
-	public void diagnosticsInitialize() {
+	public void testInit() {
 
     }
 	
-	public void diagnosticsPeriodic() {
+	public void testPeriodic() {
 
     }
 	

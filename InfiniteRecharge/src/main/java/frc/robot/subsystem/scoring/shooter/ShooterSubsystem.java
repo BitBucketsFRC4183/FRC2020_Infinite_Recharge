@@ -30,23 +30,23 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public boolean shooterVelocityControl = false;
 
     // Integers
-    public int targetPositionAzimuth;
-    public int targetChangeAzimuth;
+    private int targetPositionAzimuth_ticks;
+    private int targetChangeAzimuth_ticks;
 
-    public int targetPositionElevation;
-    public int targetChangeElevation;
+    private int targetPositionElevation_ticks;
+    private int targetChangeElevation_ticks;
 
     // Floats
     // TODO float rootBeer = good
-    public double rightAzimuthSoftLimit;
-    public double leftAzimuthSoftLimit;
+    private double rightAzimuthSoftLimit_ticks;
+    private double leftAzimuthSoftLimit_ticks;
 
-    public double forwardElevationSoftLimit;
-    public double backwardElevationSoftLimit;
+    private double forwardElevationSoftLimit_ticks;
+    private double backwardElevationSoftLimit_ticks;
 
     // Doubles
-    public double absoluteDegreesToRotateAzimuth = 0.0;
-    public double degreesToRotateElevation = 0.0;
+    private double absoluteDegreesToRotateAzimuth = 0.0;
+    private double degreesToRotateElevation = 0.0;
 
     // Class Declarations
     RunningAverageFilter filter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
@@ -57,10 +57,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     // Motors
 
     // Talons
-    protected WPI_TalonSRX azimuthMotor;
-    protected WPI_TalonSRX elevationMotor;
-    protected WPI_TalonFX ballPropulsionMotor;
-    protected WPI_TalonSRX feeder;
+    private WPI_TalonSRX azimuthMotor;
+    private WPI_TalonSRX elevationMotor;
+    private WPI_TalonFX ballPropulsionMotor;
+    private WPI_TalonSRX feeder;
 
     // Neos
 
@@ -89,45 +89,45 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         ballManagementSubsystem = new BallManagementSubsystem(config);
         ballManagementSubsystem.initialize();
 
-        rightAzimuthSoftLimit = MathUtils.unitConverter(config.shooter.rightAzimuthSoftLimit, 360,
+        rightAzimuthSoftLimit_ticks = MathUtils.unitConverter(config.shooter.rightAzimuthSoftLimit_deg, 360,
                 config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio;
-        leftAzimuthSoftLimit = MathUtils.unitConverter(config.shooter.leftAzimuthSoftLimit, 360,
+        leftAzimuthSoftLimit_ticks = MathUtils.unitConverter(config.shooter.leftAzimuthSoftLimit_deg, 360,
                 config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio;
 
-        forwardElevationSoftLimit = MathUtils.unitConverter(config.shooter.forwardElevationSoftLimit, 360,
+        forwardElevationSoftLimit_ticks = MathUtils.unitConverter(config.shooter.forwardElevationSoftLimit_deg, 360,
                 config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio;
-        backwardElevationSoftLimit = MathUtils.unitConverter(config.shooter.backwardElevationSoftLimit, 360,
+        backwardElevationSoftLimit_ticks = MathUtils.unitConverter(config.shooter.backwardElevationSoftLimit_deg, 360,
                 config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio;
 
-        if (config.shooter.rightAzimuthSoftLimit != -1 && config.shooter.leftAzimuthSoftLimit != -1) {
+        if (config.shooter.rightAzimuthSoftLimit_deg != -1 && config.shooter.leftAzimuthSoftLimit_deg != -1) {
             azimuthMotor.configForwardSoftLimitEnable(true);
-            azimuthMotor.configForwardSoftLimitThreshold((int) rightAzimuthSoftLimit);
+            azimuthMotor.configForwardSoftLimitThreshold((int) rightAzimuthSoftLimit_ticks);
 
             azimuthMotor.configReverseSoftLimitEnable(true);
-            azimuthMotor.configReverseSoftLimitThreshold((int) -leftAzimuthSoftLimit);
+            azimuthMotor.configReverseSoftLimitThreshold((int) -leftAzimuthSoftLimit_ticks);
         }
-        if (config.shooter.forwardElevationSoftLimit != -1 && config.shooter.backwardElevationSoftLimit != -1) {
+        if (config.shooter.forwardElevationSoftLimit_deg != -1 && config.shooter.backwardElevationSoftLimit_deg != -1) {
             elevationMotor.configForwardSoftLimitEnable(true);
-            elevationMotor.configForwardSoftLimitThreshold((int) forwardElevationSoftLimit);
+            elevationMotor.configForwardSoftLimitThreshold((int) forwardElevationSoftLimit_ticks);
 
             elevationMotor.configReverseSoftLimitEnable(true);
-            elevationMotor.configReverseSoftLimitThreshold((int) -backwardElevationSoftLimit);
+            elevationMotor.configReverseSoftLimitThreshold((int) -backwardElevationSoftLimit_ticks);
         }
     }
 
     @Override
-    public void diagnosticsInitialize() {
+    public void testInit() {
         SmartDashboard.putNumber(getName() + "/Shooter Output Percent", 0.2);
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 500);
         SmartDashboard.putNumber(getName() + "/Feeder Velocity RPM", 60);
-        SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocityDeg);
-        SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocityDeg);
+        SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
+        SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
     }
 
     @Override
 
-    public void diagnosticsPeriodic() {
+    public void testPeriodic() {
         // TODO Auto-generated method stub
 
     }
@@ -143,38 +143,39 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         calculateAbsoluteDegreesToRotate();
 
-        targetPositionAzimuth = (int) (targetPositionAzimuth + (targetChangeAzimuth * deltaTime));
-        targetPositionElevation = (int) (targetPositionElevation + (targetChangeElevation * deltaTime));
+        targetPositionAzimuth_ticks = (int) (targetPositionAzimuth_ticks + (targetChangeAzimuth_ticks * deltaTime));
+        targetPositionElevation_ticks = (int) (targetPositionElevation_ticks
+                + (targetChangeElevation_ticks * deltaTime));
 
-        if (rightAzimuthSoftLimit != -1 && leftAzimuthSoftLimit != -1) {
-            if (targetPositionAzimuth > rightAzimuthSoftLimit) {
-                targetPositionAzimuth = (int) rightAzimuthSoftLimit;
-            } else if (targetPositionAzimuth < -leftAzimuthSoftLimit) {
-                targetPositionAzimuth = (int) -leftAzimuthSoftLimit;
+        if (rightAzimuthSoftLimit_ticks != -1 && leftAzimuthSoftLimit_ticks != -1) {
+            if (targetPositionAzimuth_ticks > rightAzimuthSoftLimit_ticks) {
+                targetPositionAzimuth_ticks = (int) rightAzimuthSoftLimit_ticks;
+            } else if (targetPositionAzimuth_ticks < -leftAzimuthSoftLimit_ticks) {
+                targetPositionAzimuth_ticks = (int) -leftAzimuthSoftLimit_ticks;
             }
         }
-        if (forwardElevationSoftLimit != -1 && backwardElevationSoftLimit != -1) {
-            if (targetPositionElevation > forwardElevationSoftLimit) {
-                targetPositionElevation = (int) forwardElevationSoftLimit;
-            } else if (targetPositionAzimuth < -backwardElevationSoftLimit) {
-                targetPositionElevation = (int) -backwardElevationSoftLimit;
+        if (forwardElevationSoftLimit_ticks != -1 && backwardElevationSoftLimit_ticks != -1) {
+            if (targetPositionElevation_ticks > forwardElevationSoftLimit_ticks) {
+                targetPositionElevation_ticks = (int) forwardElevationSoftLimit_ticks;
+            } else if (targetPositionAzimuth_ticks < -backwardElevationSoftLimit_ticks) {
+                targetPositionElevation_ticks = (int) -backwardElevationSoftLimit_ticks;
             }
         }
 
-        azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth);
-        elevationMotor.set(ControlMode.MotionMagic, targetPositionElevation);
+        azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
+        elevationMotor.set(ControlMode.MotionMagic, targetPositionElevation_ticks);
 
         // Put the outputs on the smart dashboard.
         SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Output",
                 ballPropulsionMotor.getSelectedSensorVelocity());
-        SmartDashboard.putNumber(getName() + "/Target Position ", targetPositionAzimuth);
+        SmartDashboard.putNumber(getName() + "/Target Position ", targetPositionAzimuth_ticks);
         SmartDashboard.putNumber(getName() + "/Absolute Degrees to Rotate", absoluteDegreesToRotateAzimuth);
         SmartDashboard.putNumber(getName() + "/Azimuth Position ", azimuthMotor.getSelectedSensorPosition());
 
         SmartDashboard.putNumber(getName() + "/Azimuth Target Position Deg ",
-                MathUtils.unitConverter(targetPositionAzimuth, config.shooter.azimuth.ticksPerRevolution, 360)
+                MathUtils.unitConverter(targetPositionAzimuth_ticks, config.shooter.azimuth.ticksPerRevolution, 360)
                         * config.shooter.azimuthGearRatio);
 
         SmartDashboard.putNumber(getName() + "/Azimuth Position Deg ",
@@ -220,18 +221,18 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         double smartDashboardTurnRateTicksAzimuth = MathUtils
                 .unitConverter(
                         SmartDashboard.getNumber(getName() + "/Azimuth Turn Rate",
-                                config.shooter.defaultAzimuthTurnVelocityDeg),
+                                config.shooter.defaultAzimuthTurnVelocity_deg),
                         360, config.shooter.azimuth.ticksPerRevolution)
                 / config.shooter.azimuthGearRatio;
 
         double smartDashboardTurnRateTicksElevation = MathUtils.unitConverter(
                 SmartDashboard.getNumber(getName() + "/Elevation Turn Rate",
-                        config.shooter.defaultElevationTurnVelocityDeg),
+                        config.shooter.defaultElevationTurnVelocity_deg),
                 360, config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio;
 
         // Target position changes by this number every time periodic is called.
-        targetChangeAzimuth = (int) (smartDashboardTurnRateTicksAzimuth * spinRateAzimuth);
-        targetChangeElevation = (int) (smartDashboardTurnRateTicksElevation * spinRateElevation);
+        targetChangeAzimuth_ticks = (int) (smartDashboardTurnRateTicksAzimuth * spinRateAzimuth);
+        targetChangeElevation_ticks = (int) (smartDashboardTurnRateTicksElevation * spinRateElevation);
     }
 
     public void rotateToDeg(double targetPointAzimuth, double targetPointElevation) {
@@ -241,11 +242,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         double targetPointTicksElevation = MathUtils.unitConverter(targetPointElevation, 360,
                 config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio;
 
-        targetPositionAzimuth = (int) (targetPointTicksAzimuth);
-        targetChangeAzimuth = 0;
+        targetPositionAzimuth_ticks = (int) (targetPointTicksAzimuth);
+        targetChangeAzimuth_ticks = 0;
 
-        targetPositionElevation = (int) (targetPointTicksElevation);
-        targetChangeElevation = 0;
+        targetPositionElevation_ticks = (int) (targetPointTicksElevation);
+        targetChangeElevation_ticks = 0;
     }
 
     public void rotateByDeg(double degreesAzimuth, double degreesElevation) {
@@ -299,12 +300,13 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         if (validTarget) {
             double tx = visionSubsystem.getTx();
             double degrees = getTargetAzimuthDegGivenOffset(tx);
-            
+
             // We believed the offset and thus the degrees might change, causing the robot
             // to possibly oscillate about its target. To prevent this, take an average.
-            // Didn't make a difference, so we've disabled it. But code remains in case we want 
+            // Didn't make a difference, so we've disabled it. But code remains in case we
+            // want
             // to use it again.
-            
+
             // If enabled in the constants file, calculate the average of the last values
             // passed in (up to what FILTER_LENGTH is in ShooterConstants.java).
             absoluteDegreesToRotateAzimuth = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;

@@ -16,6 +16,8 @@ import frc.robot.simulator.sim.events.EventManager;
 import frc.robot.simulator.sim.events.FieldRenderEvent;
 import frc.robot.simulator.sim.events.RobotInitializedEvent;
 
+import frc.robot.subsystem.vision.VisionConstants;
+
 public class Sim {
 
     // the coordinates of the blue target, in meters, on the field
@@ -71,14 +73,14 @@ public class Sim {
     void onRobotPositionUpdated(RobotPosition robotPosition) {
         if (robotPosition.type == Type.WheelDisplacement) {
             double yDistance = targetY - robotPosition.y;
-            double xDistance = targetX - robotPosition.x;
+            double xOffset = targetX - robotPosition.x;
 
             // compute the angle (to the right) that the target is from our robot center
             double txRads;
-            if (xDistance > 0) {
-                txRads = (Math.PI / 2) - Math.atan(yDistance / xDistance);
-            } else if (xDistance < 0) {
-                txRads = -((Math.PI / 2) + Math.atan(yDistance / xDistance));
+            if (xOffset > 0) {
+                txRads = (Math.PI / 2) - Math.atan(yDistance / xOffset);
+            } else if (xOffset < 0) {
+                txRads = -1 * ((Math.PI / 2) + Math.atan(yDistance / xOffset));
             } else {
                 txRads = 0;
             }
@@ -90,10 +92,17 @@ public class Sim {
             txRads = txRads - (aziumthMotorPositionInRadians * config.shooter.azimuthGearRatio);
             double txDegrees = txRads * 360.0 / (Math.PI * 2);
 
+            // compute the vertical angle from our LL to the target
+            double tyRads;
+            double deltaH = VisionConstants.getTargetHeightInches() - VisionConstants.getCameraHeightInches();
+            tyRads = Math.atan(deltaH / yDistance);
+            double tyDegrees = tyRads * 360.0 / (Math.PI * 2);
+            tyDegrees -= VisionConstants.getCameraMountingAngle();
+
             if (limelightTable != null) {
                 limelightTable.getEntry("tx").forceSetDouble(txDegrees);
 
-                // TODO: Figure out ty based on distance to target
+                limelightTable.getEntry("ty").forceSetDouble(tyDegrees);
 
                 if (Math.abs(txDegrees) < LIMELIGHT_VIEWING_ANGLE) {
                     limelightTable.getEntry("tv").forceSetNumber(1);
