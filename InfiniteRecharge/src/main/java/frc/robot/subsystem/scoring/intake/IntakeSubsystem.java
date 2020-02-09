@@ -21,7 +21,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     private IntakeState intakeState = IntakeState.Off;
 
     protected WPI_TalonSRX motor;
-    private DoubleSolenoid intakePivet;
+    // private DoubleSolenoid intakePivet;
 
     public IntakeSubsystem(Config config) {
         super(config);
@@ -32,8 +32,8 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     @Override
     public void initialize() {
         super.initialize();
-        intakePivet = new DoubleSolenoid(RobotMap.INTAKE_PNEUMATIC_OPEN_CHANNEL, RobotMap.INTAKE_PNEUMATIC_CLOSED_CHANNEL); 
-        intakePivet.set(Value.kReverse);
+        // intakePivet = new DoubleSolenoid(RobotMap.INTAKE_PNEUMATIC_OPEN_CHANNEL, RobotMap.INTAKE_PNEUMATIC_CLOSED_CHANNEL); 
+        // intakePivet.set(Value.kReverse);
         initializeBaseDashboard();
         motor = MotorUtils.makeSRX(config.intake.intake);
     }
@@ -88,17 +88,17 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     }
 
     public void toggleIntakeArm(){
-        Value armState = intakePivet.get();
-        if (armState == Value.kForward) {
-            armState = Value.kReverse;
-        }
-        else if (armState == Value.kReverse){
-            armState = Value.kForward;
-        }
-        else if (armState == Value.kOff){
-            armState = Value.kForward;
-        }
-        intakePivet.set(armState);
+        // Value armState = intakePivet.get();
+        // if (armState == Value.kForward) {
+        //     armState = Value.kReverse;
+        // }
+        // else if (armState == Value.kReverse){
+        //     armState = Value.kForward;
+        // }
+        // else if (armState == Value.kOff){
+        //     armState = Value.kForward;
+        // }
+        // intakePivet.set(armState);
     }
 
 }
