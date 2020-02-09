@@ -288,11 +288,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    public void diagnosticsInitialize() {
+    public void testInit() {
 
     }
 
-    public void diagnosticsPeriodic() {
+    public void testPeriodic() {
 
     }
 
