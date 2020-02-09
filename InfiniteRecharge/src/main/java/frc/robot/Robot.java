@@ -60,6 +60,7 @@ public class Robot extends TimedRobot {
         visionSubsystem = new VisionSubsystem(config);
         navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
         driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
+        navigationSubsystem.setDrive(driveSubsystem);
         shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
         intakeSubsystem = new IntakeSubsystem(config);
         spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
