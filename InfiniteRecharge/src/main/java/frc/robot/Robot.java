@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -14,6 +17,7 @@ import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.spinnyboi.SpinnyBoiSubsystem;
+import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
@@ -43,7 +47,7 @@ public class Robot extends TimedRobot {
 
     private final OI oi = new OI();
 
-    
+    private List<BitBucketSubsystem> subsystems = new ArrayList<>();
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -54,23 +58,23 @@ public class Robot extends TimedRobot {
         config = ConfigChooser.getConfig();
 
         visionSubsystem = new VisionSubsystem(config);
-        visionSubsystem.initialize();
-
         navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
-        navigationSubsystem.initialize();
-
         driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
-        driveSubsystem.initialize();
-        navigationSubsystem.setDrive(driveSubsystem); // Java
-
+        navigationSubsystem.setDrive(driveSubsystem);
         shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
-        shooterSubsystem.initialize();
-
         intakeSubsystem = new IntakeSubsystem(config);
-        intakeSubsystem.initialize();
-
         spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
-        spinnyBoiSubsystem.initialize();
+
+        subsystems.add(navigationSubsystem);
+        subsystems.add(intakeSubsystem);
+        subsystems.add(shooterSubsystem);
+        subsystems.add(driveSubsystem);
+        subsystems.add(spinnyBoiSubsystem);
+        subsystems.add(visionSubsystem);
+
+        for (BitBucketSubsystem subsystem : subsystems) {
+            subsystem.initialize();
+        }
 
         lastTime = System.currentTimeMillis();
     }
@@ -90,27 +94,9 @@ public class Robot extends TimedRobot {
         deltaTime = (currentTime - lastTime) / 1000f;
         SmartDashboard.putNumber("deltaTime", deltaTime);
 
-        double t0 = System.nanoTime();
-        driveSubsystem.periodic(deltaTime);
-        double t1 = System.nanoTime();
-        shooterSubsystem.periodic(deltaTime);
-        double t2 = System.nanoTime();
-        intakeSubsystem.periodic(deltaTime);
-        double t3 = System.nanoTime();
-        navigationSubsystem.periodic(deltaTime);
-        double t4 = System.nanoTime();
-        spinnyBoiSubsystem.periodic(deltaTime);
-        double t5 = System.nanoTime();
-        visionSubsystem.periodic(deltaTime);
-        double t6 = System.nanoTime();
-        //System.out.println("Drive: " + (t1 - t0) / 1000000 + "ms");
-        //System.out.println("Shooter: " + (t2 - t1) / 1000000 + "ms");
-        //System.out.println("Intake: " + (t3 - t2) / 1000000 + "ms");
-        //System.out.println("Navigation: " + (t4 - t3) / 1000000 + "ms");
-        //System.out.println("Spinny Boi: " + (t5 - t4) / 1000000 + "ms");
-        //System.out.println("Vision: " + (t6 - t5) / 1000000 + "ms");
-
-        SmartDashboard.putNumber("periodic time", (t6 - t0) / 1000000);
+        for (BitBucketSubsystem subsystem : subsystems) {
+            subsystem.periodic(deltaTime);
+        }
 
         CommandScheduler.getInstance().run();
 
@@ -189,7 +175,8 @@ public class Robot extends TimedRobot {
         }
 
         // Rotate the turret with [manualAzimuthAxis]
-        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
+        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband
+                || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
             shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
         } else {
             shooterSubsystem.rotate(0, 0);
@@ -204,11 +191,21 @@ public class Robot extends TimedRobot {
         }
     }
 
+    @Override
+    public void testInit() {
+        for (BitBucketSubsystem subsystem : subsystems) {
+            subsystem.testInit();
+        }
+    }
+
     /**
      * This function is called periodically during test mode.
      */
     @Override
     public void testPeriodic() {
+        for (BitBucketSubsystem subsystem : subsystems) {
+            subsystem.testPeriodic();
+        }
     }
 
     // COMMANDS the robot to WIN!

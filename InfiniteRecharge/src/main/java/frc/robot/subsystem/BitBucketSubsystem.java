@@ -92,13 +92,13 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 
 	public void initialize() {
 		initializeBaseDashboard();
-		diagnosticsInitialize();
+		testInit();
 	};
 
 	// Force all derived classes to have these interfaces
-	public abstract void diagnosticsInitialize();
+	public abstract void testInit();
 
-	public abstract void diagnosticsPeriodic();
+	public abstract void testPeriodic();
 
 	public abstract void diagnosticsCheck();
 
