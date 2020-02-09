@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
@@ -63,6 +64,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
     private final DriveUtils DRIVE_UTILS;
+
+
+
+
+    private final Trajectory autoTrajectory;
     
 
 
@@ -74,6 +80,18 @@ public class DriveSubsystem extends BitBucketSubsystem {
         OI = oi;
 
         DRIVE_UTILS = new DriveUtils(config);
+
+        DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
+            config.drive.characterization,
+            DRIVE_UTILS.KINEMATICS,
+            DriveConstants.AUTO_MAX_VOLTAGE
+        );
+
+        // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+
+        // );
+
+        // autoTrajectory = 
     }
 
 

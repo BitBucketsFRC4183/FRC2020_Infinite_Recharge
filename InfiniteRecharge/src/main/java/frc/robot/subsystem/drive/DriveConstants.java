@@ -87,4 +87,8 @@ public class DriveConstants {
 
 
     public static final double METERS_PER_INCH = 254 / 10000.0; // haha 254
+
+
+
+    static final double AUTO_MAX_VOLTAGE = 11;
 }
