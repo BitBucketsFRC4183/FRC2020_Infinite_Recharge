@@ -81,11 +81,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         DRIVE_UTILS = new DriveUtils(config);
 
-        DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
-            config.drive.characterization,
-            DRIVE_UTILS.KINEMATICS,
-            DriveConstants.AUTO_MAX_VOLTAGE
-        );
+        // DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
+        //     config.drive.characterization,
+        //     DRIVE_UTILS.KINEMATICS,
+        //     DriveConstants.AUTO_MAX_VOLTAGE
+        // );
 
         // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
 
@@ -172,7 +172,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-        double diffSpeed_ips = radps * config.drive.trackWidth_in / 2.0;
+        ips *= config.drive.gearRatio;
+        double diffSpeed_ips = radps * config.drive.gearRatio * config.drive.trackWidth_in / 2.0;
 
         // Compute, report, and limit lateral acceleration
 		if (Math.abs(radps * ips) > DriveConstants.MAX_LAT_ACCELERATION_IPSPS) {
@@ -189,8 +190,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		int leftSpeed_tickP100 = speed_tickP100 + diffSpeed_tickP100;
         int rightSpeed_tickP100 = speed_tickP100 - diffSpeed_tickP100;
         
-        SmartDashboard.putNumber(getName() + "/ls_tp100", leftSpeed_tickP100 * config.drive.gearRatio);
-        SmartDashboard.putNumber(getName() + "/rs_tp100", rightSpeed_tickP100 * config.drive.gearRatio);
+        SmartDashboard.putNumber(getName() + "/ls_tp100", leftSpeed_tickP100);
+        SmartDashboard.putNumber(getName() + "/rs_tp100", rightSpeed_tickP100);
 
 		leftMotors[0].set(ControlMode.Velocity, leftSpeed_tickP100);
         rightMotors[0].set(ControlMode.Velocity, rightSpeed_tickP100);
@@ -335,7 +336,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
             if (doSwitch) {
                 switch (driveMethod) {
                     case VELOCITY: {
-                        driveMethod = DriveMethod.ROTATION;
+                        //driveMethod = DriveMethod.ROTATION;
                         break;
                     }
                     case ROTATION: {
