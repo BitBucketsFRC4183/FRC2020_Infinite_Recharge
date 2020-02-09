@@ -158,7 +158,7 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
 
-        SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
+        // SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
 
         // Spin up on pressing [spinUp]
         if (oi.spinUp()) {
@@ -174,21 +174,21 @@ public class Robot extends TimedRobot {
             shooterSubsystem.holdFire();
         }
 
-        // Rotate the turret with [manualAzimuthAxis]
-        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband
-                || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
-            shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
-        } else {
-            shooterSubsystem.rotate(0, 0);
-        }
+        // // Rotate the turret with [manualAzimuthAxis]
+        // if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband
+        //         || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
+        //     shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
+        // } else {
+        //     shooterSubsystem.rotate(0, 0);
+        // }
 
-        if (oi.aimBot()) {
-            shooterSubsystem.autoAim();
-        }
+        // if (oi.aimBot()) {
+        //     shooterSubsystem.autoAim();
+        // }
 
-        if (oi.zero()) {
-            shooterSubsystem.rotateToDeg(0, 0);
-        }
+        // if (oi.zero()) {
+        //     shooterSubsystem.rotateToDeg(0, 0);
+        // }
     }
 
     @Override
