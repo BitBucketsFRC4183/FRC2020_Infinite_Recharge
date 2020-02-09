@@ -57,6 +57,7 @@ public class IntakeSubsystemTest extends SubsystemTest {
     // @Before
     // public void beforeTest() throws Exception {
     //     super.beforeTest();
+    //     config.intake.intakePivotEnabled = true;
 
     //     // when our subsystem is initialized, it will create a motor and a solenoid. We
     //     // don't want
