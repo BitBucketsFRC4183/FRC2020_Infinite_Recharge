@@ -28,6 +28,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public boolean feeding = false;
     public boolean feederVelocityControl = false;
     public boolean shooterVelocityControl = false;
+    public static boolean upToSpeed = false;
 
     // Integers
     private int targetPositionAzimuth_ticks;
@@ -184,16 +185,22 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void spinUp() {
+        float targetShooterVelocity = (float) MathUtils
+                .unitConverter(SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM", 60), 600, 8192)
+                / config.shooter.shooterGearRatio;
+
         // Spin up the feeder.
-        feeder.set(
-                SmartDashboard.getNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT));
-        SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
+        if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity + config.shooter.feederSpinUpDeadband
+                && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity - config.shooter.feederSpinUpDeadband) {
+            feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
+                    ShooterConstants.FEEDER_OUTPUT_PERCENT));
+            SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
+        }
 
         // Spin up the shooter.
-        ballPropulsionMotor.set(ControlMode.Velocity,
-                MathUtils.unitConverter(SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM", 60), 600, 8192)
-                        / config.shooter.shooterGearRatio);
+        ballPropulsionMotor.set(ControlMode.Velocity, targetShooterVelocity);
         SmartDashboard.putString(getName() + "/Shooter State", "Shooting");
+        upToSpeed = true;
     }
 
     public void stopSpinningUp() {
@@ -204,6 +211,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // Spin up the shooter.
         ballPropulsionMotor.set(0);
         SmartDashboard.putString(getName() + "/Shooter State", "Doing Nothing");
+
+        upToSpeed = false;
     }
 
     public void fire() {
