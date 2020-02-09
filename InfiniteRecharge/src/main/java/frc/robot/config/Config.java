@@ -47,6 +47,8 @@ public class Config {
         public float forwardElevationSoftLimit_deg = -1;
         public float backwardElevationSoftLimit_deg = -1;
 
+        public float feederSpinUpDeadband = 100;
+
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
