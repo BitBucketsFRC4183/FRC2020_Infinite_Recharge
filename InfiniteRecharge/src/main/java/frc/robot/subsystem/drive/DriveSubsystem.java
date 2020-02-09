@@ -68,7 +68,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    private final Trajectory autoTrajectory;
+    //private final Trajectory autoTrajectory;
     
 
 
