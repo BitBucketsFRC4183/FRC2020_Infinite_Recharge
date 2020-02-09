@@ -158,8 +158,6 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
 
-        SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
-
         // Spin up on pressing [spinUp]
         if (oi.spinUp()) {
             shooterSubsystem.spinUp();
