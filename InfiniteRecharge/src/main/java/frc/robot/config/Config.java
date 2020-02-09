@@ -1,5 +1,6 @@
 package frc.robot.config;
 
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import frc.robot.config.Config.ShooterConfig.BallManagementConfig;
 import frc.robot.utils.control.pidf.PIDF;
 
@@ -106,6 +107,8 @@ public class Config {
         public double ticksPerRevolution = 2048;
         public double wheelRadius_in = 3;
         public double trackWidth_in = 22.65;
+
+        public SimpleMotorFeedforward characterization;
 
         public DriveConfig() {
         }
