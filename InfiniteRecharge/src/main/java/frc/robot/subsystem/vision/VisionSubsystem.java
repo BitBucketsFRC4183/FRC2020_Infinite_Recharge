@@ -97,4 +97,16 @@ public class VisionSubsystem extends BitBucketSubsystem {
         return validTarget;
     }
 
+    @Override
+    public void testInit() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void testPeriodic() {
+        // TODO Auto-generated method stub
+
+    }
+
 }

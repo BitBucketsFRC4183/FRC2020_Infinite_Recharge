@@ -32,19 +32,22 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     @Override
     public void initialize() {
         super.initialize();
-        intakePivet = new DoubleSolenoid(RobotMap.INTAKE_PNEUMATIC_OPEN_CHANNEL, RobotMap.INTAKE_PNEUMATIC_CLOSED_CHANNEL); 
-        intakePivet.set(Value.kReverse);
+        if (config.intake.intakePivotEnabled){
+            intakePivet = new DoubleSolenoid(RobotMap.INTAKE_PNEUMATIC_OPEN_CHANNEL, RobotMap.INTAKE_PNEUMATIC_CLOSED_CHANNEL); 
+            intakePivet.set(Value.kReverse);
+        }
+        
         initializeBaseDashboard();
         motor = MotorUtils.makeSRX(config.intake.intake);
     }
 
     @Override
-    public void diagnosticsInitialize() {
+    public void testInit() {
         SmartDashboard.putNumber(getName() + "/Intake Speed", 0.2);
     }
 
     @Override
-    public void diagnosticsPeriodic() {
+    public void testPeriodic() {
 
     }
 
@@ -63,12 +66,12 @@ public class IntakeSubsystem extends BitBucketSubsystem {
             break;
 
         case Intaking:
-            motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", 0.2));
+            motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", IntakeConstants.INTAKE_OUTPUT));
             SmartDashboard.putString(getName() + "/IntakeState", "Intaking");
             break;
 
         case Outaking:
-            motor.set(-SmartDashboard.getNumber(getName() + "/Intake Speed", 0.2));
+            motor.set(-SmartDashboard.getNumber(getName() + "/Intake Speed", IntakeConstants.OUTAKE_OUTPUT));
             SmartDashboard.putString(getName() + "/IntakeState", "Outaking");
             break;
         }
@@ -88,17 +91,20 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     }
 
     public void toggleIntakeArm(){
-        Value armState = intakePivet.get();
-        if (armState == Value.kForward) {
-            armState = Value.kReverse;
-        }
-        else if (armState == Value.kReverse){
-            armState = Value.kForward;
-        }
-        else if (armState == Value.kOff){
-            armState = Value.kForward;
-        }
-        intakePivet.set(armState);
+        if(config.intake.intakePivotEnabled){
+            Value armState = intakePivet.get();
+            if (armState == Value.kForward) {
+                armState = Value.kReverse;
+            }
+            else if (armState == Value.kReverse){
+                armState = Value.kForward;
+            }
+            else if (armState == Value.kOff){
+                armState = Value.kForward;
+            }
+            intakePivet.set(armState);
+            }
+        
     }
 
 }
