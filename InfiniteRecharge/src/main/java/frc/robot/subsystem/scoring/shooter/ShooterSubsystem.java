@@ -48,7 +48,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     // Doubles
     private double absoluteDegreesToRotateAzimuth = 0.0;
     private double degreesToRotateElevation = 0.0;
-
     // Class Declarations
     RunningAverageFilter filter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
     public BallManagementSubsystem ballManagementSubsystem;
@@ -143,6 +142,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void periodic(float deltaTime) {
 
         calculateAbsoluteDegreesToRotate();
+        calculateDegreesToRotateElevation();
 
         targetPositionAzimuth_ticks = (int) (targetPositionAzimuth_ticks + (targetChangeAzimuth_ticks * deltaTime));
         targetPositionElevation_ticks = (int) (targetPositionElevation_ticks
@@ -313,5 +313,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             // passed in (up to what FILTER_LENGTH is in ShooterConstants.java).
             absoluteDegreesToRotateAzimuth = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
         }
+    }
+    
+    public void calculateDegreesToRotateElevation() {
+        degreesToRotateElevation = visionSubsystem.getTy();
     }
 }
