@@ -93,7 +93,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
     }
 
     public void adjustZoom() {
-        double pipelineToChangeTo;
+        double pipelineToChangeTo = 0;
 
         if (distance >= 0) {
             pipelineToChangeTo = 0;
