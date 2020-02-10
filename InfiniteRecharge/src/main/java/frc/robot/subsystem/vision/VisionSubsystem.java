@@ -18,6 +18,8 @@ public class VisionSubsystem extends BitBucketSubsystem {
     private double tx = 0;
     private double ty = 0;
 
+    private double distance = 0;
+
     public VisionSubsystem(final Config config) {
         super(config);
     }
@@ -47,7 +49,8 @@ public class VisionSubsystem extends BitBucketSubsystem {
     public void periodic(final float deltaTime) {
 
         updateTargetInfo();
-        final double distance = approximateDistanceFromTarget(ty);
+        distance = approximateDistanceFromTarget(ty);
+        adjustZoom();
 
         SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
         SmartDashboard.putNumber(getName() + "/Estimated Distance ", distance);
@@ -87,6 +90,22 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
         tx = queryLimelightNetworkTable("tx");
         ty = queryLimelightNetworkTable("ty");
+    }
+
+    public void adjustZoom() {
+        double pipelineToChangeTo;
+
+        if (distance >= 0) {
+            pipelineToChangeTo = 0;
+        }
+        if (distance >= 10) {
+            pipelineToChangeTo = 1;
+        }
+        if (distance >= 20) {
+            pipelineToChangeTo = 2;
+        }
+
+        limelightTable.getEntry("pipeline").setDouble(pipelineToChangeTo);
     }
 
     public double getTx() {
