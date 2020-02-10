@@ -120,7 +120,7 @@ public class Config {
         public double wheelRadius_in = 3;
         public double trackWidth_in = 22.65;
 
-        public SimpleMotorFeedforward characterization;
+        public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);;
 
         public DriveConfig() {
         }
