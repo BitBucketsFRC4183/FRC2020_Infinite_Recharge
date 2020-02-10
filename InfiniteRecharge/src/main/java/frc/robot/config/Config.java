@@ -7,14 +7,13 @@ public class Config {
 
     //////////////////////////////////////////////////////////////////////////////
     // Subsystem Enablers
-    
-    public boolean ENABLE_SHOOTER_SUBSYSTEM = true;
-    public boolean ENABLE_BALL_MANAGEMENT_SUBSYSTEM = true;
-    public boolean ENABLE_DRIVE_SUBSYSTEM = true;
-    public boolean ENABLE_CLIMB_SUBSYSTEM = true;
-    public boolean ENABLE_INTAKE_SUBSYSTEM = true;
-    public boolean ENABLE_SPINNYBOI_SUBSYSTEM = true;
 
+    public boolean enableShooterSubsystem = true;
+    public boolean enableBallManagementSubsystem = true;
+    public boolean enableDriveSubsystem = true;
+    public boolean enableClimbSubsystem = true;
+    public boolean enableIntakeSubsystem = true;
+    public boolean enableSpinnyboiSubsystem = true;
 
     //////////////////////////////////////////////////////////////////////////////
     // Motor IDs
@@ -58,7 +57,7 @@ public class Config {
         public float forwardElevationSoftLimit_deg = -1;
         public float backwardElevationSoftLimit_deg = -1;
 
-        public float feederSpinUpDeadband = 100;
+        public float feederSpinUpDeadband = 800;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();
@@ -113,7 +112,7 @@ public class Config {
         public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Integrated;
 
         /** Gear ratio from encoder to wheel. gearRatio encoder turns = 1 wheel turn */
-        public double gearRatio = (10 + 8.0/9);
+        public double gearRatio = (10 + 8.0 / 9);
         public double ticksPerRevolution = 2048;
         public double wheelRadius_in = 3;
         public double trackWidth_in = 22.65;

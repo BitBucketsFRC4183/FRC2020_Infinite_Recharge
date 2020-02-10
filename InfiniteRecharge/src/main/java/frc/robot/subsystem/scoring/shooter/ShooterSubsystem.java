@@ -28,7 +28,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public boolean feeding = false;
     public boolean feederVelocityControl = false;
     public boolean shooterVelocityControl = false;
-    public static boolean upToSpeed = false;
+    private boolean upToSpeed = false;
 
     // Integers
     private int targetPositionAzimuth_ticks;
@@ -88,7 +88,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         ballPropulsionMotor.selectProfileSlot(MotorUtils.velocitySlot, 0);
 
-        if (config.ENABLE_BALL_MANAGEMENT_SUBSYSTEM) {
+        if (config.enableBallManagementSubsystem) {
             ballManagementSubsystem = new BallManagementSubsystem(config);
             ballManagementSubsystem.initialize();
         }
@@ -194,9 +194,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         // Spin up the feeder.
         if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
-                + config.shooter.feederSpinUpDeadband
+                - config.shooter.feederSpinUpDeadband
                 && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
-                        - config.shooter.feederSpinUpDeadband) {
+                        + config.shooter.feederSpinUpDeadband) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     ShooterConstants.FEEDER_OUTPUT_PERCENT));
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
@@ -221,14 +221,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void fire() {
-        if (config.ENABLE_BALL_MANAGEMENT_SUBSYSTEM) {
+        if (config.enableBallManagementSubsystem && upToSpeed) {
             ballManagementSubsystem.fire(
                     (float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent", 50) / 100);
         }
     }
 
     public void holdFire() {
-        if (config.ENABLE_BALL_MANAGEMENT_SUBSYSTEM) {
+        if (config.enableBallManagementSubsystem) {
             ballManagementSubsystem.doNotFire();
         }
     }
@@ -329,5 +329,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             // passed in (up to what FILTER_LENGTH is in ShooterConstants.java).
             absoluteDegreesToRotateAzimuth = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
         }
+    }
+
+    public boolean isUpToSpeed() {
+        return upToSpeed;
     }
 }

@@ -61,13 +61,12 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
      * @param rate How rapidly should we give balls to the feeder?
      */
     public void fire(float rate) {
-        if (ShooterSubsystem.upToSpeed == true) {
-            motor.set(ControlMode.PercentOutput, rate);
 
-            // Because you can neva 'ave enuf dakka!
-            SmartDashboard.putString(getName() + "/State",
-                    "DAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKA");
-        } else {
+        motor.set(ControlMode.PercentOutput, rate);
+        // Because you can neva 'ave enuf dakka!
+        SmartDashboard.putString(getName() + "/State",
+                "DAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKA");
+        {
             SmartDashboard.putString(getName() + "/State", "Cannot fire: Shooter isn't up to speed.");
         }
     }
