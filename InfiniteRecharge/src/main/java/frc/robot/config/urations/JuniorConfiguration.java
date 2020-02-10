@@ -1,6 +1,7 @@
 
 package frc.robot.config.urations;
 
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import frc.robot.config.Config;
 import frc.robot.config.MotorConfig.EncoderType;
 import frc.robot.utils.control.pidf.PIDF;
@@ -67,6 +68,7 @@ public class JuniorConfiguration extends Config {
         drive.encoderType = EncoderType.Quadrature;
         drive.wheelRadius_in = 2;
         drive.trackWidth_in = 18.72;
+        drive.characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);
 
         drive.initMotorConfigArrays();
 

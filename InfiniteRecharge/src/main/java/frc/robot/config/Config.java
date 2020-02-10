@@ -1,5 +1,6 @@
 package frc.robot.config;
 
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import frc.robot.config.Config.ShooterConfig.BallManagementConfig;
 import frc.robot.utils.control.pidf.PIDF;
 
@@ -19,20 +20,21 @@ public class Config {
     // Motor IDs
 
     // Shooter
-    public int AZIMUTH_MOTOR_ID = 12;
-    public int ELEVATION_MOTOR_ID = 15;
+    public int AZIMUTH_MOTOR_ID = 11;
+    public int ELEVATION_MOTOR_ID = 14;
     public int SHOOTER_MOTOR_ID = 13;
-    public int FEEDER_MOTOR_ID = 8;
+    public int FEEDER_MOTOR_ID = 9;
 
     // Intake
-    public int INTAKE_MOTOR_ID = 14;
+    public int INTAKE_MOTOR_ID = 5;
 
     // Drive
     public int LEFT_DRIVE_IDS[] = { 1, 4 };
     public int RIGHT_DRIVE_IDS[] = { 2, 3 };
 
     // SpinnyBoi
-    public int SPINNYBOI_MOTOR_ID = 5;
+    public int SPINNYBOI_MOTOR_ID = 6;
+    public int BALLMANAGEMENT_MOTOR_ID = 10;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
@@ -87,6 +89,7 @@ public class Config {
     }
 
     public static class IntakeConfig {
+        public boolean intakePivotEnabled = false;
 
         public MotorConfig intake = new MotorConfig();
     }
@@ -116,6 +119,8 @@ public class Config {
         public double ticksPerRevolution = 2048;
         public double wheelRadius_in = 3;
         public double trackWidth_in = 22.65;
+
+        public SimpleMotorFeedforward characterization;
 
         public DriveConfig() {
         }
@@ -163,6 +168,7 @@ public class Config {
         shooter.elevation.id = ELEVATION_MOTOR_ID;
         shooter.feeder.id = FEEDER_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
+        ballManagement.spinner.id = BALLMANAGEMENT_MOTOR_ID;
 
         // Intake
         intake.intake.id = INTAKE_MOTOR_ID;

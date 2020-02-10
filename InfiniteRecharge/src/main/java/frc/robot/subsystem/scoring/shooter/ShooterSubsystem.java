@@ -12,6 +12,7 @@ import frc.robot.utils.talonutils.MotorUtils;
 
 import frc.robot.utils.data.filters.RunningAverageFilter;
 import frc.robot.subsystem.scoring.shooter.ShooterConstants;
+import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementConstants;
 import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementSubsystem;
 
 import frc.robot.subsystem.vision.VisionSubsystem;
@@ -120,7 +121,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    public void diagnosticsInitialize() {
+    public void testInit() {
         SmartDashboard.putNumber(getName() + "/Shooter Output Percent", 0.2);
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 500);
@@ -131,7 +132,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
 
-    public void diagnosticsPeriodic() {
+    public void testPeriodic() {
         // TODO Auto-generated method stub
 
     }
@@ -225,7 +226,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void fire() {
         if (config.enableBallManagementSubsystem && upToSpeed) {
             ballManagementSubsystem.fire(
-                    (float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent", 50) / 100);
+                    (float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent", BallManagementConstants.BMS_OUTPUT_PERCENT));
         }
     }
 
