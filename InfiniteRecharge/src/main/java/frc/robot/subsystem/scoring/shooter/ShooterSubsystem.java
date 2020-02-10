@@ -152,17 +152,17 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         targetPositionElevation_ticks = (int) (targetPositionElevation_ticks
                 + (targetChangeElevation_ticks * deltaTime));
 
-        if (rightAzimuthSoftLimit_ticks != -1 && leftAzimuthSoftLimit_ticks != -1) {
+        if (config.shooter.rightAzimuthSoftLimit_deg != -1 && config.shooter.leftAzimuthSoftLimit_deg != -1) {
             if (targetPositionAzimuth_ticks > rightAzimuthSoftLimit_ticks) {
                 targetPositionAzimuth_ticks = (int) rightAzimuthSoftLimit_ticks;
             } else if (targetPositionAzimuth_ticks < -leftAzimuthSoftLimit_ticks) {
                 targetPositionAzimuth_ticks = (int) -leftAzimuthSoftLimit_ticks;
             }
         }
-        if (forwardElevationSoftLimit_ticks != -1 && backwardElevationSoftLimit_ticks != -1) {
+        if (config.shooter.forwardElevationSoftLimit_deg != -1 && config.shooter.backwardElevationSoftLimit_deg != -1) {
             if (targetPositionElevation_ticks > forwardElevationSoftLimit_ticks) {
                 targetPositionElevation_ticks = (int) forwardElevationSoftLimit_ticks;
-            } else if (targetPositionAzimuth_ticks < -backwardElevationSoftLimit_ticks) {
+            } else if (targetPositionElevation_ticks < -backwardElevationSoftLimit_ticks) {
                 targetPositionElevation_ticks = (int) -backwardElevationSoftLimit_ticks;
             }
         }
@@ -225,8 +225,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public void fire() {
         if (config.enableBallManagementSubsystem && upToSpeed) {
-            ballManagementSubsystem.fire(
-                    (float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent", BallManagementConstants.BMS_OUTPUT_PERCENT));
+            ballManagementSubsystem
+                    .fire((float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent",
+                            BallManagementConstants.BMS_OUTPUT_PERCENT));
         }
     }
 
@@ -333,11 +334,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             absoluteDegreesToRotateAzimuth = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
         }
     }
-    
+
     public void calculateDegreesToRotateElevation() {
         degreesToRotateElevation = visionSubsystem.getTy();
     }
-    
+
     public boolean isUpToSpeed() {
         return upToSpeed;
     }
