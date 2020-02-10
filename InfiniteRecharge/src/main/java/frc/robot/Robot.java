@@ -59,24 +59,24 @@ public class Robot extends TimedRobot {
         navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
         navigationSubsystem.initialize();
 
-        if (config.ENABLE_DRIVE_SUBSYSTEM) {
+        if (config.enableDriveSubsystem) {
             driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
             driveSubsystem.initialize();
         }
 
         navigationSubsystem.setDrive(driveSubsystem); // Java
 
-        if (config.ENABLE_SHOOTER_SUBSYSTEM) {
+        if (config.enableShooterSubsystem) {
             shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
             shooterSubsystem.initialize();
         }
 
-        if (config.ENABLE_INTAKE_SUBSYSTEM) {
+        if (config.enableIntakeSubsystem) {
             intakeSubsystem = new IntakeSubsystem(config);
             intakeSubsystem.initialize();
         }
 
-        if (config.ENABLE_SPINNYBOI_SUBSYSTEM) {
+        if (config.enableSpinnyboiSubsystem) {
             spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
             spinnyBoiSubsystem.initialize();
         }
@@ -100,23 +100,23 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("deltaTime", deltaTime);
 
         double t0 = System.nanoTime();
-        if (config.ENABLE_DRIVE_SUBSYSTEM) {
+        if (config.enableDriveSubsystem) {
             driveSubsystem.periodic(deltaTime);
         }
         double t1 = System.nanoTime();
-        if (config.ENABLE_SHOOTER_SUBSYSTEM) {
+        if (config.enableShooterSubsystem) {
             shooterSubsystem.periodic(deltaTime);
         }
         double t2 = System.nanoTime();
-        if (config.ENABLE_INTAKE_SUBSYSTEM) {
+        if (config.enableIntakeSubsystem) {
             intakeSubsystem.periodic(deltaTime);
         }
         double t3 = System.nanoTime();
-        if (config.ENABLE_DRIVE_SUBSYSTEM) {
+        if (config.enableDriveSubsystem) {
             navigationSubsystem.periodic(deltaTime);
         }
         double t4 = System.nanoTime();
-        if (config.ENABLE_SPINNYBOI_SUBSYSTEM) {
+        if (config.enableSpinnyboiSubsystem) {
             spinnyBoiSubsystem.periodic(deltaTime);
         }
         double t5 = System.nanoTime();
@@ -168,7 +168,7 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Drive Subsystem
 
-        if (config.ENABLE_DRIVE_SUBSYSTEM) {
+        if (config.enableDriveSubsystem) {
             driveSubsystem.setDriverRawSpeed(oi.speed());
             driveSubsystem.setDriverRawTurn(oi.turn());
         }
@@ -176,7 +176,7 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Intake Subsystem
 
-        if (config.ENABLE_INTAKE_SUBSYSTEM) {
+        if (config.enableIntakeSubsystem) {
             // Intake on pressing circle.
             if (oi.intaking()) {
                 intakeSubsystem.intake();
@@ -195,7 +195,7 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
 
-        if (config.ENABLE_SHOOTER_SUBSYSTEM) {
+        if (config.enableShooterSubsystem) {
             SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
 
             // Spin up on pressing [spinUp]
