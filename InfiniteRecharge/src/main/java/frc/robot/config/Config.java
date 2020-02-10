@@ -7,6 +7,16 @@ import frc.robot.utils.control.pidf.PIDF;
 public class Config {
 
     //////////////////////////////////////////////////////////////////////////////
+    // Subsystem Enablers
+
+    public boolean enableShooterSubsystem = true;
+    public boolean enableBallManagementSubsystem = true;
+    public boolean enableDriveSubsystem = true;
+    public boolean enableClimbSubsystem = true;
+    public boolean enableIntakeSubsystem = true;
+    public boolean enableSpinnyboiSubsystem = true;
+
+    //////////////////////////////////////////////////////////////////////////////
     // Motor IDs
 
     // Shooter
@@ -48,6 +58,8 @@ public class Config {
         public float leftAzimuthSoftLimit_deg = 45;
         public float forwardElevationSoftLimit_deg = -1;
         public float backwardElevationSoftLimit_deg = -1;
+
+        public float feederSpinUpDeadband_ticks = 800;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();

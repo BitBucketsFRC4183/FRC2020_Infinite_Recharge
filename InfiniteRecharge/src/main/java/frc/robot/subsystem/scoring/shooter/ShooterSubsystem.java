@@ -29,6 +29,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public boolean feeding = false;
     public boolean feederVelocityControl = false;
     public boolean shooterVelocityControl = false;
+    private boolean upToSpeed = false;
 
     // Integers
     private int targetPositionAzimuth_ticks;
@@ -86,8 +87,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         feeder.selectProfileSlot(MotorUtils.velocitySlot, 0);
 
         ballPropulsionMotor.selectProfileSlot(MotorUtils.velocitySlot, 0);
-        ballManagementSubsystem = new BallManagementSubsystem(config);
-        ballManagementSubsystem.initialize();
+
+        if (config.enableBallManagementSubsystem) {
+            ballManagementSubsystem = new BallManagementSubsystem(config);
+            ballManagementSubsystem.initialize();
+        }
 
         rightAzimuthSoftLimit_ticks = MathUtils.unitConverter(config.shooter.rightAzimuthSoftLimit_deg, 360,
                 config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio;
@@ -185,15 +189,25 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void spinUp() {
+        float targetShooterVelocity = (float) MathUtils
+                .unitConverter(SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM", 60), 600, 8192)
+                / config.shooter.shooterGearRatio;
+
         // Spin up the feeder.
-        feeder.set(
-                SmartDashboard.getNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT));
-        SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
+        if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
+                - config.shooter.feederSpinUpDeadband_ticks
+                && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
+                        + config.shooter.feederSpinUpDeadband_ticks) {
+            feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
+                    ShooterConstants.FEEDER_OUTPUT_PERCENT));
+            SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
+            upToSpeed = true;
+        } else {
+            upToSpeed = false;
+        }
 
         // Spin up the shooter.
-        ballPropulsionMotor.set(ControlMode.Velocity,
-                MathUtils.unitConverter(SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM", 60), 600, 8192)
-                        / config.shooter.shooterGearRatio);
+        ballPropulsionMotor.set(ControlMode.Velocity, targetShooterVelocity);
         SmartDashboard.putString(getName() + "/Shooter State", "Shooting");
     }
 
@@ -205,16 +219,21 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // Spin up the shooter.
         ballPropulsionMotor.set(0);
         SmartDashboard.putString(getName() + "/Shooter State", "Doing Nothing");
+
+        upToSpeed = false;
     }
 
     public void fire() {
-        ballManagementSubsystem
-                .fire((float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent",
-                        BallManagementConstants.BMS_OUTPUT_PERCENT));
+        if (config.enableBallManagementSubsystem && upToSpeed) {
+            ballManagementSubsystem.fire(
+                    (float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent", BallManagementConstants.BMS_OUTPUT_PERCENT));
+        }
     }
 
     public void holdFire() {
-        ballManagementSubsystem.doNotFire();
+        if (config.enableBallManagementSubsystem) {
+            ballManagementSubsystem.doNotFire();
+        }
     }
 
     public void rotate(double spinRateAzimuth, double spinRateElevation) {
@@ -317,5 +336,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     
     public void calculateDegreesToRotateElevation() {
         degreesToRotateElevation = visionSubsystem.getTy();
+
+    public boolean isUpToSpeed() {
+        return upToSpeed;
     }
 }

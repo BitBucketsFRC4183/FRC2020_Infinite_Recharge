@@ -9,7 +9,7 @@ import frc.robot.utils.control.pidf.PIDF;
 public class JuniorConfiguration extends Config {
 
     // either for driving or shooting
-    private boolean forDriving = false;
+    private boolean forDriving = true;
 
     // Drive
     public int LEFT_DRIVE_IDS[] =
@@ -32,6 +32,14 @@ public class JuniorConfiguration extends Config {
     
     public JuniorConfiguration() {
         super();
+
+        // Subsystem Enablers
+        enableShooterSubsystem = false;
+        enableBallManagementSubsystem = false;
+        enableDriveSubsystem = true;
+        enableClimbSubsystem = false;
+        enableIntakeSubsystem = false;
+        enableSpinnyboiSubsystem = false;
 
         // junior doesn't have these, but move the motor ids around so they
         // don't conflict with junior's drive motors
