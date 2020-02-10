@@ -336,7 +336,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     
     public void calculateDegreesToRotateElevation() {
         degreesToRotateElevation = visionSubsystem.getTy();
-
+    }
+    
     public boolean isUpToSpeed() {
         return upToSpeed;
     }
