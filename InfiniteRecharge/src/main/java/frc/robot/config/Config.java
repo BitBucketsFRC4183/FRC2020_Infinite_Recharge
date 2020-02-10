@@ -44,7 +44,7 @@ public class Config {
     public static class ShooterConfig {
         public float azimuthGearRatio = 28f / 130f;
 
-        public float elevationGearRatio = 1f / 1f;
+        public float elevationGearRatio = 40f / 70f;
 
         public float shooterGearRatio = .48f / 1f;
 
