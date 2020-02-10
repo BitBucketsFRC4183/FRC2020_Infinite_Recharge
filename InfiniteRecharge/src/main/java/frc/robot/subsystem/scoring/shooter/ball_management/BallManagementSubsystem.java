@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
 
 public class BallManagementSubsystem extends BitBucketSubsystem {
@@ -60,11 +61,14 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
      * @param rate How rapidly should we give balls to the feeder?
      */
     public void fire(float rate) {
-        motor.set(ControlMode.PercentOutput, rate);
 
+        motor.set(ControlMode.PercentOutput, rate);
         // Because you can neva 'ave enuf dakka!
         SmartDashboard.putString(getName() + "/State",
                 "DAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKA");
+        {
+            SmartDashboard.putString(getName() + "/State", "Cannot fire: Shooter isn't up to speed.");
+        }
     }
 
     public void doNotFire() {
