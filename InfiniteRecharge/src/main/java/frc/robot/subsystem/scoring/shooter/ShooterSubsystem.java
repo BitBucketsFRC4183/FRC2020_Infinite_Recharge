@@ -194,13 +194,15 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         // Spin up the feeder.
         if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
-                - config.shooter.feederSpinUpDeadband
+                - config.shooter.feederSpinUpDeadband_ticks
                 && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
-                        + config.shooter.feederSpinUpDeadband) {
+                        + config.shooter.feederSpinUpDeadband_ticks) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     ShooterConstants.FEEDER_OUTPUT_PERCENT));
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
             upToSpeed = true;
+        } else {
+            upToSpeed = false;
         }
 
         // Spin up the shooter.
