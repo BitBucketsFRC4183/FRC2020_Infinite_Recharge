@@ -93,6 +93,10 @@ public class VisionSubsystem extends BitBucketSubsystem {
         return tx;
     }
 
+    public double getTy() {
+        return ty;
+    }
+
     public boolean getValidTarget() {
         return validTarget;
     }
