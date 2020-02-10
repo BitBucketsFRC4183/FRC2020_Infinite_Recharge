@@ -158,8 +158,6 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
 
-        // SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
-
         // Spin up on pressing [spinUp]
         if (oi.spinUp()) {
             shooterSubsystem.spinUp();
@@ -174,7 +172,7 @@ public class Robot extends TimedRobot {
             shooterSubsystem.holdFire();
         }
 
-        // // Rotate the turret with [manualAzimuthAxis]
+        // Rotate the turret with [manualAzimuthAxis]
         if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband
                 || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
             shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
