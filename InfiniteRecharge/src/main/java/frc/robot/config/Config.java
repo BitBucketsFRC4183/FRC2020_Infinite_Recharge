@@ -56,8 +56,8 @@ public class Config {
 
         public float rightAzimuthSoftLimit_deg = 45;
         public float leftAzimuthSoftLimit_deg = 45;
-        public float forwardElevationSoftLimit_deg = -1;
-        public float backwardElevationSoftLimit_deg = -1;
+        public float forwardElevationSoftLimit_deg = 60;
+        public float backwardElevationSoftLimit_deg = 0;
 
         public float feederSpinUpDeadband_ticks = 800;
 
