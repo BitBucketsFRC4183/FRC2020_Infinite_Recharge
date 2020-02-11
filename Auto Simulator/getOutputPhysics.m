@@ -16,6 +16,7 @@ function y = getOutputPhysics(state)
         tx;
         state(vL);
         state(vR);
+        state(THETA);
     ];
 end
 

@@ -36,11 +36,12 @@ D = 1;
 TX = 2;
 VL_O = 3;
 VR_O = 4;
+LL_THETA = 5;
 
 
 STATE_SIZE = 5;
 INPUT_SIZE = 2;
-OUTPUT_SIZE = 4;
+OUTPUT_SIZE = 5;
 
 
 xT = 0.3048*5.58;
