@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
@@ -81,17 +84,28 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         DRIVE_UTILS = new DriveUtils(config);
 
-        // DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
-        //     config.drive.characterization,
-        //     DRIVE_UTILS.KINEMATICS,
-        //     DriveConstants.AUTO_MAX_VOLTAGE
-        // );
+        DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
+            config.drive.characterization,
+            DRIVE_UTILS.KINEMATICS,
+            DriveConstants.AUTO_MAX_VOLTAGE
+        );
 
-        // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+        DifferentialDriveKinematicsConstraint kinematicsConstraint = new DifferentialDriveKinematicsConstraint(
+            DRIVE_UTILS.KINEMATICS,
+            DriveConstants.MAX_ALLOWED_SPEED_IPS
+        );
 
-        // );
+        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+            DriveConstants.MAX_ALLOWED_SPEED_IPS * DriveConstants.METERS_PER_INCH,
+            DRIVE_UTILS.MAX_ACCELERATION_MPSPS
+        );
+        trajectoryConfig.setKinematics(DRIVE_UTILS.KINEMATICS);
+        trajectoryConfig.addConstraint(voltageConstraint);
+        trajectoryConfig.addConstraint(kinematicsConstraint);
 
-        // autoTrajectory = 
+        //TrajectoryGenerator.generateTrajectory(initial, interiorWaypoints, end, config)
+
+        //autoTrajectory = 
     }
 
 
