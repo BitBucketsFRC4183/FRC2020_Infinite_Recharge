@@ -29,4 +29,6 @@ function C = getCPhysics(state)
     C(VL_O, vL) = 1;
     
     C(VR_O, vR) = 1;
+    
+    C(LL_THETA, THETA) = 1;
 end
