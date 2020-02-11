@@ -15,16 +15,16 @@ function C = getCPhysics(state)
     num = yT - y - rLL*cos(thetaLL + thetaR);
     denom = xT - x - rLL*sin(thetaLL + thetaR);
     
-    ratio = (yT - y - rLL*cos(thetaLL + thetaR))/(xT - x - rLL*sin(thetaLL + thetaR));
+    ratio = (yT - y)/(xT - x);
     
     
-    C(D, X) = num/denom^2*1/sqrt(1+ratio^2);
-    C(D, Y) = 1/denom*1/sqrt(1+ratio^2);
-    C(D, THETA) = (1-(denom*rLL*sin(thetaLL+thetaR)+num*rLL*cos(thetaLL+thetaR))/(denom^2));
+    C(D, X) = (x - xT)/d;%num/denom^2*1/sqrt(1+ratio^2);
+    C(D, Y) = (y - yT)/d;%1/denom*1/sqrt(1+ratio^2);
+    %C(D, THETA) = 0(1-(denom*rLL*sin(thetaLL+thetaR)+num*rLL*cos(thetaLL+thetaR))/(denom^2));
     
-    C(TX, X) = (x-xT)/d;
-    C(TX, Y) = (y-yT)/d;
-    C(TX, THETA) = (x-xT)/d*(-rLL*sin(thetaLL + thetaR))+(y-yT)/d*(rLL*cos(thetaLL+thetaR));
+    C(TX, X) = -1/((x-xT)*(1 + ratio^2));
+    C(TX, Y) = (y-yT)/((x-xT)^2 * (1 + ratio^2));
+    C(TX, THETA) = 1;
     
     C(VL_O, vL) = 1;
     
