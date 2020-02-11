@@ -46,5 +46,5 @@ OUTPUT_SIZE = 4;
 xT = 0.3048*5.58;
 yT = 15.9830/2;
 
-thetaLL = pi/6;
-rLL = 0.2286;
+thetaLL = 0;%pi/6;
+rLL = 0;%0.2286;
