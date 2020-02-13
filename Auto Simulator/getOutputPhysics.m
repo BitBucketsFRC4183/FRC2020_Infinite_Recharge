@@ -5,8 +5,8 @@ function y = getOutputPhysics(state)
     y = state(Y);
     thetaR = state(THETA);
     
-    xLL = x + rLL * cos(thetaR + thetaLL);
-    yLL = y + rLL * cos(thetaR + thetaLL);
+    xLL = x;%
+    yLL = y;%
     
     d = sqrt((xLL - xT)^2 + (yLL - yT)^2);% + 0.125*(2*rand-1);
     tx = thetaR - atan2(yT - yLL, xT - xLL - xT);% + pi/1800*(2*rand-1);
@@ -16,6 +16,7 @@ function y = getOutputPhysics(state)
         tx;
         state(vL);
         state(vR);
+        state(THETA);
     ];
 end
 
