@@ -194,17 +194,17 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 / config.shooter.shooterGearRatio;
 
         // Spin up the feeder.
-        if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
-                - config.shooter.feederSpinUpDeadband_ticks
-                && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
-                        + config.shooter.feederSpinUpDeadband_ticks) {
+        // if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
+                // - config.shooter.feederSpinUpDeadband_ticks
+                // && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
+                        // + config.shooter.feederSpinUpDeadband_ticks) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     ShooterConstants.FEEDER_OUTPUT_PERCENT));
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
             upToSpeed = true;
-        } else {
-            upToSpeed = false;
-        }
+        // } else {
+            // upToSpeed = false;
+        // }
 
         // Spin up the shooter.
         ballPropulsionMotor.set(ControlMode.Velocity, targetShooterVelocity);
@@ -224,10 +224,15 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void fire() {
-        if (config.enableBallManagementSubsystem && upToSpeed) {
+        if (config.enableBallManagementSubsystem/* && upToSpeed*/) {
             ballManagementSubsystem
                     .fire((float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent",
                             BallManagementConstants.BMS_OUTPUT_PERCENT));
+        } else if (!config.enableBallManagementSubsystem) {
+            SmartDashboard.putString("BallManagementSubsystem/State",
+                    "Cannot fire: BallManagementSubsystem is not enabled.");
+        } else if (!upToSpeed) {
+            SmartDashboard.putString("BallManagementSubsystem/State", "Cannot fire: Shooter isn't up to speed.");
         }
     }
 
