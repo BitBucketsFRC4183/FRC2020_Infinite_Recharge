@@ -55,7 +55,7 @@ xs = [x0, ball_1(1), ball_2(1), ball_3(1)];
 ys = [y0, ball_1(2), ball_2(2), ball_3(2)];
 
 angle0 = 3*pi/2 + angle;
-spline = R'*spline(ts, R*[xs; ys;], tq);
+spline = R'*spline(ts, R*[xs; ys], tq);
 %y_spline = spline(ts, [-2, ys, 0], tq);
 
 plot(x0, y0, "g*");

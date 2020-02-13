@@ -1,5 +1,7 @@
 package frc.robot.subsystem.drive;
 
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -7,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -71,7 +74,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    //private final Trajectory autoTrajectory;
+    private final Trajectory autoTrajectory;
     
 
 
@@ -103,9 +106,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectoryConfig.addConstraint(voltageConstraint);
         trajectoryConfig.addConstraint(kinematicsConstraint);
 
-        //TrajectoryGenerator.generateTrajectory(initial, interiorWaypoints, end, config)
-
-        //autoTrajectory = 
+        autoTrajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT, Rotation2d.fromDegrees(90)),
+            List.of(FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
+            new Pose2d(FieldConstants.OUR_POWER_CELL_3, Rotation2d.fromDegrees(90)),
+            trajectoryConfig);
     }
 
 
@@ -447,7 +452,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     }
 
 	public Trajectory getAutoTrajectory() {
-		return null;
+		return autoTrajectory;
     }
     
     public Pose2d getPose() {
