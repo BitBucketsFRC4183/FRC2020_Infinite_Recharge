@@ -365,9 +365,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
                     default: // just keep it I guess? shouldn't get here anyways
                 }
             }
-        }/* else if (driverStation.isAutonomous()) {
+        } else if (driverStation.isAutonomous()) {
             driveMethod = DriveMethod.AUTO; // please don't press any buttons during auto anyways :)))
-        }*/
+        }
 
 
 
