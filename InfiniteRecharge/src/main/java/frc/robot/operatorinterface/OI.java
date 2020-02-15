@@ -42,6 +42,8 @@ public class OI {
     // ****************************
     // BUTTON DEFINITIONS
     // ****************************
+    private final int ROTATION_CONTROL = PS4Constants.TRIANGLE.getValue();
+    private final int COLOR_CONTROL = PS4Constants.CROSS.getValue();
     static final int DRIVE_LOW_SENSITIVE_BUTTON = PS4Constants.R1.getValue();
     static final int DRIVE_INVERT_BUTTON = PS4Constants.L1.getValue();
     static final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
@@ -105,6 +107,14 @@ public class OI {
 
     public boolean barDownButtonPressed() {
         return operatorControl.getRawButtonPressed(OPERATOR_INTAKE_TOGGLE);
+    }
+
+    public boolean rotationControl() {
+        return driverControl.getRawButtonPressed(ROTATION_CONTROL);
+    }
+
+    public boolean colorControl() {
+        return driverControl.getRawButtonPressed(COLOR_CONTROL);
     }
 
     /**

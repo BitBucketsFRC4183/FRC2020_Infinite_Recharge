@@ -57,8 +57,25 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         config = ConfigChooser.getConfig();
 
+<<<<<<< Updated upstream
         visionSubsystem = new VisionSubsystem(config);
         subsystems.add(visionSubsystem);
+=======
+        // visionSubsystem = new VisionSubsystem(config);
+        // navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
+        // driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
+        // navigationSubsystem.setDrive(driveSubsystem);
+        // shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
+        // intakeSubsystem = new IntakeSubsystem(config);
+        spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
+
+        // subsystems.add(navigationSubsystem);
+        // subsystems.add(intakeSubsystem);
+        // subsystems.add(shooterSubsystem);
+        // subsystems.add(driveSubsystem);
+        subsystems.add(spinnyBoiSubsystem);
+        // subsystems.add(visionSubsystem);
+>>>>>>> Stashed changes
 
         if (config.enableDriveSubsystem) {
             navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
@@ -146,14 +163,20 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Drive Subsystem
 
+<<<<<<< Updated upstream
         if (config.enableDriveSubsystem) {
             driveSubsystem.setDriverRawSpeed(oi.speed());
             driveSubsystem.setDriverRawTurn(oi.turn());
         }
+=======
+        // driveSubsystem.setDriverRawSpeed(oi.speed());
+        // driveSubsystem.setDriverRawTurn(oi.turn());
+>>>>>>> Stashed changes
 
         //////////////////////////////////////////////////////////////////////////////
         // Intake Subsystem
 
+<<<<<<< Updated upstream
         if (config.enableIntakeSubsystem) {
             // Intake on pressing circle.
             if (oi.intaking()) {
@@ -206,6 +229,67 @@ public class Robot extends TimedRobot {
                 shooterSubsystem.rotateToDeg(0, 0);
             }
         }
+=======
+        // Intake on pressing circle.
+        // if (oi.intaking()) {
+        //     intakeSubsystem.intake();
+        // } else if (oi.outaking()) {
+        //     intakeSubsystem.outake();
+        // } else {
+        //     intakeSubsystem.off();
+        // }
+
+        // // Pivot Intake Bar
+        // if (oi.barDownButtonPressed()) {
+        //     intakeSubsystem.toggleIntakeArm();
+        // }
+
+        // //////////////////////////////////////////////////////////////////////////////
+        // // SpinnyBoi Subsystem
+
+        // if (oi.rotationControl()) {
+        //     spinnyBoiSubsystem.rotationControl();
+        // }
+
+        // if (oi.colorControl()) {
+        //     spinnyBoiSubsystem.colorControl();
+        // }
+
+        // //////////////////////////////////////////////////////////////////////////////
+        // // Shooter Subsystem
+
+        // SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
+
+        // // Spin up on pressing [spinUp]
+        // if (oi.spinUp()) {
+        //     shooterSubsystem.spinUp();
+        // } else {
+        //     shooterSubsystem.stopSpinningUp();
+        // }
+
+        // // Fire on pressing [fire]
+        // if (oi.fire()) {
+        //     shooterSubsystem.fire();
+        // } else {
+        //     shooterSubsystem.holdFire();
+        // }
+
+        // // Rotate the turret with [manualAzimuthAxis]
+        // if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband
+        //         || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
+        //     shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
+        // } else {
+        //     shooterSubsystem.rotate(0, 0);
+        // }
+
+        // if (oi.aimBot()) {
+        //     shooterSubsystem.autoAim();
+        // }
+
+        // if (oi.zero()) {
+        //     shooterSubsystem.rotateToDeg(0, 0);
+        // }
+>>>>>>> Stashed changes
     }
 
     @Override
