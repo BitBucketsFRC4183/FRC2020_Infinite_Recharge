@@ -234,8 +234,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
         double radps = MathUtils.map(turn,
             -1.0,
             1.0,
-            -DriveConstants.MAX_ALLOWED_TURN_RADPS,
-            DriveConstants.MAX_ALLOWED_TURN_RADPS
+            -DRIVE_UTILS.MAX_ROTATION_RADPS,
+            DRIVE_UTILS.MAX_ROTATION_RADPS
         );
 
         velocityDrive_auto(ips, radps);

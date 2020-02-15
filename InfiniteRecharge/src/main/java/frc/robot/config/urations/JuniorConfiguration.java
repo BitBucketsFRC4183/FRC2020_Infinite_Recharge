@@ -70,6 +70,9 @@ public class JuniorConfiguration extends Config {
         drive.trackWidth_in = 18.72;
         drive.characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);
 
+        drive.maxAllowedSpeed_ips = 5 * 12.0;
+        drive.maxAllowedTurn_degps = 180;
+
         drive.initMotorConfigArrays();
 
         double velocityKp = 0.14014 * 4;
