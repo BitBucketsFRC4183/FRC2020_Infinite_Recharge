@@ -29,8 +29,8 @@ public class Config {
     public int INTAKE_MOTOR_ID = 5;
 
     // Drive
-    public int LEFT_DRIVE_IDS[] = { 1, 4 };
-    public int RIGHT_DRIVE_IDS[] = { 2, 3 };
+    public int LEFT_DRIVE_IDS[] = { 2, 3 };
+    public int RIGHT_DRIVE_IDS[] = { 1, 4 };
 
     // SpinnyBoi
     public int SPINNYBOI_MOTOR_ID = 6;
