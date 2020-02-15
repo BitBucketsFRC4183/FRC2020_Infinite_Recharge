@@ -1,10 +1,8 @@
 package frc.robot.subsystem.drive;
 
 import frc.robot.subsystem.drive.DriveSubsystem.DriveMethod;
-import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.CommandUtils;
 import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 
