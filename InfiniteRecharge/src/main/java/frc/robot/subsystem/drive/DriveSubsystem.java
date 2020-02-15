@@ -95,11 +95,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         DifferentialDriveKinematicsConstraint kinematicsConstraint = new DifferentialDriveKinematicsConstraint(
             DRIVE_UTILS.KINEMATICS,
-            DriveConstants.MAX_ALLOWED_SPEED_IPS
+            config.drive.maxAllowedSpeed_ips
         );
 
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-            DriveConstants.MAX_ALLOWED_SPEED_IPS * DriveConstants.METERS_PER_INCH,
+            config.drive.maxAllowedSpeed_ips * DriveConstants.METERS_PER_INCH,
             DRIVE_UTILS.MAX_ACCELERATION_MPSPS
         );
         trajectoryConfig.setKinematics(DRIVE_UTILS.KINEMATICS);
@@ -227,8 +227,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		double ips = MathUtils.map(speed,
             -1.0,
             1.0,
-            -DriveConstants.MAX_ALLOWED_SPEED_IPS,
-            DriveConstants.MAX_ALLOWED_SPEED_IPS
+            -config.drive.maxAllowedSpeed_ips,
+            config.drive.maxAllowedSpeed_ips
         );
 
         double radps = MathUtils.map(turn,
@@ -248,8 +248,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
         double ips = MathUtils.map(speed,
             -1.0,
             1.0,
-            -DriveConstants.MAX_ALLOWED_SPEED_IPS,
-            DriveConstants.MAX_ALLOWED_SPEED_IPS
+            -config.drive.maxAllowedSpeed_ips,
+            config.drive.maxAllowedSpeed_ips
         );
 
         double offset = MathUtils.map(turn,
