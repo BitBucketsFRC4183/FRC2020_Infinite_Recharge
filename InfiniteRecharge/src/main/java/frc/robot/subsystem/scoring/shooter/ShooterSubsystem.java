@@ -128,7 +128,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-
     public void testPeriodic() {
         // TODO Auto-generated method stub
 
@@ -171,12 +170,21 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // Put the outputs on the smart dashboard.
         SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Output",
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Ticks",
                 ballPropulsionMotor.getSelectedSensorVelocity());
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target",
-                ballPropulsionMotor.getClosedLoopTarget());
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error",
-                ballPropulsionMotor.getClosedLoopError());
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target", ballPropulsionMotor.getClosedLoopTarget());
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error", ballPropulsionMotor.getClosedLoopError());
+
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Current RPM",
+                MathUtils.unitConverter(ballPropulsionMotor.getSelectedSensorVelocity(), 600,
+                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target RPM",
+                MathUtils.unitConverter(ballPropulsionMotor.getClosedLoopTarget(), 600,
+                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error RPM",
+                MathUtils.unitConverter(ballPropulsionMotor.getClosedLoopError(), 600,
+                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
+
         SmartDashboard.putNumber(getName() + "/Target Position ", targetPositionAzimuth_ticks);
         SmartDashboard.putNumber(getName() + "/Absolute Degrees to Rotate", absoluteDegreesToRotateAzimuth);
         SmartDashboard.putNumber(getName() + "/Azimuth Position ", azimuthMotor.getSelectedSensorPosition());
@@ -211,7 +219,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                         SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM",
                                 ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM),
                         600, config.shooter.shooter.ticksPerRevolution)
-                / config.shooter.shooterGearRatio;
+                * config.shooter.shooterGearRatio;
 
         // Spin up the feeder.
         if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
@@ -366,5 +374,12 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public boolean isUpToSpeed() {
         return upToSpeed;
+    }
+
+    @Override
+    protected void initializeBaseDashboard() {
+        super.initializeBaseDashboard();
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM);
+
     }
 }
