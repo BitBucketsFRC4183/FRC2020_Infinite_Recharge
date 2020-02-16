@@ -121,10 +121,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void testInit() {
-        SmartDashboard.putNumber(getName() + "/Shooter Output Percent", 0.2);
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 500);
-        SmartDashboard.putNumber(getName() + "/Feeder Velocity RPM", 60);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM);
         SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
     }
@@ -186,25 +184,40 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Azimuth Position Deg ",
                 MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(),
                         config.shooter.azimuth.ticksPerRevolution, 360) * config.shooter.azimuthGearRatio);
+
+        SmartDashboard.putNumber(getName() + "/Elevation Position Deg ",
+                MathUtils.unitConverter(elevationMotor.getSelectedSensorPosition(),
+                        config.shooter.elevation.ticksPerRevolution, 360) * config.shooter.elevationGearRatio);
+
+        SmartDashboard.putNumber(getName() + "/Elevation Target Position ", targetPositionElevation_ticks);
+        SmartDashboard.putNumber(getName() + "/Elevation Position ", elevationMotor.getSelectedSensorPosition());
+
+        SmartDashboard.putNumber(getName() + "/Elevation Target Position Deg ",
+                MathUtils.unitConverter(targetPositionElevation_ticks, config.shooter.elevation.ticksPerRevolution, 360)
+                        * config.shooter.elevationGearRatio);
+
+        SmartDashboard.putNumber(getName() + "/Elevation Position Deg ",
+                MathUtils.unitConverter(elevationMotor.getSelectedSensorPosition(),
+                        config.shooter.elevation.ticksPerRevolution, 360) * config.shooter.elevationGearRatio);
     }
 
     public void spinUp() {
         float targetShooterVelocity = (float) MathUtils
-                .unitConverter(SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM", 60), 600, 8192)
+                .unitConverter(SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM", ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM), 600, config.shooter.shooter.ticksPerRevolution)
                 / config.shooter.shooterGearRatio;
 
         // Spin up the feeder.
-        // if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
-                // - config.shooter.feederSpinUpDeadband_ticks
-                // && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
-                        // + config.shooter.feederSpinUpDeadband_ticks) {
-            feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
-                    ShooterConstants.FEEDER_OUTPUT_PERCENT));
-            SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
-            upToSpeed = true;
-        // } else {
-            // upToSpeed = false;
-        // }
+        if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
+        - config.shooter.feederSpinUpDeadband_ticks
+        && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
+        + config.shooter.feederSpinUpDeadband_ticks) {
+        feeder.set(
+                SmartDashboard.getNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT));
+        SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
+        upToSpeed = true;
+        } else {
+        upToSpeed = false;
+        }
 
         // Spin up the shooter.
         ballPropulsionMotor.set(ControlMode.Velocity, targetShooterVelocity);
@@ -224,7 +237,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void fire() {
-        if (config.enableBallManagementSubsystem/* && upToSpeed*/) {
+        if (config.enableBallManagementSubsystem && upToSpeed) {
             ballManagementSubsystem
                     .fire((float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent",
                             BallManagementConstants.BMS_OUTPUT_PERCENT));

@@ -251,6 +251,7 @@ public class Config {
         // Ticks Per Revolution
         shooter.azimuth.ticksPerRevolution = 4096;
         shooter.elevation.ticksPerRevolution = 8192;
+        shooter.shooter.ticksPerRevolution = 2048;
     }
 
 }

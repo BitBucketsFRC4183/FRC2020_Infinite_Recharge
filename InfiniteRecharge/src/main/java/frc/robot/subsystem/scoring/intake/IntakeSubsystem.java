@@ -43,7 +43,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
 
     @Override
     public void testInit() {
-        SmartDashboard.putNumber(getName() + "/Intake Speed", 0.2);
+        SmartDashboard.putNumber(getName() + "/Intake Speed", IntakeConstants.INTAKE_OUTPUT);
     }
 
     @Override
