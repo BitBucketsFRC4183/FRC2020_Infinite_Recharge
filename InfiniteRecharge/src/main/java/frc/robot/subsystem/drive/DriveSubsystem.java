@@ -116,7 +116,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
     public void initialize() {
-        initializeBaseDashboard();
+        dashboardInit();
 
 
 
@@ -481,5 +481,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     private void setRightVelocity(double vel_tp100ms) {
         rightMotors[0].set(ControlMode.Velocity, ((config.drive.invertRightCommand) ? -1 : 1) * vel_tp100ms);
+    }
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
     }
 }

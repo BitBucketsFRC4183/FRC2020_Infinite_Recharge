@@ -59,7 +59,7 @@ public class Config {
         public float forwardElevationSoftLimit_deg = 60;
         public float backwardElevationSoftLimit_deg = 0;
 
-        public float feederSpinUpDeadband_ticks = 800;
+        public float feederSpinUpDeadband_ticks = 1600;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();
@@ -202,16 +202,10 @@ public class Config {
                 1023f / 2650 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
-                1023 / 2984, // P
+                .1 * 1023. / 2300. * 2 * 2 * 2, // P
                 0, // I
-                0, // D
-                0.04705 /// F
-        );
-        shooter.feeder.velocityPIDF = new PIDF(//
-                0.1, // P
-                0, // I
-                0, // D
-                0 /// F
+                10 * .1 * 1023. / 2300. * 2 * 2 * 2, // D
+                1023. / 12000 /// F
         );
 
         // SpinnyBoi
@@ -254,6 +248,7 @@ public class Config {
         // Ticks Per Revolution
         shooter.azimuth.ticksPerRevolution = 4096;
         shooter.elevation.ticksPerRevolution = 8192;
+        shooter.shooter.ticksPerRevolution = 2048;
     }
 
 }

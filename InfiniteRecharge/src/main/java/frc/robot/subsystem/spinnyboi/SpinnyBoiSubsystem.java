@@ -48,4 +48,10 @@ public class SpinnyBoiSubsystem extends BitBucketSubsystem {
         //Rotate the wheel to the color specified by the FMS
     }
 
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

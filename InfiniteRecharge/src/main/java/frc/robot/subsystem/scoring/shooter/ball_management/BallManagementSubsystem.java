@@ -66,13 +66,16 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
         // Because you can neva 'ave enuf dakka!
         SmartDashboard.putString(getName() + "/State",
                 "DAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKA");
-        {
-            SmartDashboard.putString(getName() + "/State", "Cannot fire: Shooter isn't up to speed.");
-        }
     }
 
     public void doNotFire() {
         motor.set(0);
         SmartDashboard.putString(getName() + "/State", "Doing nothing");
+    }
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
     }
 }

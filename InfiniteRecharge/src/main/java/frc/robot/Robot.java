@@ -107,6 +107,7 @@ public class Robot extends TimedRobot {
 
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.periodic(deltaTime);
+            subsystem.dashboardPeriodic(deltaTime);
         }
 
         CommandScheduler.getInstance().run();
@@ -185,7 +186,7 @@ public class Robot extends TimedRobot {
 
             // Fire on pressing [fire]
             if (oi.fire()) {
-                shooterSubsystem.fire();
+                shooterSubsystem.spinBMS();
             } else {
                 shooterSubsystem.holdFire();
             }
