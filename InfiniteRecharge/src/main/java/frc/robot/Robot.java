@@ -185,7 +185,7 @@ public class Robot extends TimedRobot {
 
             // Fire on pressing [fire]
             if (oi.fire()) {
-                shooterSubsystem.fire();
+                shooterSubsystem.spinBMS();
             } else {
                 shooterSubsystem.holdFire();
             }

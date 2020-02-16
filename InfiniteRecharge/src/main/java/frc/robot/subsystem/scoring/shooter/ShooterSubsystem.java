@@ -251,16 +251,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         upToSpeed = false;
     }
 
-    public void fire() {
-        if (config.enableBallManagementSubsystem && upToSpeed) {
+    public void spinBMS() {
+        if (config.enableBallManagementSubsystem) {
             ballManagementSubsystem
                     .fire((float) SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent",
                             BallManagementConstants.BMS_OUTPUT_PERCENT));
-        } else if (!config.enableBallManagementSubsystem) {
+        } else {
             SmartDashboard.putString("BallManagementSubsystem/State",
                     "Cannot fire: BallManagementSubsystem is not enabled.");
-        } else if (!upToSpeed) {
-            SmartDashboard.putString("BallManagementSubsystem/State", "Cannot fire: Shooter isn't up to speed.");
         }
     }
 
