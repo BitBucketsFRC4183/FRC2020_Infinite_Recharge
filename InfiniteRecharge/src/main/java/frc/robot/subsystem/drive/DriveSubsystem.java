@@ -116,7 +116,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
     public void initialize() {
-        initializeBaseDashboard();
+        dashboardInit();
 
 
 
@@ -471,5 +471,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
     
     public DifferentialDriveKinematics getKinematics() {
         return DRIVE_UTILS.KINEMATICS;
+    }
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
     }
 }
