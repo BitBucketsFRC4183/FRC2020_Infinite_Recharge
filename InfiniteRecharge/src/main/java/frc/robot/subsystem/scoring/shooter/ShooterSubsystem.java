@@ -1,6 +1,7 @@
 package frc.robot.subsystem.scoring.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -85,6 +86,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         feeder.enableVoltageCompensation(true);
         feeder.configVoltageCompSaturation(ShooterConstants.MAX_VOLTS);
         feeder.selectProfileSlot(MotorUtils.velocitySlot, 0);
+        feeder.setNeutralMode(NeutralMode.Brake);
 
         ballPropulsionMotor.selectProfileSlot(MotorUtils.velocitySlot, 0);
 
@@ -121,7 +123,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void testInit() {
-        
+
     }
 
     @Override
@@ -175,7 +177,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         // Spin up the feeder.
         if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
-                - config.shooter.feederSpinUpDeadband_ticks
                 && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
                         + config.shooter.feederSpinUpDeadband_ticks) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
@@ -184,6 +185,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             upToSpeed = true;
         } else {
             upToSpeed = false;
+            feeder.set(0);
+            SmartDashboard.putString(getName() + "/Feeder State", "Cannot fire: Shooter hasn't been spun up!");
         }
 
         // Spin up the shooter.
@@ -331,7 +334,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         super.dashboardInit();
         SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM);
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM);
         SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
 
