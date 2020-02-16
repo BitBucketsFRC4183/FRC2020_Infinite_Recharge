@@ -30,7 +30,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public boolean feeding = false;
     public boolean feederVelocityControl = false;
     public boolean shooterVelocityControl = false;
+
     private boolean upToSpeed = false;
+    private boolean positionElevationSwitcherAlreadyPressed = false;
 
     // Integers
     private int targetPositionAzimuth_ticks;
@@ -41,15 +43,18 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Floats
     // TODO float rootBeer = good
+    private float[] positions = config.shooter.elevationPositions_deg;
+
+    // Doubles
+    private double absoluteDegreesToRotateAzimuth = 0.0;
+    private double degreesToRotateElevation = 0.0;
+
     private double rightAzimuthSoftLimit_ticks;
     private double leftAzimuthSoftLimit_ticks;
 
     private double forwardElevationSoftLimit_ticks;
     private double backwardElevationSoftLimit_ticks;
 
-    // Doubles
-    private double absoluteDegreesToRotateAzimuth = 0.0;
-    private double degreesToRotateElevation = 0.0;
     // Class Declarations
     RunningAverageFilter filter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
     public BallManagementSubsystem ballManagementSubsystem;
@@ -176,9 +181,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 * config.shooter.shooterGearRatio;
 
         // Spin up the feeder.
-        if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
-                && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
-                        + config.shooter.feederSpinUpDeadband_ticks) {
+        if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity && ballPropulsionMotor
+                .getSelectedSensorVelocity() <= targetShooterVelocity + config.shooter.feederSpinUpDeadband_ticks) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     ShooterConstants.FEEDER_OUTPUT_PERCENT));
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
@@ -325,6 +329,46 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         degreesToRotateElevation = visionSubsystem.getTy();
     }
 
+    public void nextPositionElevation() {
+        for (int i = 0; i < positions.length; i++) {
+            int selectedPositionNumber_ticks = (int) (MathUtils.unitConverter(positions[i], 360,
+                    config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio);
+            if (targetPositionElevation_ticks < selectedPositionNumber_ticks
+                    && positionElevationSwitcherAlreadyPressed == false) {
+                targetPositionElevation_ticks = (int) (selectedPositionNumber_ticks);
+                positionElevationSwitcherAlreadyPressed = true;
+                break;
+            }
+        }
+    }
+
+    public void lastPositionElevation() {
+        for (int i = positions.length - 1; i >= 0; i--) {
+            int selectedPositionNumber_ticks = (int) (MathUtils.unitConverter(positions[i], 360,
+                    config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio);
+            if (targetPositionElevation_ticks > selectedPositionNumber_ticks
+                    && positionElevationSwitcherAlreadyPressed == false) {
+                targetPositionElevation_ticks = (int) (selectedPositionNumber_ticks);
+                positionElevationSwitcherAlreadyPressed = true;
+                break;
+            }
+        }
+    }
+
+    public void resetPositionElevationSwitcher() {
+        positionElevationSwitcherAlreadyPressed = false;
+    }
+
+    public double getTargetAzimuthDeg() {
+        return MathUtils.unitConverter(targetPositionAzimuth_ticks, 360, config.shooter.azimuth.ticksPerRevolution)
+                / config.shooter.azimuthGearRatio;
+    }
+
+    public double getTargetElevationDeg() {
+        return MathUtils.unitConverter(targetPositionElevation_ticks, 360, config.shooter.elevation.ticksPerRevolution)
+                / config.shooter.elevationGearRatio;
+    }
+
     public boolean isUpToSpeed() {
         return upToSpeed;
     }
@@ -336,6 +380,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
+        SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", 10);
 
     }
 
