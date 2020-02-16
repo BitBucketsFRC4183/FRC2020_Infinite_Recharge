@@ -121,10 +121,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     @Override
     public void testInit() {
-        SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM);
-        SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
-        SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
+        
     }
 
     @Override
@@ -166,51 +163,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
         elevationMotor.set(ControlMode.MotionMagic, targetPositionElevation_ticks);
-
-        // Put the outputs on the smart dashboard.
-        SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
-        SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Ticks",
-                ballPropulsionMotor.getSelectedSensorVelocity());
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target", ballPropulsionMotor.getClosedLoopTarget());
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error", ballPropulsionMotor.getClosedLoopError());
-
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Current RPM",
-                MathUtils.unitConverter(ballPropulsionMotor.getSelectedSensorVelocity(), 600,
-                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target RPM",
-                MathUtils.unitConverter(ballPropulsionMotor.getClosedLoopTarget(), 600,
-                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error RPM",
-                MathUtils.unitConverter(ballPropulsionMotor.getClosedLoopError(), 600,
-                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
-
-        SmartDashboard.putNumber(getName() + "/Target Position ", targetPositionAzimuth_ticks);
-        SmartDashboard.putNumber(getName() + "/Absolute Degrees to Rotate", absoluteDegreesToRotateAzimuth);
-        SmartDashboard.putNumber(getName() + "/Azimuth Position ", azimuthMotor.getSelectedSensorPosition());
-
-        SmartDashboard.putNumber(getName() + "/Azimuth Target Position Deg ",
-                MathUtils.unitConverter(targetPositionAzimuth_ticks, config.shooter.azimuth.ticksPerRevolution, 360)
-                        * config.shooter.azimuthGearRatio);
-
-        SmartDashboard.putNumber(getName() + "/Azimuth Position Deg ",
-                MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(),
-                        config.shooter.azimuth.ticksPerRevolution, 360) * config.shooter.azimuthGearRatio);
-
-        SmartDashboard.putNumber(getName() + "/Elevation Position Deg ",
-                MathUtils.unitConverter(elevationMotor.getSelectedSensorPosition(),
-                        config.shooter.elevation.ticksPerRevolution, 360) * config.shooter.elevationGearRatio);
-
-        SmartDashboard.putNumber(getName() + "/Elevation Target Position ", targetPositionElevation_ticks);
-        SmartDashboard.putNumber(getName() + "/Elevation Position ", elevationMotor.getSelectedSensorPosition());
-
-        SmartDashboard.putNumber(getName() + "/Elevation Target Position Deg ",
-                MathUtils.unitConverter(targetPositionElevation_ticks, config.shooter.elevation.ticksPerRevolution, 360)
-                        * config.shooter.elevationGearRatio);
-
-        SmartDashboard.putNumber(getName() + "/Elevation Position Deg ",
-                MathUtils.unitConverter(elevationMotor.getSelectedSensorPosition(),
-                        config.shooter.elevation.ticksPerRevolution, 360) * config.shooter.elevationGearRatio);
     }
 
     public void spinUp() {
@@ -375,9 +327,61 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    protected void initializeBaseDashboard() {
-        super.initializeBaseDashboard();
+    protected void dashboardInit() {
+        super.dashboardInit();
         SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM);
+        SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM);
+        SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
+        SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
 
+    }
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // Put the outputs on the smart dashboard.
+        SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
+        SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Ticks",
+                ballPropulsionMotor.getSelectedSensorVelocity());
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target", ballPropulsionMotor.getClosedLoopTarget());
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error", ballPropulsionMotor.getClosedLoopError());
+
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Current RPM",
+                MathUtils.unitConverter(ballPropulsionMotor.getSelectedSensorVelocity(), 600,
+                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target RPM",
+                MathUtils.unitConverter(ballPropulsionMotor.getClosedLoopTarget(), 600,
+                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error RPM",
+                MathUtils.unitConverter(ballPropulsionMotor.getClosedLoopError(), 600,
+                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
+
+        SmartDashboard.putNumber(getName() + "/Target Position ", targetPositionAzimuth_ticks);
+        SmartDashboard.putNumber(getName() + "/Absolute Degrees to Rotate", absoluteDegreesToRotateAzimuth);
+        SmartDashboard.putNumber(getName() + "/Azimuth Position ", azimuthMotor.getSelectedSensorPosition());
+
+        SmartDashboard.putNumber(getName() + "/Azimuth Target Position Deg ",
+                MathUtils.unitConverter(targetPositionAzimuth_ticks, config.shooter.azimuth.ticksPerRevolution, 360)
+                        * config.shooter.azimuthGearRatio);
+
+        SmartDashboard.putNumber(getName() + "/Azimuth Position Deg ",
+                MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(),
+                        config.shooter.azimuth.ticksPerRevolution, 360) * config.shooter.azimuthGearRatio);
+
+        SmartDashboard.putNumber(getName() + "/Elevation Position Deg ",
+                MathUtils.unitConverter(elevationMotor.getSelectedSensorPosition(),
+                        config.shooter.elevation.ticksPerRevolution, 360) * config.shooter.elevationGearRatio);
+
+        SmartDashboard.putNumber(getName() + "/Elevation Target Position ", targetPositionElevation_ticks);
+        SmartDashboard.putNumber(getName() + "/Elevation Position ", elevationMotor.getSelectedSensorPosition());
+
+        SmartDashboard.putNumber(getName() + "/Elevation Target Position Deg ",
+                MathUtils.unitConverter(targetPositionElevation_ticks, config.shooter.elevation.ticksPerRevolution, 360)
+                        * config.shooter.elevationGearRatio);
+
+        SmartDashboard.putNumber(getName() + "/Elevation Position Deg ",
+                MathUtils.unitConverter(elevationMotor.getSelectedSensorPosition(),
+                        config.shooter.elevation.ticksPerRevolution, 360) * config.shooter.elevationGearRatio);
     }
 }
