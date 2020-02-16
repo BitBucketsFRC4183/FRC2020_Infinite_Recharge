@@ -18,20 +18,20 @@ public class CopyPasteSubsystem extends BitBucketSubsystem {
         super.initialize();
     }
 
-	public void diagnosticsInitialize() {
+	public void testInit() {
 
     }
 	
-	public void diagnosticsPeriodic() {
+	public void testPeriodic() {
 
     }
 	
 	public void diagnosticsCheck() {
 
     }
-    
+
     @Override
-    public void periodic() {
+    public void periodic(float deltaTime) {
         updateBaseDashboard();
     }
 }
