@@ -107,6 +107,7 @@ public class Robot extends TimedRobot {
 
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.periodic(deltaTime);
+            subsystem.dashboardPeriodic(deltaTime);
         }
 
         CommandScheduler.getInstance().run();
