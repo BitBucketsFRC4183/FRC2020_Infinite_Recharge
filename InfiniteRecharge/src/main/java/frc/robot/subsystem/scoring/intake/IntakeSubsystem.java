@@ -35,10 +35,17 @@ public class IntakeSubsystem extends BitBucketSubsystem {
         if (config.intake.intakePivotEnabled){
             intakePivet = new DoubleSolenoid(RobotMap.INTAKE_PNEUMATIC_OPEN_CHANNEL, RobotMap.INTAKE_PNEUMATIC_CLOSED_CHANNEL); 
             intakePivet.set(Value.kReverse);
-            motor = MotorUtils.makeSRX(config.intake.intake);
         }
+        motor = MotorUtils.makeSRX(config.intake.intake);
         
         dashboardInit();
+        
+    }
+
+    @Override
+    public void dashboardInit() {
+        // TODO Auto-generated method stub
+        super.dashboardInit();
         SmartDashboard.putNumber(getName() + "/Intake Speed", IntakeConstants.INTAKE_OUTPUT);
     }
 
