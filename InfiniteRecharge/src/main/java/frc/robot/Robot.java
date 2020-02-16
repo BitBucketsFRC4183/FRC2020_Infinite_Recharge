@@ -22,6 +22,7 @@ import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
+import frc.robot.subsystem.pidhelper.PIDHelperSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 
@@ -82,6 +83,8 @@ public class Robot extends TimedRobot {
             spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
             subsystems.add(spinnyBoiSubsystem);
         }
+
+        subsystems.add(new PIDHelperSubsystem(config));
 
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.initialize();
