@@ -72,4 +72,10 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
         motor.set(0);
         SmartDashboard.putString(getName() + "/State", "Doing nothing");
     }
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
+    }
 }
