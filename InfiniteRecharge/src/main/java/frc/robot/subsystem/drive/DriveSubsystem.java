@@ -234,8 +234,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
         double radps = MathUtils.map(turn,
             -1.0,
             1.0,
-            -DriveConstants.MAX_ALLOWED_TURN_RADPS,
-            DriveConstants.MAX_ALLOWED_TURN_RADPS
+            -DRIVE_UTILS.MAX_ROTATION_RADPS,
+            DRIVE_UTILS.MAX_ROTATION_RADPS
         );
 
         velocityDrive_auto(ips, radps);
@@ -365,9 +365,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
                     default: // just keep it I guess? shouldn't get here anyways
                 }
             }
-        }/* else if (driverStation.isAutonomous()) {
+        } else if (driverStation.isAutonomous()) {
             driveMethod = DriveMethod.AUTO; // please don't press any buttons during auto anyways :)))
-        }*/
+        }
 
 
 
