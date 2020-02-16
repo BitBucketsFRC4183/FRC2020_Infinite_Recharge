@@ -125,6 +125,8 @@ public class Config {
         public double wheelRadius_in = 3;
         public double trackWidth_in = 22.65;
 
+        public double ROTATION_DRIVE_KP = 5*2*Math.PI/360;
+
         public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);;
 
         public DriveConfig() {
