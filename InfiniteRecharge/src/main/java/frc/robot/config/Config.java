@@ -112,8 +112,10 @@ public class Config {
         public MotorConfig leftLeader;
         public MotorConfig rightLeader;
 
-        public boolean leftInverted = true;
+        public boolean leftInverted = false;
         public boolean rightInverted = false;
+        public boolean invertLeftCommand = false;
+        public boolean invertRightCommand = true;
 
         public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Integrated;
 
@@ -122,6 +124,8 @@ public class Config {
         public double ticksPerRevolution = 2048;
         public double wheelRadius_in = 3;
         public double trackWidth_in = 22.65;
+
+        public double ROTATION_DRIVE_KP = 5*2*Math.PI/360;
 
         public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);;
 
