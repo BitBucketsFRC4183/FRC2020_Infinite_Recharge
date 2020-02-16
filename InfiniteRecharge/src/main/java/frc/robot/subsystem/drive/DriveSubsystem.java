@@ -212,8 +212,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/ls_tp100", leftSpeed_tickP100);
         SmartDashboard.putNumber(getName() + "/rs_tp100", rightSpeed_tickP100);
 
-		leftMotors[0].set(ControlMode.Velocity, leftSpeed_tickP100);
-        rightMotors[0].set(ControlMode.Velocity, rightSpeed_tickP100);
+        setLeftVelocity(leftSpeed_tickP100);
+        setRightVelocity(rightSpeed_tickP100);
         
         SmartDashboard.putNumber(getName() + "/commandedSpeed_ips", ips);
     }
@@ -471,5 +471,15 @@ public class DriveSubsystem extends BitBucketSubsystem {
     
     public DifferentialDriveKinematics getKinematics() {
         return DRIVE_UTILS.KINEMATICS;
+    }
+
+
+
+    private void setLeftVelocity(double vel_tp100ms) {
+        leftMotors[0].set(ControlMode.Velocity, ((config.drive.invertLeftCommand) ? -1 : 1) * vel_tp100ms);
+    }
+
+    private void setRightVelocity(double vel_tp100ms) {
+        rightMotors[0].set(ControlMode.Velocity, ((config.drive.invertRightCommand) ? -1 : 1) * vel_tp100ms);
     }
 }

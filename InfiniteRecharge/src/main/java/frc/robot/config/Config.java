@@ -112,8 +112,10 @@ public class Config {
         public MotorConfig leftLeader;
         public MotorConfig rightLeader;
 
-        public boolean leftInverted = true;
+        public boolean leftInverted = false;
         public boolean rightInverted = false;
+        public boolean invertLeftCommand = false;
+        public boolean invertRightCommand = true;
 
         public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Integrated;
 
