@@ -30,4 +30,10 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     public void periodic(float deltaTime) {
         updateBaseDashboard();
     }
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
+    }
 }

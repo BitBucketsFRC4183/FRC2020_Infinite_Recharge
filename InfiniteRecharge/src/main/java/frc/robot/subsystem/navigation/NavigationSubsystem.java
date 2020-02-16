@@ -216,4 +216,10 @@ public class NavigationSubsystem extends BitBucketSubsystem {
     public Pose2d getPose() {
         return odometry.getPoseMeters();
     }
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
+    }
 }

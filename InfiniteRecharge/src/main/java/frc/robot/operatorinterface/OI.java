@@ -70,7 +70,7 @@ public class OI {
     }
 
     public double manualElevationAxis() {
-        return operatorControl.getRawAxis(OPERATOR_MANUAL_ELEVATION_AXIS);
+        return -operatorControl.getRawAxis(OPERATOR_MANUAL_ELEVATION_AXIS);
     }
 
     public double manualAzimuthAxis() {

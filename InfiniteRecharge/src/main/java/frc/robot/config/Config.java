@@ -29,8 +29,8 @@ public class Config {
     public int INTAKE_MOTOR_ID = 5;
 
     // Drive
-    public int LEFT_DRIVE_IDS[] = { 1, 4 };
-    public int RIGHT_DRIVE_IDS[] = { 2, 3 };
+    public int LEFT_DRIVE_IDS[] = { 2, 3 };
+    public int RIGHT_DRIVE_IDS[] = { 1, 4 };
 
     // SpinnyBoi
     public int SPINNYBOI_MOTOR_ID = 6;
@@ -59,7 +59,7 @@ public class Config {
         public float forwardElevationSoftLimit_deg = 60;
         public float backwardElevationSoftLimit_deg = 0;
 
-        public float feederSpinUpDeadband_ticks = 800;
+        public float feederSpinUpDeadband_ticks = 600;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();
@@ -99,6 +99,9 @@ public class Config {
     }
 
     public static class DriveConfig {
+        public double maxAllowedSpeed_ips = 13 * 12.0;
+        public double maxAllowedTurn_degps = 180;
+
         public int MOTORS_PER_SIDE = 2;
         public MotorConfig leftMotors[];
         public MotorConfig rightMotors[];
@@ -109,8 +112,10 @@ public class Config {
         public MotorConfig leftLeader;
         public MotorConfig rightLeader;
 
-        public boolean leftInverted = true;
+        public boolean leftInverted = false;
         public boolean rightInverted = false;
+        public boolean invertLeftCommand = false;
+        public boolean invertRightCommand = true;
 
         public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Integrated;
 
@@ -119,6 +124,8 @@ public class Config {
         public double ticksPerRevolution = 2048;
         public double wheelRadius_in = 3;
         public double trackWidth_in = 22.65;
+
+        public double ROTATION_DRIVE_KP = 5*2*Math.PI/360;
 
         public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);;
 
@@ -197,16 +204,10 @@ public class Config {
                 1023f / 2650 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
-                1023 / 2984, // P
+                .1 * 1023. / 2300. * 2 * 2 * 2, // P
                 0, // I
-                0, // D
-                0.04705 /// F
-        );
-        shooter.feeder.velocityPIDF = new PIDF(//
-                0.1, // P
-                0, // I
-                0, // D
-                0 /// F
+                10 * .1 * 1023. / 2300. * 2 * 2 * 2, // D
+                1023. / 12000 /// F
         );
 
         // SpinnyBoi
@@ -249,6 +250,7 @@ public class Config {
         // Ticks Per Revolution
         shooter.azimuth.ticksPerRevolution = 4096;
         shooter.elevation.ticksPerRevolution = 8192;
+        shooter.shooter.ticksPerRevolution = 2048;
     }
 
 }

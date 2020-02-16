@@ -132,4 +132,10 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
     }
 
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

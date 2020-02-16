@@ -69,6 +69,11 @@ public class JuniorConfiguration extends Config {
         drive.wheelRadius_in = 2;
         drive.trackWidth_in = 18.72;
         drive.characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);
+        drive.invertLeftCommand = false;
+        drive.invertRightCommand = false;
+
+        drive.maxAllowedSpeed_ips = 5 * 12.0;
+        drive.maxAllowedTurn_degps = 180;
 
         drive.initMotorConfigArrays();
 
