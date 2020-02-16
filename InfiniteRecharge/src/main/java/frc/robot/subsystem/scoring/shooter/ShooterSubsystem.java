@@ -430,5 +430,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Elevation Position Deg ",
                 MathUtils.unitConverter(elevationMotor.getSelectedSensorPosition(),
                         config.shooter.elevation.ticksPerRevolution, 360) * config.shooter.elevationGearRatio);
+        
+        SmartDashboard.putNumber(getName() + "/Falcon temperature", (32 + 1.8*ballPropulsionMotor.getTemperature()));
     }
 }
