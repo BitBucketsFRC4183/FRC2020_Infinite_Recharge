@@ -36,6 +36,9 @@ public class FocusedExcellenceConfiguration extends Config {
         drive.maxAllowedSpeed_ips = 8 * 12.0;
         drive.maxAllowedTurn_degps = 180;
 
+        drive.invertLeftCommand = false;
+        drive.invertRightCommand = false;
+
         drive.leftLeader.velocityPIDF = new PIDF(
             0.5115/2/1.5,
             0.0001,
