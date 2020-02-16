@@ -228,6 +228,8 @@ public class Robot extends TimedRobot {
 
     // COMMANDS the robot to WIN!
     public static Robot win() {
+        System.out.println("Leif WAS here");
+        
         return new Robot();
     }
 
