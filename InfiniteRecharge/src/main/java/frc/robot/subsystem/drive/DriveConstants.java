@@ -27,7 +27,7 @@ public class DriveConstants {
     public static final double DRIVE_MOTOR_CLOSED_LOOP_RAMP_SEC = 0.4;	    // No ramp rate on closed loop (use Motion Magic)
 
     public static final double STANDARD_G_FTPSPS = 32.1740;
-    public static final double MAX_LAT_ACCELERATION_IPSPS = STANDARD_G_FTPSPS * 12.0;
+    public static final double MAX_LAT_ACCELERATION_IPSPS = STANDARD_G_FTPSPS * 120.0;
 
     // Identify what type of feedback device we will use on this drive base
     // Assume that all feedback devices are the same type on all axels that
