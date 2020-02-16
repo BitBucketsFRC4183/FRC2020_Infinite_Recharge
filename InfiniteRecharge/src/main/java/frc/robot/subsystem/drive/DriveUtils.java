@@ -5,11 +5,13 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import frc.robot.config.Config;
 
 public class DriveUtils {
-	public final double WHEEL_CIRCUMFERENCE_INCHES;
-    public final DifferentialDriveKinematics KINEMATICS;
-    public final double MAX_ACCELERATION_MPSPS;
-    
     private final Config CONFIG;
+    
+	final double WHEEL_CIRCUMFERENCE_INCHES;
+    final DifferentialDriveKinematics KINEMATICS;
+    final double MAX_ACCELERATION_MPSPS;
+
+    final double MAX_ROTATION_RADPS;
 
 
     public DriveUtils(Config c) {
@@ -26,6 +28,8 @@ public class DriveUtils {
         SimpleMotorFeedforward cha = c.drive.characterization;
 
         MAX_ACCELERATION_MPSPS = (DriveConstants.AUTO_MAX_VOLTAGE - cha.ks)/cha.ka;
+
+        MAX_ROTATION_RADPS = Math.toRadians(c.drive.maxAllowedTurn_degps);
     }
 
     // The motor controllers we use (TalonSRX) return velocity in terms of native ticks per 100 ms 
