@@ -52,12 +52,15 @@ public class OI {
     static final int OPERATOR_INTAKE_IN_POV = 180;
     static final int OPERATOR_INTAKE_OUT_POV = 0;
     static final int OPERATOR_INTAKE_TOGGLE = PS4Constants.PS4.getValue();
+    static final int OPERATOR_NEXT_POSITION_ELEVATION_POV = 90;
+    static final int OPERATOR_LAST_POSITION_ELEVATION_POV = 270;
     static final int OPERATOR_SPINUP = PS4Constants.R2.getValue();
     static final int OPERATOR_AUTO_AIM = PS4Constants.L1.getValue();
     static final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
     static final int OPERATOR_CLIMB_PULL_RAISE = PS4Constants.TRIANGLE.getValue();
     static final int OPERATOR_CLIMB_RAISE = PS4Constants.CROSS.getValue();
     static final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
+    static final int OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER = PS4Constants.OPTIONS.getValue();
 
     // forced Idle for corresponding subsystems
     static final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
@@ -73,6 +76,18 @@ public class OI {
 
     public double manualAzimuthAxis() {
         return operatorControl.getRawAxis(OPERATOR_MANUAL_AZIMUTH_AXIS);
+    }
+
+    public boolean nextPositionElevation() {
+        return operatorControl.getPOV() == OPERATOR_NEXT_POSITION_ELEVATION_POV;
+    }
+
+    public boolean lastPositionElevation() {
+        return operatorControl.getPOV() == OPERATOR_LAST_POSITION_ELEVATION_POV;
+    }
+
+    public boolean setElevationToDashboardNumber() {
+        return operatorControl.getRawButton(OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER);
     }
 
     public boolean zero() {

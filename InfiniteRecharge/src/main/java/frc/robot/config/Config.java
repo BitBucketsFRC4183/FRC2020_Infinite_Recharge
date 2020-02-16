@@ -66,6 +66,14 @@ public class Config {
         public MotorConfig feeder = new MotorConfig();
         public MotorConfig shooter = new MotorConfig();
 
+        public float[] elevationPositions_deg = new float[] { //
+                0, /// Comment so that VSCode doesn't ruin my format.
+                10, // Comment so that VSCode doesn't ruin my format.
+                25, // Comment so that VSCode doesn't ruin my format.
+                45, // Comment so that VSCode doesn't ruin my format.
+                60 /// Comment so that VSCode doesn't ruin my format.
+        };
+
         public static class BallManagementConfig {
             public MotorConfig spinner = new MotorConfig();
 
@@ -99,7 +107,7 @@ public class Config {
     }
 
     public static class DriveConfig {
-        public double maxAllowedSpeed_ips = 13 * 12.0;
+        public double maxAllowedSpeed_ips = 8 * 12.0;
         public double maxAllowedTurn_degps = 180;
 
         public int MOTORS_PER_SIDE = 2;
@@ -125,7 +133,7 @@ public class Config {
         public double wheelRadius_in = 3;
         public double trackWidth_in = 22.65;
 
-        public double ROTATION_DRIVE_KP = 5*2*Math.PI/360;
+        public double ROTATION_DRIVE_KP = 5 * 2 * Math.PI / 360;
 
         public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);;
 
@@ -204,9 +212,9 @@ public class Config {
                 1023f / 2650 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
-                .1 * 1023. / 2300. * 2 * 2 * 2, // P
+                .1 * 1023. / 2300., // P
                 0, // I
-                10 * .1 * 1023. / 2300. * 2 * 2 * 2, // D
+                0, // D
                 1023. / 12000 /// F
         );
 
