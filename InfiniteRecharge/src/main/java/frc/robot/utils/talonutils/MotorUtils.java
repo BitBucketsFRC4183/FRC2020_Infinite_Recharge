@@ -17,7 +17,7 @@ import frc.robot.config.MotorConfig;
 
 public class MotorUtils {
 
-    static final int positionSlot = 0; // ALWAYS! Don't EVER set it to anything else.
+    public static final int positionSlot = 0; // ALWAYS! Don't EVER set it to anything else.
     public static final int velocitySlot = 1; // ALWAYS! Don't EVER set it to anything else.
 
     public static int MAX_STATUS_FRAME_PERIOD = 160;

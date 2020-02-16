@@ -1,12 +1,17 @@
 package frc.robot.subsystem.pidhelper;
 
+import com.ctre.phoenix.ParamEnum;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
+import frc.robot.config.MotorConfig.EncoderType;
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.utils.talonutils.MotorUtils;
 
 
 
@@ -26,13 +31,40 @@ public class PIDHelperSubsystem extends BitBucketSubsystem {
 
         String getName() { return NAME; }
     };
-    private final SendableChooser<Controllers> MOTOR_TYPE_CHOOSER;
+    private SendableChooser<Controllers> controllerChooser;
 
-    private final String SLOT = getName() + "PID_SLOT";
-    private final String KP = getName() + "kP";
-    private final String KI = getName() + "kI";
-    private final String KD = getName() + "kD";
-    private final String KF = getName() + "kF";
+    private enum Slots {
+        VELOCITY ("Velocity (" + MotorUtils.velocitySlot + ")", MotorUtils.velocitySlot),
+        POSITION ("Position (" + MotorUtils.positionSlot + ")", MotorUtils.positionSlot);
+
+        private final String NAME;
+        private final int SLOT;
+
+        Slots(String name, int slot) {
+            NAME = name;
+            SLOT = slot;
+        }
+
+        String getName() { return NAME; }
+        int getSlot() { return SLOT; }
+    }
+
+    private SendableChooser<Slots> slotChooser;
+    private final String SLOT_CHOOSER_NAME = getName() + "/Slot";
+
+    private final String KP = getName() + "/kP";
+    private final String KI = getName() + "/kI";
+    private final String KD = getName() + "/kD";
+    private final String KF = getName() + "/kF";
+    private final String I_ZONE = getName() + "/IZone";
+
+    private SendableChooser<EncoderType> encoderChooser;
+    private final String ENCODER_TYPE = getName() + "/Encoder type";
+
+    private final String INVERTED = getName() + "/Inverted";
+
+    private final String MM_ACC = getName() + "/MM acceleration";
+    private final String MM_CRUISE = getName() + "/MM cruise velocity";
 
     private BaseTalon talon = new WPI_TalonSRX(0);
 
@@ -47,7 +79,9 @@ public class PIDHelperSubsystem extends BitBucketSubsystem {
 
         SmartDashboard.putNumber(MOTOR_ID, -1);
 
-        MOTOR_TYPE_CHOOSER = new SendableChooser<Controllers>();
+        controllerChooser = getControllerChooser(Controllers.NONE);
+        slotChooser = getSlotChooser(Slots.POSITION);
+        encoderChooser = getEncoderTypeChooser(EncoderType.None);
     }
 
 
@@ -57,16 +91,19 @@ public class PIDHelperSubsystem extends BitBucketSubsystem {
 
         SmartDashboard.putNumber(MOTOR_ID, -1);
 
-        MOTOR_TYPE_CHOOSER.setDefaultOption(Controllers.NONE.getName(), Controllers.NONE);
-        MOTOR_TYPE_CHOOSER.addOption(Controllers.TALON_SRX.getName(), Controllers.TALON_SRX);
-        MOTOR_TYPE_CHOOSER.addOption(Controllers.TALON_FX.getName(), Controllers.TALON_FX);
-        SmartDashboard.putData(MOTOR_TYPE, MOTOR_TYPE_CHOOSER);
+        SmartDashboard.putData(MOTOR_TYPE, controllerChooser);
+        SmartDashboard.putData(SLOT_CHOOSER_NAME, slotChooser);
+        SmartDashboard.putData(ENCODER_TYPE, encoderChooser);
 
-        SmartDashboard.putNumber(SLOT, -1);
         SmartDashboard.putNumber(KP, 0);
         SmartDashboard.putNumber(KI, 0);
         SmartDashboard.putNumber(KD, 0);
         SmartDashboard.putNumber(KF, 0);
+        SmartDashboard.putNumber(I_ZONE, 0);
+
+        SmartDashboard.putBoolean(INVERTED, false);
+        SmartDashboard.putNumber(MM_ACC, 0);
+        SmartDashboard.putNumber(MM_CRUISE, 0);
     }
 
 	public void testInit() {
@@ -95,12 +132,113 @@ public class PIDHelperSubsystem extends BitBucketSubsystem {
 
 
     private void updateMotor() {
-        //talon = 
+        Controllers controller = controllerChooser.getSelected();
+        if (controller == Controllers.TALON_FX) {
+            talon = new WPI_TalonFX(lastTalonID);
+        } else if (controller == Controllers.TALON_SRX) {
+            talon = new WPI_TalonSRX(lastTalonID);
+        } else {
+            talon = new WPI_TalonSRX(0);
+
+            return;
+        }
+
+        updateDashboardConfig();
+    }
+
+    private void updateDashboardConfig() {
+        int slot = slotChooser.getSelected().getSlot();
+
+
+
+        FeedbackDevice sensor = FeedbackDevice.valueOf(talon.configGetParameter(ParamEnum.eFeedbackSensorType, slot));
+        switch (sensor) {
+            case QuadEncoder: {
+                encoderChooser = getEncoderTypeChooser(EncoderType.Quadrature);
+            }
+            case CTRE_MagEncoder_Relative: {
+                encoderChooser = getEncoderTypeChooser(EncoderType.Relative);
+            }
+            case CTRE_MagEncoder_Absolute: {
+                encoderChooser = getEncoderTypeChooser(EncoderType.Absolute);
+            }
+            case IntegratedSensor: {
+                encoderChooser = getEncoderTypeChooser(EncoderType.Integrated);
+            }
+            default: {
+                encoderChooser = getEncoderTypeChooser(EncoderType.None);
+            }
+        }
+        SmartDashboard.putData(ENCODER_TYPE, encoderChooser);
+
+
+
+        SmartDashboard.putBoolean(INVERTED, talon.getInverted());
+        // talon doesn't let you access the sensor phase :/
+
+        SmartDashboard.putNumber(MM_ACC, talon.configGetParameter(ParamEnum.eMotMag_Accel, 0));
+        SmartDashboard.putNumber(MM_CRUISE, talon.configGetParameter(ParamEnum.eMotMag_VelCruise, 0));
+
+        SmartDashboard.putNumber(KP, talon.configGetParameter(ParamEnum.eProfileParamSlot_P, slot));
+        SmartDashboard.putNumber(KI, talon.configGetParameter(ParamEnum.eProfileParamSlot_I, slot));
+        SmartDashboard.putNumber(KD, talon.configGetParameter(ParamEnum.eProfileParamSlot_D, slot));
+        SmartDashboard.putNumber(KF, talon.configGetParameter(ParamEnum.eProfileParamSlot_F, slot));
+        SmartDashboard.putNumber(I_ZONE, talon.configGetParameter(ParamEnum.eProfileParamSlot_IZone, slot));
     }
 
     @Override
-    public void dashboardPeriodic(float deltaTime) {
-        // TODO Auto-generated method stub
+    public void dashboardPeriodic(float deltaTime) {}
 
+
+
+
+
+
+    private SendableChooser<Controllers> getControllerChooser(Controllers def) {
+        Controllers[] values = Controllers.values();
+
+        SendableChooser<Controllers> chooser = new SendableChooser<Controllers>();
+
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] == def) {
+                chooser.setDefaultOption(def.getName(), def);
+            } else {
+                chooser.addOption(values[i].getName(), values[i]);
+            }
+        }
+
+        return chooser;
+    }
+
+    private SendableChooser<Slots> getSlotChooser(Slots def) {
+        Slots[] values = Slots.values();
+
+        SendableChooser<Slots> chooser = new SendableChooser<Slots>();
+
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] == def) {
+                chooser.setDefaultOption(def.getName(), def);
+            } else {
+                chooser.addOption(values[i].getName(), values[i]);
+            }
+        }
+
+        return chooser;
+    }
+
+    private SendableChooser<EncoderType> getEncoderTypeChooser(EncoderType def) {
+        EncoderType[] values = EncoderType.values();
+
+        SendableChooser<EncoderType> chooser = new SendableChooser<EncoderType>();
+
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] == def) {
+                chooser.setDefaultOption(def.toString(), def);
+            } else {
+                chooser.addOption(values[i].toString(), values[i]);
+            }
+        }
+
+        return chooser;
     }
 }
