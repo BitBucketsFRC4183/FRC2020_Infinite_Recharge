@@ -173,6 +173,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Output",
                 ballPropulsionMotor.getSelectedSensorVelocity());
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target",
+                ballPropulsionMotor.getClosedLoopTarget());
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error",
+                ballPropulsionMotor.getClosedLoopError());
         SmartDashboard.putNumber(getName() + "/Target Position ", targetPositionAzimuth_ticks);
         SmartDashboard.putNumber(getName() + "/Absolute Degrees to Rotate", absoluteDegreesToRotateAzimuth);
         SmartDashboard.putNumber(getName() + "/Azimuth Position ", azimuthMotor.getSelectedSensorPosition());
@@ -203,20 +207,23 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public void spinUp() {
         float targetShooterVelocity = (float) MathUtils
-                .unitConverter(SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM", ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM), 600, config.shooter.shooter.ticksPerRevolution)
+                .unitConverter(
+                        SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM",
+                                ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM),
+                        600, config.shooter.shooter.ticksPerRevolution)
                 / config.shooter.shooterGearRatio;
 
         // Spin up the feeder.
         if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity
-        - config.shooter.feederSpinUpDeadband_ticks
-        && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
-        + config.shooter.feederSpinUpDeadband_ticks) {
-        feeder.set(
-                SmartDashboard.getNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT));
-        SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
-        upToSpeed = true;
+                - config.shooter.feederSpinUpDeadband_ticks
+                && ballPropulsionMotor.getSelectedSensorVelocity() <= targetShooterVelocity
+                        + config.shooter.feederSpinUpDeadband_ticks) {
+            feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
+                    ShooterConstants.FEEDER_OUTPUT_PERCENT));
+            SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
+            upToSpeed = true;
         } else {
-        upToSpeed = false;
+            upToSpeed = false;
         }
 
         // Spin up the shooter.
