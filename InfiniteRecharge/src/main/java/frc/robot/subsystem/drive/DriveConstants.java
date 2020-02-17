@@ -57,7 +57,7 @@ public class DriveConstants {
 
     
 
-    public static final double TURN_SIGN = -1.0;
+    public static final double TURN_SIGN = 1.0;
 
 
 
