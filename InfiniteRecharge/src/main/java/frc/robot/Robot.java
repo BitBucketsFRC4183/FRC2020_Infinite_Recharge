@@ -209,6 +209,18 @@ public class Robot extends TimedRobot {
             if (oi.zero()) {
                 shooterSubsystem.rotateToDeg(0, 0);
             }
+
+            if (oi.nextPositionElevation()) {
+                shooterSubsystem.nextPositionElevation();
+            } else if (oi.lastPositionElevation()) {
+                shooterSubsystem.lastPositionElevation();
+            } else {
+                shooterSubsystem.resetPositionElevationSwitcher();
+            }
+
+            if (oi.setElevationToDashboardNumber()){
+                shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(), SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 10));
+            }
         }
     }
 
@@ -232,7 +244,7 @@ public class Robot extends TimedRobot {
     // COMMANDS the robot to WIN!
     public static Robot win() {
         System.out.println("Leif WAS here");
-        
+
         return new Robot();
     }
 
