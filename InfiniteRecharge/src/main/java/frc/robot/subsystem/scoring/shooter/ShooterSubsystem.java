@@ -88,7 +88,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
         ballPropulsionMotor.configOpenloopRamp(1);
-        ballPropulsionMotor.configClosedloopRamp(1);
+        ballPropulsionMotor.configClosedloopRamp(0.75);
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
         feeder.enableVoltageCompensation(true);
         feeder.configVoltageCompSaturation(ShooterConstants.MAX_VOLTS);
@@ -183,8 +183,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 * config.shooter.shooterGearRatio;
 
         // Spin up the feeder.
-        if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity && ballPropulsionMotor
-                .getSelectedSensorVelocity() <= targetShooterVelocity + config.shooter.feederSpinUpDeadband_ticks) {
+        if (Math.abs(ballPropulsionMotor.getSelectedSensorVelocity() - targetShooterVelocity) <= config.shooter.feederSpinUpDeadband_ticks) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     ShooterConstants.FEEDER_OUTPUT_PERCENT));
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
@@ -343,7 +342,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             // decreases as u get closer
             // increases as u get it farther
 
-            absoluteDegreesElevation = degrees;
+            absoluteDegreesElevation = degrees + 40;
         }
     }
 
@@ -447,10 +446,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Elevation Target Position Deg ",
                 MathUtils.unitConverter(targetPositionElevation_ticks, config.shooter.elevation.ticksPerRevolution, 360)
                         * config.shooter.elevationGearRatio);
-
-        SmartDashboard.putNumber(getName() + "/Elevation Position Deg ",
-                MathUtils.unitConverter(elevationMotor.getSelectedSensorPosition(),
-                        config.shooter.elevation.ticksPerRevolution, 360) * config.shooter.elevationGearRatio);
+        
+        SmartDashboard.putNumber(getName() + "/Absolute Degrees Elevation", absoluteDegreesElevation);
         
         SmartDashboard.putNumber(getName() + "/Falcon temperature", (32 + 1.8*ballPropulsionMotor.getTemperature()));
     }
