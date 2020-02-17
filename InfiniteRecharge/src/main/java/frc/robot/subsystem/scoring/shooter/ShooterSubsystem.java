@@ -303,7 +303,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAim() {
-        autoAimAzimuth();
+        // autoAimAzimuth();
         autoAimVelocity();
     }
 
