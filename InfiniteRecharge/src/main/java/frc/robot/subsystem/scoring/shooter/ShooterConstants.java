@@ -10,5 +10,5 @@ public class ShooterConstants {
     public static final double FEEDER_OUTPUT_PERCENT = 0.8;
     public static final int MAX_VOLTS = 12;
 
-    public static final float DEFAULT_SHOOTER_VELOCITY_RPM = 5000;
+    public static final float DEFAULT_SHOOTER_VELOCITY_RPM = 4150;
 }
