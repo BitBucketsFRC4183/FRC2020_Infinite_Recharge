@@ -69,8 +69,8 @@ public class Config {
         public float[] elevationPositions_deg = new float[] { //
                 0, /// Comment so that VSCode doesn't ruin my format.
                 10, // Comment so that VSCode doesn't ruin my format.
-                25, // Comment so that VSCode doesn't ruin my format.
-                45, // Comment so that VSCode doesn't ruin my format.
+                40, // Comment so that VSCode doesn't ruin my format.
+                50, // Comment so that VSCode doesn't ruin my format.
                 60 /// Comment so that VSCode doesn't ruin my format.
         };
 
@@ -212,10 +212,11 @@ public class Config {
                 1023f / 2650 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
-                .1 * 1023. / 2300., // P
-                0, // I
+                .1 * 1023. / 2300. * 2 * 2 * 2, // P
+                .001, // I
                 0, // D
-                1023. / 12000 /// F
+                1023. / 13000., /// F,
+                100
         );
 
         // SpinnyBoi
