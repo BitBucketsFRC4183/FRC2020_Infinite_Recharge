@@ -212,10 +212,10 @@ public class Config {
                 1023f / 2650 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
-                .1 * 1023. / 2300. * 2 * 2 * 2, // P
+                0, // P
                 .001, // I
                 0, // D
-                1023. / 13000., /// F,
+                1023. / 21000., /// F,
                 100
         );
 

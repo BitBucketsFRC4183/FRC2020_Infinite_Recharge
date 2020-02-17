@@ -87,8 +87,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         elevationMotor = MotorUtils.makeSRX(config.shooter.elevation);
 
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
-        ballPropulsionMotor.configClosedloopRamp(1);
-        ballPropulsionMotor.configOpenloopRamp(1);
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
         feeder.enableVoltageCompensation(true);
         feeder.configVoltageCompSaturation(ShooterConstants.MAX_VOLTS);
