@@ -87,6 +87,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         elevationMotor = MotorUtils.makeSRX(config.shooter.elevation);
 
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
+        ballPropulsionMotor.configOpenloopRamp(1);
+        ballPropulsionMotor.configClosedloopRamp(1);
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
         feeder.enableVoltageCompensation(true);
         feeder.configVoltageCompSaturation(ShooterConstants.MAX_VOLTS);
@@ -195,6 +197,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         // Spin up the shooter.
         ballPropulsionMotor.set(ControlMode.Velocity, targetShooterVelocity);
+        // ballPropulsionMotor.set(ControlMode.PercentOutput, (float)SmartDashboard.getNumber(getName() + "/Shooter %Output", 0.5));
         SmartDashboard.putString(getName() + "/Shooter State", "Shooting");
     }
 
@@ -396,6 +399,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", 10);
+
+
+        SmartDashboard.putNumber(getName() + "/Shooter %Output", 0.5); // TODO TEMPORARY
 
     }
 
