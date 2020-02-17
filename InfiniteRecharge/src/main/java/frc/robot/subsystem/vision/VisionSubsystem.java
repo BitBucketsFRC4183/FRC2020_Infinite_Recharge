@@ -50,7 +50,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
         updateTargetInfo();
         distance = approximateDistanceFromTarget(ty);
-        adjustZoom();
+        // adjustZoom();
 
         SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
         SmartDashboard.putNumber(getName() + "/Estimated Distance ", distance);
@@ -95,6 +95,8 @@ public class VisionSubsystem extends BitBucketSubsystem {
     public void adjustZoom() {
         double pipelineToChangeTo = 0;
 
+        // TODO: empirically test this
+        // higher zoom (higher pipeline) the further u go
         if (distance >= 0) {
             pipelineToChangeTo = 0;
         }
