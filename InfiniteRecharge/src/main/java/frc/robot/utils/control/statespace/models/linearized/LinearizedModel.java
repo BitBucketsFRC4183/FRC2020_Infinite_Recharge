@@ -30,16 +30,6 @@ import edu.wpi.first.wpilibj.Timer;
  * where B' is the Moore-Penrose pseudoinverse of B
  */
 public abstract class LinearizedModel extends StateSpaceModel {
-    protected final int NUM_STATES;
-    protected final int NUM_INPUTS;
-
-    protected SimpleMatrix state;
-    protected SimpleMatrix input;
-
-    protected double lastTime;
-    protected double t0;
-    protected int k;
-
     protected ABFTriple lastSystem = null;
 
     //protected ABFTriple ABF;
@@ -53,46 +43,7 @@ public abstract class LinearizedModel extends StateSpaceModel {
      * @param inputs number of inputs to the system
      */
     public LinearizedModel(int states, int inputs) {
-        NUM_STATES = states;
-        NUM_INPUTS = inputs;
-
-        state = new SimpleMatrix(NUM_STATES, 1);
-        input = new SimpleMatrix(NUM_INPUTS, 1);
-
-        // default to this so methods have something
-        t0 = getTotalTime();
-        k = 0;
-    }
-
-
-
-    public void resetTimer() {
-        t0 = getTotalTime();
-        lastTime = 0;
-        k = 0;
-    }
-
-    public int getCount() {
-        return k;
-    }
-
-    private double getTotalTime() {
-        return System.nanoTime() * 1000000;
-        //return System.currentTimeMillis() / 1000.0;
-        //return Timer.getFPGATimestamp();
-        /*try {
-            return Timer.getFPGATimestamp();
-        } finally {
-            return System.currentTimeMillis() / 1000;
-        }*/
-    }
-
-    public double getTime() {
-        return getTotalTime() - t0;
-    }
-
-    public double getLastTime() {
-        return lastTime;
+        super(states, inputs);
     }
 
 
@@ -121,12 +72,12 @@ public abstract class LinearizedModel extends StateSpaceModel {
     }
 
     protected ABFTriple getDiscreteSystem() {
-        lastTime = getTime();
         lastSystem = getDiscreteSystem(state, lastTime, k);
 
         return lastSystem;
     }
 
+    @Override
     public SimpleMatrix update(SimpleMatrix stateVector, SimpleMatrix inputVector, double t, int k) {
         ABFTriple abf = getDiscreteSystem(stateVector, t, k);
 
@@ -135,30 +86,21 @@ public abstract class LinearizedModel extends StateSpaceModel {
             .plus(abf.getF());
     }
 
+    @Override
     public SimpleMatrix update() {
         return (lastSystem.getA().mult(state))
             .plus(lastSystem.getB().mult(input))
             .plus(lastSystem.getF());
     }
 
+    @Override
     public void apply(SimpleMatrix inputVector) {
         getDiscreteSystem();
 
-        input = inputVector;
-
-        state = update();
-        
-        k++;
+        super.apply(inputVector);
     }
 
 
 
-    public SimpleMatrix getState() { return state; }
-    public SimpleMatrix getInput() { return input; }
     public ABFTriple getLastSystem() { return lastSystem; }
-
-    public void setState(SimpleMatrix state) { this.state = state; }
-
-    public int getNumInputs() { return NUM_INPUTS; }
-    public int getNumStates() { return NUM_STATES; }
 }
