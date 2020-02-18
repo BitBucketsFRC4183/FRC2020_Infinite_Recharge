@@ -50,7 +50,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
         updateTargetInfo();
         distance = approximateDistanceFromTarget(ty);
-        adjustZoom();
+        // adjustZoom();
 
         SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
         SmartDashboard.putNumber(getName() + "/Estimated Distance ", distance);
@@ -72,7 +72,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
     public double approximateDistanceFromTarget(final double ty) {
         return (VisionConstants.TARGET_HEIGHT_INCHES - VisionConstants.CAMERA_HEIGHT_INCHES)
-                / Math.tan(VisionConstants.CAMERA_MOUNTING_ANGLE + ty);
+                / Math.tan(Math.toRadians(VisionConstants.CAMERA_MOUNTING_ANGLE + ty));
     }
 
     public double queryLimelightNetworkTable(final String value) {
@@ -95,6 +95,8 @@ public class VisionSubsystem extends BitBucketSubsystem {
     public void adjustZoom() {
         double pipelineToChangeTo = 0;
 
+        // TODO: empirically test this
+        // higher zoom (higher pipeline) the further u go
         if (distance >= 0) {
             pipelineToChangeTo = 0;
         }
