@@ -56,7 +56,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private double backwardElevationSoftLimit_ticks;
 
     // Class Declarations
-    RunningAverageFilter filter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
+    RunningAverageFilter azimuthFilter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
+    RunningAverageFilter elevationFilter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
+
     public BallManagementSubsystem ballManagementSubsystem;
     private VisionSubsystem visionSubsystem;
 
@@ -289,9 +291,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAimAzimuth() {
-        // rotateToDeg(absoluteDegreesToRotateAzimuth, absoluteDegreesElevation);
-        // TODO: remove this line (just in here for testing)
-        rotateToDeg(getAzimuthDeg(), absoluteDegreesElevation); // to only test the elevation thing for right now
+        rotateToDeg(absoluteDegreesToRotateAzimuth, getElevationDeg());
+    }
+
+    public void autoAimElevation() {
+        rotateToDeg(getAzimuthDeg(), absoluteDegreesElevation);
     }
 
     public void autoAimVelocity() {
@@ -308,7 +312,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAim() {
-        autoAimAzimuth();
+        // autoAimAzimuth();
+        autoAimElevation();
         // autoAimVelocity();
     }
 
@@ -326,7 +331,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
             // If enabled in the constants file, calculate the average of the last values
             // passed in (up to what FILTER_LENGTH is in ShooterConstants.java).
-            absoluteDegreesToRotateAzimuth = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
+            absoluteDegreesToRotateAzimuth = ShooterConstants.USE_AZIMUTH_FILTER ? azimuthFilter.calculate(degrees) : degrees;
         }
     }
 
@@ -343,6 +348,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             // increases as u get it farther
 
             absoluteDegreesElevation = degrees + 40;
+            absoluteDegreesElevation = ShooterConstants.USE_ELEVATION_FILTER ? elevationFilter.calculate(absoluteDegreesElevation) : absoluteDegreesElevation;
         }
     }
 
