@@ -6,7 +6,7 @@ package frc.robot.utils.data.filters;
  * Filters a boolean signal to only output true in the first instance of true, and
  * only return another true once the input has been through a false
  */
-public class RisingEdgeFilter {
+public class RisingEdgeFilter extends Filter<Boolean> {
     private boolean val = false;
 
 
@@ -19,7 +19,8 @@ public class RisingEdgeFilter {
 
 
 
-    public boolean calculate(boolean input) {
+    @Override
+    public Boolean calculate(Boolean input) {
         // if false, no signal
         if (input == false) {
             val = false;
