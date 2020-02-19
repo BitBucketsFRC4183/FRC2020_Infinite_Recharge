@@ -59,7 +59,7 @@ public class Config {
         public float forwardElevationSoftLimit_deg = 60;
         public float backwardElevationSoftLimit_deg = 0;
 
-        public float feederSpinUpDeadband_ticks = 600;
+        public float feederSpinUpDeadband_ticks = 100;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();
@@ -212,10 +212,10 @@ public class Config {
                 1023f / 2650 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
-                .1 * 1023. / 2300. * 2 * 2 * 2, // P
-                .001, // I
+                .1 * 1023 / 300, // P
+                0, // I
                 0, // D
-                1023. / 13000., /// F,
+                1023. / 21000., /// F,
                 100
         );
 
