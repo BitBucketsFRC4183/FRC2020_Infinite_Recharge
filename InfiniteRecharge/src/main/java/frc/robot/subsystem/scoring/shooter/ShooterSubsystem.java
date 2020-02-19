@@ -47,7 +47,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Doubles
     private double absoluteDegreesToRotateAzimuth = 0.0;
-    private double degreesToRotateElevation = 0.0;
+    private double absoluteDegreesElevation = 0.0;
 
     private double rightAzimuthSoftLimit_ticks;
     private double leftAzimuthSoftLimit_ticks;
@@ -56,7 +56,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private double backwardElevationSoftLimit_ticks;
 
     // Class Declarations
-    RunningAverageFilter filter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
+    RunningAverageFilter azimuthFilter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
+    RunningAverageFilter elevationFilter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
+
     public BallManagementSubsystem ballManagementSubsystem;
     private VisionSubsystem visionSubsystem;
 
@@ -88,7 +90,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
         ballPropulsionMotor.configOpenloopRamp(1);
-        ballPropulsionMotor.configClosedloopRamp(1);
+        ballPropulsionMotor.configClosedloopRamp(0.75);
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
         feeder.enableVoltageCompensation(true);
         feeder.configVoltageCompSaturation(ShooterConstants.MAX_VOLTS);
@@ -149,7 +151,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void periodic(float deltaTime) {
 
         calculateAbsoluteDegreesToRotate();
-        calculateDegreesToRotateElevation();
+        calculateAbsoluteDegreesElevation();
 
         targetPositionAzimuth_ticks = (int) (targetPositionAzimuth_ticks + (targetChangeAzimuth_ticks * deltaTime));
         targetPositionElevation_ticks = (int) (targetPositionElevation_ticks
@@ -183,8 +185,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 * config.shooter.shooterGearRatio;
 
         // Spin up the feeder.
-        if (ballPropulsionMotor.getSelectedSensorVelocity() >= targetShooterVelocity && ballPropulsionMotor
-                .getSelectedSensorVelocity() <= targetShooterVelocity + config.shooter.feederSpinUpDeadband_ticks) {
+        if (Math.abs(ballPropulsionMotor.getSelectedSensorVelocity() - targetShooterVelocity) <= config.shooter.feederSpinUpDeadband_ticks) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     ShooterConstants.FEEDER_OUTPUT_PERCENT));
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
@@ -264,10 +265,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         targetChangeElevation_ticks = 0;
     }
 
-    public void rotateByDeg(double degreesAzimuth, double degreesElevation) {
-        rotateToDeg(getTargetAzimuthDegGivenOffset(degreesAzimuth), getTargetElevationDegGivenOffset(degreesElevation));
-    }
-
     public double getAzimuthDeg() {
         double encoderDeg = MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(),
                 config.shooter.azimuth.ticksPerRevolution, 360.0);
@@ -294,7 +291,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAimAzimuth() {
-        rotateToDeg(absoluteDegreesToRotateAzimuth, degreesToRotateElevation);
+        rotateToDeg(absoluteDegreesToRotateAzimuth, getElevationDeg());
+    }
+
+    public void autoAimElevation() {
+        rotateToDeg(getAzimuthDeg(), absoluteDegreesElevation);
     }
 
     public void autoAimVelocity() {
@@ -303,11 +304,17 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 / (ShooterConstants.SHOOTER_FLYWHEEL_RADIUS * 2 * Math.PI * 10);
 
         ballPropulsionMotor.set(ControlMode.Velocity, ticksVelocity);
+
+        // TODO: do this stuff empirically (yay!)
+        // the math rn isn' rly accurate
+        //  as u get closer decrease basically, as u get further, increase.
+        // tho obv we'll test it and see
     }
 
     public void autoAim() {
-        autoAimAzimuth();
-        autoAimVelocity();
+        // autoAimAzimuth();
+        autoAimElevation();
+        // autoAimVelocity();
     }
 
     public void calculateAbsoluteDegreesToRotate() {
@@ -324,12 +331,25 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
             // If enabled in the constants file, calculate the average of the last values
             // passed in (up to what FILTER_LENGTH is in ShooterConstants.java).
-            absoluteDegreesToRotateAzimuth = ShooterConstants.USE_FILTER ? filter.calculate(degrees) : degrees;
+            absoluteDegreesToRotateAzimuth = ShooterConstants.USE_AZIMUTH_FILTER ? azimuthFilter.calculate(degrees) : degrees;
         }
     }
 
-    public void calculateDegreesToRotateElevation() {
-        degreesToRotateElevation = visionSubsystem.getTy();
+    public void calculateAbsoluteDegreesElevation() {
+        boolean validTarget = visionSubsystem.getValidTarget();
+        if (validTarget) {
+            double ty = visionSubsystem.getTy();
+            double degrees = getTargetElevationDegGivenOffset(ty);
+            double distance = visionSubsystem.approximateDistanceFromTarget(ty);
+
+            // TODO: empirically test this
+            // do the distance thing here
+            // decreases as u get closer
+            // increases as u get it farther
+
+            absoluteDegreesElevation = degrees + 40;
+            absoluteDegreesElevation = ShooterConstants.USE_ELEVATION_FILTER ? elevationFilter.calculate(absoluteDegreesElevation) : absoluteDegreesElevation;
+        }
     }
 
     public void nextPositionElevation() {
@@ -432,10 +452,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Elevation Target Position Deg ",
                 MathUtils.unitConverter(targetPositionElevation_ticks, config.shooter.elevation.ticksPerRevolution, 360)
                         * config.shooter.elevationGearRatio);
-
-        SmartDashboard.putNumber(getName() + "/Elevation Position Deg ",
-                MathUtils.unitConverter(elevationMotor.getSelectedSensorPosition(),
-                        config.shooter.elevation.ticksPerRevolution, 360) * config.shooter.elevationGearRatio);
+        
+        SmartDashboard.putNumber(getName() + "/Absolute Degrees Elevation", absoluteDegreesElevation);
         
         SmartDashboard.putNumber(getName() + "/Falcon temperature", (32 + 1.8*ballPropulsionMotor.getTemperature()));
     }

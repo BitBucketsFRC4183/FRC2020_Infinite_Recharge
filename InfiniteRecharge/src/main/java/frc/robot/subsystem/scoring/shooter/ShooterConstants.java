@@ -2,7 +2,8 @@ package frc.robot.subsystem.scoring.shooter;
 
 public class ShooterConstants {
 
-    public static final boolean USE_FILTER = false;
+    public static final boolean USE_AZIMUTH_FILTER = false;
+    public static final boolean USE_ELEVATION_FILTER = false;
     public static final int FILTER_LENGTH = 25;
 
     public static final double SHOOTER_FLYWHEEL_RADIUS = 2; // inches
