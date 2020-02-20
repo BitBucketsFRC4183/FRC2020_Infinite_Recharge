@@ -11,6 +11,8 @@ import frc.robot.utils.control.statespace.system.StateSpaceSystem;
 public abstract class GenericLuenbergerObserver<T extends StateSpaceModel, O extends OutputObserver> extends StateSpaceFilter {
     protected final StateSpaceSystem<T, O> SYS;
 
+    protected SimpleMatrix x_apriori;
+
 
 
     public GenericLuenbergerObserver(StateSpaceSystem<T, O> sys) {
@@ -19,11 +21,21 @@ public abstract class GenericLuenbergerObserver<T extends StateSpaceModel, O ext
 
 
 
+    protected abstract SimpleMatrix predictState();
+    public void predict() {
+        x_apriori = predictState();
+    }
+
     protected abstract SimpleMatrix getExpectedOutput();
     protected abstract SimpleMatrix getK();
 
     @Override
     public SimpleMatrix calculate(SimpleMatrix output) {
-        return SYS.getModel().getState().plus(getK().mult(output.minus(getExpectedOutput())));
+        return x_apriori.plus(getK().mult(output.minus(getExpectedOutput())));
+    }
+
+    @Override
+    public void postApply() {
+        predict();
     }
 }

@@ -90,8 +90,6 @@ public abstract class StateSpaceModel {
         lastTime = getTime();
 
         input = inputVector;
-
-        state = update();
         
         k++;
     }

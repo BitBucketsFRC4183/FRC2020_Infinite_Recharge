@@ -34,7 +34,7 @@ public class LuenbergerObserver extends GenericLuenbergerObserver<LinearizedMode
     }
 
     @Override
-    public void postApply() {
-        x_apriori = SYS.propogate(SYS.getModel().getState());
+    protected SimpleMatrix predictState() {
+        return SYS.propogate(SYS.getModel().getState());
     }
 }

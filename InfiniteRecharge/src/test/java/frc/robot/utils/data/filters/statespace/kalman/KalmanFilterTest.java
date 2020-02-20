@@ -41,10 +41,6 @@ public class KalmanFilterTest {
                 new double[] {0, 0.06},
             })
         ));
-        model.setState(new SimpleMatrix(new double[][] {
-            new double[] {0},
-            new double[] {0}
-        }));
 
 
 
@@ -54,7 +50,7 @@ public class KalmanFilterTest {
                 new double[] {2, 3},
                 new double[] {-0.1, 5}
             }),
-            new SimpleMatrix(2, 2)
+            new SimpleMatrix(2, 1)
         );
         observer.addNoiseSource(new ConstantNoiseSource(
             2,
