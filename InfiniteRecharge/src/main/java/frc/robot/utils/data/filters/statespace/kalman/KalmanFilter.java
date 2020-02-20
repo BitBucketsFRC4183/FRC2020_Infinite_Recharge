@@ -30,8 +30,15 @@ import frc.robot.utils.data.noise.Noise;
 public class KalmanFilter extends GenericKalmanFilter<LinearizedModel, LinearizedOutputObserver> {
     // just for convenience of not recalculating
     private SimpleMatrix C;
+    // an identity matrix that will come in handy later
     private final SimpleMatrix I;
 
+    /**
+     * Create a Kalman filter for a linearized system
+     * 
+     * @param sys a state space system with linearized dynamics
+     * @param P0 initial covariance (uncertainty) in state estimate
+     */
     public KalmanFilter(StateSpaceSystem<LinearizedModel, LinearizedOutputObserver> sys, SimpleMatrix P0) {
         super(sys);
 
@@ -69,20 +76,20 @@ public class KalmanFilter extends GenericKalmanFilter<LinearizedModel, Linearize
 
     @Override
     public void predict() {
+        super.predict();
+
         // for convenience of not recalculating Jacobian
+
         LinearizedModel model = SYS.getModel();
         LinearizedOutputObserver outputObserver = SYS.getObserver();
 
+        // set it in predict so it can be used in multiple methods in update
         C = outputObserver.getJacobian(
             x_apriori,
             model.getInput(),
             model.getLastTime(),
             model.getCount()
         );
-
-
-
-        super.predict();
     }
 
 
@@ -98,6 +105,7 @@ public class KalmanFilter extends GenericKalmanFilter<LinearizedModel, Linearize
 
         
 
+        // must consider addative noise to sensor measurements
         Noise outputNoise = outputObserver.getNoiseSource().getNoise(
             x_apriori,
             model.getInput(),
@@ -110,6 +118,7 @@ public class KalmanFilter extends GenericKalmanFilter<LinearizedModel, Linearize
 
     @Override
     protected SimpleMatrix getCxy() {
+        // covariance of X is P_apriori and covariance of Y is C
         return P_apriori.mult(C.transpose());
     }
 
@@ -120,6 +129,7 @@ public class KalmanFilter extends GenericKalmanFilter<LinearizedModel, Linearize
 
     @Override
     protected SimpleMatrix getExpectedOutput() {
+        // assuming linearity!
         return SYS.getOutput(x_apriori);
     }
 }
