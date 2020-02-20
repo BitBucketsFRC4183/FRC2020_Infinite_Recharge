@@ -5,6 +5,10 @@ import org.ejml.simple.SimpleMatrix;
 public class ConstantNoiseSource extends NoiseSource {
     private Noise noise;
 
+    public ConstantNoiseSource(int numStates, SimpleMatrix Q) {
+        this(numStates, numStates, SimpleMatrix.identity(numStates), Q);
+    }
+
     public ConstantNoiseSource(int numStates, int numNoises, SimpleMatrix G, SimpleMatrix Q) {
         super(numStates, numNoises);
 

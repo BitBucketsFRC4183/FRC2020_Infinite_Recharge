@@ -75,7 +75,7 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
 
 
     @Override
-    protected void predict() {
+    public void predict() {
         calculateSigmaPoints();
 
         super.predict();
