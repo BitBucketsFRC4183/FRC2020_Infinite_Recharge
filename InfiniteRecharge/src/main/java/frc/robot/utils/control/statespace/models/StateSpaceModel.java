@@ -2,6 +2,9 @@ package frc.robot.utils.control.statespace.models;
 
 import org.ejml.simple.SimpleMatrix;
 
+import frc.robot.utils.data.noise.NoiseSource;
+
+
 // DISCRETE
 public abstract class StateSpaceModel {
     protected final int NUM_STATES;
@@ -13,6 +16,8 @@ public abstract class StateSpaceModel {
     protected double lastTime;
     protected double t0;
     protected int k;
+
+    protected NoiseSource noise;
 
 
 
@@ -26,7 +31,17 @@ public abstract class StateSpaceModel {
         // default to this so methods have something
         t0 = getTotalTime();
         k = 0;
+
+        noise = NoiseSource.def(numStates);
     }
+
+
+
+    public void addNoiseSource(NoiseSource noise) {
+        this.noise = noise;
+    }
+
+    public NoiseSource getNoiseSource() { return noise; }
 
 
 
@@ -75,8 +90,6 @@ public abstract class StateSpaceModel {
         lastTime = getTime();
 
         input = inputVector;
-
-        state = update();
         
         k++;
     }
