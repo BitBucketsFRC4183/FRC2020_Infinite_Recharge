@@ -4,7 +4,7 @@ import frc.robot.utils.data.DoubleDataWindow;
 
 
 
-public class RunningAverageFilter {
+public class RunningAverageFilter extends Filter<Double> {
     private DoubleDataWindow dw;
 
 
@@ -15,7 +15,8 @@ public class RunningAverageFilter {
 
 
 
-    public double calculate(double data) {
+    @Override
+    public Double calculate(Double data) {
         dw.add(data);
 
         return dw.getAverage();
