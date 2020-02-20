@@ -55,16 +55,20 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
      * Create an Unscented Kalman Filter for a system
      * 
      * @param sys any state space system to be filtered
+     * @param P0 initial state estimate covariance
      * @param alpha tuning parameter that controls spread of sigma points, usually made
      *     really small such as 10^-3
      * @param kappa tuning parameter that controls spread of sigma points, usually set to 0
      * @param beta parameter used to capture some information of the probability distribution
      *     For a Gaussian distribution, 2 is optimal, so this is usually assumed.
      */
-    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, double alpha, double kappa, double beta) {
+    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0, double alpha, double kappa, double beta) {
         super(sys);
 
 
+
+        // initialize the estimate covariance
+        P = P0;
 
         // get the number of states
         int L = sys.getModel().getNumStates();
@@ -90,24 +94,26 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
      * Create an Unscented Kalman Filter for a system. kappa is defaulted to 0
      * 
      * @param sys any state space system to be filtered
+     * @param P0 initial state estimate covariance
      * @param alpha tuning parameter that controls spread of sigma points, usually made
      *     really small such as 10^-3
      * @param beta parameter used to capture some information of the probability distribution
      *     For a Gaussian distribution, 2 is optimal, so this is usually assumed.
      */
-    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, double alpha, double beta) {
-        this(sys, alpha, 0, beta);
+    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0, double alpha, double beta) {
+        this(sys, P0, alpha, 0, beta);
     }
 
     /**
      * Create an Unscented Kalman Filter for a system. kappa and beta are defaulted to 0 and 2 respectively
      * 
      * @param sys any state space system to be filtered
+     * @param P0 initial state estimate covariance
      * @param alpha tuning parameter that controls spread of sigma points, usually made
      *     really small such as 10^-3
      */
-    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, double alpha) {
-        this(sys, alpha, 0, 2);
+    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0, double alpha) {
+        this(sys, P0, alpha, 0, 2);
     }
 
     /**
@@ -115,9 +121,10 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
      *     0, and 2 respectively
      * 
      * @param sys any state space system to be filtered
+     * @param P0 initial state estimate covariance
      */
-    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys) {
-        this(sys, Math.pow(10, -3), 0, 2);
+    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0) {
+        this(sys, P0, Math.pow(10, -3), 0, 2);
     }
 
 
