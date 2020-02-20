@@ -37,12 +37,12 @@ public abstract class GenericKalmanFilter<M extends StateSpaceModel, O extends O
     protected abstract SimpleMatrix getCxy();
     protected abstract SimpleMatrix updateP();
 
-    protected void predict() {
+    public void predict() {
         x_apriori = predictState();
         P_apriori = predictP();
     }
 
-    protected void update() {
+    public void update() {
         S = getS();
         Cxy = getCxy();
 
@@ -59,6 +59,19 @@ public abstract class GenericKalmanFilter<M extends StateSpaceModel, O extends O
 
     @Override
     public SimpleMatrix calculate(SimpleMatrix output) {
-        return super.calculate(output);
+        // calculate Kalman gain
+        update();
+
+        // update state given output
+        SimpleMatrix x = super.calculate(output);
+
+        SYS.getModel().setState(x);
+
+        return x;
+    }
+
+    @Override
+    public void postApply() {
+        predict();
     }
 }

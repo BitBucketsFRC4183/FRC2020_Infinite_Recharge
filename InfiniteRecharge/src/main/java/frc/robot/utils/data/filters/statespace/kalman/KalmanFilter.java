@@ -32,8 +32,10 @@ public class KalmanFilter extends GenericKalmanFilter<LinearizedModel, Linearize
     private SimpleMatrix C;
     private final SimpleMatrix I;
 
-    public KalmanFilter(StateSpaceSystem<LinearizedModel, LinearizedOutputObserver> sys) {
+    public KalmanFilter(StateSpaceSystem<LinearizedModel, LinearizedOutputObserver> sys, SimpleMatrix P0) {
         super(sys);
+
+        P = P0;
 
         I = SimpleMatrix.identity(sys.getModel().getNumStates());
     }
@@ -66,7 +68,7 @@ public class KalmanFilter extends GenericKalmanFilter<LinearizedModel, Linearize
     }
 
     @Override
-    protected void predict() {
+    public void predict() {
         super.predict();
 
         // for convenience of not recalculating Jacobian
