@@ -59,12 +59,19 @@ state = Ad*state + Bd*u;
 disp("a priori x");
 state
 P = Ad*P*Ad' + G*Q*G';
+P
 
 % measurements
 y = [181; 295];
 
 % update
-K = P*C'/(C*P*C'+R);
+S = (C*P*C'+R);
+S
+Cxy = P*C';
+Cxy
+K = Cxy/S;
+K
+C * state
 state = state + K * (y - C * state); % posteriori estimate
 P = (eye(2) - K*C)*P;
 P

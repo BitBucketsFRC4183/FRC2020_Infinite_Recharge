@@ -4,7 +4,6 @@ import org.ejml.simple.SimpleMatrix;
 
 import frc.robot.utils.control.statespace.models.StateSpaceModel;
 import frc.robot.utils.control.statespace.observer.OutputObserver;
-import frc.robot.utils.data.filters.Filter;
 import frc.robot.utils.data.filters.statespace.StateSpaceFilter;
 
 public class StateSpaceSystem<M extends StateSpaceModel, O extends OutputObserver> {

@@ -8,8 +8,6 @@ import frc.robot.utils.control.statespace.system.StateSpaceSystem;
 import frc.robot.utils.data.filters.statespace.GenericLuenbergerObserver;
 
 public abstract class GenericKalmanFilter<M extends StateSpaceModel, O extends OutputObserver> extends GenericLuenbergerObserver<M, O> {
-    protected SimpleMatrix x_apriori;
-
     protected SimpleMatrix P;
     protected SimpleMatrix P_apriori;
 
@@ -24,11 +22,6 @@ public abstract class GenericKalmanFilter<M extends StateSpaceModel, O extends O
         super(sys);
     }
 
-    @Override
-    protected SimpleMatrix getExpectedOutput() {
-        return x_apriori;
-    }
-
 
 
     protected abstract SimpleMatrix predictState();
@@ -38,7 +31,8 @@ public abstract class GenericKalmanFilter<M extends StateSpaceModel, O extends O
     protected abstract SimpleMatrix updateP();
 
     public void predict() {
-        x_apriori = predictState();
+        super.predict();
+        
         P_apriori = predictP();
     }
 
@@ -68,10 +62,5 @@ public abstract class GenericKalmanFilter<M extends StateSpaceModel, O extends O
         SYS.getModel().setState(x);
 
         return x;
-    }
-
-    @Override
-    public void postApply() {
-        predict();
     }
 }

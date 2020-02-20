@@ -69,8 +69,6 @@ public class KalmanFilter extends GenericKalmanFilter<LinearizedModel, Linearize
 
     @Override
     public void predict() {
-        super.predict();
-
         // for convenience of not recalculating Jacobian
         LinearizedModel model = SYS.getModel();
         LinearizedOutputObserver outputObserver = SYS.getObserver();
@@ -81,6 +79,10 @@ public class KalmanFilter extends GenericKalmanFilter<LinearizedModel, Linearize
             model.getLastTime(),
             model.getCount()
         );
+
+
+
+        super.predict();
     }
 
 
@@ -108,23 +110,16 @@ public class KalmanFilter extends GenericKalmanFilter<LinearizedModel, Linearize
 
     @Override
     protected SimpleMatrix getCxy() {
-        LinearizedModel model = SYS.getModel();
-        LinearizedOutputObserver outputObserver = SYS.getObserver();
-
-        SimpleMatrix C = outputObserver.getJacobian(
-            x_apriori,
-            model.getInput(),
-            model.getLastTime(),
-            model.getCount()
-        );
-
-
-
-        return P.mult(C.transpose());
+        return P_apriori.mult(C.transpose());
     }
 
     @Override
     protected SimpleMatrix updateP() {
         return (I.minus(K.mult(C))).mult(P_apriori);
+    }
+
+    @Override
+    protected SimpleMatrix getExpectedOutput() {
+        return SYS.getOutput(x_apriori);
     }
 }

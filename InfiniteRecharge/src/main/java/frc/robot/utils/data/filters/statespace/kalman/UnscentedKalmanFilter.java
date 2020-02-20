@@ -43,6 +43,8 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
     private SimpleMatrix[] eX;
     private SimpleMatrix[] eY;
 
+    private SimpleMatrix yAvg; // average of transformed sigma points
+
 
 
     public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, double alpha, double kappa, double beta) {
@@ -171,7 +173,7 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
             ys[i] = outputObserver.getOutput(sigmaPoints[0], model.getInput(), model.getLastTime(), model.getCount());
         }
 
-        SimpleMatrix yAvg = ys[0].scale(Wm0);
+        yAvg = ys[0].scale(Wm0);
         for (int i = 1; i <= 2*L; i++) {
             yAvg = yAvg.plus(ys[i].scale(W));
         }
@@ -222,5 +224,10 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
     @Override
     protected SimpleMatrix updateP() {
         return P_apriori.minus(K.mult(S).mult(K.transpose()));
+    }
+
+    @Override
+    protected SimpleMatrix getExpectedOutput() {
+        return yAvg;
     }
 }
