@@ -12,6 +12,8 @@ public class CStateSpaceModelTest {
 
     @Test
     public void simpleBot() {
+        double t0 = System.nanoTime();
+
         // x' = v cos theta
         // y' = v sin theta
         // v' = a --> control
@@ -58,5 +60,17 @@ public class CStateSpaceModelTest {
                 16.755160819145566
             }), 2*TOLERANCE)
         );
+
+        double t1 = System.nanoTime();
+
+        System.out.println((t1 - t0) / 1000000 + "ms to run");
+    }
+
+
+    @Test
+    public void simpleBot_time() {
+        for (int i = 0; i < 100; i++) {
+            simpleBot();
+        }
     }
 }
