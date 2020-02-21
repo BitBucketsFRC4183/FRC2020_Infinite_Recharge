@@ -81,7 +81,7 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
         // by adding the mean, it needs a different weight for both mean
         // and covariance calculations, so calculate these weights
         Wm0 = lambda / (lambda + L);
-        Wc0 = lambda / (lambda + L) + (1 - alpha * alpha + beta * beta);
+        Wc0 = lambda / (lambda + L) + (1 - alpha * alpha + beta);
         // for any other sigma point that is not the mean, just use the
         // same weight such that 2L*W + Wm0 = 1
         W = 1.0 / (2 * (L + lambda));
@@ -146,9 +146,11 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
     private void calculateSigmaPoints() {
         StateSpaceModel model = SYS.getModel();
 
+        SimpleMatrix x = model.getState();
+
         // first one is the mean, or expected value, of the state, which is
         // already known
-        sigmaPoints[0] = model.getState();
+        sigmaPoints[0] = x;
         // propogate it to the next state
         sigmaPoints[0] = model.propogate(sigmaPoints[0]);
         // other sigma points require some linear algebra to find, so that
@@ -163,22 +165,22 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
 
         // choose sigma points as mean +/- rows of sqrt(P*(L+lambda))
         // where sqrt(P) is a lower triangular matrix A such that AA'=P
-        SimpleMatrix xs = MathUtils.chol(P, true).scale(Math.sqrt(L + lambda));
+        SimpleMatrix xs = MathUtils.chol(P.copy(), true).scale(Math.sqrt(L + lambda));
         // a row vector from xs
         SimpleMatrix vec;
 
         /** calculate the other 2L sigma points */
         for (int i = 1; i <= L; i++) {
             // get the i-th row vector from xs
-            vec = xs.extractVector(true, i);
+            vec = xs.extractVector(false, i - 1);
 
             // choose the i-th sigma point
-            sigmaPoints[i] = sigmaPoints[0].plus(vec);
+            sigmaPoints[i] = x.plus(vec);
             // and propogate it to the next time step
             sigmaPoints[i] = model.propogate(sigmaPoints[i]);
 
             // choose the (L+i)-th sigma point
-            sigmaPoints[L + i] = sigmaPoints[0].minus(vec);
+            sigmaPoints[L + i] = x.minus(vec);
             // also propogate it to the next time step
             sigmaPoints[L + i] = model.propogate(sigmaPoints[L + i]);
         }
@@ -266,12 +268,12 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
 
         // already calculated transformed sigma points, just get the output
         for (int i = 0; i <= 2*L; i++) {
-            ys[i] = outputObserver.getOutput(sigmaPoints[0], model.getInput(), model.getLastTime(), model.getCount());
+            ys[i] = outputObserver.getOutput(sigmaPoints[i], model.getInput(), model.getLastTime(), model.getCount());
         }
 
         // a priori/mean estimate of output
         // mean is quirky and has a different weight, so start with it
-        yAvg = ys[0].scale(Wc0);
+        yAvg = ys[0].scale(Wm0);
         for (int i = 1; i <= 2*L; i++) {
             // add in the rest of the weighted means to get average
             yAvg = yAvg.plus(ys[i].scale(W));
@@ -288,7 +290,7 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
         // again the mean just b like that so start with mean
         SimpleMatrix s = eY[0].mult(eY[0].transpose()).scale(Wc0);
         for (int i = 1; i <= 2*L; i++) {
-            S = S.plus(eY[i].mult(eY[i].transpose()).scale(W));
+            s = s.plus(eY[i].mult(eY[i].transpose()).scale(W));
         }
 
         Noise outputNoise = outputObserver.getNoiseSource().getNoise(
