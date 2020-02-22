@@ -84,7 +84,9 @@ public class Robot extends TimedRobot {
             subsystems.add(spinnyBoiSubsystem);
         }
 
-        subsystems.add(new PIDHelperSubsystem(config));
+        if (config.enablePIDHelper) {
+            subsystems.add(new PIDHelperSubsystem(config));
+        }
 
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.initialize();
@@ -132,7 +134,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        shooterSubsystem.zeroElevationSensor();
     }
 
     /**
@@ -146,7 +147,6 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         // TODO Auto-generated method stub
         super.teleopInit();
-        shooterSubsystem.zeroElevationSensor();
     }
 
     /**
@@ -226,8 +226,9 @@ public class Robot extends TimedRobot {
                 shooterSubsystem.resetPositionElevationSwitcher();
             }
 
-            if (oi.setElevationToDashboardNumber()){
-                shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(), SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 10));
+            if (oi.setElevationToDashboardNumber()) {
+                shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(),
+                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 10));
             }
         }
     }
@@ -255,7 +256,7 @@ public class Robot extends TimedRobot {
         super.disabledInit();
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.disable();
-        }    
+        }
     }
 
     // COMMANDS the robot to WIN!
