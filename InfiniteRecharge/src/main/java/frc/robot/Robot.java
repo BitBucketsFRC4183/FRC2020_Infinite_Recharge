@@ -84,7 +84,9 @@ public class Robot extends TimedRobot {
             subsystems.add(spinnyBoiSubsystem);
         }
 
-        subsystems.add(new PIDHelperSubsystem(config));
+        if (config.enablePIDHelper) {
+            subsystems.add(new PIDHelperSubsystem(config));
+        }
 
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.initialize();
@@ -139,6 +141,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
+    }
+
+    @Override
+    public void teleopInit() {
     }
 
     /**
@@ -218,8 +224,9 @@ public class Robot extends TimedRobot {
                 shooterSubsystem.resetPositionElevationSwitcher();
             }
 
-            if (oi.setElevationToDashboardNumber()){
-                shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(), SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 10));
+            if (oi.setElevationToDashboardNumber()) {
+                shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(),
+                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 10));
             }
         }
     }
@@ -238,6 +245,13 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.testPeriodic();
+        }
+    }
+
+    @Override
+    public void disabledInit() {
+        for (BitBucketSubsystem subsystem : subsystems) {
+            subsystem.disable();
         }
     }
 

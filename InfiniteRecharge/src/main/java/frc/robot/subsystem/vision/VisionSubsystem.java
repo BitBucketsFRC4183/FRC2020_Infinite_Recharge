@@ -140,4 +140,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
     }
 
+    public void disable(){
+    }
+
 }
