@@ -119,4 +119,8 @@ public class IntakeSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/IntakeOut", motor.getMotorOutputPercent());
     }
 
+    public void disable(){
+        motor.set(0);
+    }
+
 }
