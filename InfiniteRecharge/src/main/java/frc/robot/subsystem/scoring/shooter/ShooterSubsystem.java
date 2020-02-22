@@ -58,6 +58,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     // Class Declarations
     RunningAverageFilter azimuthFilter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
     RunningAverageFilter elevationFilter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
+    RunningAverageFilter feederFilter = new RunningAverageFilter(ShooterConstants.FEEDER_FILTER_LENGTH);
 
     public BallManagementSubsystem ballManagementSubsystem;
     private VisionSubsystem visionSubsystem;
@@ -181,9 +182,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                                 ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM),
                         600, config.shooter.shooter.ticksPerRevolution)
                 * config.shooter.shooterGearRatio;
-
+        double averageError = feederFilter.calculate((double) Math.abs(ballPropulsionMotor.getSelectedSensorVelocity() - targetShooterVelocity));
         // Spin up the feeder.
-        if (Math.abs(ballPropulsionMotor.getSelectedSensorVelocity() - targetShooterVelocity) <= config.shooter.feederSpinUpDeadband_ticks) {
+        if (averageError <= config.shooter.feederSpinUpDeadband_ticks) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     ShooterConstants.FEEDER_OUTPUT_PERCENT));
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
