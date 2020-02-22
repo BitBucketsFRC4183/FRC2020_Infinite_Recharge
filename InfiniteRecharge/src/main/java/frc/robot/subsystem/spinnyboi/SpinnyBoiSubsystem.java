@@ -54,4 +54,8 @@ public class SpinnyBoiSubsystem extends BitBucketSubsystem {
 
     }
 
+    public void disable(){
+        motor.set(0);
+    }
+
 }

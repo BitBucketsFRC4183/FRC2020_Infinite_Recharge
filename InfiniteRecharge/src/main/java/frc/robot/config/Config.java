@@ -15,6 +15,7 @@ public class Config {
     public boolean enableClimbSubsystem = true;
     public boolean enableIntakeSubsystem = true;
     public boolean enableSpinnyboiSubsystem = true;
+    public boolean enablePIDHelper = false;
 
     //////////////////////////////////////////////////////////////////////////////
     // Motor IDs

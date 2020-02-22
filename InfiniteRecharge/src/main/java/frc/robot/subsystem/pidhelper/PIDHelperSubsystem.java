@@ -302,4 +302,7 @@ public class PIDHelperSubsystem extends BitBucketSubsystem {
 
         return chooser;
     }
+
+    public void disable(){
+    }
 }
