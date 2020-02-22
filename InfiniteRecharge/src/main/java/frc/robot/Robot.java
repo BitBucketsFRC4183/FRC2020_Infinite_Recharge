@@ -145,8 +145,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        // TODO Auto-generated method stub
-        super.teleopInit();
     }
 
     /**
@@ -252,8 +250,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        // TODO Auto-generated method stub
-        super.disabledInit();
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.disable();
         }
