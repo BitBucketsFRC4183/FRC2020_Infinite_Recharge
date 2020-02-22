@@ -213,10 +213,10 @@ public class Config {
         );
         shooter.shooter.velocityPIDF = new PIDF(//
                 .1 * 1023 / 300, // P
-                0, // I
-                0, // D
+                0.01, // I
+                1023.0 / 300, // D
                 1023. / 21000., /// F,
-                100
+                300
         );
 
         // SpinnyBoi
@@ -231,10 +231,11 @@ public class Config {
         drive.initMotorConfigArrays();
 
         drive.leftLeader.velocityPIDF = new PIDF(//
-                0.1 * 1023 / 1000 / 4, // P
-                0.0, // I
-                0.1 * 1023 / 1000 / 4 * 10, // D
-                1023 / 21740f /// F
+                0.00539*2, // P
+                0.001,//0.0, // I
+                0.0539, // D
+                1023 / 21740f, /// F,
+                300
         );
         drive.leftLeader.positionPIDF = new PIDF(//
                 0, // P
@@ -243,10 +244,11 @@ public class Config {
                 0 /// F
         );
         drive.rightLeader.velocityPIDF = new PIDF(//
-                0.1 * 1023 / 1000 / 4, // P
-                0.0, // I
-                0.1 * 1023 / 1000 / 4 * 10, // D
-                1023 / 21340f /// F
+                0.00539, // P
+                0.001,//0.0, // I
+                0.0539, // D
+                1023 / 21340f, /// F
+                300
         );
         drive.rightLeader.positionPIDF = new PIDF(//
                 0, // P

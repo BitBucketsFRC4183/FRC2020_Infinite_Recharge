@@ -3,9 +3,9 @@ package frc.robot.subsystem.drive;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -166,6 +166,12 @@ public class DriveSubsystem extends BitBucketSubsystem {
 				DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
                 DriveConstants.CONTROLLER_TIMEOUT_MS
             );
+
+            leftMotors[i].setNeutralMode(NeutralMode.Coast);
+            rightMotors[i].setNeutralMode(NeutralMode.Coast);
+
+            leftMotors[i].configClosedloopRamp(0.5);
+            rightMotors[i].configClosedloopRamp(0.5);
 
 
 
@@ -468,8 +474,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
         double leftTps = DRIVE_UTILS.ipsToTicksP100(leftSpeed_mps / DriveConstants.METERS_PER_INCH);
         double rightTps = DRIVE_UTILS.ipsToTicksP100(rightSpeed_mps / DriveConstants.METERS_PER_INCH);
 
-        leftMotors[0].set(ControlMode.Velocity, leftTps);
-        rightMotors[0].set(ControlMode.Velocity, rightTps);
+        setLeftVelocity(leftTps);
+        setRightVelocity(rightTps);
     }
     
     public DifferentialDriveKinematics getKinematics() {
