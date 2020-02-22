@@ -229,6 +229,21 @@ public class Robot extends TimedRobot {
                         SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 10));
             }
         }
+
+
+        // //////////////////////////////////////////////////////////////////////////////
+        // // SpinnyBoi Subsystem
+
+        if (config.enableSpinnyboiSubsystem) {
+            if (oi.rotationControl()) {
+                spinnyBoiSubsystem.rotationControl();
+            }
+    
+            if (oi.colorControl()) {
+                spinnyBoiSubsystem.colorControl();
+            }    
+        }
+
     }
 
     @Override
