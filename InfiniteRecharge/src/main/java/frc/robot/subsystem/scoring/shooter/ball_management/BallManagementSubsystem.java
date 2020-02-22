@@ -56,7 +56,7 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
     @Override
     public void periodic(float deltaTime) {
         // TODO Auto-generated method stub
-        deltaTimeBMS = deltaTime;
+        // deltaTimeBMS = deltaTime;
     }
 
     /**
@@ -65,19 +65,19 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
      */
     public void fire(float rate) {
 
-        timer = timer + deltaTimeBMS;
+        // timer = timer + deltaTimeBMS;
         
         // Because you can neva 'ave enuf dakka!
         SmartDashboard.putString(getName() + "/State",
                 "DAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKADAKKADAKKADAKKADAKKADAKKDAKKADAKKA");
-        if (timer <= 0.5) {
+        // if (timer <= 0.5) {
             motor.set(ControlMode.PercentOutput, rate);
-        } else {
-            motor.set(ControlMode.PercentOutput, 0);
-        }
-        if (timer >= 1) {
-            timer = 0;
-        }
+        // } else {
+        //     motor.set(ControlMode.PercentOutput, 0);
+        // }
+        // if (timer >= 1) {
+        //     timer = 0;
+        // }
     }
 
     public void doNotFire() {
