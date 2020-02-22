@@ -172,7 +172,7 @@ public class MotorUtils {
         motor.config_kD(velocitySlot, motorConfig.velocityPIDF.getKD());
         motor.config_IntegralZone(velocitySlot, (int) motorConfig.velocityPIDF.getIZone());
         motor.enableVoltageCompensation(true);
-        motor.configVoltageCompSaturation(12);
+        motor.configVoltageCompSaturation(11.5);
     }
 
     public static void motorInit(CANSparkMax motor, MotorConfig motorConfig) {
