@@ -47,3 +47,6 @@ plot(Xs, Ys);
 hold on;
 plot(Xs_hat, Ys_hat);
 hold off;
+
+figure(2);
+plot(ts, sqrt((Xs-Xs_hat).^2 + (Ys-Ys_hat).^2));
