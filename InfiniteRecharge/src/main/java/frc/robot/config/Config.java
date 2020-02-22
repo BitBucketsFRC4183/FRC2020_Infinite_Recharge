@@ -20,9 +20,9 @@ public class Config {
     // Motor IDs
 
     // Shooter
-    public int AZIMUTH_MOTOR_ID = 11;
-    public int ELEVATION_MOTOR_ID = 14;
-    public int SHOOTER_MOTOR_ID = 13;
+    public int AZIMUTH_MOTOR_ID = 6;
+    public int ELEVATION_MOTOR_ID = 8;
+    public int SHOOTER_MOTOR_ID = 15;
     public int FEEDER_MOTOR_ID = 9;
 
     // Intake
@@ -34,7 +34,7 @@ public class Config {
 
     // SpinnyBoi
     public int SPINNYBOI_MOTOR_ID = 6;
-    public int BALLMANAGEMENT_MOTOR_ID = 10;
+    public int BALLMANAGEMENT_MOTOR_ID = 13;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
@@ -54,8 +54,8 @@ public class Config {
         public double manualAzimuthDeadband = 0.2;
         public double manualElevationDeadband = 0.2;
 
-        public float rightAzimuthSoftLimit_deg = 45;
-        public float leftAzimuthSoftLimit_deg = 45;
+        public float rightAzimuthSoftLimit_deg = 90;
+        public float leftAzimuthSoftLimit_deg = 90;
         public float forwardElevationSoftLimit_deg = 60;
         public float backwardElevationSoftLimit_deg = 0;
 
