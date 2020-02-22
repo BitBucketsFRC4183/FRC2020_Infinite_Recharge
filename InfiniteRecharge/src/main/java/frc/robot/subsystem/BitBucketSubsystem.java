@@ -105,4 +105,6 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
     public abstract void periodic(float deltaTime);
 
     public abstract void dashboardPeriodic(float deltaTime);
+
+    public abstract void disable();
 }

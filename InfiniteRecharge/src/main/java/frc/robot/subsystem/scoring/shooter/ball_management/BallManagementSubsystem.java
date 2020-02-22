@@ -91,4 +91,8 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
         // TODO Auto-generated method stub
 
     }
+
+    public void disable(){
+        motor.set(0);
+    }
 }

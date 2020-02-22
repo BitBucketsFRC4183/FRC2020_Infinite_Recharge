@@ -132,6 +132,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        shooterSubsystem.zeroElevationSensor();
     }
 
     /**
@@ -139,6 +140,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
+    }
+
+    @Override
+    public void teleopInit() {
+        // TODO Auto-generated method stub
+        super.teleopInit();
+        shooterSubsystem.zeroElevationSensor();
     }
 
     /**
@@ -239,6 +247,15 @@ public class Robot extends TimedRobot {
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.testPeriodic();
         }
+    }
+
+    @Override
+    public void disabledInit() {
+        // TODO Auto-generated method stub
+        super.disabledInit();
+        for (BitBucketSubsystem subsystem : subsystems) {
+            subsystem.disable();
+        }    
     }
 
     // COMMANDS the robot to WIN!

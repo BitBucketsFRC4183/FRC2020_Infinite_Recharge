@@ -41,4 +41,7 @@ public class TestSubsystem extends BitBucketSubsystem {
 
     }
 
+    public void disable(){
+    }
+
 }
