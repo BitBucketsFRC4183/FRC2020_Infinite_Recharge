@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.utils.math.interpolation.spline;
+package frc.robot.utils.math.interpolation.spline.parametric;
 
 public class Waypoint {
     public double x;
