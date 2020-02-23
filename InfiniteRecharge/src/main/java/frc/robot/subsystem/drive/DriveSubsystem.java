@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
@@ -74,6 +75,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
     private final Trajectory autoTrajectory;
+    private final RamseteController ramsete;
     
 
 
@@ -111,6 +113,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
             new Pose2d(FieldConstants.OUR_POWER_CELL_3, Rotation2d.fromDegrees(90)),
             trajectoryConfig
         );
+
+        ramsete = new RamseteController();
     }
 
 
@@ -490,6 +494,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     private void setRightVelocity(double vel_tp100ms) {
         rightMotors[0].set(ControlMode.Velocity, ((config.drive.invertRightCommand) ? -1 : 1) * vel_tp100ms);
+    }
+
+    public RamseteController getRAMSETEController() {
+        return ramsete;
     }
 
     @Override
