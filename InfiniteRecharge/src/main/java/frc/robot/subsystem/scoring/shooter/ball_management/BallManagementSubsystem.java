@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
-import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
 
 public class BallManagementSubsystem extends BitBucketSubsystem {
@@ -49,14 +48,8 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    public void periodic() {
-        updateBaseDashboard();
-    }
-
-    @Override
     public void periodic(float deltaTime) {
-        // TODO Auto-generated method stub
-        // deltaTimeBMS = deltaTime;
+        updateBaseDashboard();
     }
 
     /**
