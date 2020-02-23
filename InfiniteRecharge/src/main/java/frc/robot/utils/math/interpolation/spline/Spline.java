@@ -9,12 +9,6 @@ public class Spline {
     private final double[] xs;
     private final int n;
 
-    public Spline(double[] x, Polynomial[] polys) {
-        this.polys = polys;
-        xs = x;
-        n = xs.length - 1;
-    }
-
     /**
      * Create a spline that interpolates between a set of given points
      * 
@@ -38,6 +32,10 @@ public class Spline {
         n = Math.min(x.length, y.length) - 1;
 
         double[] a = new double[n + 1];
+        for (int i = 0; i < n + 1; i++) {
+            a[i] = y[i];
+        }
+        
         double[] b = new double[n];
         double[] d = new double[n];
 
@@ -51,7 +49,7 @@ public class Spline {
         }
 
         double[] alpha = new double[n]; // the Algorithm(TM) wants the index to start at 1 but we can't
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i <= n - 1; i++) {
             alpha[i - 1] = 3/h[i] * (a[i + 1] - a[i]) - 3/h[i - 1] * (a[i] - a[i - 1]);
         }
 
@@ -100,8 +98,10 @@ public class Spline {
         int index = Arrays.binarySearch(xs, x);
         // from documentation, point is either > 0 if x is in xs or < 0 but equal to -(insertion point + 1)
         int beforeIndex;
-        if (index > 0) {
+        if (index >= 0 && index < n) {
             beforeIndex = index;
+        } else if (index == n) {
+            beforeIndex = n - 1; // last index
         } else {
             beforeIndex = -index - 2; // want element before insertionPoint
         }
