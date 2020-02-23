@@ -18,6 +18,7 @@ import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.spinnyboi.SpinnyBoiSubsystem;
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.climber.ClimbSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
@@ -40,6 +41,7 @@ public class Robot extends TimedRobot {
     private NavigationSubsystem navigationSubsystem;
     private DriveSubsystem driveSubsystem;
     private VisionSubsystem visionSubsystem;
+    private ClimbSubsystem climbSubsystem;
     private Config config;
 
     public float deltaTime;
@@ -84,6 +86,11 @@ public class Robot extends TimedRobot {
             subsystems.add(spinnyBoiSubsystem);
         }
 
+        if (config.enableClimbSubsystem) {
+            climbSubsystem = new ClimbSubsystem(config);
+            subsystems.add(climbSubsystem);
+        }
+        
         if (config.enablePIDHelper) {
             subsystems.add(new PIDHelperSubsystem(config));
         }
@@ -179,6 +186,18 @@ public class Robot extends TimedRobot {
                 intakeSubsystem.toggleIntakeArm();
             }
         }
+       /////////////////////////////////////////////////////////////////////////////
+        //Climb Subsystem
+        
+        if (oi.climbextend()) {
+            climbSubsystem.extending();
+        } 
+
+        if (oi.climbretract()) {
+            climbSubsystem.retracting();
+        } else if (!climbSubsystem.isExtending()){
+            climbSubsystem.off();
+        }
 
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
@@ -229,6 +248,21 @@ public class Robot extends TimedRobot {
                         SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 10));
             }
         }
+
+
+        // //////////////////////////////////////////////////////////////////////////////
+        // // SpinnyBoi Subsystem
+
+        if (config.enableSpinnyboiSubsystem) {
+            if (oi.rotationControl()) {
+                spinnyBoiSubsystem.rotationControl();
+            }
+    
+            if (oi.colorControl()) {
+                spinnyBoiSubsystem.colorControl();
+            }    
+        }
+
     }
 
     @Override
