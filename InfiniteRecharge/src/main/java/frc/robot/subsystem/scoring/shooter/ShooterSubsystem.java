@@ -15,10 +15,14 @@ import frc.robot.utils.data.filters.RunningAverageFilter;
 import frc.robot.subsystem.scoring.shooter.ShooterConstants;
 import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementConstants;
 import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementSubsystem;
-
+import frc.robot.subsystem.vision.VelocityPoint;
 import frc.robot.subsystem.vision.VisionSubsystem;
 
 import frc.robot.utils.data.filters.RunningAverageFilter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ShooterSubsystem extends BitBucketSubsystem {
 
@@ -47,7 +51,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Doubles
     private double absoluteDegreesToRotateAzimuth = 0.0;
-    private double absoluteDegreesElevation = 0.0;
 
     private double rightAzimuthSoftLimit_ticks;
     private double leftAzimuthSoftLimit_ticks;
@@ -152,7 +155,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void periodic(float deltaTime) {
 
         calculateAbsoluteDegreesToRotate();
-        calculateAbsoluteDegreesElevation();
 
         targetPositionAzimuth_ticks = (int) (targetPositionAzimuth_ticks + (targetChangeAzimuth_ticks * deltaTime));
         targetPositionElevation_ticks = (int) (targetPositionElevation_ticks
@@ -296,11 +298,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAimElevation() {
-        rotateToDeg(getAzimuthDeg(), absoluteDegreesElevation);
+        rotateToDeg(getAzimuthDeg(), calculateAbsoluteDegreesElevation());
     }
 
     public void autoAimVelocity() {
-        double feetPerSecVelocity = visionSubsystem.getShooterVelocityForTarget();
+        double feetPerSecVelocity = calculateAbsoluteVelocity_in() / 12;
         double ticksVelocity = (feetPerSecVelocity * 12 * config.shooter.shooter.ticksPerRevolution)
                 / (ShooterConstants.SHOOTER_FLYWHEEL_RADIUS * 2 * Math.PI * 10);
 
@@ -316,6 +318,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // autoAimAzimuth();
         autoAimElevation();
         // autoAimVelocity();
+    }
+
+    public boolean withinRange(double number, double min, double max) {
+        return number >= min && number <= max;
     }
 
     public void calculateAbsoluteDegreesToRotate() {
@@ -336,21 +342,46 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
     }
 
-    public void calculateAbsoluteDegreesElevation() {
+    // TODO: empirically test this
+        // do the distance thing here
+        // decreases as u get closer
+        // increases as u get it farther
+    public double calculateAbsoluteDegreesElevation() {
         boolean validTarget = visionSubsystem.getValidTarget();
         if (validTarget) {
             double ty = visionSubsystem.getTy();
-            double degrees = getTargetElevationDegGivenOffset(ty);
+            // double degrees = getTargetElevationDegGivenOffset(ty);
             double distance = visionSubsystem.approximateDistanceFromTarget(ty);
 
-            // TODO: empirically test this
-            // do the distance thing here
-            // decreases as u get closer
-            // increases as u get it farther
-
-            absoluteDegreesElevation = degrees + 40;
-            absoluteDegreesElevation = ShooterConstants.USE_ELEVATION_FILTER ? elevationFilter.calculate(absoluteDegreesElevation) : absoluteDegreesElevation;
+            List<VelocityPoint> velocityPoints = new ArrayList<VelocityPoint>();
+            // add values here
+ 
+            int closestIndex = Collections.binarySearch(velocityPoints, new VelocityPoint(distance, 0, 0));
+            // TODO: interpolate between closestIndex and our thing
+            return velocityPoints.get(closestIndex).getElevationAngle_deg();
+            
+            // final double absoluteDegreesElevation = degrees + 40;
+            // return absoluteDegreesElevation;
         }
+        return 0.0;
+    }
+
+    // TODO: empirically test this
+    public double calculateAbsoluteVelocity_in() {
+        boolean validTarget = visionSubsystem.getValidTarget();
+        if (validTarget) {
+            double ty = visionSubsystem.getTy();
+            double distance = visionSubsystem.approximateDistanceFromTarget(ty);
+
+            List<VelocityPoint> velocityPoints = new ArrayList<VelocityPoint>();
+            // add values here
+ 
+            int closestIndex = Collections.binarySearch(velocityPoints, new VelocityPoint(distance, 0, 0));
+            // TODO: interpolate between closestIndex and our thing
+            return velocityPoints.get(closestIndex).getElevationAngle_deg();
+
+        }
+        return 0.0;
     }
 
     public void nextPositionElevation() {
@@ -454,7 +485,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 MathUtils.unitConverter(targetPositionElevation_ticks, config.shooter.elevation.ticksPerRevolution, 360)
                         * config.shooter.elevationGearRatio);
         
-        SmartDashboard.putNumber(getName() + "/Absolute Degrees Elevation", absoluteDegreesElevation);
+        SmartDashboard.putNumber(getName() + "/Absolute Degrees Elevation", calculateAbsoluteDegreesElevation());
         
         SmartDashboard.putNumber(getName() + "/Falcon temperature", (32 + 1.8*ballPropulsionMotor.getTemperature()));
     }
@@ -472,7 +503,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         targetPositionElevation_ticks = 0;
         targetChangeElevation_ticks = 0;
         absoluteDegreesToRotateAzimuth = 0;
-        absoluteDegreesElevation = 0;
     }
 
     public void zeroElevationSensor(){

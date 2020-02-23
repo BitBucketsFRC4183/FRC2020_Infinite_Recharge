@@ -4,9 +4,9 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.utils.math.MathUtils;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+
 
 public class VisionSubsystem extends BitBucketSubsystem {
 
@@ -54,20 +54,6 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
         SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
         SmartDashboard.putNumber(getName() + "/Estimated Distance ", distance);
-    }
-
-    public double getShooterVelocityForTarget() {
-
-        final double d = approximateDistanceFromTarget(ty);
-        final double h = VisionConstants.TARGET_HEIGHT_INCHES;
-        final double angle = VisionConstants.BALL_SHOOTING_ANGLE;
-
-        final double numerator = MathUtils.G * Math.pow(d, 2);
-        final double denominator = 2 * (d * Math.tan(angle) - h) * Math.pow(Math.cos(angle), 2);
-
-        final double vel = Math.sqrt(numerator / denominator);
-
-        return vel;
     }
 
     public double approximateDistanceFromTarget(final double ty) {
