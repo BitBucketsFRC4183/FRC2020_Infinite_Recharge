@@ -18,7 +18,7 @@ import frc.robot.config.Config;
 
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
-import frc.robot.subsystem.drive.FieldConstants;
+import frc.robot.subsystem.drive.auto.FieldConstants;
 import frc.robot.utils.data.DoubleDataWindow;
 
 import frc.robot.subsystem.vision.VisionSubsystem;

@@ -108,4 +108,6 @@ public class Spline {
 
         return polys[beforeIndex].eval(x - xs[beforeIndex]);
     }
+
+    public Polynomial[] getPolynomials() { return polys; }
 }
