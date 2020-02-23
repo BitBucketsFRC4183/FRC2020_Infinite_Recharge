@@ -86,6 +86,11 @@ public class Robot extends TimedRobot {
             subsystems.add(spinnyBoiSubsystem);
         }
 
+        if (config.enableClimbSubsystem) {
+            climbSubsystem = new ClimbSubsystem(config);
+            subsystems.add(climbSubsystem);
+        }
+        
         if (config.enablePIDHelper) {
             subsystems.add(new PIDHelperSubsystem(config));
         }
@@ -190,7 +195,7 @@ public class Robot extends TimedRobot {
 
         if (oi.climbretract()) {
             climbSubsystem.retracting();
-        } else {
+        } else if (!climbSubsystem.isExtending()){
             climbSubsystem.off();
         }
 
