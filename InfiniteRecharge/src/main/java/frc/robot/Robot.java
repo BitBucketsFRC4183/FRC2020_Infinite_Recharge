@@ -18,6 +18,7 @@ import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.spinnyboi.SpinnyBoiSubsystem;
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.climber.ClimbSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
     private NavigationSubsystem navigationSubsystem;
     private DriveSubsystem driveSubsystem;
     private VisionSubsystem visionSubsystem;
+    private ClimbSubsystem climbSubsystem;
     private Config config;
 
     public float deltaTime;
@@ -153,6 +155,18 @@ public class Robot extends TimedRobot {
         // Pivot Intake Bar
         if (oi.barDownButtonPressed()) {
             intakeSubsystem.toggleIntakeArm();
+        }
+       /////////////////////////////////////////////////////////////////////////////
+        //Climb Subsystem
+        
+        if (oi.climbextend()) {
+            climbSubsystem.extending();
+        } 
+
+        if (oi.climbretract()) {
+            climbSubsystem.retracting();
+        } else {
+            climbSubsystem.off();
         }
 
         //////////////////////////////////////////////////////////////////////////////
