@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.subsystem.drive.auto.FieldConstants;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.JoystickScale;
 import frc.robot.utils.data.filters.RisingEdgeFilter;

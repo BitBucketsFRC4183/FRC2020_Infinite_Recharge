@@ -29,7 +29,7 @@ public class Spline {
         // yes this is copied straight from Wikipedia:
         // https://en.wikipedia.org/wiki/Spline_(mathematics)#Definition
         // it's build season nobody got time for learning stuff
-        n = Math.min(x.length, y.length) - 1;
+        n = x.length - 1;
 
         double[] a = new double[n + 1];
         for (int i = 0; i < n + 1; i++) {
@@ -108,4 +108,6 @@ public class Spline {
 
         return polys[beforeIndex].eval(x - xs[beforeIndex]);
     }
+
+    public Polynomial[] getPolynomials() { return polys; }
 }
