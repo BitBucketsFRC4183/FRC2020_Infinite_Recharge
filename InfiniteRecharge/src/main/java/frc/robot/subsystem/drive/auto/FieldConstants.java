@@ -1,4 +1,4 @@
-package frc.robot.subsystem.drive;
+package frc.robot.subsystem.drive.auto;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
