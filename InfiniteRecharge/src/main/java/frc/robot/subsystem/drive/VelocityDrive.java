@@ -1,11 +1,8 @@
 package frc.robot.subsystem.drive;
 
-
-
-import frc.robot.utils.math.MathUtils;
+import frc.robot.subsystem.drive.auto.AutoDrive;
 import frc.robot.utils.CommandUtils;
 
-import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
@@ -15,15 +12,10 @@ public class VelocityDrive extends CommandBase {
 
 
 
-    private final SlewRateLimiter SLEW_FILTER;
-
     public VelocityDrive(DriveSubsystem driveSubsystem) {
         addRequirements(driveSubsystem);
 
         DRIVE_SUBSYSTEM = driveSubsystem;
-
-        double vel_ips = DRIVE_SUBSYSTEM.getSpeed_ips();
-        SLEW_FILTER = new SlewRateLimiter(DriveConstants.MAX_LIN_ACCELERATION_IPSPS, vel_ips);
     }
 
 

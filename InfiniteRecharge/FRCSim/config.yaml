@@ -8,12 +8,13 @@ defaults:
      rightDriveLeader: 2
      rightDriveFollower: 3
 
-     azimuth: 12
+     azimuth: 11
+     elevation: 14
      shooter: 13
-     feeder: 8
-     intake: 14
-     spinnyboi: 5
-     bms: 0
+     feeder: 9
+     intake: 5
+     spinnyboi: 6
+     bms: 10
 
     ####
     # junior ids
@@ -59,6 +60,7 @@ defaults:
   shooterGearing: "{{ .48 / 1 }}"
   juniorGearing: "{{ 242.0/27.0 }}"
   azimuthGearing: "{{ 30.0/1.0 }}"
+  elevationGearing: "{{ 350.0/1.0 }}"
 hideFollowers: true
 driveBase:
   mass: 39.3051396
@@ -131,6 +133,19 @@ transmissions:
     diameter: "{{ defaults.bag.diameter }}"
     encoderCountsPerRevolution: 1024
   gearRatio: "{{ defaults.azimuthGearing }}"
+  efficiency: 1.0
+- motors:
+  - id: "{{ defaults.ids.elevation }}"
+    name: "Elevation ({{ defaults.ids.elevation }})"
+    model: BAG
+    stallTorque: "{{ defaults.bag.stallTorque }}"
+    stallCurrent: "{{ defaults.bag.stallCurrent }}"
+    voltage: "{{ defaults.bag.voltage }}"
+    maxRPM: "{{ defaults.bag.maxRPM }}"
+    mass: "{{ defaults.bag.mass }}"
+    diameter: "{{ defaults.bag.diameter }}"
+    encoderCountsPerRevolution: 1024
+  gearRatio: "{{ defaults.elevationGearing }}"
   efficiency: 1.0
 - motors:
   - id: "{{ defaults.ids.shooter }}"

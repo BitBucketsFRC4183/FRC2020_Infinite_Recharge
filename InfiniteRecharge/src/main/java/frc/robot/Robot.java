@@ -23,6 +23,7 @@ import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
+import frc.robot.subsystem.pidhelper.PIDHelperSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 
@@ -60,19 +61,34 @@ public class Robot extends TimedRobot {
         config = ConfigChooser.getConfig();
 
         visionSubsystem = new VisionSubsystem(config);
-        navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
-        driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
-        navigationSubsystem.setDrive(driveSubsystem);
-        shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
-        intakeSubsystem = new IntakeSubsystem(config);
-        spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
-
-        subsystems.add(navigationSubsystem);
-        subsystems.add(intakeSubsystem);
-        subsystems.add(shooterSubsystem);
-        subsystems.add(driveSubsystem);
-        subsystems.add(spinnyBoiSubsystem);
         subsystems.add(visionSubsystem);
+
+        if (config.enableDriveSubsystem) {
+            navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
+            driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
+            navigationSubsystem.setDrive(driveSubsystem); // Java
+            subsystems.add(driveSubsystem);
+            subsystems.add(navigationSubsystem);
+        }
+
+        if (config.enableShooterSubsystem) {
+            shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
+            subsystems.add(shooterSubsystem);
+        }
+
+        if (config.enableIntakeSubsystem) {
+            intakeSubsystem = new IntakeSubsystem(config);
+            subsystems.add(intakeSubsystem);
+        }
+
+        if (config.enableSpinnyboiSubsystem) {
+            spinnyBoiSubsystem = new SpinnyBoiSubsystem(config);
+            subsystems.add(spinnyBoiSubsystem);
+        }
+
+        if (config.enablePIDHelper) {
+            subsystems.add(new PIDHelperSubsystem(config));
+        }
 
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.initialize();
@@ -98,6 +114,7 @@ public class Robot extends TimedRobot {
 
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.periodic(deltaTime);
+            subsystem.dashboardPeriodic(deltaTime);
         }
 
         CommandScheduler.getInstance().run();
@@ -128,6 +145,10 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
     }
 
+    @Override
+    public void teleopInit() {
+    }
+
     /**
      * This function is called periodically during operator control.
      */
@@ -137,24 +158,28 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Drive Subsystem
 
-        driveSubsystem.setDriverRawSpeed(oi.speed());
-        driveSubsystem.setDriverRawTurn(oi.turn());
+        if (config.enableDriveSubsystem) {
+            driveSubsystem.setDriverRawSpeed(oi.speed());
+            driveSubsystem.setDriverRawTurn(oi.turn());
+        }
 
         //////////////////////////////////////////////////////////////////////////////
         // Intake Subsystem
 
-        // Intake on pressing circle.
-        if (oi.intaking()) {
-            intakeSubsystem.intake();
-        } else if (oi.outaking()) {
-            intakeSubsystem.outake();
-        } else {
-            intakeSubsystem.off();
-        }
+        if (config.enableIntakeSubsystem) {
+            // Intake on pressing circle.
+            if (oi.intaking()) {
+                intakeSubsystem.intake();
+            } else if (oi.outaking()) {
+                intakeSubsystem.outake();
+            } else {
+                intakeSubsystem.off();
+            }
 
-        // Pivot Intake Bar
-        if (oi.barDownButtonPressed()) {
-            intakeSubsystem.toggleIntakeArm();
+            // Pivot Intake Bar
+            if (oi.barDownButtonPressed()) {
+                intakeSubsystem.toggleIntakeArm();
+            }
         }
        /////////////////////////////////////////////////////////////////////////////
         //Climb Subsystem
@@ -172,37 +197,67 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
 
-        // SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
+        if (config.enableShooterSubsystem) {
+            SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
 
-        // Spin up on pressing [spinUp]
-        if (oi.spinUp()) {
-            shooterSubsystem.spinUp();
-        } else {
-            shooterSubsystem.stopSpinningUp();
+            // Spin up on pressing [spinUp]
+            if (oi.spinUp()) {
+                shooterSubsystem.spinUp();
+            } else {
+                shooterSubsystem.stopSpinningUp();
+            }
+
+            // Fire on pressing [fire]
+            if (oi.fire()) {
+                shooterSubsystem.spinBMS();
+            } else {
+                shooterSubsystem.holdFire();
+            }
+
+            // Rotate the turret with [manualAzimuthAxis]
+            if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband
+                    || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
+                shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
+            } else {
+                shooterSubsystem.rotate(0, 0);
+            }
+
+            if (oi.aimBot()) {
+                shooterSubsystem.autoAim();
+            }
+
+            if (oi.zero()) {
+                shooterSubsystem.rotateToDeg(0, 0);
+            }
+
+            if (oi.nextPositionElevation()) {
+                shooterSubsystem.nextPositionElevation();
+            } else if (oi.lastPositionElevation()) {
+                shooterSubsystem.lastPositionElevation();
+            } else {
+                shooterSubsystem.resetPositionElevationSwitcher();
+            }
+
+            if (oi.setElevationToDashboardNumber()) {
+                shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(),
+                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 10));
+            }
         }
 
-        // Fire on pressing [fire]
-        if (oi.fire()) {
-            shooterSubsystem.fire();
-        } else {
-            shooterSubsystem.holdFire();
+
+        // //////////////////////////////////////////////////////////////////////////////
+        // // SpinnyBoi Subsystem
+
+        if (config.enableSpinnyboiSubsystem) {
+            if (oi.rotationControl()) {
+                spinnyBoiSubsystem.rotationControl();
+            }
+    
+            if (oi.colorControl()) {
+                spinnyBoiSubsystem.colorControl();
+            }    
         }
 
-        // // Rotate the turret with [manualAzimuthAxis]
-        if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband
-                || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
-            shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
-        } else {
-            shooterSubsystem.rotate(0, 0);
-        }
-
-        if (oi.aimBot()) {
-            shooterSubsystem.autoAim();
-        }
-
-        if (oi.zero()) {
-            shooterSubsystem.rotateToDeg(0, 0);
-        }
     }
 
     @Override
@@ -222,8 +277,17 @@ public class Robot extends TimedRobot {
         }
     }
 
+    @Override
+    public void disabledInit() {
+        for (BitBucketSubsystem subsystem : subsystems) {
+            subsystem.disable();
+        }
+    }
+
     // COMMANDS the robot to WIN!
     public static Robot win() {
+        System.out.println("Leif WAS here");
+
         return new Robot();
     }
 

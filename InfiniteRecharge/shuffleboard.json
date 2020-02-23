@@ -112,8 +112,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/NavigationSubsystem/processing time avg": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "6,7": {
@@ -139,8 +138,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/NavigationSubsystem/Robot yaw": true
+              "Y-axis/Lower bound": -1.0
             }
           }
         }
@@ -1268,6 +1266,38 @@
               "_source0": "network_table:///SmartDashboard/DriveSubsystem/rightSpeed_ips",
               "_title": "SmartDashboard/DriveSubsystem/rightSpeed_ips"
             }
+          },
+          "8,2": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/DriveSubsystem/right speed error",
+              "_title": "SmartDashboard/DriveSubsystem/right speed error",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/DriveSubsystem/right speed error": true
+            }
+          },
+          "8,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/DriveSubsystem/left speed error",
+              "_title": "SmartDashboard/DriveSubsystem/left speed error",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/DriveSubsystem/left speed error": true
+            }
           }
         }
       }
@@ -1316,8 +1346,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/ShooterSubsystem/Shooter Velocity Output": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "7,0": {
@@ -1365,8 +1394,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/periodic time": true
+              "Y-axis/Lower bound": -1.0
             }
           }
         }
@@ -1403,9 +1431,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -40.0,
-    "y": 305.0,
-    "width": 1620.0,
-    "height": 920.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1616.0,
+    "height": 876.0
   }
 }

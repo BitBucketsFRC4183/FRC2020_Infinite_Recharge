@@ -35,4 +35,13 @@ public class TestSubsystem extends BitBucketSubsystem {
         updateBaseDashboard();
     }
 
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void disable(){
+    }
+
 }

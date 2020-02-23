@@ -44,7 +44,7 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 		this.config = config;
 	}
 
-	protected void initializeBaseDashboard() {
+	protected void dashboardInit() {
 		SmartDashboard.putBoolean(getName() + "/TelemetryEnabled", telemetryEnabled);
 		SmartDashboard.putBoolean(getName() + "/DiagnosticsEnabled", diagnosticsEnabled);
 
@@ -91,7 +91,7 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 	}
 
 	public void initialize() {
-		initializeBaseDashboard();
+		dashboardInit();
 		testInit();
 	};
 
@@ -102,5 +102,9 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 
 	public abstract void diagnosticsCheck();
 
-	public abstract void periodic(float deltaTime);
+    public abstract void periodic(float deltaTime);
+
+    public abstract void dashboardPeriodic(float deltaTime);
+
+    public abstract void disable();
 }

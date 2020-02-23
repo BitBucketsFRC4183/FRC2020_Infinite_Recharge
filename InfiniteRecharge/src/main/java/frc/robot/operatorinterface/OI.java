@@ -42,6 +42,8 @@ public class OI {
     // ****************************
     // BUTTON DEFINITIONS
     // ****************************
+    private final int ROTATION_CONTROL = PS4Constants.TRIANGLE.getValue();
+    private final int COLOR_CONTROL = PS4Constants.CROSS.getValue();
     static final int DRIVE_LOW_SENSITIVE_BUTTON = PS4Constants.R1.getValue();
     static final int DRIVE_INVERT_BUTTON = PS4Constants.L1.getValue();
     static final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
@@ -52,11 +54,14 @@ public class OI {
     static final int OPERATOR_INTAKE_IN_POV = 180;
     static final int OPERATOR_INTAKE_OUT_POV = 0;
     static final int OPERATOR_INTAKE_TOGGLE = PS4Constants.PS4.getValue();
+    static final int OPERATOR_NEXT_POSITION_ELEVATION_POV = 90;
+    static final int OPERATOR_LAST_POSITION_ELEVATION_POV = 270;
     static final int OPERATOR_SPINUP = PS4Constants.R2.getValue();
     static final int OPERATOR_AUTO_AIM = PS4Constants.L1.getValue();
     static final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
     static final int OPERATOR_CLIMB_EXTEND = PS4Constants.TRIANGLE.getValue();
     static final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
+    static final int OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER = PS4Constants.OPTIONS.getValue();
     static final int OPERATOR_CLIMB_RETRACT = PS4Constants.CROSS.getValue();
 
     // forced Idle for corresponding subsystems
@@ -68,11 +73,23 @@ public class OI {
     }
 
     public double manualElevationAxis() {
-        return operatorControl.getRawAxis(OPERATOR_MANUAL_ELEVATION_AXIS);
+        return -operatorControl.getRawAxis(OPERATOR_MANUAL_ELEVATION_AXIS);
     }
 
     public double manualAzimuthAxis() {
         return operatorControl.getRawAxis(OPERATOR_MANUAL_AZIMUTH_AXIS);
+    }
+
+    public boolean nextPositionElevation() {
+        return operatorControl.getPOV() == OPERATOR_NEXT_POSITION_ELEVATION_POV;
+    }
+
+    public boolean lastPositionElevation() {
+        return operatorControl.getPOV() == OPERATOR_LAST_POSITION_ELEVATION_POV;
+    }
+
+    public boolean setElevationToDashboardNumber() {
+        return operatorControl.getRawButton(OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER);
     }
 
     public boolean zero() {
@@ -105,6 +122,14 @@ public class OI {
 
     public boolean barDownButtonPressed() {
         return operatorControl.getRawButtonPressed(OPERATOR_INTAKE_TOGGLE);
+    }
+
+    public boolean rotationControl() {
+        return driverControl.getRawButtonPressed(ROTATION_CONTROL);
+    }
+
+    public boolean colorControl() {
+        return driverControl.getRawButtonPressed(COLOR_CONTROL);
     }
 
     /**

@@ -1,16 +1,22 @@
 package frc.robot.subsystem.drive;
 
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
@@ -39,7 +45,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    // TODO: CHANGE TO FX WHEN WE GET GOOD BOT
     private WPI_TalonFX[] leftMotors;
     private WPI_TalonFX[] rightMotors;
 
@@ -68,7 +73,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    //private final Trajectory autoTrajectory;
+    private final Trajectory autoTrajectory;
     
 
 
@@ -81,23 +86,37 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         DRIVE_UTILS = new DriveUtils(config);
 
-        // DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
-        //     config.drive.characterization,
-        //     DRIVE_UTILS.KINEMATICS,
-        //     DriveConstants.AUTO_MAX_VOLTAGE
-        // );
+        DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
+            config.drive.characterization,
+            DRIVE_UTILS.KINEMATICS,
+            DriveConstants.AUTO_MAX_VOLTAGE
+        );
 
-        // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+        DifferentialDriveKinematicsConstraint kinematicsConstraint = new DifferentialDriveKinematicsConstraint(
+            DRIVE_UTILS.KINEMATICS,
+            config.drive.maxAllowedSpeed_ips
+        );
 
-        // );
+        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+            config.drive.maxAllowedSpeed_ips * DriveConstants.METERS_PER_INCH,
+            DRIVE_UTILS.MAX_ACCELERATION_MPSPS
+        );
+        trajectoryConfig.setKinematics(DRIVE_UTILS.KINEMATICS);
+        trajectoryConfig.addConstraint(voltageConstraint);
+        trajectoryConfig.addConstraint(kinematicsConstraint);
 
-        // autoTrajectory = 
+        autoTrajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT, Rotation2d.fromDegrees(90)),
+            List.of(FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
+            new Pose2d(FieldConstants.OUR_POWER_CELL_3, Rotation2d.fromDegrees(90)),
+            trajectoryConfig
+        );
     }
 
 
 
     public void initialize() {
-        initializeBaseDashboard();
+        dashboardInit();
 
 
 
@@ -136,13 +155,23 @@ public class DriveSubsystem extends BitBucketSubsystem {
             leftMotors[i] = MotorUtils.makeFX(config.drive.leftMotors[i]);
             rightMotors[i] = MotorUtils.makeFX(config.drive.rightMotors[i]);
 
-            leftMotors[i].setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 
-											DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
-                                            DriveConstants.CONTROLLER_TIMEOUT_MS);
+            leftMotors[i].setStatusFramePeriod(
+                StatusFrameEnhanced.Status_13_Base_PIDF0, 
+				DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
+                DriveConstants.CONTROLLER_TIMEOUT_MS
+            );
                                             
-            rightMotors[i].setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 
-											DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
-                                            DriveConstants.CONTROLLER_TIMEOUT_MS);
+            rightMotors[i].setStatusFramePeriod(
+                StatusFrameEnhanced.Status_13_Base_PIDF0, 
+				DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
+                DriveConstants.CONTROLLER_TIMEOUT_MS
+            );
+
+            leftMotors[i].setNeutralMode(NeutralMode.Coast);
+            rightMotors[i].setNeutralMode(NeutralMode.Coast);
+
+            leftMotors[i].configClosedloopRamp(0.5);
+            rightMotors[i].configClosedloopRamp(0.5);
 
 
 
@@ -193,8 +222,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/ls_tp100", leftSpeed_tickP100);
         SmartDashboard.putNumber(getName() + "/rs_tp100", rightSpeed_tickP100);
 
-		leftMotors[0].set(ControlMode.Velocity, leftSpeed_tickP100);
-        rightMotors[0].set(ControlMode.Velocity, rightSpeed_tickP100);
+        setLeftVelocity(leftSpeed_tickP100);
+        setRightVelocity(rightSpeed_tickP100);
         
         SmartDashboard.putNumber(getName() + "/commandedSpeed_ips", ips);
     }
@@ -203,20 +232,20 @@ public class DriveSubsystem extends BitBucketSubsystem {
         speed = forwardJoystickScaleChooser.getSelected().rescale(speed, DriveConstants.JOYSTICK_DEADBAND);
         turn = turnJoystickScaleChooser.getSelected().rescale(turn, DriveConstants.JOYSTICK_DEADBAND);
 
-        // leftMotors[0].set(ControlMode.PercentOutput, speed - turn);
-        // rightMotors[0].set(ControlMode.PercentOutput, speed + turn);
-		double ips = MathUtils.map(speed,
+		double ips = MathUtils.map(
+            speed,
             -1.0,
             1.0,
-            -DriveConstants.MAX_ALLOWED_SPEED_IPS,
-            DriveConstants.MAX_ALLOWED_SPEED_IPS
+            -config.drive.maxAllowedSpeed_ips,
+            config.drive.maxAllowedSpeed_ips
         );
 
-        double radps = MathUtils.map(turn,
+        double radps = MathUtils.map(
+            turn,
             -1.0,
             1.0,
-            -DriveConstants.MAX_ALLOWED_TURN_RADPS,
-            DriveConstants.MAX_ALLOWED_TURN_RADPS
+            -DRIVE_UTILS.MAX_ROTATION_RADPS,
+            DRIVE_UTILS.MAX_ROTATION_RADPS
         );
 
         velocityDrive_auto(ips, radps);
@@ -226,14 +255,16 @@ public class DriveSubsystem extends BitBucketSubsystem {
         speed = forwardJoystickScaleChooser.getSelected().rescale(speed, DriveConstants.JOYSTICK_DEADBAND);
         turn = rotationJoystickScaleChooser.getSelected().rescale(turn, DriveConstants.JOYSTICK_DEADBAND);
 
-        double ips = MathUtils.map(speed,
+        double ips = MathUtils.map(
+            speed,
             -1.0,
             1.0,
-            -DriveConstants.MAX_ALLOWED_SPEED_IPS,
-            DriveConstants.MAX_ALLOWED_SPEED_IPS
+            -config.drive.maxAllowedSpeed_ips,
+            config.drive.maxAllowedSpeed_ips
         );
 
-        double offset = MathUtils.map(turn,
+        double offset = MathUtils.map(
+            turn,
             -1.0,
             1.0,
             -DriveConstants.ROTATION_DRIVE_MAX_OFFSET_DEG,
@@ -256,7 +287,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
             yawError -= 360;
         }
 
-        double omega = yawError*DriveConstants.ROTATION_DRIVE_KP;
+        double omega = yawError * config.drive.ROTATION_DRIVE_KP;
 
 
 
@@ -268,11 +299,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private void selectVelocityMode(boolean needVelocityMode) {
 		if (needVelocityMode && !velocityMode) {
 			for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
-				leftMotors[i].selectProfileSlot(MotorUtils.velocitySlot,
-                                                0);
-// 254
-				rightMotors[i].selectProfileSlot(MotorUtils.velocitySlot,
-				                                0);
+				leftMotors[i].selectProfileSlot(MotorUtils.velocitySlot, 0);
+				rightMotors[i].selectProfileSlot(MotorUtils.velocitySlot, 0);
             }
             
 			velocityMode = true;
@@ -346,9 +374,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
                     default: // just keep it I guess? shouldn't get here anyways
                 }
             }
-        }/* else if (driverStation.isAutonomous()) {
+        } else if (driverStation.isAutonomous()) {
             driveMethod = DriveMethod.AUTO; // please don't press any buttons during auto anyways :)))
-        }*/
+        }
 
 
 
@@ -433,7 +461,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     }
 
 	public Trajectory getAutoTrajectory() {
-		return null;
+		return autoTrajectory;
     }
     
     public Pose2d getPose() {
@@ -446,11 +474,27 @@ public class DriveSubsystem extends BitBucketSubsystem {
         double leftTps = DRIVE_UTILS.ipsToTicksP100(leftSpeed_mps / DriveConstants.METERS_PER_INCH);
         double rightTps = DRIVE_UTILS.ipsToTicksP100(rightSpeed_mps / DriveConstants.METERS_PER_INCH);
 
-        leftMotors[0].set(ControlMode.Velocity, leftTps);
-        rightMotors[0].set(ControlMode.Velocity, rightTps);
+        setLeftVelocity(leftTps);
+        setRightVelocity(rightTps);
     }
     
     public DifferentialDriveKinematics getKinematics() {
         return DRIVE_UTILS.KINEMATICS;
+    }
+
+
+
+    private void setLeftVelocity(double vel_tp100ms) {
+        leftMotors[0].set(ControlMode.Velocity, ((config.drive.invertLeftCommand) ? -1 : 1) * vel_tp100ms);
+    }
+
+    private void setRightVelocity(double vel_tp100ms) {
+        rightMotors[0].set(ControlMode.Velocity, ((config.drive.invertRightCommand) ? -1 : 1) * vel_tp100ms);
+    }
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
     }
 }

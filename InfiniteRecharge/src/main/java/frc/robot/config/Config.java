@@ -7,24 +7,35 @@ import frc.robot.utils.control.pidf.PIDF;
 public class Config {
 
     //////////////////////////////////////////////////////////////////////////////
+    // Subsystem Enablers
+
+    public boolean enableShooterSubsystem = true;
+    public boolean enableBallManagementSubsystem = true;
+    public boolean enableDriveSubsystem = true;
+    public boolean enableClimbSubsystem = true;
+    public boolean enableIntakeSubsystem = true;
+    public boolean enableSpinnyboiSubsystem = true;
+    public boolean enablePIDHelper = false;
+
+    //////////////////////////////////////////////////////////////////////////////
     // Motor IDs
 
     // Shooter
-    public int AZIMUTH_MOTOR_ID = 11;
-    public int ELEVATION_MOTOR_ID = 14;
-    public int SHOOTER_MOTOR_ID = 13;
+    public int AZIMUTH_MOTOR_ID = 6;
+    public int ELEVATION_MOTOR_ID = 8;
+    public int SHOOTER_MOTOR_ID = 15;
     public int FEEDER_MOTOR_ID = 9;
 
     // Intake
     public int INTAKE_MOTOR_ID = 5;
 
     // Drive
-    public int LEFT_DRIVE_IDS[] = { 1, 4 };
-    public int RIGHT_DRIVE_IDS[] = { 2, 3 };
+    public int LEFT_DRIVE_IDS[] = { 2, 3 };
+    public int RIGHT_DRIVE_IDS[] = { 1, 4 };
 
     // SpinnyBoi
     public int SPINNYBOI_MOTOR_ID = 6;
-    public int BALLMANAGEMENT_MOTOR_ID = 10;
+    public int BALLMANAGEMENT_MOTOR_ID = 13;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
@@ -34,7 +45,7 @@ public class Config {
     public static class ShooterConfig {
         public float azimuthGearRatio = 28f / 130f;
 
-        public float elevationGearRatio = 1f / 1f;
+        public float elevationGearRatio = 40f / 70f;
 
         public float shooterGearRatio = .48f / 1f;
 
@@ -44,15 +55,25 @@ public class Config {
         public double manualAzimuthDeadband = 0.2;
         public double manualElevationDeadband = 0.2;
 
-        public float rightAzimuthSoftLimit_deg = 45;
-        public float leftAzimuthSoftLimit_deg = 45;
-        public float forwardElevationSoftLimit_deg = -1;
-        public float backwardElevationSoftLimit_deg = -1;
+        public float rightAzimuthSoftLimit_deg = 90;
+        public float leftAzimuthSoftLimit_deg = 90;
+        public float forwardElevationSoftLimit_deg = 60;
+        public float backwardElevationSoftLimit_deg = 0;
+
+        public float feederSpinUpDeadband_ticks = 100;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
         public MotorConfig shooter = new MotorConfig();
+
+        public float[] elevationPositions_deg = new float[] { //
+                0, /// Comment so that VSCode doesn't ruin my format.
+                10, // Comment so that VSCode doesn't ruin my format.
+                40, // Comment so that VSCode doesn't ruin my format.
+                50, // Comment so that VSCode doesn't ruin my format.
+                60 /// Comment so that VSCode doesn't ruin my format.
+        };
 
         public static class BallManagementConfig {
             public MotorConfig spinner = new MotorConfig();
@@ -87,6 +108,9 @@ public class Config {
     }
 
     public static class DriveConfig {
+        public double maxAllowedSpeed_ips = 8 * 12.0;
+        public double maxAllowedTurn_degps = 180;
+
         public int MOTORS_PER_SIDE = 2;
         public MotorConfig leftMotors[];
         public MotorConfig rightMotors[];
@@ -97,8 +121,10 @@ public class Config {
         public MotorConfig leftLeader;
         public MotorConfig rightLeader;
 
-        public boolean leftInverted = true;
+        public boolean leftInverted = false;
         public boolean rightInverted = false;
+        public boolean invertLeftCommand = false;
+        public boolean invertRightCommand = true;
 
         public MotorConfig.EncoderType encoderType = MotorConfig.EncoderType.Integrated;
 
@@ -108,7 +134,9 @@ public class Config {
         public double wheelRadius_in = 3;
         public double trackWidth_in = 22.65;
 
-        public SimpleMotorFeedforward characterization;
+        public double ROTATION_DRIVE_KP = 5 * 2 * Math.PI / 360;
+
+        public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);;
 
         public DriveConfig() {
         }
@@ -185,16 +213,11 @@ public class Config {
                 1023f / 2650 /// F
         );
         shooter.shooter.velocityPIDF = new PIDF(//
-                1023 / 2984, // P
-                0, // I
-                0, // D
-                0.04705 /// F
-        );
-        shooter.feeder.velocityPIDF = new PIDF(//
-                0.1, // P
-                0, // I
-                0, // D
-                0 /// F
+                .1 * 1023 / 300, // P
+                0.01, // I
+                1023.0 / 300, // D
+                1023. / 21000., /// F,
+                300
         );
 
         // SpinnyBoi
@@ -209,10 +232,11 @@ public class Config {
         drive.initMotorConfigArrays();
 
         drive.leftLeader.velocityPIDF = new PIDF(//
-                0.1 * 1023 / 1000 / 4, // P
-                0.0, // I
-                0.1 * 1023 / 1000 / 4 * 10, // D
-                1023 / 21740f /// F
+                0.00539*2, // P
+                0.001,//0.0, // I
+                0.0539, // D
+                1023 / 21740f, /// F,
+                300
         );
         drive.leftLeader.positionPIDF = new PIDF(//
                 0, // P
@@ -221,10 +245,11 @@ public class Config {
                 0 /// F
         );
         drive.rightLeader.velocityPIDF = new PIDF(//
-                0.1 * 1023 / 1000 / 4, // P
-                0.0, // I
-                0.1 * 1023 / 1000 / 4 * 10, // D
-                1023 / 21340f /// F
+                0.00539, // P
+                0.001,//0.0, // I
+                0.0539, // D
+                1023 / 21340f, /// F
+                300
         );
         drive.rightLeader.positionPIDF = new PIDF(//
                 0, // P
@@ -237,6 +262,7 @@ public class Config {
         // Ticks Per Revolution
         shooter.azimuth.ticksPerRevolution = 4096;
         shooter.elevation.ticksPerRevolution = 8192;
+        shooter.shooter.ticksPerRevolution = 2048;
     }
 
 }

@@ -36,14 +36,22 @@ public class IntakeSubsystem extends BitBucketSubsystem {
             intakePivet = new DoubleSolenoid(RobotMap.INTAKE_PNEUMATIC_OPEN_CHANNEL, RobotMap.INTAKE_PNEUMATIC_CLOSED_CHANNEL); 
             intakePivet.set(Value.kReverse);
         }
-        
-        initializeBaseDashboard();
         motor = MotorUtils.makeSRX(config.intake.intake);
+        
+        dashboardInit();
+        
+    }
+
+    @Override
+    public void dashboardInit() {
+        // TODO Auto-generated method stub
+        super.dashboardInit();
+        SmartDashboard.putNumber(getName() + "/Intake Speed", IntakeConstants.INTAKE_OUTPUT);
     }
 
     @Override
     public void testInit() {
-        SmartDashboard.putNumber(getName() + "/Intake Speed", 0.2);
+        
     }
 
     @Override
@@ -75,7 +83,6 @@ public class IntakeSubsystem extends BitBucketSubsystem {
             SmartDashboard.putString(getName() + "/IntakeState", "Outaking");
             break;
         }
-        SmartDashboard.putNumber(getName() + "/IntakeOut", motor.getMotorOutputPercent());
     }
 
     public void intake() {
@@ -105,6 +112,15 @@ public class IntakeSubsystem extends BitBucketSubsystem {
             intakePivet.set(armState);
             }
         
+    }
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        SmartDashboard.putNumber(getName() + "/IntakeOut", motor.getMotorOutputPercent());
+    }
+
+    public void disable(){
+        motor.set(0);
     }
 
 }

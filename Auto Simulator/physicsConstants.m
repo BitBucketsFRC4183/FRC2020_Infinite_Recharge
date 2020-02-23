@@ -36,15 +36,17 @@ D = 1;
 TX = 2;
 VL_O = 3;
 VR_O = 4;
+LL_THETA = 5;
+OMEGA = 6;
 
 
 STATE_SIZE = 5;
 INPUT_SIZE = 2;
-OUTPUT_SIZE = 4;
+OUTPUT_SIZE = 6;
 
 
 xT = 0.3048*5.58;
 yT = 15.9830/2;
 
-thetaLL = pi/6;
-rLL = 0.2286;
+thetaLL = 0;%pi/6;
+rLL = 0;%0.2286;
