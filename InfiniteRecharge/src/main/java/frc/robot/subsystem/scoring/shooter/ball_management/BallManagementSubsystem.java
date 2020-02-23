@@ -52,6 +52,16 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
     @Override
     public void periodic(float deltaTime) {
         // TODO Auto-generated method stub
+        if return motor.getMotorOutputVoltage() > ;
+            
+        boolean ballpresent = ballpresent();
+            if (ballpresent) {
+                motor.set(controlmode.PercentOutput) 0;
+            } else {
+                motor.set(controlmode.PercentOutput) 1;
+            }
+
+
 
     }
 
