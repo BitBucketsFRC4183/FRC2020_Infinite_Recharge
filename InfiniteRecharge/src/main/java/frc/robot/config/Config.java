@@ -29,6 +29,10 @@ public class Config {
     // Intake
     public int INTAKE_MOTOR_ID = 5;
 
+    // Climb
+    public int CLIMB_LEFT_MOTOR_ID = 14;
+    public int CLIMB_RIGHT_MOTOR_ID = 7;
+
     // Drive
     public int LEFT_DRIVE_IDS[] = { 2, 3 };
     public int RIGHT_DRIVE_IDS[] = { 1, 4 };
@@ -103,6 +107,12 @@ public class Config {
         public MotorConfig intake = new MotorConfig();
     }
 
+    public static class ClimbConfig {
+
+        public MotorConfig climbLeft = new MotorConfig();
+        public MotorConfig climbRight = new MotorConfig();
+    }
+
     public static class SpinnyBoiConfig {
         public MotorConfig spinner = new MotorConfig();
     }
@@ -173,6 +183,7 @@ public class Config {
     public DriveConfig drive = new DriveConfig();
     public IntakeConfig intake = new IntakeConfig();
     public SpinnyBoiConfig spinnyboi = new SpinnyBoiConfig();
+    public ClimbConfig climb = new ClimbConfig();
 
     public Config() {
 
@@ -189,6 +200,10 @@ public class Config {
         // Intake
         intake.intake.id = INTAKE_MOTOR_ID;
 
+        // Climb
+        climb.climbRight.id = CLIMB_RIGHT_MOTOR_ID;
+        climb.climbLeft.id = CLIMB_LEFT_MOTOR_ID;
+        climb.climbLeft.followingID = climb.climbRight.id;
         // SpinnyBoi
         spinnyboi.spinner.id = SPINNYBOI_MOTOR_ID;
 
