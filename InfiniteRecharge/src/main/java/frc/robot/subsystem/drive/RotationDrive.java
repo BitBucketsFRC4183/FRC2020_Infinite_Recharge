@@ -1,5 +1,6 @@
 package frc.robot.subsystem.drive;
 
+import frc.robot.subsystem.drive.auto.AutoDrive;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.CommandUtils;
 

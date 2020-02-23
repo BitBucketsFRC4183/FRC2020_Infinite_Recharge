@@ -11,6 +11,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
@@ -147,6 +148,10 @@ public class NavigationSubsystem extends BitBucketSubsystem {
             SmartDashboard.putNumber(getName() + "/processing time avg", dts.getAverage());
             SmartDashboard.putNumber(getName() + "/processing time var", dts.getVariance2());
 
+            Translation2d pos = odometry.getPoseMeters().getTranslation();
+            SmartDashboard.putNumber(getName() + "/x (m)", pos.getX());
+            SmartDashboard.putNumber(getName() + "/y (m)", pos.getY());
+
             //double accVar = imuAcc.getVariance2();
             //double gyroVar = imuGyro.getVariance2();
 
@@ -210,5 +215,14 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
     public Pose2d getPose() {
         return odometry.getPoseMeters();
+    }
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void disable(){
     }
 }

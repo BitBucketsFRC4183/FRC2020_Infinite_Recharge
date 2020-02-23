@@ -78,3 +78,14 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         climbState = ClimbState.Extending;
     }
             }
+
+
+    @Override
+    public void dashboardPeriodic(float deltaTime) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void disable(){
+    }
+}

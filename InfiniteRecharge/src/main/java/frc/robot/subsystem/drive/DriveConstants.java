@@ -26,11 +26,8 @@ public class DriveConstants {
     // from changing the command too rapidly
     public static final double DRIVE_MOTOR_CLOSED_LOOP_RAMP_SEC = 0.4;	    // No ramp rate on closed loop (use Motion Magic)
 
-    public static final double MAX_ALLOWED_SPEED_IPS = 14*12.0;
-    public static final double MAX_ALLOWED_TURN_DPS  = 180.0;
-    public static final double MAX_ALLOWED_TURN_RADPS = Math.toRadians(MAX_ALLOWED_TURN_DPS);
     public static final double STANDARD_G_FTPSPS = 32.1740;
-    public static final double MAX_LAT_ACCELERATION_IPSPS = STANDARD_G_FTPSPS * 12.0;
+    public static final double MAX_LAT_ACCELERATION_IPSPS = STANDARD_G_FTPSPS * 1200.0;
 
     // Identify what type of feedback device we will use on this drive base
     // Assume that all feedback devices are the same type on all axels that
@@ -60,7 +57,7 @@ public class DriveConstants {
 
     
 
-    public static final double TURN_SIGN = -1.0;
+    public static final double TURN_SIGN = 1.0;
 
 
 
@@ -82,7 +79,6 @@ public class DriveConstants {
 
 
     public static final double ROTATION_DRIVE_MAX_OFFSET_DEG = 45;
-    public static final double ROTATION_DRIVE_KP = 5*2*Math.PI/360;
 
 
 

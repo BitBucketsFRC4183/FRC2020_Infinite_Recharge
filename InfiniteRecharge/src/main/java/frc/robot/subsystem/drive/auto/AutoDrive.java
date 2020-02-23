@@ -1,10 +1,12 @@
-package frc.robot.subsystem.drive;
+package frc.robot.subsystem.drive.auto;
 
+import frc.robot.subsystem.drive.DriveSubsystem;
+import frc.robot.subsystem.drive.Idle;
+import frc.robot.subsystem.drive.RotationDrive;
+import frc.robot.subsystem.drive.VelocityDrive;
 import frc.robot.subsystem.drive.DriveSubsystem.DriveMethod;
-import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.CommandUtils;
 import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 
@@ -37,12 +39,12 @@ public class AutoDrive extends RamseteCommand {
 
     @Override
     public boolean isFinished() {
-        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.VELOCITY) {
-            return CommandUtils.stateChange(new VelocityDrive(DRIVE_SUBSYSTEM));
-        }
+        // whether the RAMSETE command trajectory has been executed
+        boolean trajDone = super.isFinished();
 
-        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.ROTATION) {
-            return CommandUtils.stateChange(new RotationDrive(DRIVE_SUBSYSTEM));
+        // go into idle once trajectory has been finished
+        if (trajDone) {
+            return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
         }
 
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.IDLE) {

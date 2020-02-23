@@ -17,7 +17,7 @@ import frc.robot.config.MotorConfig;
 
 public class MotorUtils {
 
-    static final int positionSlot = 0; // ALWAYS! Don't EVER set it to anything else.
+    public static final int positionSlot = 0; // ALWAYS! Don't EVER set it to anything else.
     public static final int velocitySlot = 1; // ALWAYS! Don't EVER set it to anything else.
 
     public static int MAX_STATUS_FRAME_PERIOD = 160;
@@ -171,7 +171,8 @@ public class MotorUtils {
         motor.config_kI(velocitySlot, motorConfig.velocityPIDF.getKI());
         motor.config_kD(velocitySlot, motorConfig.velocityPIDF.getKD());
         motor.config_IntegralZone(velocitySlot, (int) motorConfig.velocityPIDF.getIZone());
-
+        motor.enableVoltageCompensation(true);
+        motor.configVoltageCompSaturation(11.5);
     }
 
     public static void motorInit(CANSparkMax motor, MotorConfig motorConfig) {

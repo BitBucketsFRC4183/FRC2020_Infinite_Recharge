@@ -8,17 +8,13 @@ state = [
     0.00;
 ];
 
-state_hat = [-3; 0.2; 0; 0.0; 0.0;];
-
-P = zeros(5);
-%[
-%    0.05, 0, 0, 0, 0;
-%    0, 0.05, 0, 0, 0;
-%    0, 0, 2*pi/180, 0, 0;
-%    0, 0, 0, 0, 0;
-%    0, 0, 0, 0, 0;
-%];
-%0.01*eye(5);
+P = [
+    0.1, 0, 0, 0, 0;
+    0, 0.1, 0, 0, 0;
+    0, 0, 5*pi/180, 0, 0;
+    0, 0, 0, 0, 0;
+    0, 0, 0, 0, 0.005;
+];
 
 Q = [
     0.1, 0;
@@ -26,20 +22,23 @@ Q = [
 ];
 
 R = [
-    0.0508, 0, 0, 0;
-    0, pi/1800, 0, 0;
-    0, 0, 0.0001, 0; % pretty certain about velocities
-    0, 0, 0, 0.0001;
+    0.0508, 0, 0, 0, 0;
+    0, 2*pi/180, 0, 0, 0;
+    0, 0, 0.0001, 0, 0; % pretty certain about velocities
+    0, 0, 0, 0.0001, 0;
+    0, 0, 0, 0, 0.005;
 ];
+
+state_hat = state;% + mvnrnd(zeros(STATE_SIZE, 1), 0.1*P, 1)';
 
 
 
 u = [0; 0;];
-T=0.02;
+T=0.01;
 
 i = 0;
 
-TMAX = 3;
+TMAX = 10;
 
 xs = zeros(1, TMAX/T + 1);
 ys = zeros(1, TMAX/T + 1);
@@ -64,8 +63,8 @@ kF = 2.551777109743181;
 lastVLerr = 0;
 lastVRerr = 0;
 
-vLfinal = 0;%3;
-vRfinal = 0;%5;
+vLfinal = 3;
+vRfinal = 5;
 
 
 
@@ -96,8 +95,8 @@ for t=0:T:TMAX
     lerr = state(vL) - vLfinal;
     rerr = state(vR) - vRfinal;
     
-    u(1) = kF*vLfinal + kP*lerr;
-    u(2) = kF*vRfinal + kP*rerr;
+    %u(1) = kF*vLfinal + kP*lerr;
+    %u(2) = kF*vRfinal + kP*rerr;
     
     %u(1) = 0;
     %u(2) = 0;
@@ -109,7 +108,7 @@ for t=0:T:TMAX
     
     % move state forward in time
     %state = badUpdate(state, T);
-    state_ap = state;
+    %state_ap = state;
     state = A*state + B*u + F;% + B*mvnrnd(zeros(2, 1), Q, 1)';
     %state(THETA) = mod(state(THETA), 2*pi);
     
@@ -137,7 +136,7 @@ for t=0:T:TMAX
     P = A*P*A' + G*Q*G';
     
     % measure
-    y = getOutputPhysics(state);% + mvnrnd(zeros(4, 1), R, 1)';
+    y = getOutputPhysics(state) + mvnrnd(zeros(OUTPUT_SIZE, 1), R, 1)';
     
     % update
     C = getCPhysics(state_hat);
