@@ -1279,8 +1279,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/DriveSubsystem/right speed error": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "8,0": {
@@ -1295,8 +1294,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/DriveSubsystem/left speed error": true
+              "Y-axis/Lower bound": -1.0
             }
           }
         }
@@ -1424,6 +1422,226 @@
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
               "Visible data/SmartDashboard/NavigationSubsystem/processing time (ms)": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tab 12",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Velocity Target",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity Target"
+            }
+          },
+          "6,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Velocity RPM",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity RPM"
+            }
+          },
+          "4,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Velocity Ticks",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity Ticks"
+            }
+          },
+          "0,0": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Velocity Error",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity Error",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/ShooterSubsystem/Shooter Velocity Error": true
+            }
+          },
+          "0,3": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Velocity Current RPM",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity Current RPM",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/ShooterSubsystem/Shooter Velocity Current RPM": true
+            }
+          },
+          "7,0": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Velocity Error RPM",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity Error RPM",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/ShooterSubsystem/Shooter Velocity Error RPM": true
+            }
+          },
+          "5,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/TelemetryEnabled",
+              "_title": "SmartDashboard/ShooterSubsystem/TelemetryEnabled"
+            }
+          },
+          "7,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Output",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Output"
+            }
+          },
+          "4,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Velocity Error",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity Error"
+            }
+          },
+          "6,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Absolute Degrees Elevation",
+              "_title": "SmartDashboard/ShooterSubsystem/Absolute Degrees Elevation"
+            }
+          },
+          "5,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Dashboard Elevation Target",
+              "_title": "SmartDashboard/ShooterSubsystem/Dashboard Elevation Target"
+            }
+          },
+          "5,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Falcon temperature",
+              "_title": "SmartDashboard/ShooterSubsystem/Falcon temperature"
+            }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter Velocity Ticks",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter Velocity Ticks"
+            }
+          },
+          "5,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/DiagnosticsEnabled",
+              "_title": "SmartDashboard/ShooterSubsystem/DiagnosticsEnabled"
+            }
+          },
+          "6,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Falcon temperature",
+              "_title": "SmartDashboard/ShooterSubsystem/Falcon temperature"
+            }
+          },
+          "6,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ShooterSubsystem/Shooter current",
+              "_title": "SmartDashboard/ShooterSubsystem/Shooter current"
+            }
+          },
+          "8,3": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/deltaTime",
+              "_title": "SmartDashboard/deltaTime",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/deltaTime": true
             }
           }
         }
