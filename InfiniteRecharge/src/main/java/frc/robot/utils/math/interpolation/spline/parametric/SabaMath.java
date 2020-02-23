@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.utils.math.interpolation.spline;
+package frc.robot.utils.math.interpolation.spline.parametric;
 
 //the closest I will get to credibility in mathematics
 public class SabaMath 
