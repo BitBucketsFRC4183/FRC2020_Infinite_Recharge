@@ -93,11 +93,12 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         elevationMotor = MotorUtils.makeSRX(config.shooter.elevation);
 
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
-        ballPropulsionMotor.configOpenloopRamp(1);
-        ballPropulsionMotor.configClosedloopRamp(0.75);
+        //
+        ballPropulsionMotor.configOpenloopRamp(0);
+        ballPropulsionMotor.configClosedloopRamp(0);
+        ballPropulsionMotor.setNeutralMode(NeutralMode.Coast);
+
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
-        feeder.enableVoltageCompensation(true);
-        feeder.configVoltageCompSaturation(ShooterConstants.MAX_VOLTS);
         feeder.selectProfileSlot(MotorUtils.velocitySlot, 0);
         feeder.setNeutralMode(NeutralMode.Brake);
 
@@ -200,7 +201,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
 
         // Spin up the shooter.
-        ballPropulsionMotor.set(ControlMode.Velocity, targetShooterVelocity);
+        setShooterVelocity((int) targetShooterVelocity);
         // ballPropulsionMotor.set(ControlMode.PercentOutput, (float)SmartDashboard.getNumber(getName() + "/Shooter %Output", 0.5));
         SmartDashboard.putString(getName() + "/Shooter State", "Shooting");
     }
@@ -306,7 +307,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         double ticksVelocity = (feetPerSecVelocity * 12 * config.shooter.shooter.ticksPerRevolution)
                 / (ShooterConstants.SHOOTER_FLYWHEEL_RADIUS * 2 * Math.PI * 10);
 
-        ballPropulsionMotor.set(ControlMode.Velocity, ticksVelocity);
+        setShooterVelocity((int) ticksVelocity);
 
         // TODO: do this stuff empirically (yay!)
         // the math rn isn' rly accurate
@@ -405,20 +406,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // Put the outputs on the smart dashboard.
         SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Ticks",
-                ballPropulsionMotor.getSelectedSensorVelocity());
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target", ballPropulsionMotor.getClosedLoopTarget());
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error", ballPropulsionMotor.getClosedLoopError());
-
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Current RPM",
-                MathUtils.unitConverter(ballPropulsionMotor.getSelectedSensorVelocity(), 600,
-                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target RPM",
-                MathUtils.unitConverter(ballPropulsionMotor.getClosedLoopTarget(), 600,
-                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error RPM",
-                MathUtils.unitConverter(ballPropulsionMotor.getClosedLoopError(), 600,
-                        config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio);
+        
+        SmartDashboard.putNumber(getName() + "/Shooter current", ballPropulsionMotor.getSupplyCurrent());
 
         SmartDashboard.putNumber(getName() + "/Target Position ", targetPositionAzimuth_ticks);
         SmartDashboard.putNumber(getName() + "/Absolute Degrees to Rotate", absoluteDegreesToRotateAzimuth);
@@ -465,5 +454,45 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public void zeroElevationSensor(){
         elevationMotor.setSelectedSensorPosition(0);
+    }
+
+    private double lastTime = System.nanoTime();
+
+    public void setShooterVelocity(int tp100ms) {
+        double t = System.nanoTime();
+
+        SmartDashboard.putNumber(getName() + "/dt", (t - lastTime) / 1000000000);
+        lastTime = t;
+
+        int e = ballPropulsionMotor.getSelectedSensorVelocity() - tp100ms;
+
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Ticks",
+                ballPropulsionMotor.getSelectedSensorVelocity());
+
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target", tp100ms);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error", e);
+
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Current RPM",
+                MathUtils.unitConverter(ballPropulsionMotor.getSelectedSensorVelocity(), config.shooter.shooter.ticksPerRevolution,
+                600
+            ) / config.shooter.shooterGearRatio);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Target RPM",
+                MathUtils.unitConverter(tp100ms, config.shooter.shooter.ticksPerRevolution,
+                600
+            ) / config.shooter.shooterGearRatio);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error RPM",
+                MathUtils.unitConverter(e, config.shooter.shooter.ticksPerRevolution,
+                600
+            ) / config.shooter.shooterGearRatio);
+        
+        if (ShooterConstants.USE_BANG_BANG) {
+            if (e < ShooterConstants.BANG_BANG_ERROR) {
+                ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_PERCENT);
+            } else {
+                ballPropulsionMotor.set(ControlMode.PercentOutput, 0);
+            }
+        } else {
+            ballPropulsionMotor.set(ControlMode.Velocity, tp100ms);
+        }
     }
 }
