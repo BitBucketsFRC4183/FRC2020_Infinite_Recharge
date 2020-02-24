@@ -7,6 +7,8 @@
 
 package frc.robot.subsystem;
 
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -107,4 +109,6 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
     public abstract void dashboardPeriodic(float deltaTime);
 
     public abstract void disable();
+
+    public abstract BaseTalon[] getTalons();
 }

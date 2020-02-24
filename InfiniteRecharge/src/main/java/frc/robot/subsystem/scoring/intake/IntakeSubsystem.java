@@ -1,5 +1,6 @@
 package frc.robot.subsystem.scoring.intake;
 
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -122,5 +123,12 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     public void disable(){
         motor.set(0);
     }
+
+
+
+	@Override
+	public BaseTalon[] getTalons() {
+		return new BaseTalon[] {motor};
+	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -506,4 +507,17 @@ public class DriveSubsystem extends BitBucketSubsystem {
         // TODO Auto-generated method stub
 
     }
+
+
+
+	@Override
+	public BaseTalon[] getTalons() {
+        BaseTalon[] talons = new BaseTalon[config.drive.MOTORS_PER_SIDE * 2];
+        for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
+            talons[i] = leftMotors[i];
+            talons[i + config.drive.MOTORS_PER_SIDE] = rightMotors[i];
+        }
+
+        return talons;
+	}
 }
