@@ -27,7 +27,7 @@ public class DriveUtils {
         // max acceleration = (V - kS)/kA
         SimpleMotorFeedforward cha = c.drive.characterization;
 
-        MAX_ACCELERATION_MPSPS = (DriveConstants.AUTO_MAX_VOLTAGE - cha.ks)/cha.ka;
+        MAX_ACCELERATION_MPSPS = 1;//(DriveConstants.AUTO_MAX_VOLTAGE - cha.ks)/cha.ka;
 
         MAX_ROTATION_RADPS = Math.toRadians(c.drive.maxAllowedTurn_degps);
     }
