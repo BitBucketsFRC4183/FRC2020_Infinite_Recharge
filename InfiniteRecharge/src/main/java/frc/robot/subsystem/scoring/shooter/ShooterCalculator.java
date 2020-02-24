@@ -32,6 +32,18 @@ public class ShooterCalculator {
         public int compareTo(VelocityPoint other) {
             return Double.compare(this.distance_in, other.distance_in);
         }
+
+		public double getDistance_in() {
+			return distance_in;
+		}
+
+		public double getSpeed_rpm() {
+			return speed_rpm;
+		}
+
+		public double getHoodAngle_deg() {
+			return hoodAngle_deg;
+		}
     }
 
     /**
