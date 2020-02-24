@@ -342,48 +342,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
     }
 
-    // TODO: empirically test this
-        // do the distance thing here
-        // decreases as u get closer
-        // increases as u get it farther
-    public double calculateAbsoluteDegreesElevation() {
-        boolean validTarget = visionSubsystem.getValidTarget();
-        if (validTarget) {
-            double ty = visionSubsystem.getTy();
-            // double degrees = getTargetElevationDegGivenOffset(ty);
-            double distance = visionSubsystem.approximateDistanceFromTarget(ty);
-
-            List<VelocityPoint> velocityPoints = new ArrayList<VelocityPoint>();
-            // add values here
- 
-            int closestIndex = Collections.binarySearch(velocityPoints, new VelocityPoint(distance, 0, 0));
-            // TODO: interpolate between closestIndex and our thing
-            return velocityPoints.get(closestIndex).getElevationAngle_deg();
-            
-            // final double absoluteDegreesElevation = degrees + 40;
-            // return absoluteDegreesElevation;
-        }
-        return 0.0;
-    }
-
-    // TODO: empirically test this
-    public double calculateAbsoluteVelocity_in() {
-        boolean validTarget = visionSubsystem.getValidTarget();
-        if (validTarget) {
-            double ty = visionSubsystem.getTy();
-            double distance = visionSubsystem.approximateDistanceFromTarget(ty);
-
-            List<VelocityPoint> velocityPoints = new ArrayList<VelocityPoint>();
-            // add values here
- 
-            int closestIndex = Collections.binarySearch(velocityPoints, new VelocityPoint(distance, 0, 0));
-            // TODO: interpolate between closestIndex and our thing
-            return velocityPoints.get(closestIndex).getElevationAngle_deg();
-
-        }
-        return 0.0;
-    }
-
     public void nextPositionElevation() {
         for (int i = 0; i < positions.length; i++) {
             int selectedPositionNumber_ticks = (int) (MathUtils.unitConverter(positions[i], 360,
