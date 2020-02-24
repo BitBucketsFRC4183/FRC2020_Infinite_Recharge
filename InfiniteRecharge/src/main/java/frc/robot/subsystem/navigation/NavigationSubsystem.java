@@ -18,6 +18,7 @@ import frc.robot.config.Config;
 
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
+import frc.robot.subsystem.drive.auto.FieldConstants;
 import frc.robot.utils.data.DoubleDataWindow;
 
 import frc.robot.subsystem.vision.VisionSubsystem;
@@ -73,8 +74,13 @@ public class NavigationSubsystem extends BitBucketSubsystem {
         ahrs = BitBucketsAHRS.instance();
         sys = new RobotSystem();
 
+        ahrs.setAngleAdjustment(90);
+
+        Rotation2d rotation = Rotation2d.fromDegrees(-ahrs.getAngle());
+
         odometry = new DifferentialDriveOdometry(
-            Rotation2d.fromDegrees(ahrs.getYaw())
+            rotation,
+            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT, rotation)
         );
 	}
 
@@ -118,7 +124,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
         //imuGyro.add(gyro);
 
         double t0 = System.nanoTime();
-        double yaw = ahrs.getYaw();
+        double yaw = getYaw_deg();
 
         double v0 = 0.01;
 
@@ -133,13 +139,13 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
 
         odometry.update(
-            Rotation2d.fromDegrees(ahrs.getYaw()),
+            Rotation2d.fromDegrees(getYaw_deg()),
             driveSubsystem.getLeftDistance_meters(),
             driveSubsystem.getRightDistance_meters()
         );
 
         if (getTelemetryEnabled()) {
-			SmartDashboard.putNumber(getName() + "/Robot yaw", ahrs.getYaw());
+			SmartDashboard.putNumber(getName() + "/Robot yaw", getYaw_deg());
             SmartDashboard.putNumber(getName() + "/Robot raw X accel", getAccX());
             SmartDashboard.putNumber(getName() + "/Robot world X accel", getWorldAccX());
             SmartDashboard.putNumber(getName() + "/Robot raw X gyro", gyro);
@@ -177,7 +183,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	}
 
 	public double getYaw_deg() {
-		return ahrs.getYaw();
+		return -ahrs.getAngle();
 	}
 	public double getYawRate_degPerSec() {
 		return ahrs.getRate();

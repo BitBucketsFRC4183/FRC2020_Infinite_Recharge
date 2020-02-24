@@ -42,6 +42,8 @@ public class OI {
     // ****************************
     // BUTTON DEFINITIONS
     // ****************************
+    private final int ROTATION_CONTROL = PS4Constants.TRIANGLE.getValue();
+    private final int COLOR_CONTROL = PS4Constants.CROSS.getValue();
     static final int DRIVE_LOW_SENSITIVE_BUTTON = PS4Constants.R1.getValue();
     static final int DRIVE_INVERT_BUTTON = PS4Constants.L1.getValue();
     static final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
@@ -57,10 +59,10 @@ public class OI {
     static final int OPERATOR_SPINUP = PS4Constants.R2.getValue();
     static final int OPERATOR_AUTO_AIM = PS4Constants.L1.getValue();
     static final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
-    static final int OPERATOR_CLIMB_PULL_RAISE = PS4Constants.TRIANGLE.getValue();
-    static final int OPERATOR_CLIMB_RAISE = PS4Constants.CROSS.getValue();
+    static final int OPERATOR_CLIMB_EXTEND = PS4Constants.TRIANGLE.getValue();
     static final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
     static final int OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER = PS4Constants.OPTIONS.getValue();
+    static final int OPERATOR_CLIMB_RETRACT = PS4Constants.CROSS.getValue();
 
     // forced Idle for corresponding subsystems
     static final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
@@ -122,6 +124,14 @@ public class OI {
         return operatorControl.getRawButtonPressed(OPERATOR_INTAKE_TOGGLE);
     }
 
+    public boolean rotationControl() {
+        return driverControl.getRawButtonPressed(ROTATION_CONTROL);
+    }
+
+    public boolean colorControl() {
+        return driverControl.getRawButtonPressed(COLOR_CONTROL);
+    }
+
     /**
      * invertDrive - a private function used by speed() to invert the speed joystick
      * sense temporarily
@@ -149,5 +159,13 @@ public class OI {
 
     public boolean rotationToVelocity() {
         return driverControl.getRawButton(DRIVE_METHOD_SWITCH_BUTTON);
+    }
+
+    public boolean climbextend() {
+        return operatorControl.getRawButtonPressed(OPERATOR_CLIMB_EXTEND);
+    }
+
+    public boolean climbretract() {
+        return operatorControl.getRawButton(OPERATOR_CLIMB_RETRACT);
     }
 }
