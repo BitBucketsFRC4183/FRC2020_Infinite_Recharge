@@ -1,8 +1,9 @@
 package frc.robot.subsystem.scoring.shooter;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
+import frc.robot.utils.math.interpolation.spline.SplineVelocityPoint;
 
 import frc.robot.subsystem.vision.VisionSubsystem;
 
@@ -10,6 +11,7 @@ public class ShooterCalculator {
 
     private final List<VelocityPoint> points;
     VisionSubsystem visionSubsystem;
+    SplineVelocityPoint splineVPoint;
 
     public static class VelocityPoint implements Comparable<VelocityPoint> {
         final double distance_in;
@@ -65,14 +67,19 @@ public class ShooterCalculator {
         );
     }
 
+    public void initialize(VisionSubsystem visionSubsystem) {
+        this.visionSubsystem = visionSubsystem;
+        this.splineVPoint = new SplineVelocityPoint(points);
+    }
+
     // TODO: empirically test this
-    public double calculateVelocity_in(final double distance_in) {
+    public double calculateSpeed_rpm() {
         boolean validTarget = visionSubsystem.getValidTarget();
         if (validTarget) {
             double ty = visionSubsystem.getTy();
             double distance = visionSubsystem.approximateDistanceFromTarget(ty);
 
-            int closestIndex = Collections.binarySearch(points, new VelocityPoint(distance_in));
+            return splineVPoint.getSpeedSpline(distance);
         }
         // calculate the velocity for this distance_in
         return 0;
@@ -81,13 +88,13 @@ public class ShooterCalculator {
     // TODO: empirically test this
     // decreases as u get closer
     // increases as u get it farther
-    public double calculateHoodAngle_deg(final double distance_in) {
+    public double calculateHoodAngle_deg() {
         boolean validTarget = visionSubsystem.getValidTarget();
         if (validTarget) {
             double ty = visionSubsystem.getTy();
             double distance = visionSubsystem.approximateDistanceFromTarget(ty);
 
-            int closestIndex = Collections.binarySearch(points, new VelocityPoint(distance_in));
+            return splineVPoint.getAngleSpline(distance);
         }
         // calculate the hood angle for this distance_in
         return 0;

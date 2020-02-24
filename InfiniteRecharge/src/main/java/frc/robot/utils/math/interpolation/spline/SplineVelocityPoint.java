@@ -1,13 +1,13 @@
 package frc.robot.utils.math.interpolation.spline;
 
-import java.util.ArrayList;
+import java.util.List;
 import frc.robot.subsystem.scoring.shooter.ShooterCalculator.VelocityPoint;
 
 public class SplineVelocityPoint {
     private final Spline speedSpline;
     private final Spline angleSpline;
 
-    public SplineVelocityPoint(ArrayList<VelocityPoint> vPoints) {
+    public SplineVelocityPoint(List<VelocityPoint> vPoints) {
         double[] distanceX =  new double[vPoints.size()];
         double[] speedY = new double[vPoints.size()];
         double[] angleY = new double[vPoints.size()];
