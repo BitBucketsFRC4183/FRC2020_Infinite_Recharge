@@ -1,6 +1,7 @@
 package frc.robot.subsystem.spinnyboi;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.ColorSensorV3;
 
@@ -105,4 +106,8 @@ public class SpinnyBoiSubsystem extends BitBucketSubsystem {
         motor.set(0);
     }
 
+    @Override
+    protected void listTalons() {
+        talons.add(motor);
+    }
 }
