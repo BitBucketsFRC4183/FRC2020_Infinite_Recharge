@@ -34,4 +34,10 @@ public class CopyPasteSubsystem extends BitBucketSubsystem {
     public void periodic(float deltaTime) {
         updateBaseDashboard();
     }
+
+    @Override
+	protected void listTalons() {
+        // add things with
+        // talons.add(TALON_OBJECT_HERE)
+	}
 }

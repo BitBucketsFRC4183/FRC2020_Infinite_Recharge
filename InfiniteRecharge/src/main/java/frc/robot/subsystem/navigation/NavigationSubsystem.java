@@ -7,6 +7,7 @@
 
 package frc.robot.subsystem.navigation;
 
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -231,4 +232,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
     public void disable(){
     }
+
+	@Override
+    protected void listTalons() {}
 }

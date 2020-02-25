@@ -5,6 +5,9 @@ import frc.robot.subsystem.BitBucketSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utils.math.MathUtils;
+
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
@@ -143,4 +146,6 @@ public class VisionSubsystem extends BitBucketSubsystem {
     public void disable(){
     }
 
+    @Override
+    protected void listTalons() {}
 }

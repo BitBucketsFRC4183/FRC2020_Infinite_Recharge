@@ -52,6 +52,8 @@ public class Robot extends TimedRobot {
 
     private List<BitBucketSubsystem> subsystems = new ArrayList<>();
 
+    private CANChecker canChecker;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -95,8 +97,13 @@ public class Robot extends TimedRobot {
             subsystems.add(new PIDHelperSubsystem(config));
         }
 
+
+
+        canChecker = new CANChecker();
+
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.initialize();
+            canChecker.addTalons(subsystem.getTalons());
         }
 
         lastTime = System.currentTimeMillis();
@@ -113,6 +120,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        canChecker.periodic();
+
         currentTime = System.currentTimeMillis();
         deltaTime = (currentTime - lastTime) / 1000f;
         SmartDashboard.putNumber("deltaTime", deltaTime);

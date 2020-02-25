@@ -4,6 +4,9 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
 
+import java.util.List;
+
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,6 +28,7 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         super.initialize();
         motorRight = MotorUtils.makeSRX(config.climb.climbRight);
         motorLeft = MotorUtils.makeSRX(config.climb.climbLeft);
+        motorLeft.setInverted(true);
         motorLeft.follow(motorRight);
     }
     
@@ -55,9 +59,6 @@ public class ClimbSubsystem extends BitBucketSubsystem {
             case Extending:
                 motorRight.set(SmartDashboard.getNumber(getName() + "/Climber Current", ClimbConstants.EXTEND_OUTPUT));
                 SmartDashboard.putString(getName() + "/ClimbState", "Extending");
-                if (motorRight.getStatorCurrent() < 1) {
-                    climbState = ClimbState.Off;
-                }
                 break;
 
                 //no holding state is needed, since a mechanical ratchet will hold the robot while its hanging
@@ -92,4 +93,10 @@ public class ClimbSubsystem extends BitBucketSubsystem {
 
     public void disable(){
     }
+
+	@Override
+	protected void listTalons() {
+        talons.add(motorRight);
+        talons.add(motorLeft);
+	}
 }
