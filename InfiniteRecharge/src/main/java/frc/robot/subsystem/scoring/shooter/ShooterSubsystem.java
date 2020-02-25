@@ -69,6 +69,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private WPI_TalonSRX azimuthMotor;
     private WPI_TalonSRX elevationMotor;
     private WPI_TalonFX ballPropulsionMotor;
+    private WPI_TalonFX ballPropulsionFollower;
     private WPI_TalonSRX feeder;
 
     // Neos
@@ -93,6 +94,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         ballPropulsionMotor.configOpenloopRamp(0);
         ballPropulsionMotor.configClosedloopRamp(0);
         ballPropulsionMotor.setNeutralMode(NeutralMode.Coast);
+
+        ballPropulsionFollower = MotorUtils.makeFX(config.shooter.shooterFollower); 
 
         feeder = MotorUtils.makeSRX(config.shooter.feeder);
         feeder.selectProfileSlot(MotorUtils.velocitySlot, 0);
