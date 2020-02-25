@@ -2,6 +2,7 @@ package frc.robot.subsystem.scoring.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -488,5 +489,13 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         } else {
             ballPropulsionMotor.set(ControlMode.Velocity, tp100ms);
         }
+    }
+
+    @Override
+    protected void listTalons() {
+        talons.add(azimuthMotor);
+        talons.add(elevationMotor);
+        talons.add(ballPropulsionMotor);
+        talons.add(feeder);
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -110,8 +111,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         autoTrajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(FieldConstants.FRONT_OF_POWER_PORT, Rotation2d.fromDegrees(90)),
-            List.of(FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
-            new Pose2d(FieldConstants.OUR_POWER_CELL_3, Rotation2d.fromDegrees(90)),
+            List.of(),//FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
+            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT_PLUS_A_BIT, Rotation2d.fromDegrees(90)),
             trajectoryConfig
         );
 
@@ -505,5 +506,15 @@ public class DriveSubsystem extends BitBucketSubsystem {
     public void dashboardPeriodic(float deltaTime) {
         // TODO Auto-generated method stub
 
+    }
+
+
+
+    @Override
+	protected void listTalons() {
+        for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
+            talons.add(leftMotors[i]);
+            talons.add(rightMotors[i]);
+        }
     }
 }
