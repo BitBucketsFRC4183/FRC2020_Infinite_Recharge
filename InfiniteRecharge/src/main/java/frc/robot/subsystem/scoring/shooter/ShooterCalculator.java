@@ -3,7 +3,7 @@ package frc.robot.subsystem.scoring.shooter;
 import java.util.Arrays;
 import java.util.List;
 
-import frc.robot.utils.math.interpolation.spline.SplineVelocityPoint;
+import frc.robot.subsystem.scoring.shooter.SplineVelocityPoint;
 
 import frc.robot.subsystem.vision.VisionSubsystem;
 
