@@ -3,18 +3,20 @@ defaults:
     ####
     # main ids
     ####
-     leftDriveLeader: 1
-     leftDriveFollower: 4
-     rightDriveLeader: 2
-     rightDriveFollower: 3
+     leftDriveLeader: 2
+     leftDriveFollower: 3
+     rightDriveLeader: 1
+     rightDriveFollower: 4
 
-     azimuth: 11
-     elevation: 14
-     shooter: 13
+     azimuth: 6
+     elevation: 8
+     shooter: 15
      feeder: 9
      intake: 5
      spinnyboi: 6
-     bms: 10
+     climbLeft: 14
+     climbRight: 7
+     bms: 13
 
     ####
     # junior ids
@@ -198,6 +200,30 @@ transmissions:
 - motors:
   - id: "{{ defaults.ids.bms }}"
     name: "Ball Management Spinner ({{ defaults.ids.bms }})"
+    model: 775Pro
+    stallTorque: "{{ defaults.T775pro.stallTorque }}"
+    stallCurrent: "{{ defaults.T775pro.stallCurrent }}"
+    voltage: "{{ defaults.T775pro.voltage }}"
+    maxRPM: "{{ defaults.T775pro.maxRPM }}"
+    mass: "{{ defaults.T775pro.mass }}"
+    diameter: "{{ defaults.T775pro.diameter }}"
+  gearRatio: 1.0
+  efficiency: 1.0
+- motors:
+  - id: "{{ defaults.ids.climbRight }}"
+    name: "Climb Right ({{ defaults.ids.climbRight }})"
+    model: 775Pro
+    stallTorque: "{{ defaults.T775pro.stallTorque }}"
+    stallCurrent: "{{ defaults.T775pro.stallCurrent }}"
+    voltage: "{{ defaults.T775pro.voltage }}"
+    maxRPM: "{{ defaults.T775pro.maxRPM }}"
+    mass: "{{ defaults.T775pro.mass }}"
+    diameter: "{{ defaults.T775pro.diameter }}"
+  gearRatio: 1.0
+  efficiency: 1.0
+- motors:
+  - id: "{{ defaults.ids.climbLeft }}"
+    name: "Climb Left ({{ defaults.ids.climbLeft }})"
     model: 775Pro
     stallTorque: "{{ defaults.T775pro.stallTorque }}"
     stallCurrent: "{{ defaults.T775pro.stallCurrent }}"
