@@ -52,7 +52,7 @@ public class Config {
 
         public float elevationGearRatio = 40f / 70f;
 
-        public float shooterGearRatio = .48f / 1f;
+        public float shooterGearRatio = .45f / 1f;
 
         public float defaultAzimuthTurnVelocity_deg = 10;
         public float defaultElevationTurnVelocity_deg = 10;
