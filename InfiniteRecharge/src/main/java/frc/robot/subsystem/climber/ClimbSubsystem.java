@@ -4,6 +4,8 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
 
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -93,7 +95,8 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     }
 
 	@Override
-	public BaseTalon[] getTalons() {
-		return new BaseTalon[] {motorRight, motorLeft};
+	protected void listTalons() {
+        talons.add(motorRight);
+        talons.add(motorLeft);
 	}
 }

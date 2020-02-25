@@ -507,8 +507,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
     }
 
-	@Override
-	public BaseTalon[] getTalons() {
-		return new BaseTalon[] {azimuthMotor, elevationMotor, ballPropulsionMotor, feeder};
-	}
+    @Override
+    protected void listTalons() {
+        talons.add(azimuthMotor);
+        talons.add(elevationMotor);
+        talons.add(ballPropulsionMotor);
+        talons.add(feeder);
+    }
 }

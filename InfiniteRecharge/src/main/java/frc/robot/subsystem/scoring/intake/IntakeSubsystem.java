@@ -126,9 +126,8 @@ public class IntakeSubsystem extends BitBucketSubsystem {
 
 
 
-	@Override
-	public BaseTalon[] getTalons() {
-		return new BaseTalon[] {motor};
-	}
-
+    @Override
+    protected void listTalons() {
+        talons.add(motor);
+    }
 }

@@ -234,7 +234,5 @@ public class NavigationSubsystem extends BitBucketSubsystem {
     }
 
 	@Override
-	public BaseTalon[] getTalons() {
-		return new BaseTalon[] {};
-	}
+    protected void listTalons() {}
 }

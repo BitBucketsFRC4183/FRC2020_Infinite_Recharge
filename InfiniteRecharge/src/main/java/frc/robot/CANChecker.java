@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
@@ -20,10 +21,8 @@ public class CANChecker {
         talons = new ArrayList<BaseTalon>();
     }
 
-    public void addTalons(BaseTalon... newTalons) {
-        for (int i = 0; i < newTalons.length; i++) {
-            talons.add(newTalons[i]);
-        }
+    public void addTalons(List<BaseTalon> newTalons) {
+        talons.addAll(newTalons);
     }
 
     public void periodic() {
