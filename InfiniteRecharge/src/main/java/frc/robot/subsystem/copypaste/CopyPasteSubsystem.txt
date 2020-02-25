@@ -36,8 +36,8 @@ public class CopyPasteSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    public BaseTalon[] getTalons() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	protected void listTalons() {
+        // add things with
+        // talons.add(TALON_OBJECT_HERE)
+	}
 }

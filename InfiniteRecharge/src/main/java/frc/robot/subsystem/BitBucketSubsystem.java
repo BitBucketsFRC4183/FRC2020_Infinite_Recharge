@@ -7,6 +7,9 @@
 
 package frc.robot.subsystem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -110,5 +113,7 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 
     public abstract void disable();
 
-    public abstract BaseTalon[] getTalons();
+    protected List<BaseTalon> talons = new ArrayList<BaseTalon>();
+    protected abstract void listTalons();
+    public List<BaseTalon> getTalons() { return talons; }
 }

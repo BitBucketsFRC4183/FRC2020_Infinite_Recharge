@@ -1,5 +1,7 @@
 package frc.robot.subsystem.copypaste;
 
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
 import frc.robot.config.Config;
@@ -47,9 +49,9 @@ public class TestSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    public BaseTalon[] getTalons() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	protected void listTalons() {
+        // add things with
+        // talons.add(TALON_OBJECT_HERE)
+	}
 
 }

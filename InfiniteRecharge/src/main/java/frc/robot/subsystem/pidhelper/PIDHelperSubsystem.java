@@ -307,7 +307,5 @@ public class PIDHelperSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    public BaseTalon[] getTalons() {
-        return new BaseTalon[] {};
-    }
+    protected void listTalons() {}
 }

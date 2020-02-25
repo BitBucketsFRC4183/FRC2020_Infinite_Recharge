@@ -107,8 +107,7 @@ public class SpinnyBoiSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    public BaseTalon[] getTalons() {
-        return new BaseTalon[] {motor};
+    protected void listTalons() {
+        talons.add(motor);
     }
-
 }

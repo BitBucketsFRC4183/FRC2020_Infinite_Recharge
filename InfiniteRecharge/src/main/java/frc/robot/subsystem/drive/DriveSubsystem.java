@@ -510,14 +510,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-	@Override
-	public BaseTalon[] getTalons() {
-        BaseTalon[] talons = new BaseTalon[config.drive.MOTORS_PER_SIDE * 2];
+    @Override
+	protected void listTalons() {
         for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
-            talons[i] = leftMotors[i];
-            talons[i + config.drive.MOTORS_PER_SIDE] = rightMotors[i];
+            talons.add(leftMotors[i]);
+            talons.add(rightMotors[i]);
         }
-
-        return talons;
-	}
+    }
 }
