@@ -1,6 +1,7 @@
-package frc.robot.utils.math.interpolation.spline;
+package frc.robot.subsystem.scoring.shooter;
 
 import java.util.List;
+import frc.robot.utils.math.interpolation.spline.Spline;
 import frc.robot.subsystem.scoring.shooter.ShooterCalculator.VelocityPoint;
 
 public class SplineVelocityPoint {
