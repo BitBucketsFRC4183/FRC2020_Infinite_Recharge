@@ -53,7 +53,7 @@ public class OI {
 
     static final int OPERATOR_INTAKE_IN_POV = 180;
     static final int OPERATOR_INTAKE_OUT_POV = 0;
-    static final int OPERATOR_INTAKE_TOGGLE = PS4Constants.PS4.getValue();
+    static final int OPERATOR_INTAKE_TOGGLE = PS4Constants.R1.getValue();
     static final int OPERATOR_NEXT_POSITION_ELEVATION_POV = 90;
     static final int OPERATOR_LAST_POSITION_ELEVATION_POV = 270;
     static final int OPERATOR_SPINUP = PS4Constants.R2.getValue();
