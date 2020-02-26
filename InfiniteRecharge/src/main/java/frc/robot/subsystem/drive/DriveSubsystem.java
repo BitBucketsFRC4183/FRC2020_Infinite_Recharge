@@ -444,26 +444,34 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
+    public int getLeftVelocity_tp100ms() {
+        return ((config.drive.invertLeftCommand) ? -1 : 1) * leftMotors[0].getSelectedSensorVelocity();
+    }
+
+    public int getRightVelocity_tp100ms() {
+        return ((config.drive.invertRightCommand) ? -1 : 1) * rightMotors[0].getSelectedSensorVelocity();
+    }
+
     public double getApproxV() {
         return 
             config.drive.wheelRadius_in * 
-            (rightMotors[0].getSelectedSensorVelocity() + leftMotors[0].getSelectedSensorVelocity()) / 2.0;
+            (getLeftVelocity_tp100ms() + getRightVelocity_tp100ms()) / 2.0;
     }
 
     public double getApproxOmega() {
         return
             config.drive.wheelRadius_in * 
-            (rightMotors[0].getSelectedSensorVelocity() - leftMotors[0].getSelectedSensorVelocity()) / (config.drive.trackWidth_in / 2.0);
+            (getRightVelocity_tp100ms() - getLeftVelocity_tp100ms()) / (config.drive.trackWidth_in / 2.0);
     }
 
 
 
     public double getLeftDistance_meters() {
-        return leftMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
+        return ((config.drive.invertLeftCommand) ? -1 : 1) * leftMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
     }
 
     public double getRightDistance_meters() {
-        return rightMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
+        return ((config.drive.invertRightCommand) ? -1 : 1) * rightMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
     }
 
 	public Trajectory getAutoTrajectory() {
