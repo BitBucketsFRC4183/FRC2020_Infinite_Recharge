@@ -23,6 +23,8 @@ public class FocusedExcellenceConfiguration extends Config {
     public FocusedExcellenceConfiguration() {
         super();
 
+        name = "Focused Excellence";
+
         drive.MOTORS_PER_SIDE = 3;
         drive.leftIDs = LEFT_DRIVE_IDS;
         drive.rightIDs = RIGHT_DRIVE_IDS;

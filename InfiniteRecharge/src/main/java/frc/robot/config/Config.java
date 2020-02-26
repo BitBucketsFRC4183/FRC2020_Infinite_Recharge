@@ -5,6 +5,7 @@ import frc.robot.config.Config.ShooterConfig.BallManagementConfig;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class Config {
+    public String name = "Shawty";
 
     //////////////////////////////////////////////////////////////////////////////
     // Subsystem Enablers
