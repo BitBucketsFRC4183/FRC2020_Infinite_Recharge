@@ -24,6 +24,7 @@ public class Config {
     public int AZIMUTH_MOTOR_ID = 6;
     public int ELEVATION_MOTOR_ID = 8;
     public int SHOOTER_MOTOR_ID = 15;
+    public int SHOOTER_FOLLOWER_MOTOR_ID = 16;
     public int FEEDER_MOTOR_ID = 9;
 
     // Intake
@@ -51,7 +52,7 @@ public class Config {
 
         public float elevationGearRatio = 40f / 70f;
 
-        public float shooterGearRatio = .48f / 1f;
+        public float shooterGearRatio = .45f / 1f;
 
         public float defaultAzimuthTurnVelocity_deg = 10;
         public float defaultElevationTurnVelocity_deg = 10;
@@ -70,6 +71,7 @@ public class Config {
         public MotorConfig elevation = new MotorConfig();
         public MotorConfig feeder = new MotorConfig();
         public MotorConfig shooter = new MotorConfig();
+        public MotorConfig shooterFollower = new MotorConfig();
 
         public float[] elevationPositions_deg = new float[] { //
                 0, /// Comment so that VSCode doesn't ruin my format.
@@ -195,6 +197,7 @@ public class Config {
         shooter.elevation.id = ELEVATION_MOTOR_ID;
         shooter.feeder.id = FEEDER_MOTOR_ID;
         shooter.shooter.id = SHOOTER_MOTOR_ID;
+        shooter.shooterFollower.id = SHOOTER_FOLLOWER_MOTOR_ID;
         ballManagement.spinner.id = BALLMANAGEMENT_MOTOR_ID;
 
         // Intake
@@ -278,6 +281,10 @@ public class Config {
         shooter.azimuth.ticksPerRevolution = 4096;
         shooter.elevation.ticksPerRevolution = 8192;
         shooter.shooter.ticksPerRevolution = 2048;
+        
+        //////////////////////////////////////////////////////////////////////////////
+        // Follower IDs
+        shooter.shooterFollower.followingID = SHOOTER_MOTOR_ID;
     }
 
 }
