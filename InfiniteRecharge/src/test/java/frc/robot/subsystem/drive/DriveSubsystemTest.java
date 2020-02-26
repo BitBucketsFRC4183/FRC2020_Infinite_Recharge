@@ -62,12 +62,14 @@ public class DriveSubsystemTest extends SubsystemTest {
     /**
      * We use the config in this test, so get a copy of it
      */
-    Config config = ConfigChooser.getConfig();
+    Config config;
 
     @Before
     public void beforeTest() throws Exception {
         super.beforeTest();
 
+        config = ConfigChooser.getConfig();
+        
         // when our subsystem is initialized, it will create a motor and a solenoid. We
         // don't want
         // actual motors and solenoids to be created, we want mock ones. Make sure we
