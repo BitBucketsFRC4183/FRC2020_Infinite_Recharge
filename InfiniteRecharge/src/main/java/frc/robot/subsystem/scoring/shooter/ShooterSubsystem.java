@@ -473,34 +473,40 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private double lastTime = System.nanoTime();
 
     public void setShooterVelocity(int tp100ms) {
-        double t = System.nanoTime();
+        double currentTime = System.nanoTime();
 
-        SmartDashboard.putNumber(getName() + "/dt", (t - lastTime) / 1000000000);
-        lastTime = t;
+        SmartDashboard.putNumber(getName() + "/dt", (currentTime - lastTime) / 1000000000);
+        lastTime = currentTime;
 
-        int e = ballPropulsionMotor.getSelectedSensorVelocity() - tp100ms;
+        int error = ballPropulsionMotor.getSelectedSensorVelocity() - tp100ms;
 
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Ticks",
                 ballPropulsionMotor.getSelectedSensorVelocity());
 
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Target", tp100ms);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error", e);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error", error);
 
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Current RPM",
-                MathUtils.unitConverter(ballPropulsionMotor.getSelectedSensorVelocity(), config.shooter.shooter.ticksPerRevolution,
-                600
-            ) / config.shooter.shooterGearRatio);
+                MathUtils.unitConverter(ballPropulsionMotor.getSelectedSensorVelocity(),
+                        config.shooter.shooter.ticksPerRevolution, 600) / config.shooter.shooterGearRatio);
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Target RPM",
-                MathUtils.unitConverter(tp100ms, config.shooter.shooter.ticksPerRevolution,
-                600
-            ) / config.shooter.shooterGearRatio);
+                MathUtils.unitConverter(tp100ms, config.shooter.shooter.ticksPerRevolution, 600)
+                        / config.shooter.shooterGearRatio);
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Error RPM",
-                MathUtils.unitConverter(e, config.shooter.shooter.ticksPerRevolution,
-                600
-            ) / config.shooter.shooterGearRatio);
-        
+                MathUtils.unitConverter(error, config.shooter.shooter.ticksPerRevolution, 600)
+                        / config.shooter.shooterGearRatio);
+
         if (ShooterConstants.USE_BANG_BANG) {
-            if (e < ShooterConstants.BANG_BANG_ERROR) {
+            if (error < -tp100ms / 2) {
+                ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_RAMP_UP_PERCENT);
+                // I.e if our error is -300 and our tp100ms is 300, our -tp100ms is -300.
+                // divide that by 2 and you get -150.
+                // -300 is less than -150, so the shooter will ramp up.
+
+                // However if our error is 300, 300 is definitely MORE than -150,
+                // so it will continue on to the other if statements.
+
+            } else if (error < ShooterConstants.BANG_BANG_ERROR) {
                 ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_PERCENT);
             } else {
                 ballPropulsionMotor.set(ControlMode.PercentOutput, 0);
