@@ -141,9 +141,7 @@ public class IntakeSubsystemTest extends SubsystemTest {
         // verify if it's forward, we call reverse
         when(intakePivet.get()).thenReturn(Value.kForward);
         intakeSubsystem.toggleIntakeArm();
-        // intakePivet is actually set to reverse twice, once at startup and once in
-        // this method
-        verify(intakePivet, times(2)).set(eq(Value.kReverse));
+        verify(intakePivet, times(1)).set(eq(Value.kReverse));
     }
 
     /**
@@ -159,7 +157,9 @@ public class IntakeSubsystemTest extends SubsystemTest {
         // verify if it's reverse, we call forward
         when(intakePivet.get()).thenReturn(Value.kReverse);
         intakeSubsystem.toggleIntakeArm();
-        verify(intakePivet).set(eq(Value.kForward));
+        // intakePivet is actually set to forward twice, once at startup and once in
+        // this method
+        verify(intakePivet, times(2)).set(eq(Value.kForward));
     }
 
     /**
@@ -175,7 +175,9 @@ public class IntakeSubsystemTest extends SubsystemTest {
         // verify if it's off, we call forward
         when(intakePivet.get()).thenReturn(Value.kOff);
         intakeSubsystem.toggleIntakeArm();
-        verify(intakePivet).set(eq(Value.kForward));
+        // intakePivet is actually set to forward twice, once at startup and once in
+        // this method
+        verify(intakePivet, times(2)).set(eq(Value.kForward));
     }
 
 }
