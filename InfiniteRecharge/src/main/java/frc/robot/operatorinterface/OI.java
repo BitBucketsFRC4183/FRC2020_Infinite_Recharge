@@ -50,6 +50,7 @@ public class OI {
     static final int DRIVE_LOCK_BUTTON = PS4Constants.OPTIONS.getValue();
     static final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
     static final int DRIVE_METHOD_SWITCH_BUTTON = PS4Constants.LEFT_TRIGGER.getValue();
+    static final int DRIVER_CLIMB_ACTIVATE = PS4Constants.PS4.getValue();
 
     static final int OPERATOR_INTAKE_IN_POV = 180;
     static final int OPERATOR_INTAKE_OUT_POV = 0;
@@ -63,6 +64,7 @@ public class OI {
     static final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
     static final int OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER = PS4Constants.OPTIONS.getValue();
     static final int OPERATOR_CLIMB_RETRACT = PS4Constants.CROSS.getValue();
+    static final int OPERATOR_CLIMB_ACTIVATE = PS4Constants.PS4.getValue();
 
     // forced Idle for corresponding subsystems
     static final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
@@ -167,5 +169,9 @@ public class OI {
 
     public boolean climbretract() {
         return operatorControl.getRawButton(OPERATOR_CLIMB_RETRACT);
+    }
+
+    public boolean climbactivate() {
+        return operatorControl.getRawButton(OPERATOR_CLIMB_ACTIVATE) && driverControl.getRawButton(DRIVER_CLIMB_ACTIVATE);
     }
 }
