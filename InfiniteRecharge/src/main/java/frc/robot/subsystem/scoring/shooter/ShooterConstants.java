@@ -14,6 +14,6 @@ public class ShooterConstants {
     public static final float DEFAULT_SHOOTER_VELOCITY_RPM = 4183;
 
     public static final boolean USE_BANG_BANG = true;
-    public static final double BANG_BANG_PERCENT = 0.7;
+    public static final double BANG_BANG_PERCENT = 0.8;
     public static final int BANG_BANG_ERROR = 0;
 }
