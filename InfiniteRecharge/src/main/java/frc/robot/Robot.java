@@ -197,7 +197,9 @@ public class Robot extends TimedRobot {
         }
        /////////////////////////////////////////////////////////////////////////////
         //Climb Subsystem
-        
+        if (oi.climbactivate()) {
+            climbSubsystem.activateClimb();
+        }
         if (oi.climbextend()) {
             climbSubsystem.extending();
         } 
