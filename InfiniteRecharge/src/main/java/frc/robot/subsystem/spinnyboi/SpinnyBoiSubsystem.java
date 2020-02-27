@@ -43,6 +43,21 @@ public class SpinnyBoiSubsystem extends BitBucketSubsystem {
 
     }
 
+    public void forward(){
+        motor.set(SmartDashboard.getNumber(getName() + "/Spinnyboi forward speed", SpinnyBoiConstants.SPINNYBOI_FORWARD));
+        SmartDashboard.putString(getName() + "/Spinnyboi state", "forward");
+    }
+
+    public void backward(){
+        motor.set(-SmartDashboard.getNumber(getName() + "/Spinnyboi backward speed", SpinnyBoiConstants.SPINNIYBOI_BACKWARD));
+        SmartDashboard.putString(getName() + "/Spinnyboi state", "backward");
+    }
+
+    public void off(){
+        motor.set(0);
+        SmartDashboard.putString(getName() + "/Spinnyboi state", "off");
+    }
+
     @Override
     public void periodic(float deltaTime) {
         updateBaseDashboard();
