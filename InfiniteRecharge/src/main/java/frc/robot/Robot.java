@@ -262,15 +262,18 @@ public class Robot extends TimedRobot {
         // //////////////////////////////////////////////////////////////////////////////
         // // SpinnyBoi Subsystem
 
-        if (config.enableSpinnyboiSubsystem) {
-            if (oi.rotationControl()) {
-                spinnyBoiSubsystem.rotationControl();
-            }
-    
-            if (oi.colorControl()) {
-                spinnyBoiSubsystem.colorControl();
-            }    
+        if (oi.spinnyBoiForward()) {
+            spinnyBoiSubsystem.forward();
         }
+
+        else if (oi.spinnyBoiBackward()) {
+            spinnyBoiSubsystem.backward();
+        }
+
+        else{
+            spinnyBoiSubsystem.off();
+        }
+        
 
     }
 
