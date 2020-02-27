@@ -23,25 +23,26 @@ public class Config {
 
     // Shooter
     public int AZIMUTH_MOTOR_ID = 6;
-    public int ELEVATION_MOTOR_ID = 8;
+    public int ELEVATION_MOTOR_ID = 7;
     public int SHOOTER_MOTOR_ID = 15;
     public int SHOOTER_FOLLOWER_MOTOR_ID = 16;
     public int FEEDER_MOTOR_ID = 9;
 
+    public int BALLMANAGEMENT_MOTOR_ID = 14;
+
     // Intake
-    public int INTAKE_MOTOR_ID = 5;
+    public int INTAKE_MOTOR_ID = 10;
 
     // Climb
-    public int CLIMB_LEFT_MOTOR_ID = 14;
-    public int CLIMB_RIGHT_MOTOR_ID = 7;
+    public int CLIMB_LEFT_MOTOR_ID = 12;
+    public int CLIMB_RIGHT_MOTOR_ID = 8;
 
     // Drive
     public int LEFT_DRIVE_IDS[] = { 2, 3 };
     public int RIGHT_DRIVE_IDS[] = { 1, 4 };
 
     // SpinnyBoi
-    public int SPINNYBOI_MOTOR_ID = 6;
-    public int BALLMANAGEMENT_MOTOR_ID = 13;
+    public int SPINNYBOI_MOTOR_ID = 11;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
@@ -105,7 +106,7 @@ public class Config {
     }
 
     public static class IntakeConfig {
-        public boolean intakePivotEnabled = false;
+        public boolean intakePivotEnabled = true;
 
         public MotorConfig intake = new MotorConfig();
     }
