@@ -66,7 +66,7 @@ public class Config {
         public float forwardElevationSoftLimit_deg = 60;
         public float backwardElevationSoftLimit_deg = 0;
 
-        public float feederSpinUpDeadband_ticks = 100;
+        public float feederSpinUpDeadband_ticks = 300;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();
@@ -92,6 +92,8 @@ public class Config {
 
         public ShooterConfig() {
             shooter.encoderType = MotorConfig.EncoderType.Integrated;
+            shooter.inverted = true;
+            shooterFollower.inverted = true;
 
             azimuth.motionMagicAcceleration = 1350;
             azimuth.motionMagicCruiseVelocity = 1350;
@@ -121,7 +123,7 @@ public class Config {
     }
 
     public static class DriveConfig {
-        public double maxAllowedSpeed_ips = 39.3701;//8 * 12.0;
+        public double maxAllowedSpeed_ips = 8 * 12.0;//39.3701;
         public double maxAllowedTurn_degps = 180;
 
         public int MOTORS_PER_SIDE = 2;
