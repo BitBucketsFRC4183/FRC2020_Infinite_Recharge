@@ -42,14 +42,16 @@ public class OI {
     // ****************************
     // BUTTON DEFINITIONS
     // ****************************
-    private final int ROTATION_CONTROL = PS4Constants.TRIANGLE.getValue();
-    private final int COLOR_CONTROL = PS4Constants.CROSS.getValue();
     static final int DRIVE_LOW_SENSITIVE_BUTTON = PS4Constants.R1.getValue();
     static final int DRIVE_INVERT_BUTTON = PS4Constants.L1.getValue();
     static final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
     static final int DRIVE_LOCK_BUTTON = PS4Constants.OPTIONS.getValue();
     static final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
     static final int DRIVE_METHOD_SWITCH_BUTTON = PS4Constants.LEFT_TRIGGER.getValue();
+    // static final int DRIVER_ROTATION_CONTROL = PS4Constants.TRIANGLE.getValue();
+    // static final int DRIVER_COLOR_CONTROL = PS4Constants.CROSS.getValue();
+    static final int DRIVER_SPINNYBOI_FORWARD = PS4Constants.TRIANGLE.getValue();
+    static final int DRIVER_SPINNYBOI_BACKWARD = PS4Constants.CROSS.getValue();
 
     static final int OPERATOR_INTAKE_IN_POV = 180;
     static final int OPERATOR_INTAKE_OUT_POV = 0;
@@ -124,12 +126,20 @@ public class OI {
         return operatorControl.getRawButtonPressed(OPERATOR_INTAKE_TOGGLE);
     }
 
-    public boolean rotationControl() {
-        return driverControl.getRawButtonPressed(ROTATION_CONTROL);
+    // public boolean rotationControl() {
+    //     return driverControl.getRawButtonPressed(DRIVER_ROTATION_CONTROL);
+    // }
+
+    // public boolean colorControl() {
+    //     return driverControl.getRawButtonPressed(DRIVER_COLOR_CONTROL);
+    // }
+
+    public boolean spinnyBoiForward(){
+        return driverControl.getRawButtonPressed(DRIVER_SPINNYBOI_FORWARD);
     }
 
-    public boolean colorControl() {
-        return driverControl.getRawButtonPressed(COLOR_CONTROL);
+    public boolean spinnyBoiBackward(){
+        return driverControl.getRawButtonPressed(DRIVER_SPINNYBOI_BACKWARD);
     }
 
     /**
