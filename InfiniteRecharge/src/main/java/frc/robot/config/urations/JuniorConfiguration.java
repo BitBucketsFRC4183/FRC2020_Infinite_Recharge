@@ -33,6 +33,8 @@ public class JuniorConfiguration extends Config {
     public JuniorConfiguration() {
         super();
 
+        name = "JUNIOR";
+
         // Subsystem Enablers
         enableShooterSubsystem = false;
         enableBallManagementSubsystem = false;

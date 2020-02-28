@@ -52,11 +52,12 @@ public class IntakeSubsystemTest extends SubsystemTest {
     /**
      * We use the config in this test, so get a copy of it
      */
-    Config config = ConfigChooser.getConfig();
+    Config config;
 
     @Before
     public void beforeTest() throws Exception {
         super.beforeTest();
+        config = ConfigChooser.getConfig();
         config.intake.intakePivotEnabled = true;
 
         // when our subsystem is initialized, it will create a motor and a solenoid. We
