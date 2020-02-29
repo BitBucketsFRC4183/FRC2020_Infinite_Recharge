@@ -5,6 +5,8 @@ import java.util.List;
 
 import frc.robot.subsystem.vision.VisionSubsystem;
 
+import frc.robot.utils.math.MathUtils;
+
 public class ShooterCalculator {
 
     private final List<VelocityPoint> points;
@@ -81,6 +83,11 @@ public class ShooterCalculator {
         }
         // calculate the velocity for this distance_in
         return 0;
+    }
+
+    public double calculateSpeed_ticks() {
+        double speed_rpm = calculateSpeed_rpm();
+        double speed_ticks = MathUtils.unitConverter(speed_rpm, 600, config.shooter.shooter.ticksPerRevolution);
     }
 
     // TODO: empirically test this
