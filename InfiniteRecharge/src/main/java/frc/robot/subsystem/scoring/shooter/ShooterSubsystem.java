@@ -1,6 +1,8 @@
 package frc.robot.subsystem.scoring.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -88,6 +90,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         azimuthMotor = MotorUtils.makeSRX(config.shooter.azimuth);
         elevationMotor = MotorUtils.makeSRX(config.shooter.elevation);
 
+        elevationMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,LimitSwitchNormal.NormallyOpen,0);
+        elevationMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector,LimitSwitchNormal.NormallyOpen,0);
+		
+        elevationMotor.overrideLimitSwitchesEnable(true);
+
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
         //
         ballPropulsionMotor.configOpenloopRamp(0);
@@ -174,6 +181,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             } else if (targetPositionElevation_ticks < -backwardElevationSoftLimit_ticks) {
                 targetPositionElevation_ticks = (int) -backwardElevationSoftLimit_ticks;
             }
+        }
+
+        if (elevationMotor.getSensorCollection().isRevLimitSwitchClosed()){
+            elevationMotor.setSelectedSensorPosition(0);
+            targetPositionElevation_ticks = 0;
         }
 
         azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
