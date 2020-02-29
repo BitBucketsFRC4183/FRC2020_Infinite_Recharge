@@ -67,7 +67,7 @@ public class Config {
         public float forwardElevationSoftLimit_deg = 60;
         public float backwardElevationSoftLimit_deg = 0;
 
-        public float feederSpinUpDeadband_ticks = 300;
+        public float feederSpinUpDeadband_ticks = 100;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();
@@ -108,7 +108,7 @@ public class Config {
     }
 
     public static class IntakeConfig {
-        public boolean intakePivotEnabled = true;
+        public boolean intakePivotEnabled = false;
 
         public MotorConfig intake = new MotorConfig();
     }

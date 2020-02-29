@@ -14,6 +14,6 @@ public class ShooterConstants {
 
     public static final boolean USE_BANG_BANG = true;
     public static final double BANG_BANG_PERCENT = 1.0;
-    public static final double BANG_BANG_RAMP_UP_PERCENT = 0.5;
+    public static final double BANG_BANG_RAMP_UP_PERCENT = 0.4;
     public static final int BANG_BANG_ERROR = 0;
 }
