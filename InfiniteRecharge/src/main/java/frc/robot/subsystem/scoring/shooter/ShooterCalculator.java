@@ -3,8 +3,6 @@ package frc.robot.subsystem.scoring.shooter;
 import java.util.Arrays;
 import java.util.List;
 
-import frc.robot.subsystem.scoring.shooter.SplineVelocityPoint;
-
 import frc.robot.subsystem.vision.VisionSubsystem;
 
 public class ShooterCalculator {
@@ -61,8 +59,8 @@ public class ShooterCalculator {
      */
     public ShooterCalculator() {
         this(Arrays.asList(
-            new VelocityPoint(10, 40, 10), 
-            new VelocityPoint(20, 50, 20)
+            new VelocityPoint(120, 4183, 10), 
+            new VelocityPoint(240, 6183, 40)
             )
         );
     }
