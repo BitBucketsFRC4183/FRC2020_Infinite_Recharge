@@ -108,7 +108,7 @@ public class Config {
     }
 
     public static class IntakeConfig {
-        public boolean intakePivotEnabled = true;
+        public boolean intakePivotEnabled = false;
 
         public MotorConfig intake = new MotorConfig();
     }
@@ -230,9 +230,10 @@ public class Config {
         );
         shooter.elevation.positionPIDF = new PIDF(//
                 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // P
-                0, // I
+                0.0001, // I
                 10 * 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // D
-                1023f / 2650 /// F
+                1023f / 2650, /// F
+                300
         );
         shooter.shooter.velocityPIDF = new PIDF(//
                 0.5 * 1023.0 / 1000, // P
