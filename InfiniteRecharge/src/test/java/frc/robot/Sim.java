@@ -15,8 +15,9 @@ import frc.robot.simulator.sim.RobotPosition.Type;
 import frc.robot.simulator.sim.events.EventManager;
 import frc.robot.simulator.sim.events.FieldRenderEvent;
 import frc.robot.simulator.sim.events.RobotInitializedEvent;
-
+import frc.robot.subsystem.drive.DriveConstants;
 import frc.robot.subsystem.vision.VisionConstants;
+import frc.robot.utils.math.MathUtils;
 
 public class Sim {
 
@@ -95,7 +96,7 @@ public class Sim {
             // compute the vertical angle from our LL to the target
             double tyRads;
             double deltaH = VisionConstants.getTargetHeightInches() - VisionConstants.getCameraHeightInches();
-            tyRads = Math.atan(deltaH / yDistance);
+            tyRads = Math.atan(deltaH / (yDistance / DriveConstants.METERS_PER_INCH));
             double tyDegrees = tyRads * 360.0 / (Math.PI * 2);
             tyDegrees -= VisionConstants.getCameraMountingAngle();
 
