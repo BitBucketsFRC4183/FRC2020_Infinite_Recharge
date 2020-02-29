@@ -23,7 +23,7 @@ import frc.robot.subsystem.SubsystemUtilities.DiagnosticsState;
  */
 public abstract class BitBucketSubsystem extends SubsystemBase {
 
-	protected static DriverStation driverStation = DriverStation.getInstance(); // Convenience
+	protected final DriverStation driverStation; // Convenience
 
 	protected final Config config;
 
@@ -47,6 +47,7 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 	public BitBucketSubsystem(Config config) {
 		setName(getClass().getSimpleName());
 		this.config = config;
+		this.driverStation = DriverStation.getInstance();
 	}
 
 	protected void dashboardInit() {
