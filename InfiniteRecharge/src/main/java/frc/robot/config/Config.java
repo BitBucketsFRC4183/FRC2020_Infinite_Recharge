@@ -108,7 +108,7 @@ public class Config {
     }
 
     public static class IntakeConfig {
-        public boolean intakePivotEnabled = false;
+        public boolean intakePivotEnabled = true;
 
         public MotorConfig intake = new MotorConfig();
     }
