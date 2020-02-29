@@ -23,8 +23,6 @@ import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementSubsyst
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
 
-import frc.robot.subsystem.scoring.shooter.ShooterCalculator;
-
 /**
  * This will test the ShooterSubsystem We prepare a couple other classes for test
  * because this subsystem creates a motor and a solenoid
@@ -102,45 +100,5 @@ public class ShooterSubsystemTest extends SubsystemTest {
         // verify that the we told the ballManagementSubsystem to fire
         verify(ballManagementSubsystem).fire(anyFloat());
     }
-
-    /**
-     * Test the ShooterCalculator calculateHoodAngle_deg
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testCalculateHoodAngle_degNoTarget() throws Exception {
-        // create and initialize the subsystem so we have motor objects
-        ShooterCalculator shooterCalculator = new ShooterCalculator();
-        shooterCalculator.initialize(visionSubsystem);
-
-        // check no valid target
-        when(visionSubsystem.getValidTarget()).thenReturn(false);
-        assertEquals(0.0, shooterCalculator.calculateHoodAngle_deg(), 0);
-    }
-
-    /**
-     * Test the ShooterCalculator calculateHoodAngle_deg
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testCalculateHoodAngle_degExactTarget() throws Exception {
-        // create and initialize the subsystem so we have motor objects
-        ShooterCalculator shooterCalculator = new ShooterCalculator();
-        shooterCalculator.initialize(visionSubsystem);
-
-        // check valid target with 10 degrees ty and 120 in (10 ft) away
-        double ty = 0;
-        double distance_in = 120;
-        when(visionSubsystem.getValidTarget()).thenReturn(true);
-        when(visionSubsystem.getTy()).thenReturn(ty);
-        when(visionSubsystem.approximateDistanceFromTarget(eq(ty))).thenReturn(distance_in);
-
-        // assert that we direct the hood to 40 degrees from the initiation line
-        assertEquals(40.0, shooterCalculator.calculateHoodAngle_deg(), .1);
-    }
-
-    // TODO: unit tests for velocity
 
 }
