@@ -259,7 +259,7 @@ public class Robot extends TimedRobot {
 
             if (oi.setElevationToDashboardNumber()) {
                 shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(),
-                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 10));
+                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 45));
             }
         }
 
