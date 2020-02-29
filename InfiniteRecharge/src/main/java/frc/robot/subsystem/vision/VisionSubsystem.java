@@ -100,6 +100,14 @@ public class VisionSubsystem extends BitBucketSubsystem {
         limelightTable.getEntry("pipeline").setDouble(pipelineToChangeTo);
     }
 
+    public void turnOnLEDs() {
+        limelightTable.getEntry("ledMode").setNumber(3);
+    }
+
+    public void turnOffLEDs() {
+        limelightTable.getEntry("ledMode").setNumber(1);
+    }
+
     public double getTx() {
         return tx;
     }
