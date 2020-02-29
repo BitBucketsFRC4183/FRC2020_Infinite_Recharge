@@ -404,7 +404,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
-        SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", 10);
+        SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", 45);
 
         SmartDashboard.putNumber(getName() + "/Shooter %Output", 0.5); // TODO TEMPORARY
 
