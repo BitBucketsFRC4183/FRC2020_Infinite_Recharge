@@ -185,7 +185,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         if (elevationMotor.getSensorCollection().isRevLimitSwitchClosed()){
             elevationMotor.setSelectedSensorPosition(0);
-            targetPositionElevation_ticks = 0;
         }
 
         azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
@@ -405,7 +404,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
-        SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", 10);
+        SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", 45);
 
         SmartDashboard.putNumber(getName() + "/Shooter %Output", 0.5); // TODO TEMPORARY
 
@@ -502,6 +501,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 // However if our error is 300, 300 is definitely MORE than -150,
                 // so it will continue on to the other if statements.
 
+            } else if (error < 0 && error > -tp100ms / 8) {
+                ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_MAINTAIN_SPEED_PERCENT);
             } else if (error < ShooterConstants.BANG_BANG_ERROR) {
                 ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_PERCENT);
             } else {
