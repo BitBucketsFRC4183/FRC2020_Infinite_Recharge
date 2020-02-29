@@ -215,6 +215,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         ballPropulsionMotor.set(0);
         SmartDashboard.putString(getName() + "/Shooter State", "Doing Nothing");
 
+        // SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 0);
+
         upToSpeed = false;
     }
 
