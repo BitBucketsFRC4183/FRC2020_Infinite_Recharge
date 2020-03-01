@@ -106,7 +106,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
             config.drive.maxAllowedSpeed_ips * DriveConstants.METERS_PER_INCH,
             DRIVE_UTILS.MAX_ACCELERATION_MPSPS
         );
-        trajectoryConfig.setKinematics(DRIVE_UTILS.KINEMATICS);
         trajectoryConfig.addConstraint(voltageConstraint);
         trajectoryConfig.addConstraint(kinematicsConstraint);
 
@@ -117,7 +116,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
             trajectoryConfig
         );
 
-        ramsete = new RamseteController();
+        ramsete = new RamseteController(2*2*2, 0.7*2);
     }
 
 
