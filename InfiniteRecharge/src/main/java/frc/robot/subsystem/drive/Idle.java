@@ -35,10 +35,6 @@ public class Idle extends CommandBase {
             return CommandUtils.stateChange(new RotationDrive(DRIVE_SUBSYSTEM));
         }
 
-        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.AUTO) {
-            return CommandUtils.stateChange(new AutoDrive(DRIVE_SUBSYSTEM));
-        }
-
         return false;
     }
 }
