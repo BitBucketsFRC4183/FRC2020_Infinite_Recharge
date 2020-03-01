@@ -34,6 +34,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     private boolean upToSpeed = false;
     private boolean positionElevationSwitcherAlreadyPressed = false;
+    private boolean spinningUp = false;
 
     // Integers
     private int targetPositionAzimuth_ticks;
@@ -189,6 +190,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
         elevationMotor.set(ControlMode.MotionMagic, targetPositionElevation_ticks);
+
+        if (spinningUp){
+            spinUp();
+        }
     }
 
     public void spinUp() {
@@ -227,6 +232,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putString(getName() + "/Shooter State", "Doing Nothing");
 
         upToSpeed = false;
+        spinningUp = false;
     }
 
     public void spinBMS() {
@@ -329,6 +335,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // autoAimAzimuth();
         autoAimHoodAngle();
         // autoAimVelocity();
+        visionSubsystem.turnOnLEDs();
+    }
+    public void stopAutoAim() {
+        visionSubsystem.turnOffLEDs();
     }
 
     public boolean withinRange(double number, double min, double max) {
@@ -395,6 +405,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public boolean isUpToSpeed() {
         return upToSpeed;
+    }
+
+    public boolean isSpinningUp(){
+        return spinningUp;
+    }
+
+    public void startSpinningUp(){
+        spinningUp = true;
     }
 
     @Override
