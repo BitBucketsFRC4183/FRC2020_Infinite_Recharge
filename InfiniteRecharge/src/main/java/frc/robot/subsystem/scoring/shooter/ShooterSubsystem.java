@@ -1,6 +1,8 @@
 package frc.robot.subsystem.scoring.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -32,6 +34,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     private boolean upToSpeed = false;
     private boolean positionElevationSwitcherAlreadyPressed = false;
+    private boolean spinningUp = false;
 
     // Integers
     private int targetPositionAzimuth_ticks;
@@ -87,6 +90,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         super.initialize();
         azimuthMotor = MotorUtils.makeSRX(config.shooter.azimuth);
         elevationMotor = MotorUtils.makeSRX(config.shooter.elevation);
+
+        elevationMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,LimitSwitchNormal.NormallyOpen,0);
+        elevationMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector,LimitSwitchNormal.NormallyOpen,0);
+		
+        elevationMotor.overrideLimitSwitchesEnable(true);
 
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
         //
@@ -176,8 +184,19 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             }
         }
 
+        if (elevationMotor.getSensorCollection().isRevLimitSwitchClosed()){
+            elevationMotor.setSelectedSensorPosition(0);
+        }
+
         azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
-        elevationMotor.set(ControlMode.MotionMagic, targetPositionElevation_ticks);
+        
+
+        if (spinningUp){
+            spinUp();
+            elevationMotor.set(ControlMode.MotionMagic, targetPositionElevation_ticks);
+        } else {
+            elevationMotor.set(0);
+        }
     }
 
     public void spinUp() {
@@ -218,6 +237,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", 0);
 
         upToSpeed = false;
+        spinningUp = false;
     }
 
     public void spinBMS() {
@@ -320,6 +340,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // autoAimAzimuth();
         autoAimHoodAngle();
         // autoAimVelocity();
+        visionSubsystem.turnOnLEDs();
+    }
+    public void stopAutoAim() {
+        visionSubsystem.turnOffLEDs();
     }
 
     public boolean withinRange(double number, double min, double max) {
@@ -388,6 +412,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         return upToSpeed;
     }
 
+    public boolean isSpinningUp(){
+        return spinningUp;
+    }
+
+    public void startSpinningUp(){
+        spinningUp = true;
+    }
+
     @Override
     protected void dashboardInit() {
         super.dashboardInit();
@@ -395,7 +427,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
-        SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", 10);
+        SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
 
         SmartDashboard.putNumber(getName() + "/Shooter %Output", 0.5); // TODO TEMPORARY
 
@@ -492,6 +524,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 // However if our error is 300, 300 is definitely MORE than -150,
                 // so it will continue on to the other if statements.
 
+            } else if (error < 0 && error > -tp100ms / 8) {
+                ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_MAINTAIN_SPEED_PERCENT);
             } else if (error < ShooterConstants.BANG_BANG_ERROR) {
                 ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_PERCENT);
             } else {

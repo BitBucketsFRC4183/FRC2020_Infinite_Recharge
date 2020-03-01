@@ -9,14 +9,14 @@ defaults:
      rightDriveFollower: 4
 
      azimuth: 6
-     elevation: 8
+     elevation: 7
      shooter: 15
      feeder: 9
-     intake: 5
-     spinnyboi: 6
-     climbLeft: 14
-     climbRight: 7
-     bms: 13
+     intake: 10
+     spinnyboi: 11
+     climbLeft: 12
+     climbRight: 8
+     bms: 14
 
     ####
     # junior ids
@@ -152,7 +152,7 @@ transmissions:
     stallCurrent: "{{ defaults.falcon.stallCurrent }}"
     voltage: "{{ defaults.falcon.voltage }}"
     maxRPM: "{{ defaults.falcon.maxRPM }}"
-    mass: "{{ defaults.falcon.mass }}"
+    mass: "{{ defaults.falcon.mass * 10 }}"
     diameter: "{{ defaults.falcon.diameter }}"
   gearRatio: "{{ defaults.shooterGearing }}"
   efficiency: 1.0

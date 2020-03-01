@@ -20,11 +20,14 @@ import frc.robot.subsystem.spinnyboi.SpinnyBoiSubsystem;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.climber.ClimbSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
+import frc.robot.utils.CommandUtils;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
+import frc.robot.subsystem.drive.auto.AutoDrive;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.pidhelper.PIDHelperSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
+import frc.robot.subsystem.scoring.shooter.ShooterConstants;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 
 /**
@@ -150,6 +153,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        CommandUtils.stateChange(new AutoDrive(driveSubsystem));
     }
 
     /**
@@ -161,6 +165,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        shooterSubsystem.rotateToDeg(0, ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
     }
 
     /**
@@ -218,7 +223,7 @@ public class Robot extends TimedRobot {
 
             // Spin up on pressing [spinUp]
             if (oi.spinUp()) {
-                shooterSubsystem.spinUp();
+                shooterSubsystem.startSpinningUp();
             } else {
                 shooterSubsystem.stopSpinningUp();
             }
@@ -240,6 +245,8 @@ public class Robot extends TimedRobot {
 
             if (oi.aimBot()) {
                 shooterSubsystem.autoAim();
+            } else {
+                shooterSubsystem.stopAutoAim();
             }
 
             if (oi.zero()) {
@@ -256,7 +263,7 @@ public class Robot extends TimedRobot {
 
             if (oi.setElevationToDashboardNumber()) {
                 shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(),
-                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 10));
+                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG));
             }
         }
 
