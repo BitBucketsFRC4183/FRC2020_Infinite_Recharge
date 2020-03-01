@@ -199,6 +199,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
     }
 
+    public void spinUp(double velocity_rpm) {
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Rpm", velocity_rpm);
+        spinUp();
+    }
+    
     public void spinUp() {
         float targetShooterVelocity = (float) MathUtils
                 .unitConverter(
@@ -326,9 +331,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public void autoAimVelocity() {
         double velocity_rpm = shooterCalculator.calculateSpeed_rpm();
-        double ticksVelocity = MathUtils.unitConverter(velocity_rpm, 600, config.shooter.shooter.ticksPerRevolution);
-
-        setShooterVelocity((int) ticksVelocity);
+        spinUp(velocity_rpm);
 
         // TODO: do this stuff empirically (yay!)
         // the math rn isn' rly accurate
@@ -337,17 +340,13 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAim() {
-        // autoAimAzimuth();
+        autoAimAzimuth();
         autoAimHoodAngle();
-        // autoAimVelocity();
         visionSubsystem.turnOnLEDs();
+        autoAimVelocity();
     }
     public void stopAutoAim() {
         visionSubsystem.turnOffLEDs();
-    }
-
-    public boolean withinRange(double number, double min, double max) {
-        return number >= min && number <= max;
     }
 
     public void calculateAbsoluteDegreesToRotate() {
