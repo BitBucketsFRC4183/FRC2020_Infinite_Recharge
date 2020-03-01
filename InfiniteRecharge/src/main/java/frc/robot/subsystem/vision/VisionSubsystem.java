@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+
 public class VisionSubsystem extends BitBucketSubsystem {
 
     private boolean validTarget = false;
@@ -59,20 +60,6 @@ public class VisionSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Estimated Distance ", distance);
     }
 
-    public double getShooterVelocityForTarget() {
-
-        final double d = approximateDistanceFromTarget(ty);
-        final double h = VisionConstants.TARGET_HEIGHT_INCHES;
-        final double angle = VisionConstants.BALL_SHOOTING_ANGLE;
-
-        final double numerator = MathUtils.G * Math.pow(d, 2);
-        final double denominator = 2 * (d * Math.tan(angle) - h) * Math.pow(Math.cos(angle), 2);
-
-        final double vel = Math.sqrt(numerator / denominator);
-
-        return vel;
-    }
-
     public double approximateDistanceFromTarget(final double ty) {
         return (VisionConstants.TARGET_HEIGHT_INCHES - VisionConstants.CAMERA_HEIGHT_INCHES)
                 / Math.tan(Math.toRadians(VisionConstants.CAMERA_MOUNTING_ANGLE + ty));
@@ -111,6 +98,14 @@ public class VisionSubsystem extends BitBucketSubsystem {
         }
 
         limelightTable.getEntry("pipeline").setDouble(pipelineToChangeTo);
+    }
+
+    public void turnOnLEDs() {
+        limelightTable.getEntry("ledMode").setNumber(3);
+    }
+
+    public void turnOffLEDs() {
+        limelightTable.getEntry("ledMode").setNumber(1);
     }
 
     public double getTx() {

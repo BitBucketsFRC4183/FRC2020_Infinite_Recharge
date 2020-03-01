@@ -1,6 +1,8 @@
 package frc.robot.subsystem.scoring.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -16,8 +18,8 @@ import frc.robot.utils.data.filters.RunningAverageFilter;
 import frc.robot.subsystem.scoring.shooter.ShooterConstants;
 import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementConstants;
 import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementSubsystem;
-
 import frc.robot.subsystem.vision.VisionSubsystem;
+import frc.robot.subsystem.scoring.shooter.ShooterCalculator;
 
 public class ShooterSubsystem extends BitBucketSubsystem {
 
@@ -32,6 +34,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     private boolean upToSpeed = false;
     private boolean positionElevationSwitcherAlreadyPressed = false;
+    private boolean spinningUp = false;
 
     // Integers
     private int targetPositionAzimuth_ticks;
@@ -46,7 +49,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Doubles
     private double absoluteDegreesToRotateAzimuth = 0.0;
-    private double absoluteDegreesElevation = 0.0;
 
     private double rightAzimuthSoftLimit_ticks;
     private double leftAzimuthSoftLimit_ticks;
@@ -61,6 +63,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public BallManagementSubsystem ballManagementSubsystem;
     private VisionSubsystem visionSubsystem;
+    private ShooterCalculator shooterCalculator = new ShooterCalculator();
 
     //////////////////////////////////////////////////////////////////////////////
     // Motors
@@ -80,7 +83,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public ShooterSubsystem(Config config, VisionSubsystem visionSubsystem) {
         super(config);
         this.visionSubsystem = visionSubsystem;
-
     }
 
     @Override
@@ -88,6 +90,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         super.initialize();
         azimuthMotor = MotorUtils.makeSRX(config.shooter.azimuth);
         elevationMotor = MotorUtils.makeSRX(config.shooter.elevation);
+
+        elevationMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,LimitSwitchNormal.NormallyOpen,0);
+        elevationMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector,LimitSwitchNormal.NormallyOpen,0);
+		
+        elevationMotor.overrideLimitSwitchesEnable(true);
 
         ballPropulsionMotor = MotorUtils.makeFX(config.shooter.shooter);
         //
@@ -132,6 +139,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             elevationMotor.configReverseSoftLimitEnable(true);
             elevationMotor.configReverseSoftLimitThreshold((int) -backwardElevationSoftLimit_ticks);
         }
+
+        shooterCalculator.initialize(visionSubsystem);
     }
 
     @Override
@@ -155,7 +164,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void periodic(float deltaTime) {
 
         calculateAbsoluteDegreesToRotate();
-        calculateAbsoluteDegreesElevation();
 
         targetPositionAzimuth_ticks = (int) (targetPositionAzimuth_ticks + (targetChangeAzimuth_ticks * deltaTime));
         targetPositionElevation_ticks = (int) (targetPositionElevation_ticks
@@ -175,9 +183,20 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 targetPositionElevation_ticks = (int) -backwardElevationSoftLimit_ticks;
             }
         }
+            SmartDashboard.putBoolean(getName() + "/Reverse Limit Switch Closed?", elevationMotor.getSensorCollection().isRevLimitSwitchClosed());
+        if (elevationMotor.getSensorCollection().isRevLimitSwitchClosed()){
+            elevationMotor.setSelectedSensorPosition(0);
+        }
 
         azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
-        elevationMotor.set(ControlMode.MotionMagic, targetPositionElevation_ticks);
+        
+
+        if (spinningUp){
+            spinUp();
+            elevationMotor.set(ControlMode.MotionMagic, targetPositionElevation_ticks);
+        } else {
+            elevationMotor.set(0);
+        }
     }
 
     public void spinUp() {
@@ -216,6 +235,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putString(getName() + "/Shooter State", "Doing Nothing");
 
         upToSpeed = false;
+        spinningUp = false;
     }
 
     public void spinBMS() {
@@ -298,27 +318,34 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         rotateToDeg(absoluteDegreesToRotateAzimuth, getElevationDeg());
     }
 
-    public void autoAimElevation() {
-        rotateToDeg(getAzimuthDeg(), absoluteDegreesElevation);
+    public void autoAimHoodAngle() {
+        rotateToDeg(getAzimuthDeg(), shooterCalculator.calculateHoodAngle_deg());
     }
 
     public void autoAimVelocity() {
-        double feetPerSecVelocity = visionSubsystem.getShooterVelocityForTarget();
-        double ticksVelocity = (feetPerSecVelocity * 12 * config.shooter.shooter.ticksPerRevolution)
-                / (ShooterConstants.SHOOTER_FLYWHEEL_RADIUS * 2 * Math.PI * 10);
+        double velocity_rpm = shooterCalculator.calculateSpeed_rpm();
+        double ticksVelocity = MathUtils.unitConverter(velocity_rpm, 600, config.shooter.shooter.ticksPerRevolution);
 
         setShooterVelocity((int) ticksVelocity);
 
         // TODO: do this stuff empirically (yay!)
         // the math rn isn' rly accurate
-        //  as u get closer decrease basically, as u get further, increase.
+        // as u get closer decrease basically, as u get further, increase.
         // tho obv we'll test it and see
     }
 
     public void autoAim() {
         // autoAimAzimuth();
-        autoAimElevation();
+        autoAimHoodAngle();
         // autoAimVelocity();
+        visionSubsystem.turnOnLEDs();
+    }
+    public void stopAutoAim() {
+        visionSubsystem.turnOffLEDs();
+    }
+
+    public boolean withinRange(double number, double min, double max) {
+        return number >= min && number <= max;
     }
 
     public void calculateAbsoluteDegreesToRotate() {
@@ -336,23 +363,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             // If enabled in the constants file, calculate the average of the last values
             // passed in (up to what FILTER_LENGTH is in ShooterConstants.java).
             absoluteDegreesToRotateAzimuth = ShooterConstants.USE_AZIMUTH_FILTER ? azimuthFilter.calculate(degrees) : degrees;
-        }
-    }
-
-    public void calculateAbsoluteDegreesElevation() {
-        boolean validTarget = visionSubsystem.getValidTarget();
-        if (validTarget) {
-            double ty = visionSubsystem.getTy();
-            double degrees = getTargetElevationDegGivenOffset(ty);
-            double distance = visionSubsystem.approximateDistanceFromTarget(ty);
-
-            // TODO: empirically test this
-            // do the distance thing here
-            // decreases as u get closer
-            // increases as u get it farther
-
-            absoluteDegreesElevation = degrees + 40;
-            absoluteDegreesElevation = ShooterConstants.USE_ELEVATION_FILTER ? elevationFilter.calculate(absoluteDegreesElevation) : absoluteDegreesElevation;
         }
     }
 
@@ -400,6 +410,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         return upToSpeed;
     }
 
+    public boolean isSpinningUp(){
+        return spinningUp;
+    }
+
+    public void startSpinningUp(){
+        spinningUp = true;
+    }
+
     @Override
     protected void dashboardInit() {
         super.dashboardInit();
@@ -407,8 +425,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
-        SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", 10);
-
+        SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
 
         SmartDashboard.putNumber(getName() + "/Shooter %Output", 0.5); // TODO TEMPORARY
 
@@ -419,7 +436,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // Put the outputs on the smart dashboard.
         SmartDashboard.putNumber(getName() + "/Shooter Output", ballPropulsionMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Feeder Output", feeder.getMotorOutputPercent());
-        
+
         SmartDashboard.putNumber(getName() + "/Shooter current", ballPropulsionMotor.getSupplyCurrent());
 
         SmartDashboard.putNumber(getName() + "/Target Position ", targetPositionAzimuth_ticks);
@@ -444,8 +461,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Elevation Target Position Deg ",
                 MathUtils.unitConverter(targetPositionElevation_ticks, config.shooter.elevation.ticksPerRevolution, 360)
                         * config.shooter.elevationGearRatio);
-        
-        SmartDashboard.putNumber(getName() + "/Absolute Degrees Elevation", absoluteDegreesElevation);
+
+        SmartDashboard.putNumber(getName() + "/Hood Angle", shooterCalculator.calculateHoodAngle_deg());
         
         SmartDashboard.putNumber(getName() + "/Falcon temperature", (32 + 1.8*ballPropulsionMotor.getTemperature()));
     }
@@ -463,7 +480,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         targetPositionElevation_ticks = 0;
         targetChangeElevation_ticks = 0;
         absoluteDegreesToRotateAzimuth = 0;
-        absoluteDegreesElevation = 0;
     }
 
     public void zeroElevationSensor(){
@@ -473,34 +489,42 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private double lastTime = System.nanoTime();
 
     public void setShooterVelocity(int tp100ms) {
-        double t = System.nanoTime();
+        double currentTime = System.nanoTime();
 
-        SmartDashboard.putNumber(getName() + "/dt", (t - lastTime) / 1000000000);
-        lastTime = t;
+        SmartDashboard.putNumber(getName() + "/dt", (currentTime - lastTime) / 1000000000);
+        lastTime = currentTime;
 
-        int e = ballPropulsionMotor.getSelectedSensorVelocity() - tp100ms;
+        int error = ballPropulsionMotor.getSelectedSensorVelocity() - tp100ms;
 
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Ticks",
                 ballPropulsionMotor.getSelectedSensorVelocity());
 
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Target", tp100ms);
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error", e);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity Error", error);
 
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Current RPM",
-                MathUtils.unitConverter(ballPropulsionMotor.getSelectedSensorVelocity(), config.shooter.shooter.ticksPerRevolution,
-                600
-            ) / config.shooter.shooterGearRatio);
+                MathUtils.unitConverter(ballPropulsionMotor.getSelectedSensorVelocity(),
+                        config.shooter.shooter.ticksPerRevolution, 600) / config.shooter.shooterGearRatio);
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Target RPM",
-                MathUtils.unitConverter(tp100ms, config.shooter.shooter.ticksPerRevolution,
-                600
-            ) / config.shooter.shooterGearRatio);
+                MathUtils.unitConverter(tp100ms, config.shooter.shooter.ticksPerRevolution, 600)
+                        / config.shooter.shooterGearRatio);
         SmartDashboard.putNumber(getName() + "/Shooter Velocity Error RPM",
-                MathUtils.unitConverter(e, config.shooter.shooter.ticksPerRevolution,
-                600
-            ) / config.shooter.shooterGearRatio);
-        
+                MathUtils.unitConverter(error, config.shooter.shooter.ticksPerRevolution, 600)
+                        / config.shooter.shooterGearRatio);
+
         if (ShooterConstants.USE_BANG_BANG) {
-            if (e < ShooterConstants.BANG_BANG_ERROR) {
+            if (error < -tp100ms / 2) {
+                ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_RAMP_UP_PERCENT);
+                // I.e if our error is -300 and our tp100ms is 300, our -tp100ms is -300.
+                // divide that by 2 and you get -150.
+                // -300 is less than -150, so the shooter will ramp up.
+
+                // However if our error is 300, 300 is definitely MORE than -150,
+                // so it will continue on to the other if statements.
+
+            } else if (error < 0 && error > -tp100ms / 8) {
+                ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_MAINTAIN_SPEED_PERCENT);
+            } else if (error < ShooterConstants.BANG_BANG_ERROR) {
                 ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_PERCENT);
             } else {
                 ballPropulsionMotor.set(ControlMode.PercentOutput, 0);

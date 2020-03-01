@@ -5,6 +5,7 @@ import frc.robot.config.Config.ShooterConfig.BallManagementConfig;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class Config {
+    public String name = "Shawty";
 
     //////////////////////////////////////////////////////////////////////////////
     // Subsystem Enablers
@@ -66,7 +67,7 @@ public class Config {
         public float forwardElevationSoftLimit_deg = 60;
         public float backwardElevationSoftLimit_deg = 0;
 
-        public float feederSpinUpDeadband_ticks = 300;
+        public float feederSpinUpDeadband_ticks = 100;
 
         public MotorConfig azimuth = new MotorConfig();
         public MotorConfig elevation = new MotorConfig();
@@ -107,7 +108,7 @@ public class Config {
     }
 
     public static class IntakeConfig {
-        public boolean intakePivotEnabled = true;
+        public boolean intakePivotEnabled = false;
 
         public MotorConfig intake = new MotorConfig();
     }
@@ -123,7 +124,7 @@ public class Config {
     }
 
     public static class DriveConfig {
-        public double maxAllowedSpeed_ips = 8 * 12.0;//39.3701;
+        public double maxAllowedSpeed_ips = 14 * 12.0;//39.3701;
         public double maxAllowedTurn_degps = 180;
 
         public int MOTORS_PER_SIDE = 2;
@@ -147,11 +148,11 @@ public class Config {
         public double gearRatio = (10 + 8.0 / 9);
         public double ticksPerRevolution = 2048;
         public double wheelRadius_in = 3;
-        public double trackWidth_in = 22.65;
+        public double trackWidth_in = 23.90069263162104;
 
         public double ROTATION_DRIVE_KP = 5 * 2 * Math.PI / 360;
 
-        public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);;
+        public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(0.159, 2.46, 0.303);
 
         public DriveConfig() {
         }
@@ -229,9 +230,10 @@ public class Config {
         );
         shooter.elevation.positionPIDF = new PIDF(//
                 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // P
-                0, // I
+                0.0001, // I
                 10 * 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // D
-                1023f / 2650 /// F
+                1023f / 2650, /// F
+                300
         );
         shooter.shooter.velocityPIDF = new PIDF(//
                 0.5 * 1023.0 / 1000, // P

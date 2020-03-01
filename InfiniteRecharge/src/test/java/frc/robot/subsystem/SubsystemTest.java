@@ -1,6 +1,7 @@
 package frc.robot.subsystem;
 
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -21,6 +22,7 @@ import edu.wpi.first.hal.SimDeviceJNI;
 import edu.wpi.first.hal.SolenoidJNI;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -29,9 +31,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NetworkTablesJNI.class, HAL.class, PortsJNI.class, DriverStation.class, HALUtil.class,
-        ConstantsJNI.class, SolenoidJNI.class, SimDeviceJNI.class, MotControllerJNI.class, SmartDashboard.class, })
+        ConstantsJNI.class, SolenoidJNI.class, SimDeviceJNI.class, MotControllerJNI.class, SmartDashboard.class,
+        Preferences.class })
 @SuppressStaticInitializationFor({ "edu.wpi.first.networktables.NetworkTablesJNI", "edu.wpi.first.hal.JNIWrapper",
-        "com.ctre.phoenix.CTREJNIWrapper", "edu.wpi.first.wpilibj.DriverStation" })
+        "com.ctre.phoenix.CTREJNIWrapper", "edu.wpi.first.wpilibj.DriverStation", 
+        "edu.wpi.first.wpilibj.Preferences" })
 public abstract class SubsystemTest {
 
     /**
@@ -40,6 +44,9 @@ public abstract class SubsystemTest {
      */
     @Mock
     protected DriverStation driverStation;
+
+    @Mock
+    protected Preferences preferences;
 
     @Before
     public void beforeTest() throws Exception {
@@ -56,6 +63,11 @@ public abstract class SubsystemTest {
         // Mock the DriverStation class as well. We don't want it instantiated at all
         mockStatic(DriverStation.class);
         when(DriverStation.getInstance()).thenReturn(driverStation);
+
+        // Mock the Preferences class as well, just like the DriverStation
+        mockStatic(Preferences.class);
+        when(Preferences.getInstance()).thenReturn(preferences);
+        when(preferences.getString(anyString(), anyString())).thenReturn("");
 
         // make sure any solenoid creation attempts will go through. These methods are
         // called
