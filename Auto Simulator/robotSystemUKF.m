@@ -4,7 +4,7 @@ physicsConstants;
 
 dt = 2/100;
 
-ts = 0:dt:3;
+ts = 0:dt:1.5;
 us = 6 + 6*[sin(ts); cos(ts)];
 [~, t_width] = size(ts);
 
@@ -48,7 +48,7 @@ for i=1:t_width
     Ys_hat(i) = x_hat(Y);
     Thetas(i) = x0(THETA);
     Thetas_hat(i) = x_hat(THETA);
-    Thetas_m(i) = y(LL_THETA);
+    %Thetas_m(i) = y(LL_THETA);
     Eigs(i, :) = eig(P);
 end
 

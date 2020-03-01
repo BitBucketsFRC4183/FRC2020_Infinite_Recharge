@@ -75,13 +75,14 @@ public class NavigationSubsystem extends BitBucketSubsystem {
         ahrs = BitBucketsAHRS.instance();
         sys = new RobotSystem();
 
-        ahrs.setAngleAdjustment(90);
+        ahrs.reset();
+        ahrs.setAngleAdjustment(0);
 
-        Rotation2d rotation = Rotation2d.fromDegrees(-ahrs.getAngle());
+        Rotation2d rotation = Rotation2d.fromDegrees(getYaw_deg());
 
         odometry = new DifferentialDriveOdometry(
             rotation,
-            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT, rotation)
+            new Pose2d(new Translation2d(0, 0), rotation)
         );
 	}
 
@@ -184,7 +185,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	}
 
 	public double getYaw_deg() {
-		return -ahrs.getAngle();
+		return -Math.IEEEremainder(ahrs.getAngle(), 360);
 	}
 	public double getYawRate_degPerSec() {
 		return ahrs.getRate();

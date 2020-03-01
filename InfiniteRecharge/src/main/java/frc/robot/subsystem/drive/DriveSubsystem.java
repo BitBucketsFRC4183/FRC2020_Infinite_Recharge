@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -98,25 +99,24 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         DifferentialDriveKinematicsConstraint kinematicsConstraint = new DifferentialDriveKinematicsConstraint(
             DRIVE_UTILS.KINEMATICS,
-            config.drive.maxAllowedSpeed_ips
+            config.drive.maxAllowedSpeed_ips * DriveConstants.METERS_PER_INCH
         );
 
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
             config.drive.maxAllowedSpeed_ips * DriveConstants.METERS_PER_INCH,
             DRIVE_UTILS.MAX_ACCELERATION_MPSPS
         );
-        trajectoryConfig.setKinematics(DRIVE_UTILS.KINEMATICS);
         trajectoryConfig.addConstraint(voltageConstraint);
         trajectoryConfig.addConstraint(kinematicsConstraint);
 
         autoTrajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT, Rotation2d.fromDegrees(90)),
-            List.of(),//FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
-            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT_PLUS_A_BIT, Rotation2d.fromDegrees(90)),
+            new Pose2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0)),
+            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),//FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
+            new Pose2d(new Translation2d(3, 0), Rotation2d.fromDegrees(0)),
             trajectoryConfig
         );
 
-        ramsete = new RamseteController();
+        ramsete = new RamseteController(2*2*2, 0.7*2);
     }
 
 
@@ -444,26 +444,34 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
+    public int getLeftVelocity_tp100ms() {
+        return ((config.drive.invertLeftCommand) ? -1 : 1) * leftMotors[0].getSelectedSensorVelocity();
+    }
+
+    public int getRightVelocity_tp100ms() {
+        return ((config.drive.invertRightCommand) ? -1 : 1) * rightMotors[0].getSelectedSensorVelocity();
+    }
+
     public double getApproxV() {
         return 
             config.drive.wheelRadius_in * 
-            (rightMotors[0].getSelectedSensorVelocity() + leftMotors[0].getSelectedSensorVelocity()) / 2.0;
+            (getLeftVelocity_tp100ms() + getRightVelocity_tp100ms()) / 2.0;
     }
 
     public double getApproxOmega() {
         return
             config.drive.wheelRadius_in * 
-            (rightMotors[0].getSelectedSensorVelocity() - leftMotors[0].getSelectedSensorVelocity()) / (config.drive.trackWidth_in / 2.0);
+            (getRightVelocity_tp100ms() - getLeftVelocity_tp100ms()) / (config.drive.trackWidth_in / 2.0);
     }
 
 
 
     public double getLeftDistance_meters() {
-        return leftMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
+        return ((config.drive.invertLeftCommand) ? -1 : 1) * leftMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
     }
 
     public double getRightDistance_meters() {
-        return rightMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
+        return ((config.drive.invertRightCommand) ? -1 : 1) * rightMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
     }
 
 	public Trajectory getAutoTrajectory() {
