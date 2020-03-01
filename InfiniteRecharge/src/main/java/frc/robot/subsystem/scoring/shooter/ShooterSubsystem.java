@@ -189,10 +189,13 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
 
         azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
-        elevationMotor.set(ControlMode.MotionMagic, targetPositionElevation_ticks);
+        
 
         if (spinningUp){
             spinUp();
+            elevationMotor.set(ControlMode.MotionMagic, targetPositionElevation_ticks);
+        } else {
+            elevationMotor.set(0);
         }
     }
 
