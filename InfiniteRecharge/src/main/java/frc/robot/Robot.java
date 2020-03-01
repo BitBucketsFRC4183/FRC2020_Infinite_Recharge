@@ -11,8 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
@@ -152,7 +155,31 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        CommandUtils.stateChange(new AutoDrive(driveSubsystem));
+        shooterSubsystem.spinBMS();
+        shooterSubsystem.rotateToDeg(0, 45);
+        shooterSubsystem.startSpinningUp();
+
+        intakeSubsystem.toggleIntakeArm();
+
+        new WaitUntilCommand(() -> {
+            System.out.println("Wait until");
+            return shooterSubsystem.isUpToSpeed();
+        })
+        .andThen(new WaitCommand(5)) // for BMS
+        .andThen(new InstantCommand(() -> {
+            System.out.println("Turning everything off");
+            shooterSubsystem.stopSpinningUp();
+            shooterSubsystem.holdFire();
+            shooterSubsystem.rotateToDeg(0, 0);
+
+            intakeSubsystem.intake();
+        }))
+        .andThen(new AutoDrive(driveSubsystem))
+        .andThen(new InstantCommand(() -> {
+            System.out.println("Turning intake off");
+            intakeSubsystem.off();
+        }))
+        .schedule();
     }
 
     /**
