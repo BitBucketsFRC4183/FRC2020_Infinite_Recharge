@@ -31,6 +31,8 @@ import frc.robot.utils.data.filters.RisingEdgeFilter;
 import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
+import frc.robot.subsystem.drive.RamseteSpecial;
+
 
 
 public class DriveSubsystem extends BitBucketSubsystem {
@@ -110,13 +112,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectoryConfig.addConstraint(kinematicsConstraint);
 
         autoTrajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0)),
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),//FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
-            new Pose2d(new Translation2d(3, 0), Rotation2d.fromDegrees(0)),
+            new Pose2d(new Translation2d(0, 0), Rotation2d.fromDegrees(180)),
+            List.of(new Translation2d(-3.18, -1.46), new Translation2d(-5.18, -1.46)),//FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
+            new Pose2d(new Translation2d(-5.15, -1.46), Rotation2d.fromDegrees(180)),
             trajectoryConfig
         );
 
-        ramsete = new RamseteController(2*2*2, 0.7*2);
+        ramsete = new RamseteSpecial(2*2*2, 0.7*2);
     }
 
 
