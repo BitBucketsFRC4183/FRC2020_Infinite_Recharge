@@ -156,7 +156,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        shooterSubsystem.spinBMS();
+        /*shooterSubsystem.spinBMS();
         shooterSubsystem.rotateToDeg(0, 45);
         shooterSubsystem.startSpinningUp();
 
@@ -174,7 +174,8 @@ public class Robot extends TimedRobot {
             shooterSubsystem.rotateToDeg(0, 0);
 
             intakeSubsystem.intake();
-        }))
+        }))*/
+        (new InstantCommand(() -> { intakeSubsystem.intake(); }))
         .andThen(new AutoDrive(driveSubsystem))
         .andThen(new InstantCommand(() -> {
             System.out.println("Turning intake off");
