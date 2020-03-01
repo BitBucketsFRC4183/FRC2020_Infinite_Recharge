@@ -96,8 +96,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/NavigationSubsystem/processing time (ms)": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "14,6": {
@@ -1051,8 +1050,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/DriveSubsystem/actual theta": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "9,3": {
@@ -1067,8 +1065,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/DriveSubsystem/actual x": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "9,6": {
@@ -1083,8 +1080,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/DriveSubsystem/actual y": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "14,0": {
@@ -1099,8 +1095,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/DriveSubsystem/desired theta": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "14,3": {
@@ -1115,8 +1110,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/DriveSubsystem/desired x": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "14,6": {
@@ -1131,8 +1125,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/DriveSubsystem/desired y": true
+              "Y-axis/Lower bound": -1.0
             }
           }
         }
@@ -1516,8 +1509,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/NavigationSubsystem/processing time (ms)": true
+              "Y-axis/Lower bound": -1.0
             }
           }
         }
@@ -1578,8 +1570,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/ShooterSubsystem/Shooter Velocity Current RPM": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "7,0": {
@@ -1594,8 +1585,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/ShooterSubsystem/Shooter Velocity Error RPM": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "5,1": {
@@ -1621,8 +1611,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/ShooterSubsystem/Shooter Output": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "0,0": {
@@ -1637,8 +1626,7 @@
               "Graph/Visible time": 30.0,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Visible data/SmartDashboard/ShooterSubsystem/Shooter Velocity Error": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "6,3": {
