@@ -116,7 +116,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
             trajectoryConfig
         );
 
-        ramsete = new RamseteController();
+        ramsete = new RamseteController(2*2*2, 0.7*2);
     }
 
 

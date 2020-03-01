@@ -124,7 +124,7 @@ public class Config {
     }
 
     public static class DriveConfig {
-        public double maxAllowedSpeed_ips = 8 * 12.0;//39.3701;
+        public double maxAllowedSpeed_ips = 14 * 12.0;//39.3701;
         public double maxAllowedTurn_degps = 180;
 
         public int MOTORS_PER_SIDE = 2;

@@ -185,7 +185,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	}
 
 	public double getYaw_deg() {
-		return -ahrs.getAngle();
+		return -Math.IEEEremainder(ahrs.getAngle(), 360);
 	}
 	public double getYawRate_degPerSec() {
 		return ahrs.getRate();
