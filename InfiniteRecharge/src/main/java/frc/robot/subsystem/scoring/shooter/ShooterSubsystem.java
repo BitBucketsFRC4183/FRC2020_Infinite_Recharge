@@ -35,6 +35,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private boolean upToSpeed = false;
     private boolean positionElevationSwitcherAlreadyPressed = false;
     private boolean spinningUp = false;
+    private boolean autoAiming = false; // used to decide which velocity to use for the shooter
 
     // Integers
     private int targetPositionAzimuth_ticks;
@@ -49,6 +50,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Doubles
     private double absoluteDegreesToRotateAzimuth = 0.0;
+    private double shooterVelocity_ticks = 0.0;
 
     private double rightAzimuthSoftLimit_ticks;
     private double leftAzimuthSoftLimit_ticks;
@@ -199,19 +201,16 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
     }
 
-    public void spinUp(double velocity_rpm) {
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity Rpm", velocity_rpm);
-        spinUp();
-    }
-    
     public void spinUp() {
-        float targetShooterVelocity = (float) MathUtils
+        if (!autoAiming) {
+            shooterVelocity_ticks = (float) MathUtils
                 .unitConverter(
                         SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM",
                                 ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM),
                         600, config.shooter.shooter.ticksPerRevolution)
                 * config.shooter.shooterGearRatio;
-        double averageError = feederFilter.calculate((double) Math.abs(ballPropulsionMotor.getSelectedSensorVelocity() - targetShooterVelocity));
+        }
+        double averageError = feederFilter.calculate((double) Math.abs(ballPropulsionMotor.getSelectedSensorVelocity() - shooterVelocity_ticks));
         // Spin up the feeder.
         if (averageError <= config.shooter.feederSpinUpDeadband_ticks) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
@@ -223,9 +222,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             feeder.set(0);
             SmartDashboard.putString(getName() + "/Feeder State", "Cannot fire: Shooter hasn't been spun up!");
         }
-
         // Spin up the shooter.
-        setShooterVelocity((int) targetShooterVelocity);
+        // If we're auto-aiming, it'll use the ticks specified by the vision subsystem.
+        // Otherwise, it'll use the one set in NT
+        setShooterVelocity((int) shooterVelocity_ticks);
         // ballPropulsionMotor.set(ControlMode.PercentOutput, (float)SmartDashboard.getNumber(getName() + "/Shooter %Output", 0.5));
         SmartDashboard.putString(getName() + "/Shooter State", "Shooting");
     }
@@ -328,8 +328,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAimVelocity() {
-        double velocity_rpm = shooterCalculator.calculateSpeed_rpm();
-        spinUp(velocity_rpm);
+        autoAiming = true;
+        shooterVelocity_ticks = shooterCalculator.calculateSpeed_ticks();
+        startSpinningUp();
 
         // TODO: do this stuff empirically (yay!)
         // the math rn isn' rly accurate
@@ -345,11 +346,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
     public void stopAutoAim() {
         visionSubsystem.turnOffLEDs();
-
-        // note: you might be able to replace this line with autoAimHoodAngle()
-        // theoretically, the LEDs will be off, meaning there will be no target, meaning it will set it to 0
-        // but as we haven't tested yet, and just to be sure, we'll zero it directly
-        rotateToDeg(getAzimuthDeg(), 0); // zero the hood angle
+        autoAiming = true;
+        stopSpinningUp();
     }
 
     public void calculateAbsoluteDegreesToRotate() {
