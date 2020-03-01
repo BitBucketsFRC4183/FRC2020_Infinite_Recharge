@@ -46,10 +46,6 @@ public class RotationDrive extends CommandBase {
             return CommandUtils.stateChange(new VelocityDrive(DRIVE_SUBSYSTEM));
         }
 
-        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.AUTO) {
-            return CommandUtils.stateChange(new AutoDrive(DRIVE_SUBSYSTEM));
-        }
-
         return false;
     }
 }
