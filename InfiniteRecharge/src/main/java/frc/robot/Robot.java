@@ -218,7 +218,7 @@ public class Robot extends TimedRobot {
 
             // Spin up on pressing [spinUp]
             if (oi.spinUp()) {
-                shooterSubsystem.spinUp();
+                shooterSubsystem.startSpinningUp();
             } else {
                 shooterSubsystem.stopSpinningUp();
             }
@@ -240,6 +240,8 @@ public class Robot extends TimedRobot {
 
             if (oi.aimBot()) {
                 shooterSubsystem.autoAim();
+            } else {
+                shooterSubsystem.stopAutoAim();
             }
 
             if (oi.zero()) {
