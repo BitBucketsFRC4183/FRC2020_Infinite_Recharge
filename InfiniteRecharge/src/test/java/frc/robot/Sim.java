@@ -5,6 +5,7 @@ import java.awt.*;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
 import frc.robot.simulator.SimMain;
@@ -145,6 +146,14 @@ public class Sim {
             g2d.fillOval(x, y, size, size);
             g2d.setColor(Color.DARK_GRAY);
             g2d.drawOval(x, y, size, size);
+
+            // put a dot where the robot thinks it is
+            // this assumes the robot's position starts at 0, 0
+            // graphics scaling accurate as of 2020-03-01
+            int ax = 144 + (int) Math.round(29.75 * (-1.0 * SmartDashboard.getNumber("DriveSubsystem/actual y", 0.0) + 1.54));
+            int ay = 292 - (int) Math.round(29.41 * (SmartDashboard.getNumber("DriveSubsystem/actual x", 0.0) + 5.43));
+            g2d.setColor(Color.CYAN);
+            g2d.drawOval(ax - 1, ay - 1, 2, 2);
 
             // Draw a line showing the direction the turret is facing.
             g2d.setColor(Color.YELLOW);
