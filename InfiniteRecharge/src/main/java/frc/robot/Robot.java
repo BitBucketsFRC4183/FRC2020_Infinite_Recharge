@@ -30,6 +30,7 @@ import frc.robot.subsystem.drive.auto.AutoDrive;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.pidhelper.PIDHelperSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
+import frc.robot.subsystem.scoring.shooter.ShooterConstants;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 
 /**
@@ -191,6 +192,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        shooterSubsystem.rotateToDeg(0, ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
     }
 
     /**
@@ -288,7 +290,7 @@ public class Robot extends TimedRobot {
 
             if (oi.setElevationToDashboardNumber()) {
                 shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(),
-                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", 45));
+                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG));
             }
         }
 
