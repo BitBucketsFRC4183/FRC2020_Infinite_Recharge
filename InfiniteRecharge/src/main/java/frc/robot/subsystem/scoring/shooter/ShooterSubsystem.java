@@ -346,7 +346,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
     public void stopAutoAim() {
         visionSubsystem.turnOffLEDs();
-        autoAiming = true;
+        autoAiming = false;
         stopSpinningUp();
     }
 
