@@ -183,7 +183,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 targetPositionElevation_ticks = (int) -backwardElevationSoftLimit_ticks;
             }
         }
-
+            SmartDashboard.putBoolean(getName() + "/Reverse Limit Switch Closed?", elevationMotor.getSensorCollection().isRevLimitSwitchClosed());
         if (elevationMotor.getSensorCollection().isRevLimitSwitchClosed()){
             elevationMotor.setSelectedSensorPosition(0);
         }
