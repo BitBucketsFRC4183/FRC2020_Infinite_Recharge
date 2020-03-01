@@ -1,3 +1,8 @@
+% V = kS*sgn(v) + kV*v + kA*a
+% v = (vL + vR)/2
+% According to control engineering for FRC book...
+% (creatively named variables I know)
+% aL = (C1*vL + C2*VL)
 function xDot = robotSystemUKF_deriv(x, u)
     physicsConstants;
     
