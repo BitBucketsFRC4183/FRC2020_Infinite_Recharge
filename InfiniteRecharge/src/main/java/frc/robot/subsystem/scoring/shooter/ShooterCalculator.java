@@ -90,7 +90,7 @@ public class ShooterCalculator {
 
     public double calculateSpeed_ticks() {
         double speed_rpm = calculateSpeed_rpm();
-        double speed_ticks = MathUtils.unitConverter(speed_rpm, 600, config.shooter.shooter.ticksPerRevolution);
+        double speed_ticks = MathUtils.unitConverter(speed_rpm, 600, config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio;
 
         return speed_ticks;
     }
