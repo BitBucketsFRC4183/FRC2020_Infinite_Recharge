@@ -39,11 +39,7 @@ public class VelocityDrive extends CommandBase {
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.ROTATION) {
             return CommandUtils.stateChange(new RotationDrive(DRIVE_SUBSYSTEM));
         }
-
-        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.AUTO) {
-            return CommandUtils.stateChange(new AutoDrive(DRIVE_SUBSYSTEM));
-        }
-
+        
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.IDLE) {
             return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
         }

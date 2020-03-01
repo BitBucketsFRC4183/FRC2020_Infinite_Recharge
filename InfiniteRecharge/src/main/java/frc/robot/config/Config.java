@@ -124,7 +124,7 @@ public class Config {
     }
 
     public static class DriveConfig {
-        public double maxAllowedSpeed_ips = 8 * 12.0;//39.3701;
+        public double maxAllowedSpeed_ips = 14 * 12.0;//39.3701;
         public double maxAllowedTurn_degps = 180;
 
         public int MOTORS_PER_SIDE = 2;
@@ -148,7 +148,7 @@ public class Config {
         public double gearRatio = (10 + 8.0 / 9);
         public double ticksPerRevolution = 2048;
         public double wheelRadius_in = 3;
-        public double trackWidth_in = 22.65;
+        public double trackWidth_in = 23.90069263162104;
 
         public double ROTATION_DRIVE_KP = 5 * 2 * Math.PI / 360;
 
