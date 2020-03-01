@@ -152,7 +152,7 @@ public class Config {
 
         public double ROTATION_DRIVE_KP = 5 * 2 * Math.PI / 360;
 
-        public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(1.23, 0.536, 0.204);;
+        public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(0.159, 2.46, 0.303);
 
         public DriveConfig() {
         }
@@ -230,9 +230,10 @@ public class Config {
         );
         shooter.elevation.positionPIDF = new PIDF(//
                 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // P
-                0, // I
+                0.0001, // I
                 10 * 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // D
-                1023f / 2650 /// F
+                1023f / 2650, /// F
+                300
         );
         shooter.shooter.velocityPIDF = new PIDF(//
                 0.5 * 1023.0 / 1000, // P

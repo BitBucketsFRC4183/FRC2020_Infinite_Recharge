@@ -10,10 +10,12 @@ public class ShooterConstants {
 
     public static final double FEEDER_OUTPUT_PERCENT = 0.8;
 
-    public static final float DEFAULT_SHOOTER_VELOCITY_RPM = 4183;
+    public static final float DEFAULT_SHOOTER_VELOCITY_RPM = 5000.4183f;
 
     public static final boolean USE_BANG_BANG = true;
     public static final double BANG_BANG_PERCENT = 1.0;
     public static final double BANG_BANG_RAMP_UP_PERCENT = 0.4;
     public static final int BANG_BANG_ERROR = 0;
+    public static final double BANG_BANG_MAINTAIN_SPEED_PERCENT = 0.6;
+    public static final int DEFAULT_ELEVATION_TARGET_DEG = 45;
 }

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -98,7 +99,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         DifferentialDriveKinematicsConstraint kinematicsConstraint = new DifferentialDriveKinematicsConstraint(
             DRIVE_UTILS.KINEMATICS,
-            config.drive.maxAllowedSpeed_ips
+            config.drive.maxAllowedSpeed_ips * DriveConstants.METERS_PER_INCH
         );
 
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
@@ -110,9 +111,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectoryConfig.addConstraint(kinematicsConstraint);
 
         autoTrajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT, Rotation2d.fromDegrees(90)),
-            List.of(),//FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
-            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT_PLUS_A_BIT, Rotation2d.fromDegrees(90)),
+            new Pose2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0)),
+            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),//FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
+            new Pose2d(new Translation2d(3, 0), Rotation2d.fromDegrees(0)),
             trajectoryConfig
         );
 
