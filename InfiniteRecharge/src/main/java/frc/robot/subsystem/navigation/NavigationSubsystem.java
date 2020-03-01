@@ -75,6 +75,7 @@ public class NavigationSubsystem extends BitBucketSubsystem {
         ahrs = BitBucketsAHRS.instance();
         sys = new RobotSystem();
 
+        ahrs.reset();
         ahrs.setAngleAdjustment(0);
 
         Rotation2d rotation = Rotation2d.fromDegrees(getYaw_deg());
