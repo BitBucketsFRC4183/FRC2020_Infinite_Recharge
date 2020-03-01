@@ -342,11 +342,16 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void autoAim() {
         autoAimAzimuth();
         autoAimHoodAngle();
-        visionSubsystem.turnOnLEDs();
         autoAimVelocity();
+        visionSubsystem.turnOnLEDs();
     }
     public void stopAutoAim() {
         visionSubsystem.turnOffLEDs();
+
+        // note: you might be able to replace this line with autoAimHoodAngle()
+        // theoretically, the LEDs will be off, meaning there will be no target, meaning it will set it to 0
+        // but as we haven't tested yet, and just to be sure, we'll zero it directly
+        rotateToDeg(getAzimuthDeg(), 0); // zero the hood angle
     }
 
     public void calculateAbsoluteDegreesToRotate() {
