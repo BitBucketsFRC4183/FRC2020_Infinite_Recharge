@@ -4,7 +4,7 @@ physicsConstants;
 
 dt = 2/100;
 
-ts = 0:dt:1.5;
+ts = 0:dt:15;
 us = 6 + 6*[sin(ts); cos(ts)];
 [~, t_width] = size(ts);
 
@@ -37,8 +37,9 @@ for i=1:t_width
     u = us(:, i);
     t = ts(i);
     
-    x0 = f(x0) + mvnrnd(zeros(STATE_SIZE, 1), Q)';
+    x0 = f(x0);%; + mvnrnd(zeros(STATE_SIZE, 1), Q)';
     y = h(x0) + mvnrnd(zeros(OUTPUT_SIZE, 1), R)';
+    y(TX) = y(TX) - 1*pi/180;
     
     [x_hat, P] = ukf(f, x_hat, P, h, y, Q, R);
     
@@ -71,10 +72,10 @@ legend("True yaw", "Estimated yaw", "Measured yaw");
 
 figure(3);
 hold on;
-plot(ts, sqrt((Xs-Xs_hat).^2 + (Ys-Ys_hat).^2) * 39.3701);
-yline(39.3701*0.1); % 10cm
+plot(ts, sqrt((Xs-Xs_hat).^2 + (Ys-Ys_hat).^2));
+yline(0.1); % 10cm
 hold off;
-title("Localization error in inches");
+title("Localization error in meters");
 
 figure(4);
 plot(ts, Eigs);
