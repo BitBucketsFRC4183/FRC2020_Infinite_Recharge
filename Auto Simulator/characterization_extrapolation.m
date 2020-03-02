@@ -10,3 +10,16 @@ B = [
 
 sysd = ss(A, B, eye(2), zeros(2), 0.02);
 sysc = d2c(sysd);
+
+disp("A = " + sysc.A);
+disp("B = " + sysc.B);
+
+B2 = [
+    0.025092707488303934;
+    0.0214764743329633
+];
+
+sysd2 = ss(A, B2, eye(2), zeros(1), 0.02);
+sysc2 = d2c(sysd2);
+
+disp("F = " + sysc2.B);
