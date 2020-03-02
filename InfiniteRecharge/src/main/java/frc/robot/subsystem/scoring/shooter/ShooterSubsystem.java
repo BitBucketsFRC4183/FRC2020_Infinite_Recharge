@@ -35,6 +35,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private boolean upToSpeed = false;
     private boolean positionElevationSwitcherAlreadyPressed = false;
     private boolean spinningUp = false;
+    private boolean autoAiming = false; // used to decide which velocity to use for the shooter
 
     // Integers
     private int targetPositionAzimuth_ticks;
@@ -49,6 +50,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     // Doubles
     private double absoluteDegreesToRotateAzimuth = 0.0;
+    private double shooterVelocity_ticks = 0.0;
 
     private double rightAzimuthSoftLimit_ticks;
     private double leftAzimuthSoftLimit_ticks;
@@ -185,7 +187,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
             SmartDashboard.putBoolean(getName() + "/Reverse Limit Switch Closed?", elevationMotor.getSensorCollection().isRevLimitSwitchClosed());
         if (elevationMotor.getSensorCollection().isRevLimitSwitchClosed()){
-            elevationMotor.setSelectedSensorPosition(0);
+            elevationMotor.setSelectedSensorPosition(
+                    (int) (MathUtils.unitConverter(ShooterConstants.ELEVATION_LIMIT_SWITCH_DEG, 360,
+                            config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio));
         }
 
         azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
@@ -200,13 +204,15 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void spinUp() {
-        float targetShooterVelocity = (float) MathUtils
+        if (!autoAiming) {
+            shooterVelocity_ticks = (float) MathUtils
                 .unitConverter(
                         SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM",
                                 ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM),
                         600, config.shooter.shooter.ticksPerRevolution)
                 * config.shooter.shooterGearRatio;
-        double averageError = feederFilter.calculate((double) Math.abs(ballPropulsionMotor.getSelectedSensorVelocity() - targetShooterVelocity));
+        }
+        double averageError = feederFilter.calculate((double) Math.abs(ballPropulsionMotor.getSelectedSensorVelocity() - shooterVelocity_ticks));
         // Spin up the feeder.
         if (averageError <= config.shooter.feederSpinUpDeadband_ticks) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
@@ -218,9 +224,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             feeder.set(0);
             SmartDashboard.putString(getName() + "/Feeder State", "Cannot fire: Shooter hasn't been spun up!");
         }
-
         // Spin up the shooter.
-        setShooterVelocity((int) targetShooterVelocity);
+        // If we're auto-aiming, it'll use the ticks specified by the vision subsystem.
+        // Otherwise, it'll use the one set in NT
+        setShooterVelocity((int) shooterVelocity_ticks);
         // ballPropulsionMotor.set(ControlMode.PercentOutput, (float)SmartDashboard.getNumber(getName() + "/Shooter %Output", 0.5));
         SmartDashboard.putString(getName() + "/Shooter State", "Shooting");
     }
@@ -323,10 +330,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAimVelocity() {
-        double velocity_rpm = shooterCalculator.calculateSpeed_rpm();
-        double ticksVelocity = MathUtils.unitConverter(velocity_rpm, 600, config.shooter.shooter.ticksPerRevolution);
-
-        setShooterVelocity((int) ticksVelocity);
+        autoAiming = true;
+        shooterVelocity_ticks = shooterCalculator.calculateSpeed_ticks();
+        startSpinningUp();
 
         // TODO: do this stuff empirically (yay!)
         // the math rn isn' rly accurate
@@ -335,17 +341,15 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAim() {
-        // autoAimAzimuth();
+        autoAimAzimuth();
         autoAimHoodAngle();
-        // autoAimVelocity();
+        autoAimVelocity();
         visionSubsystem.turnOnLEDs();
     }
     public void stopAutoAim() {
         visionSubsystem.turnOffLEDs();
-    }
-
-    public boolean withinRange(double number, double min, double max) {
-        return number >= min && number <= max;
+        autoAiming = false;
+        stopSpinningUp();
     }
 
     public void calculateAbsoluteDegreesToRotate() {
