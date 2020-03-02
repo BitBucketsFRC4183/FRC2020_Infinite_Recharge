@@ -4,7 +4,7 @@ physicsConstants;
 
 dt = 2/100;
 
-ts = 0:dt:15;
+ts = 0:dt:5;
 us = 6 + 6*[sin(ts); cos(ts)];
 [~, t_width] = size(ts);
 
@@ -37,9 +37,9 @@ for i=1:t_width
     u = us(:, i);
     t = ts(i);
     
-    x0 = f(x0);%; + mvnrnd(zeros(STATE_SIZE, 1), Q)';
+    x0 = f(x0);% + mvnrnd(zeros(STATE_SIZE, 1), Q)';
     y = h(x0) + mvnrnd(zeros(OUTPUT_SIZE, 1), R)';
-    y(TX) = y(TX) - 1*pi/180;
+    %y(TX) = y(TX) - 5*pi/180;
     
     [x_hat, P] = ukf(f, x_hat, P, h, y, Q, R);
     
