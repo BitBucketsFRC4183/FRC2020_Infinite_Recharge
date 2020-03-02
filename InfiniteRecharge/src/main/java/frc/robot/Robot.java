@@ -98,12 +98,10 @@ public class Robot extends TimedRobot {
             climbSubsystem = new ClimbSubsystem(config);
             subsystems.add(climbSubsystem);
         }
-        
+
         if (config.enablePIDHelper) {
             subsystems.add(new PIDHelperSubsystem(config));
         }
-
-
 
         canChecker = new CANChecker();
 
@@ -228,32 +226,36 @@ public class Robot extends TimedRobot {
                 intakeSubsystem.toggleIntakeArm();
             }
         }
-       /////////////////////////////////////////////////////////////////////////////
-        //Climb Subsystem
-        if (oi.climbactivate()) {
-            climbSubsystem.activateClimb();
-        }
-        if (oi.climbextend()) {
-            climbSubsystem.extending();
-        } 
+        /////////////////////////////////////////////////////////////////////////////
+        // Climb Subsystem
+        if (config.enableClimbSubsystem) {
+            if (oi.climbactivate()) {
+                climbSubsystem.activateClimb();
+            }
+            if (oi.climbextend()) {
+                climbSubsystem.extending();
+            }
 
-        if (oi.climbretract()) {
-            climbSubsystem.retracting();
-        } else if (!climbSubsystem.isExtending()){
-            climbSubsystem.off();
+            if (oi.climbretract()) {
+                climbSubsystem.retracting();
+            } else if (!climbSubsystem.isExtending()) {
+                climbSubsystem.off();
+            }
         }
-
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
 
         if (config.enableShooterSubsystem) {
             SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
 
-            // Spin up on pressing [spinUp]
+            // Spin up on pressing [spinUp] and auto aim on pressing [aimBot]
             if (oi.spinUp()) {
                 shooterSubsystem.startSpinningUp();
+            } else if (oi.aimBot()) {
+                shooterSubsystem.autoAim();
             } else {
                 shooterSubsystem.stopSpinningUp();
+                shooterSubsystem.stopAutoAim();
             }
 
             // Fire on pressing [fire]
@@ -269,12 +271,6 @@ public class Robot extends TimedRobot {
                 shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
             } else {
                 shooterSubsystem.rotate(0, 0);
-            }
-
-            if (oi.aimBot()) {
-                shooterSubsystem.autoAim();
-            } else {
-                shooterSubsystem.stopAutoAim();
             }
 
             if (oi.zero()) {
@@ -295,7 +291,6 @@ public class Robot extends TimedRobot {
             }
         }
 
-
         // //////////////////////////////////////////////////////////////////////////////
         // // SpinnyBoi Subsystem
         if (config.enableSpinnyboiSubsystem) {
@@ -307,7 +302,6 @@ public class Robot extends TimedRobot {
                 spinnyBoiSubsystem.off();
             }
         }
-        
 
     }
 
