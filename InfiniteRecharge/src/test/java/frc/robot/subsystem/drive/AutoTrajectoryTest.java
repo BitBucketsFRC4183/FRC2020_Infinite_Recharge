@@ -25,7 +25,7 @@ public class AutoTrajectoryTest {
         Trajectory autoTrajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(FieldConstants.FRONT_OF_POWER_PORT, Rotation2d.fromDegrees(90)),
             List.of(),//FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
-            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT_PLUS_A_BIT, Rotation2d.fromDegrees(90)),
+            new Pose2d(FieldConstants.OUR_POWER_CELL_1, Rotation2d.fromDegrees(90)),
             trajectoryConfig
         );
 
