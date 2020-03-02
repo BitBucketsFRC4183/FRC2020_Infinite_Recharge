@@ -5,15 +5,19 @@ import java.util.List;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
@@ -79,6 +83,14 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     private final Trajectory autoTrajectory;
     private final RamseteController ramsete;
+
+    private final PIDController leftAutoPID;
+    private final PIDController rightAutoPID;
+
+    private SpeedControllerGroup leftGroup;
+    private SpeedControllerGroup rightGroup;
+
+    private DifferentialDrive differentialDrive;
     
 
 
@@ -103,20 +115,23 @@ public class DriveSubsystem extends BitBucketSubsystem {
         );
 
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-            config.drive.maxAllowedSpeed_ips * DriveConstants.METERS_PER_INCH,
-            DRIVE_UTILS.MAX_ACCELERATION_MPSPS
+            config.auto.cruiseSpeed_mps,
+            config.auto.maxAcceleration_mps
         );
         trajectoryConfig.addConstraint(voltageConstraint);
         trajectoryConfig.addConstraint(kinematicsConstraint);
 
         autoTrajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0)),
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),//FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
+            List.of(FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
             new Pose2d(new Translation2d(3, 0), Rotation2d.fromDegrees(0)),
             trajectoryConfig
         );
 
-        ramsete = new RamseteController(2*2*2, 0.7*2);
+        ramsete = new RamseteController(config.auto.b, config.auto.zeta);
+
+        leftAutoPID = new PIDController(config.auto.kP, 0, 0);
+        rightAutoPID = new PIDController(config.auto.kP, 0, 0);
     }
 
 
@@ -157,6 +172,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
         leftMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
         rightMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
 
+        WPI_TalonFX[] tempLeft = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE - 1];
+        WPI_TalonFX[] tempRight = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE - 1];
+
         for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
             leftMotors[i] = MotorUtils.makeFX(config.drive.leftMotors[i]);
             rightMotors[i] = MotorUtils.makeFX(config.drive.rightMotors[i]);
@@ -181,12 +199,23 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-            leftMotors[0].enableVoltageCompensation(true);
-            leftMotors[0].configVoltageCompSaturation(DriveConstants.MAX_VOLTS);
+            leftMotors[i].enableVoltageCompensation(true);
+            leftMotors[i].configVoltageCompSaturation(DriveConstants.MAX_VOLTS);
 
-            rightMotors[0].enableVoltageCompensation(true);
-            rightMotors[0].configVoltageCompSaturation(DriveConstants.MAX_VOLTS);
+            rightMotors[i].enableVoltageCompensation(true);
+            rightMotors[i].configVoltageCompSaturation(DriveConstants.MAX_VOLTS);
+
+            // I despise WPI
+            if (i != 0) {
+                tempLeft[i - 1] = leftMotors[i];
+                tempRight[i - 1] = rightMotors[i];
+            }
         }
+
+        leftGroup = new SpeedControllerGroup(leftMotors[0], tempLeft);
+        rightGroup = new SpeedControllerGroup(rightMotors[0], tempRight);
+
+        differentialDrive = new DifferentialDrive(leftGroup, rightGroup);
 
 
 
@@ -474,6 +503,14 @@ public class DriveSubsystem extends BitBucketSubsystem {
         return ((config.drive.invertRightCommand) ? -1 : 1) * rightMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
     }
 
+    public double getLeftVelocity_mps() {
+        return ((config.drive.invertLeftCommand) ? -1 : 1) * 10 * leftMotors[0].getSelectedSensorVelocity() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
+    }
+
+    public double getRightVelocity_mps() {
+        return ((config.drive.invertRightCommand) ? -1 : 1) * 10 * rightMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
+    }
+
 	public Trajectory getAutoTrajectory() {
 		return autoTrajectory;
     }
@@ -490,6 +527,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         setLeftVelocity(leftTps);
         setRightVelocity(rightTps);
+    }
+
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(getLeftVelocity_mps(), getRightVelocity_mps());
     }
     
     public DifferentialDriveKinematics getKinematics() {
@@ -514,6 +555,19 @@ public class DriveSubsystem extends BitBucketSubsystem {
     public void dashboardPeriodic(float deltaTime) {
         // TODO Auto-generated method stub
 
+    }
+
+    public SimpleMotorFeedforward getCharacterization() {
+        return config.drive.characterization;
+    }
+
+    public PIDController getLeftAutoPID() { return leftAutoPID; }
+    public PIDController getRightAutoPID() { return rightAutoPID; }
+
+    public void tankVolts(double leftVolts, double rightVolts) {
+        leftGroup.setVoltage(leftVolts * ((config.drive.invertLeftCommand) ? -1 : 1));
+        rightGroup.setVoltage(rightVolts * ((config.drive.invertRightCommand) ? -1 : 1));
+        differentialDrive.feed();
     }
 
 
