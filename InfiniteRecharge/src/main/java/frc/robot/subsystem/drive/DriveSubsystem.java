@@ -122,9 +122,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectoryConfig.addConstraint(kinematicsConstraint);
 
         autoTrajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0)),
+            new Pose2d(new Translation2d(0, 0), Rotation2d.fromDegrees(90)),
             List.of(FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
-            new Pose2d(new Translation2d(3, 0), Rotation2d.fromDegrees(0)),
+            new Pose2d(new Translation2d(3, 0), Rotation2d.fromDegrees(90)),
             trajectoryConfig
         );
 
