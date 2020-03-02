@@ -184,12 +184,23 @@ public class Config {
         }
     }
 
+    public static class AutoConfig {
+        public double cruiseSpeed_mps = 3;
+        public double maxAcceleration_mps = 0.25;
+
+        public double b = 1.75;
+        public double zeta = 0.35;
+
+        public double kP = 0.91;
+    }
+
     public ShooterConfig shooter = new ShooterConfig();
     public BallManagementConfig ballManagement = new BallManagementConfig();
     public DriveConfig drive = new DriveConfig();
     public IntakeConfig intake = new IntakeConfig();
     public SpinnyBoiConfig spinnyboi = new SpinnyBoiConfig();
     public ClimbConfig climb = new ClimbConfig();
+    public AutoConfig auto = new AutoConfig();
 
     public Config() {
 
