@@ -221,11 +221,14 @@ public class Robot extends TimedRobot {
         if (config.enableShooterSubsystem) {
             SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
 
-            // Spin up on pressing [spinUp]
+            // Spin up on pressing [spinUp] and auto aim on pressing [aimBot]
             if (oi.spinUp()) {
                 shooterSubsystem.startSpinningUp();
+            } else if (oi.aimBot()) {
+                shooterSubsystem.autoAim();
             } else {
                 shooterSubsystem.stopSpinningUp();
+                shooterSubsystem.stopAutoAim();
             }
 
             // Fire on pressing [fire]
@@ -241,12 +244,6 @@ public class Robot extends TimedRobot {
                 shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
             } else {
                 shooterSubsystem.rotate(0, 0);
-            }
-
-            if (oi.aimBot()) {
-                shooterSubsystem.autoAim();
-            } else {
-                shooterSubsystem.stopAutoAim();
             }
 
             if (oi.zero()) {
