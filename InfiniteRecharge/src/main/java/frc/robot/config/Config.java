@@ -108,7 +108,7 @@ public class Config {
     }
 
     public static class IntakeConfig {
-        public boolean intakePivotEnabled = false;
+        public boolean intakePivotEnabled = true;
 
         public MotorConfig intake = new MotorConfig();
     }
@@ -185,7 +185,7 @@ public class Config {
     }
 
     public static class AutoConfig {
-        public double cruiseSpeed_mps = 3;
+        public double cruiseSpeed_mps = 0.3*5;
         public double maxAcceleration_mps = 0.25;
 
         public double b = 1.75;
