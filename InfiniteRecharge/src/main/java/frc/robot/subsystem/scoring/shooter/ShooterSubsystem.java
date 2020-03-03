@@ -370,6 +370,10 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
     }
 
+    public double getDegreesToRotate() {
+        return absoluteDegreesToRotateAzimuth;
+    }
+
     public void nextPositionElevation() {
         for (int i = 0; i < positions.length; i++) {
             int selectedPositionNumber_ticks = (int) (MathUtils.unitConverter(positions[i], 360,

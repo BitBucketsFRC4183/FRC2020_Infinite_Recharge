@@ -30,6 +30,8 @@ import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.auto.FieldConstants;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
+import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
+import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.JoystickScale;
 import frc.robot.utils.data.filters.RisingEdgeFilter;
 import frc.robot.utils.math.MathUtils;
@@ -42,7 +44,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
         AUTO,
         IDLE,
         VELOCITY,
-        ROTATION
+        ROTATION,
+        ALIGN
     };
     private DriveMethod driveMethod = DriveMethod.IDLE; // default
     private RisingEdgeFilter driveMethodSwitchFilter = new RisingEdgeFilter();
@@ -57,6 +60,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private WPI_TalonFX[] rightMotors;
 
     private final NavigationSubsystem NAVIGATION_SUBSYSTEM;
+    private final ShooterSubsystem SHOOTER_SUBSYSTEM;
     private final OI OI;
 
 
@@ -96,9 +100,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, OI oi) {
+    public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, ShooterSubsystem shooterSubsystem, OI oi) {
         super(config);
         NAVIGATION_SUBSYSTEM = navigationSubsystem;
+        SHOOTER_SUBSYSTEM = shooterSubsystem;
         OI = oi;
 
         DRIVE_UTILS = new DriveUtils(config);
@@ -449,6 +454,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     public NavigationSubsystem getNavigation() {
         return NAVIGATION_SUBSYSTEM;
+    }
+
+    public ShooterSubsystem getShooter() {
+        return SHOOTER_SUBSYSTEM;
     }
 
 
