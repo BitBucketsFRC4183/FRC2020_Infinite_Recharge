@@ -111,7 +111,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         DifferentialDriveKinematicsConstraint kinematicsConstraint = new DifferentialDriveKinematicsConstraint(
             DRIVE_UTILS.KINEMATICS,
-            config.drive.maxAllowedSpeed_ips * DriveConstants.METERS_PER_INCH
+            config.auto.cruiseSpeed_mps * DriveConstants.METERS_PER_INCH
         );
 
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
@@ -122,9 +122,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectoryConfig.addConstraint(kinematicsConstraint);
 
         autoTrajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(new Translation2d(0, 0), Rotation2d.fromDegrees(90)),
+            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT, Rotation2d.fromDegrees(90)),
             List.of(FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
-            new Pose2d(new Translation2d(3, 0), Rotation2d.fromDegrees(90)),
+            new Pose2d(FieldConstants.OUR_POWER_CELL_3, Rotation2d.fromDegrees(90)),
             trajectoryConfig
         );
 
