@@ -1,3 +1,5 @@
+close all;
+
 physicsConstants;
 
 
@@ -15,11 +17,11 @@ f = @(x) robotSystemUKF_update(@robotSystemUKF_deriv, [t, t+dt], x, u);
 h = @(x) robotSystemUKF_output(x, u);
 
 Q = diag([0.01, 0.01, pi/180, 0.02, 0.02])/50;
-R = diag([254/10000, pi/90, 0.005, 0.005, pi/36]);
+R = diag([254/10000, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36]);
 P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001]);
 
 x_hat = [1; 1; pi/2; 0; 0;];
-x0 = x_hat + mvnrnd(zeros(STATE_SIZE, 1), P)';
+x0 = x_hat;% + mvnrnd(zeros(STATE_SIZE, 1), P)';
 
 AbsTol = [0.01; 0.01; pi / 90; 0.05; 0.05];
 RelTol = AbsTol;

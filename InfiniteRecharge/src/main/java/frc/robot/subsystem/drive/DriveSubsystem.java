@@ -504,11 +504,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
     }
 
     public double getLeftVelocity_mps() {
-        return ((config.drive.invertLeftCommand) ? -1 : 1) * 10 * leftMotors[0].getSelectedSensorVelocity() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
+        return DRIVE_UTILS.ticksP100ToIps(getLeftVelocity_tp100ms()) * DriveConstants.METERS_PER_INCH;
     }
 
     public double getRightVelocity_mps() {
-        return ((config.drive.invertRightCommand) ? -1 : 1) * 10 * rightMotors[0].getSelectedSensorPosition() * DRIVE_UTILS.WHEEL_CIRCUMFERENCE_INCHES / (config.drive.gearRatio * config.drive.ticksPerRevolution) * DriveConstants.METERS_PER_INCH;
+        return DRIVE_UTILS.ticksP100ToIps(getRightVelocity_tp100ms()) * DriveConstants.METERS_PER_INCH;
     }
 
 	public Trajectory getAutoTrajectory() {
