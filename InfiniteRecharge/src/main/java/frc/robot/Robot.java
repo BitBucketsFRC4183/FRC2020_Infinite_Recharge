@@ -71,17 +71,17 @@ public class Robot extends TimedRobot {
         visionSubsystem = new VisionSubsystem(config);
         subsystems.add(visionSubsystem);
 
-        if (config.enableDriveSubsystem) {
-            navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
-            driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
-            navigationSubsystem.setDrive(driveSubsystem); // Java
-            subsystems.add(driveSubsystem);
-            subsystems.add(navigationSubsystem);
-        }
-
         if (config.enableShooterSubsystem) {
             shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
             subsystems.add(shooterSubsystem);
+        }
+
+        if (config.enableDriveSubsystem) {
+            navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
+            driveSubsystem = new DriveSubsystem(config, navigationSubsystem, shooterSubsystem, oi);
+            navigationSubsystem.setDrive(driveSubsystem); // Java
+            subsystems.add(driveSubsystem);
+            subsystems.add(navigationSubsystem);
         }
 
         if (config.enableIntakeSubsystem) {
