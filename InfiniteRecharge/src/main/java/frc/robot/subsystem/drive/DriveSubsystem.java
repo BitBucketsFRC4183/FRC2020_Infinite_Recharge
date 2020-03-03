@@ -111,7 +111,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         DifferentialDriveKinematicsConstraint kinematicsConstraint = new DifferentialDriveKinematicsConstraint(
             DRIVE_UTILS.KINEMATICS,
-            config.auto.cruiseSpeed_mps * DriveConstants.METERS_PER_INCH
+            config.auto.cruiseSpeed_mps
         );
 
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
