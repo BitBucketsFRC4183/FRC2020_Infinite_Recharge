@@ -49,6 +49,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     };
     private DriveMethod driveMethod = DriveMethod.IDLE; // default
     private RisingEdgeFilter driveMethodSwitchFilter = new RisingEdgeFilter();
+    private RisingEdgeFilter driveAutoAlignSwitchFilter = new RisingEdgeFilter();
 
 
 
@@ -399,23 +400,33 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         boolean switchHeld = OI.rotationToVelocity();
         boolean doSwitch = driveMethodSwitchFilter.calculate(switchHeld);
+        boolean doAutoSwitch = driveAutoAlignSwitchFilter.calculate(autoAligning);
 
         if (driverStation.isOperatorControl()) {
             if (driveMethod == DriveMethod.AUTO || driveMethod == DriveMethod.IDLE) {
                 driveMethod = DriveMethod.VELOCITY;
             }
 
-            if (doSwitch) {
-                switch (driveMethod) {
-                    case VELOCITY: {
-                        //driveMethod = DriveMethod.ROTATION;
-                        break;
-                    }
-                    case ROTATION: {
-                        driveMethod = DriveMethod.VELOCITY;
-                        break;
-                    }
-                    default: // just keep it I guess? shouldn't get here anyways
+            // won't happen by AZ North
+            // if (doSwitch) {
+            //     switch (driveMethod) {
+            //         case VELOCITY: {
+            //             //driveMethod = DriveMethod.ROTATION;
+            //             break;
+            //         }
+            //         case ROTATION: {
+            //             driveMethod = DriveMethod.VELOCITY;
+            //             break;
+            //         }
+            //         default: // just keep it I guess? shouldn't get here anyways
+            //     }
+            // }
+
+            if (doAutoSwitch) {
+                if (autoAligning) {
+                    driveMethod = DriveMethod.ALIGN;
+                } else {
+                    driveMethod = DriveMethod.VELOCITY;
                 }
             }
         } else if (driverStation.isAutonomous()) {

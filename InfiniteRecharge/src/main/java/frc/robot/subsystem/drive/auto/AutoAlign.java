@@ -51,6 +51,10 @@ public class AutoAlign extends CommandBase {
             return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
         }
 
+        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.VELOCITY) {
+            return CommandUtils.stateChange(new VelocityDrive(DRIVE_SUBSYSTEM));
+        }
+
         return false;
     }
 }
