@@ -60,7 +60,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private WPI_TalonFX[] rightMotors;
 
     private final NavigationSubsystem NAVIGATION_SUBSYSTEM;
-    private final ShooterSubsystem SHOOTER_SUBSYSTEM;
+    private final VisionSubsystem VISION_SUBSYSTEM;
     private final OI OI;
 
 
@@ -100,10 +100,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, ShooterSubsystem shooterSubsystem, OI oi) {
+    public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, VisionSubsystem visionSubsystem, OI oi) {
         super(config);
         NAVIGATION_SUBSYSTEM = navigationSubsystem;
-        SHOOTER_SUBSYSTEM = shooterSubsystem;
+        VISION_SUBSYSTEM = visionSubsystem;
         OI = oi;
 
         DRIVE_UTILS = new DriveUtils(config);
@@ -393,6 +393,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
+        differentialDrive.feed();
+
+
+
         boolean switchHeld = OI.rotationToVelocity();
         boolean doSwitch = driveMethodSwitchFilter.calculate(switchHeld);
 
@@ -456,8 +460,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
         return NAVIGATION_SUBSYSTEM;
     }
 
-    public ShooterSubsystem getShooter() {
-        return SHOOTER_SUBSYSTEM;
+    public VisionSubsystem getVision() {
+        return VISION_SUBSYSTEM;
     }
 
 
@@ -479,6 +483,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
     public double getDriverRawTurn() {
         return rawTurn;
     }
+
+    private boolean autoAligning = false;
+    public void setAutoAligning(boolean aligning) {
+        autoAligning = aligning;
+    }
+
+    public boolean getAutoAligning() { return autoAligning;}
 
 
 
@@ -576,7 +587,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
     public void tankVolts(double leftVolts, double rightVolts) {
         leftGroup.setVoltage(leftVolts * ((config.drive.invertLeftCommand) ? -1 : 1));
         rightGroup.setVoltage(rightVolts * ((config.drive.invertRightCommand) ? -1 : 1));
-        differentialDrive.feed();
     }
 
 

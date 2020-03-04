@@ -19,6 +19,10 @@ public class RunningAverageFilter extends Filter<Double> {
     public Double calculate(Double data) {
         dw.add(data);
 
+        return getAverage();
+    }
+
+    public double getAverage() {
         return dw.getAverage();
     }
 }
