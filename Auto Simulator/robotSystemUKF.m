@@ -6,7 +6,7 @@ physicsConstants;
 
 dt = 2/100;
 
-ts = 0:dt:5;
+ts = 0:dt:1;
 us = 6 + 6*[sin(ts); cos(ts)];
 [~, t_width] = size(ts);
 
@@ -33,14 +33,18 @@ Ys_hat = zeros(t_width, 1);
 Thetas = zeros(t_width, 1);
 Thetas_hat = zeros(t_width, 1);
 Thetas_m = zeros(t_width, 1);
-Eigs = zeros(t_width, 5);
+Eigs = zeros(t_width, STATE_SIZE);
+Outputs = zeros(t_width, OUTPUT_SIZE);
+Outputs_hat = zeros(t_width, OUTPUT_SIZE);
+Outputs_exact = zeros(t_width, OUTPUT_SIZE);
 
 for i=1:t_width
     u = us(:, i);
     t = ts(i);
     
-    x0 = f(x0);% + mvnrnd(zeros(STATE_SIZE, 1), Q)';
-    y = h(x0) + mvnrnd(zeros(OUTPUT_SIZE, 1), R)';
+    x0 = f(x0) + mvnrnd(zeros(STATE_SIZE, 1), Q)';
+    y0 = h(x0);
+    y = y0 + mvnrnd(zeros(OUTPUT_SIZE, 1), R)';
     %y(TX) = y(TX) - 5*pi/180;
     
     [x_hat, P] = ukf(f, x_hat, P, h, y, Q, R);
@@ -53,6 +57,9 @@ for i=1:t_width
     Thetas_hat(i) = x_hat(THETA);
     %Thetas_m(i) = y(LL_THETA);
     Eigs(i, :) = eig(P);
+    Outputs(i, :) = y;
+    Outputs_hat(i, :) = h(x_hat);
+    Outputs_exact(i, :) = y0;
 end
 
 
@@ -82,3 +89,19 @@ title("Localization error in meters");
 figure(4);
 plot(ts, Eigs);
 title("Uncertainty eigenvalues");
+
+%figure(5);
+%hold on;
+%plot(ts, Outputs);
+%plot(ts, Outputs_hat);
+%plot(ts, Outputs_exact);
+%hold off;
+%legend1 = [];
+%legend2 = [];
+%legend3 = [];
+%for i=1:OUTPUT_SIZE
+%    legend1 = [legend1, "Output"];
+%    legend2 = [legend2, "Output estimate"];
+%    legend3 = [legend3, "Actual output"];
+%end
+%legend([legend1, legend2, legend3]);
