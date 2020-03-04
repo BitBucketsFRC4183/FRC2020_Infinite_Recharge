@@ -582,7 +582,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
     @Override
-	protected void listTalons() {
+	public void listTalons() {
         for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
             talons.add(leftMotors[i]);
             talons.add(rightMotors[i]);

@@ -105,7 +105,7 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    protected void listTalons() {
+    public void listTalons() {
         talons.add(motorRight);
         talons.add(motorLeft);
     }

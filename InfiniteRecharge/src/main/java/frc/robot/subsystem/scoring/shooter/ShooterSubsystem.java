@@ -543,7 +543,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    protected void listTalons() {
+    public void listTalons() {
         talons.add(azimuthMotor);
         talons.add(elevationMotor);
         talons.add(ballPropulsionMotor);
