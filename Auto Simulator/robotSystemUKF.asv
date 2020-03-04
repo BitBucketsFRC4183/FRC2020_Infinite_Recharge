@@ -49,20 +49,19 @@ Wc=Wm;
 Wc(1)=Wc(1)+(1-alpha^2+beta);               %weights for covariance
 c=sqrt(c);
 
-% VQ = A Q A'
-% Q = inv(A)*VQ*inv(A')
-v_sigmas = sigmas(x0(vL:vR), A\VQ/(A'), c);
+v_sigmas = sigmas(x_sigmas(vL:vR), VQ, c);
 x_sigmas = [x0, x0, x0, x0, x0];
 x_sigmas(vL:vR, :) = x_sigmas(vL:vR, :) + v_sigmas;
+x_next = zeros(STATE_SIZE, 5);
+x_next_mean = zeros(STATE_SIZE, 
+x_next = zeros(STATE_SIZE, 5);
+for k=1:5
+    x_next(:,k)=f(x_sigmas(:,k));
+    x_next_mean=y+Wm(k)*Y(:,k);
+end
+Y1=Y-y(:,ones(1,L));
+v_sigmas = sigmas(x0, QQ, c);
 [~, ~, Q, ~] = ut(f, x_sigmas, Wm, Wc, STATE_SIZE, zeros(STATE_SIZE));
-%x_next = zeros(STATE_SIZE, 5);
-%x_next_mean = zeros(STATE_SIZE, 1);
-%for k=1:5
-%    x_next(:,k)=f(x_sigmas(:,k));
-%    x_next_mean=x_next_mean+Wm(k)*x_next(:,k);
-%end
-%x_next_res=x_next-x_next_mean(:,ones(1,STATE_SIZE));
-%Q = x_next_res*diag(Wc)*x_next_res';
 a;
 
 for i=1:t_width

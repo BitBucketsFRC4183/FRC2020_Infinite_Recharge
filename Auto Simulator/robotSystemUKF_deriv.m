@@ -11,6 +11,6 @@ function xDot = robotSystemUKF_deriv(x, u)
     xDot(X) = (x(vL) + x(vR))/2*cos(x(THETA));
     xDot(Y) = (x(vL) + x(vR))/2*sin(x(THETA));
     xDot(THETA) = 1/(2*rb)*(x(vR) - x(vL));
-    xDot(vL:vR) = A*x(vL:vR) + B*u + sign(x(vL:vR));
+    xDot(vL:vR) = A*x(vL:vR) + B*u;
 end
 
