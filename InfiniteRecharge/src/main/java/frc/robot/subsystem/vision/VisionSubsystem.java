@@ -142,5 +142,5 @@ public class VisionSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    protected void listTalons() {}
+    public void listTalons() {}
 }

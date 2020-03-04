@@ -235,5 +235,5 @@ public class NavigationSubsystem extends BitBucketSubsystem {
     }
 
 	@Override
-    protected void listTalons() {}
+    public void listTalons() {}
 }
