@@ -71,17 +71,17 @@ public class Robot extends TimedRobot {
         visionSubsystem = new VisionSubsystem(config);
         subsystems.add(visionSubsystem);
 
-        if (config.enableDriveSubsystem) {
-            navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
-            driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
-            navigationSubsystem.setDrive(driveSubsystem); // Java
-            subsystems.add(driveSubsystem);
-            subsystems.add(navigationSubsystem);
-        }
-
         if (config.enableShooterSubsystem) {
             shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
             subsystems.add(shooterSubsystem);
+        }
+
+        if (config.enableDriveSubsystem) {
+            navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
+            driveSubsystem = new DriveSubsystem(config, navigationSubsystem, visionSubsystem, oi);
+            navigationSubsystem.setDrive(driveSubsystem); // Java
+            subsystems.add(driveSubsystem);
+            subsystems.add(navigationSubsystem);
         }
 
         if (config.enableIntakeSubsystem) {
@@ -107,6 +107,7 @@ public class Robot extends TimedRobot {
 
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.initialize();
+            subsystem.listTalons();
             canChecker.addTalons(subsystem.getTalons());
         }
 
@@ -173,6 +174,8 @@ public class Robot extends TimedRobot {
 
             intakeSubsystem.intake();
         }))*/
+        navigationSubsystem.resetAHRS();
+        
         (new InstantCommand(() -> { intakeSubsystem.intake(); }))
         .andThen(new AutoDrive(driveSubsystem))
         .andThen(new InstantCommand(() -> {
@@ -206,6 +209,8 @@ public class Robot extends TimedRobot {
         if (config.enableDriveSubsystem) {
             driveSubsystem.setDriverRawSpeed(oi.speed());
             driveSubsystem.setDriverRawTurn(oi.turn());
+
+            driveSubsystem.setAutoAligning(oi.aimBot());
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -252,7 +257,7 @@ public class Robot extends TimedRobot {
             if (oi.spinUp()) {
                 shooterSubsystem.startSpinningUp();
             } else if (oi.aimBot()) {
-                shooterSubsystem.autoAim();
+                //shooterSubsystem.autoAim();
             } else {
                 shooterSubsystem.stopSpinningUp();
                 shooterSubsystem.stopAutoAim();

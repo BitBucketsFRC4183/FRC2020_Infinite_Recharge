@@ -1,5 +1,6 @@
 package frc.robot.subsystem.drive;
 
+import frc.robot.subsystem.drive.auto.AutoAlign;
 import frc.robot.subsystem.drive.auto.AutoDrive;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.utils.CommandUtils;
@@ -44,6 +45,10 @@ public class RotationDrive extends CommandBase {
 
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.VELOCITY) {
             return CommandUtils.stateChange(new VelocityDrive(DRIVE_SUBSYSTEM));
+        }
+
+        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.ALIGN) {
+            return CommandUtils.stateChange(new AutoAlign(DRIVE_SUBSYSTEM));
         }
 
         return false;

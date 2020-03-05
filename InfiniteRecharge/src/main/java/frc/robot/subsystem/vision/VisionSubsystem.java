@@ -4,6 +4,7 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.utils.data.filters.RunningAverageFilter;
 import frc.robot.utils.math.MathUtils;
 
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
@@ -21,6 +22,8 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
     private double tx = 0;
     private double ty = 0;
+
+    RunningAverageFilter txFilter = new RunningAverageFilter(VisionConstants.FILTER_LENGTH);
 
     private double distance = 0;
     private double zoom = 1;
@@ -77,13 +80,13 @@ public class VisionSubsystem extends BitBucketSubsystem {
         final double tv = queryLimelightNetworkTable("tv");
         if (tv == 1) {
             validTarget = true;
+
+            tx = queryLimelightNetworkTable("tx");
+            ty = queryLimelightNetworkTable("ty");
+            ty -= pan;
         } else {
             validTarget = false;
         }
-
-        tx = queryLimelightNetworkTable("tx");
-        ty = queryLimelightNetworkTable("ty");
-        ty -= pan;
     }
 
     public void adjustZoom() {
@@ -132,6 +135,22 @@ public class VisionSubsystem extends BitBucketSubsystem {
         return tx;
     }
 
+    /** offset adds to tx, where offset + tx must be a constant */
+    public double getFilteredTx(double offset) {
+        if (VisionConstants.USE_FILTER) {
+            // make sure there's a valid target before adding new value
+            if (validTarget) {
+                return txFilter.calculate(tx + offset) - offset;
+            // use last average
+            } else {
+                return txFilter.getAverage() - offset;
+            }
+        } else {
+            // just return raw value
+            return tx;
+        }
+    }
+
     public double getTy() {
         return ty;
     }
@@ -162,5 +181,5 @@ public class VisionSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-    protected void listTalons() {}
+    public void listTalons() {}
 }
