@@ -38,33 +38,6 @@ Outputs = zeros(t_width, OUTPUT_SIZE);
 Outputs_hat = zeros(t_width, OUTPUT_SIZE);
 Outputs_exact = zeros(t_width, OUTPUT_SIZE);
 
-L = 2;
-alpha=1e-3;                                 %default, tunable
-ki=0;                                       %default, tunable
-beta=2;                                     %default, tunable
-lambda=alpha^2*(L+ki)-L;                    %scaling factor
-c=L+lambda;                                 %scaling factor  
-Wm=[lambda/c 0.5/c+zeros(1,2*L)];           %weights for means
-Wc=Wm;
-Wc(1)=Wc(1)+(1-alpha^2+beta);               %weights for covariance
-c=sqrt(c);
-
-% VQ = A Q A'
-% Q = inv(A)*VQ*inv(A')
-v_sigmas = sigmas(x0(vL:vR), A\VQ/(A'), c);
-x_sigmas = [x0, x0, x0, x0, x0];
-x_sigmas(vL:vR, :) = x_sigmas(vL:vR, :) + v_sigmas;
-[~, ~, Q, ~] = ut(f, x_sigmas, Wm, Wc, STATE_SIZE, zeros(STATE_SIZE));
-%x_next = zeros(STATE_SIZE, 5);
-%x_next_mean = zeros(STATE_SIZE, 1);
-%for k=1:5
-%    x_next(:,k)=f(x_sigmas(:,k));
-%    x_next_mean=x_next_mean+Wm(k)*x_next(:,k);
-%end
-%x_next_res=x_next-x_next_mean(:,ones(1,STATE_SIZE));
-%Q = x_next_res*diag(Wc)*x_next_res';
-a;
-
 for i=1:t_width
     u = us(:, i);
     t = ts(i);

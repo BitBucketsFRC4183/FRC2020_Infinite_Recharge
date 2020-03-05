@@ -127,9 +127,15 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectoryConfig.addConstraint(kinematicsConstraint);
 
         autoTrajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(FieldConstants.FRONT_OF_POWER_PORT, Rotation2d.fromDegrees(90)),
-            List.of(FieldConstants.OUR_POWER_CELL_1, FieldConstants.OUR_POWER_CELL_2),
-            new Pose2d(FieldConstants.OUR_POWER_CELL_3, Rotation2d.fromDegrees(90)),
+             // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(
+                new Translation2d(2, 0.5),
+                new Translation2d(4, 0.75)
+            ),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d(5, 1, new Rotation2d(0)),
             trajectoryConfig
         );
 

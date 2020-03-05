@@ -174,6 +174,8 @@ public class Robot extends TimedRobot {
 
             intakeSubsystem.intake();
         }))*/
+        navigationSubsystem.resetAHRS();
+        
         (new InstantCommand(() -> { intakeSubsystem.intake(); }))
         .andThen(new AutoDrive(driveSubsystem))
         .andThen(new InstantCommand(() -> {
