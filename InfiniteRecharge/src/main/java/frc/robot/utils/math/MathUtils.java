@@ -10,7 +10,19 @@ public class MathUtils {
 
 	public static final double G = 32.17405;
 
+    
 	public static double unitConverter(double quantity, double unitToBeConverted, double intoThisOne) {
+        /** The unit converter works like this:
+         * The first variable is the amount, lets just say 10 for an example.
+         * 
+         * The second is the unit to be converted, or the unit in which the amount is measured. 
+         * For example let's say the amount is in degrees, that would mean this number is 360.
+         * 
+         * The third is what the previous two should be converted into. 
+         * For this example I'll use radians, that means this number would be 6.28319.
+         *  
+         * So in this example we have MathUtils.unitConverter(10, 360, 6.28319) which would convert 10 degrees into radians.
+         */
 		return quantity * (intoThisOne / unitToBeConverted);
 	}
 
