@@ -152,7 +152,7 @@ public class Config {
 
         public double ROTATION_DRIVE_KP = 5 * 2 * Math.PI / 360;
 
-        public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(0.159, 2.46, 0.303);
+        public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(0.163, 2.46, 0.251);
 
         public DriveConfig() {
         }
