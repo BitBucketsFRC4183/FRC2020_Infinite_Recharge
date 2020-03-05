@@ -12,10 +12,10 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         Extending, Retracting, Off;
     }
 
-    private boolean active = false;
+    private boolean active = false; //Sets the climber to be deactivated by default, even though booleans should be false by default
     protected WPI_TalonSRX motorRight;
     protected WPI_TalonSRX motorLeft;
-    private ClimbState climbState = ClimbState.Off;
+    private ClimbState climbState = ClimbState.Off; //Makes a state so that the climbstate is off by default
 
     public ClimbSubsystem(Config config) {
         super(config);
@@ -61,7 +61,8 @@ public class ClimbSubsystem extends BitBucketSubsystem {
                     break;
 
                 // no holding state is needed, since a mechanical ratchet will hold the robot
-                // while its hanging
+                // while it's hanging
+
                 case Retracting:
                     motorRight.set(
                             SmartDashboard.getNumber(getName() + "/Climber Current", ClimbConstants.RETRACT_OUTPUT));
@@ -72,11 +73,11 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     }
 
     public void activateClimb() {
-        active = true;
+        active = true; //This was only created so that climbing is possible only if the start buttons on both PS4 controllers are pressed
     }
 
     public boolean isExtending() {
-        return climbState == ClimbState.Extending;
+        return climbState == ClimbState.Extending; //This was only created so that the robot won't retract during the extend state in robot.java
     }
 
     public void off() {
