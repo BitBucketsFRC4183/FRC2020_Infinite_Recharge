@@ -101,7 +101,7 @@ public class OI {
     }
 
     public boolean aimBot() {
-        return operatorControl.getRawButton(OPERATOR_AUTO_AIM);
+        return driverControl.getRawButton(OPERATOR_AUTO_AIM);
     }
 
     public boolean fire() {
