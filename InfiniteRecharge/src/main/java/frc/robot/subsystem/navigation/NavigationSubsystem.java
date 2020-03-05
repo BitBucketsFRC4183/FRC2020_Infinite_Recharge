@@ -82,9 +82,13 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
         odometry = new DifferentialDriveOdometry(
             rotation,
-            new Pose2d(new Translation2d(0, 0), rotation)
+            new Pose2d(0,0, new Rotation2d(0))//.FRONT_OF_POWER_PORT, rotation)
         );
-	}
+    }
+
+    public void resetAHRS() {
+        ahrs.reset();
+    }
 
   	@Override
 	public void testInit() {
@@ -235,5 +239,5 @@ public class NavigationSubsystem extends BitBucketSubsystem {
     }
 
 	@Override
-    protected void listTalons() {}
+    public void listTalons() {}
 }

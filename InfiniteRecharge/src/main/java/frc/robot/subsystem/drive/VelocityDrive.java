@@ -1,5 +1,6 @@
 package frc.robot.subsystem.drive;
 
+import frc.robot.subsystem.drive.auto.AutoAlign;
 import frc.robot.subsystem.drive.auto.AutoDrive;
 import frc.robot.utils.CommandUtils;
 
@@ -42,6 +43,10 @@ public class VelocityDrive extends CommandBase {
         
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.IDLE) {
             return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
+        }
+
+        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.ALIGN) {
+            return CommandUtils.stateChange(new AutoAlign(DRIVE_SUBSYSTEM));
         }
 
         return false;

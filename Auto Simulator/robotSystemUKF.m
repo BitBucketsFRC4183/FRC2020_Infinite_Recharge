@@ -1,10 +1,12 @@
+close all;
+
 physicsConstants;
 
 
 
 dt = 2/100;
 
-ts = 0:dt:1.5;
+ts = 0:dt:1;
 us = 6 + 6*[sin(ts); cos(ts)];
 [~, t_width] = size(ts);
 
@@ -15,8 +17,8 @@ f = @(x) robotSystemUKF_update(@robotSystemUKF_deriv, [t, t+dt], x, u);
 h = @(x) robotSystemUKF_output(x, u);
 
 Q = diag([0.01, 0.01, pi/180, 0.02, 0.02])/50;
-R = diag([254/10000, pi/90, 0.005, 0.005, pi/36]);
-P = Q;
+R = diag([254/10000, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36]);
+P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001]);
 
 x_hat = [1; 1; pi/2; 0; 0;];
 x0 = x_hat;% + mvnrnd(zeros(STATE_SIZE, 1), P)';
@@ -31,14 +33,28 @@ Ys_hat = zeros(t_width, 1);
 Thetas = zeros(t_width, 1);
 Thetas_hat = zeros(t_width, 1);
 Thetas_m = zeros(t_width, 1);
-Eigs = zeros(t_width, 5);
+Eigs = zeros(t_width, STATE_SIZE);
+Outputs = zeros(t_width, OUTPUT_SIZE);
+Outputs_hat = zeros(t_width, OUTPUT_SIZE);
+Outputs_exact = zeros(t_width, OUTPUT_SIZE);
 
 for i=1:t_width
     u = us(:, i);
     t = ts(i);
     
+    % estimate process noise covariance
+    % noise source comes from velocity noise
+    % so basically do an unscented transform
+    % to estimate position and yaw noise
+    QQ = eye(STATE_SIZE)*0.00000001;
+    QQ(vL:vR, vL:vR) = VQ;
+    v_sigmas = sigmas(x0, QQ, c);
+    [~, ~, Q, ~] = ut(f, x_sigmas, Wm, Wc, STATE_SIZE, zeros(STATE_SIZE));
+
     x0 = f(x0) + mvnrnd(zeros(STATE_SIZE, 1), Q)';
-    y = h(x0) + mvnrnd(zeros(OUTPUT_SIZE, 1), R)';
+    y0 = h(x0);
+    y = y0 + mvnrnd(zeros(OUTPUT_SIZE, 1), R)';
+    %y(TX) = y(TX) - 5*pi/180;
     
     [x_hat, P] = ukf(f, x_hat, P, h, y, Q, R);
     
@@ -50,6 +66,9 @@ for i=1:t_width
     Thetas_hat(i) = x_hat(THETA);
     %Thetas_m(i) = y(LL_THETA);
     Eigs(i, :) = eig(P);
+    Outputs(i, :) = y;
+    Outputs_hat(i, :) = h(x_hat);
+    Outputs_exact(i, :) = y0;
 end
 
 
@@ -71,11 +90,27 @@ legend("True yaw", "Estimated yaw", "Measured yaw");
 
 figure(3);
 hold on;
-plot(ts, sqrt((Xs-Xs_hat).^2 + (Ys-Ys_hat).^2) * 39.3701);
-yline(39.3701*0.1); % 10cm
+plot(ts, sqrt((Xs-Xs_hat).^2 + (Ys-Ys_hat).^2));
+yline(0.1); % 10cm
 hold off;
-title("Localization error in inches");
+title("Localization error in meters");
 
 figure(4);
 plot(ts, Eigs);
 title("Uncertainty eigenvalues");
+
+%figure(5);
+%hold on;
+%plot(ts, Outputs);
+%plot(ts, Outputs_hat);
+%plot(ts, Outputs_exact);
+%hold off;
+%legend1 = [];
+%legend2 = [];
+%legend3 = [];
+%for i=1:OUTPUT_SIZE
+%    legend1 = [legend1, "Output"];
+%    legend2 = [legend2, "Output estimate"];
+%    legend3 = [legend3, "Actual output"];
+%end
+%legend([legend1, legend2, legend3]);
