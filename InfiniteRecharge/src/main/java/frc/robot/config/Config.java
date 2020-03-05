@@ -108,7 +108,7 @@ public class Config {
     }
 
     public static class IntakeConfig {
-        public boolean intakePivotEnabled = false;
+        public boolean intakePivotEnabled = true;
 
         public MotorConfig intake = new MotorConfig();
     }
@@ -152,7 +152,7 @@ public class Config {
 
         public double ROTATION_DRIVE_KP = 5 * 2 * Math.PI / 360;
 
-        public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(0.159, 2.46, 0.303);
+        public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(0.163, 2.46, 0.251);
 
         public DriveConfig() {
         }
@@ -184,12 +184,23 @@ public class Config {
         }
     }
 
+    public static class AutoConfig {
+        public double cruiseSpeed_mps = 0.3*5;
+        public double maxAcceleration_mps = 0.25;
+
+        public double b = 1.75;
+        public double zeta = 0.35;
+
+        public double kP = 0.91;
+    }
+
     public ShooterConfig shooter = new ShooterConfig();
     public BallManagementConfig ballManagement = new BallManagementConfig();
     public DriveConfig drive = new DriveConfig();
     public IntakeConfig intake = new IntakeConfig();
     public SpinnyBoiConfig spinnyboi = new SpinnyBoiConfig();
     public ClimbConfig climb = new ClimbConfig();
+    public AutoConfig auto = new AutoConfig();
 
     public Config() {
 

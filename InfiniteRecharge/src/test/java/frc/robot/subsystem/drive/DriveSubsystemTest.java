@@ -22,6 +22,8 @@ import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.SubsystemTest;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
+import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
+import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
 
 /**
@@ -90,7 +92,7 @@ public class DriveSubsystemTest extends SubsystemTest {
     @Test
     public void testGetLeftDistance_meters() throws Exception {
         // create and initialize the subsystem so we have motor objects
-        DriveSubsystem driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
+        DriveSubsystem driveSubsystem = new DriveSubsystem(config, navigationSubsystem, new VisionSubsystem(config), oi);
         driveSubsystem.initialize();
 
         // verify that spinning the wheel fully around once gives us a left distance of 6 inch wheel

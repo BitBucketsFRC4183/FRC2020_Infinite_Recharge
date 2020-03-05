@@ -49,7 +49,7 @@ public class TestSubsystem extends BitBucketSubsystem {
     }
 
     @Override
-	protected void listTalons() {
+	public void listTalons() {
         // add things with
         // talons.add(TALON_OBJECT_HERE)
 	}

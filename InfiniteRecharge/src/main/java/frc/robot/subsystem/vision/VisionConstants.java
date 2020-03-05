@@ -8,6 +8,9 @@ public class VisionConstants {
     
     static final double BALL_SHOOTING_ANGLE = 30; // wild guess
 
+    static final boolean USE_FILTER = false;
+    static final int FILTER_LENGTH = 25;
+
     public static double getTargetHeightInches() {
         return TARGET_HEIGHT_INCHES;
     }
