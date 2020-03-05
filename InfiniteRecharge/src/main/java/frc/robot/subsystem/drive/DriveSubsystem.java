@@ -50,8 +50,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private DriveMethod driveMethod = DriveMethod.IDLE; // default
     private RisingEdgeFilter driveMethodSwitchFilter = new RisingEdgeFilter();
 
-    private boolean wasAutoAligning = false;
-
 
 
     private DriverStation driverStation;
@@ -422,14 +420,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
             //     }
             // }
 
-            if (wasAutoAligning != autoAligning) {
-                if (autoAligning) {
-                    driveMethod = DriveMethod.ALIGN;
-                } else {
-                    driveMethod = DriveMethod.VELOCITY;
-                }
-
-                wasAutoAligning = autoAligning;
+            if (autoAligning) {
+                driveMethod = DriveMethod.ALIGN;
+            } else {
+                driveMethod = DriveMethod.VELOCITY;
             }
         } else if (driverStation.isAutonomous()) {
             driveMethod = DriveMethod.AUTO; // please don't press any buttons during auto anyways :)))
