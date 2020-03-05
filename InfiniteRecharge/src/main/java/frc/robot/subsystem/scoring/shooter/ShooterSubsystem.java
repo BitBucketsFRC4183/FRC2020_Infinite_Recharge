@@ -192,7 +192,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                             config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio));
         }
 
-        azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
+        //azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
         
 
         if (spinningUp){

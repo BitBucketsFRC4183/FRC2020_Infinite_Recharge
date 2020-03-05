@@ -34,7 +34,7 @@ public class AutoAlign extends CommandBase {
     }
 
     public void initialize() {
-        
+        VISION_SUBSYSTEM.turnOnLEDs();
     }
 
     @Override
@@ -49,11 +49,13 @@ public class AutoAlign extends CommandBase {
     public boolean isFinished() {
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.IDLE) {
             System.out.println("idle switch");
+            VISION_SUBSYSTEM.turnOffLEDs();
             return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
         }
 
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.VELOCITY) {
             System.out.println("velocity switch");
+            VISION_SUBSYSTEM.turnOffLEDs();
             return CommandUtils.stateChange(new VelocityDrive(DRIVE_SUBSYSTEM));
         }
 
