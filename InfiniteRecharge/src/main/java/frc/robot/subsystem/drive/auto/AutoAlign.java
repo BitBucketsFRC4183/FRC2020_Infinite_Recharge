@@ -48,10 +48,12 @@ public class AutoAlign extends CommandBase {
     @Override
     public boolean isFinished() {
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.IDLE) {
+            System.out.println("idle switch");
             return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
         }
 
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.VELOCITY) {
+            System.out.println("velocity switch");
             return CommandUtils.stateChange(new VelocityDrive(DRIVE_SUBSYSTEM));
         }
 
