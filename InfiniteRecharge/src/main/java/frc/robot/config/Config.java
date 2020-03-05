@@ -185,13 +185,13 @@ public class Config {
     }
 
     public static class AutoConfig {
-        public double cruiseSpeed_mps = 0.3*5;
+        public double cruiseSpeed_mps = 0.3*10;
         public double maxAcceleration_mps = 0.25;
 
         public double b = 1.75;
         public double zeta = 0.35;
 
-        public double kP = 0.91;
+        public double kP = 0.911;
     }
 
     public ShooterConfig shooter = new ShooterConfig();
