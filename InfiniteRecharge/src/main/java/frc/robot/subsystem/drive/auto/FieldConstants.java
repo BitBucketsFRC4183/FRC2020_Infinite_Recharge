@@ -12,10 +12,6 @@ public class FieldConstants {
         1.700784, INITIALIZATION_LINE
     );
 
-    public static final Translation2d FRONT_OF_POWER_PORT_PLUS_A_BIT = new Translation2d(
-        1.700784, INITIALIZATION_LINE + 1
-    );
-
 
 
     public static final Translation2d OUR_POWER_CELL_1 = new Translation2d(

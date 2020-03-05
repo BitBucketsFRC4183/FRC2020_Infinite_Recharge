@@ -115,6 +115,6 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
     public abstract void disable();
 
     protected List<BaseTalon> talons = new ArrayList<BaseTalon>();
-    protected abstract void listTalons();
+    public abstract void listTalons();
     public List<BaseTalon> getTalons() { return talons; }
 }
