@@ -123,8 +123,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
             config.auto.cruiseSpeed_mps,
             config.auto.maxAcceleration_mps
         );
-        trajectoryConfig.addConstraint(voltageConstraint);
         trajectoryConfig.addConstraint(kinematicsConstraint);
+        trajectoryConfig.addConstraint(voltageConstraint);
 
         autoTrajectory = TrajectoryGenerator.generateTrajectory(
              // Start at the origin facing the +X direction
