@@ -143,6 +143,17 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
 
         shooterCalculator.initialize(visionSubsystem);
+
+        ballPropulsionMotor.configClosedloopRamp(0);
+        ballPropulsionFollower.configClosedloopRamp(0);
+
+        ballPropulsionMotor.enableVoltageCompensation(true);
+        ballPropulsionMotor.configVoltageCompSaturation(6.5);
+
+        ballPropulsionFollower.enableVoltageCompensation(true);
+        ballPropulsionFollower.configVoltageCompSaturation(6.5);
+
+        ballPropulsionMotor.configVelocityMeasurementWindow(1);
     }
 
     @Override
@@ -341,7 +352,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAim() {
-        autoAimAzimuth();
+        // autoAimAzimuth();
         autoAimHoodAngle();
         autoAimVelocity();
         visionSubsystem.turnOnLEDs();
