@@ -210,7 +210,7 @@ public class Robot extends TimedRobot {
             driveSubsystem.setDriverRawSpeed(oi.speed());
             driveSubsystem.setDriverRawTurn(oi.turn());
 
-            driveSubsystem.setAutoAligning(oi.aimBot());
+            driveSubsystem.setAutoAligning(oi.driveAimBot());
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -256,7 +256,7 @@ public class Robot extends TimedRobot {
             // Spin up on pressing [spinUp] and auto aim on pressing [aimBot]
             if (oi.spinUp()) {
                 shooterSubsystem.startSpinningUp();
-            } else if (oi.aimBot()) {
+            } else if (oi.operatorAimBot()) {
                 //shooterSubsystem.autoAim();
             } else {
                 shooterSubsystem.stopSpinningUp();
