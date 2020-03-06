@@ -31,7 +31,7 @@ public class AutoAlign extends CommandBase {
             DriveConstants.AUTO_ALIGN_KP,
             DriveConstants.AUTO_ALIGN_KI,
             DriveConstants.AUTO_ALIGN_KD
-        )
+        );
     }
 
     public void initialize() {
