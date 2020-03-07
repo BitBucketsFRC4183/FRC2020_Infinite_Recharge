@@ -9,10 +9,11 @@ import frc.robot.utils.talonutils.MotorUtils;
 
 public class ClimbSubsystem extends BitBucketSubsystem {
     public enum ClimbState {
-        Extending, Retracting, Off;
+        Extending, Retracting, Off, Rewinding;
     }
 
     private boolean active = false;
+    private boolean rewindEnabled = false;
     protected WPI_TalonSRX motorRight;
     protected WPI_TalonSRX motorLeft;
     private ClimbState climbState = ClimbState.Off;
@@ -47,7 +48,8 @@ public class ClimbSubsystem extends BitBucketSubsystem {
 
     @Override
     public void periodic(float deltaTime) {
-        if (active) {
+        rewindEnabled = SmartDashboard.getBoolean(getName() + "/Rewind Enabled", false);
+        if (active || rewindEnabled) {
             switch (climbState) {
                 case Off:
                     motorRight.set(0);
@@ -67,6 +69,11 @@ public class ClimbSubsystem extends BitBucketSubsystem {
                             SmartDashboard.getNumber(getName() + "/Climber Current", ClimbConstants.RETRACT_OUTPUT));
                     SmartDashboard.putString(getName() + "/ClimbState", "Retracting");
                     break;
+                case Rewinding:
+                    motorRight.set(
+                            SmartDashboard.getNumber(getName() + "/Climber Current", ClimbConstants.REWIND_OUTPUT));
+                    SmartDashboard.putString(getName() + "/ClimbState", "Rewinding");
+                    break;
             }
         }
     }
@@ -77,6 +84,14 @@ public class ClimbSubsystem extends BitBucketSubsystem {
 
     public boolean isExtending() {
         return climbState == ClimbState.Extending;
+    }
+
+    public boolean isRewinding(){
+        return climbState == ClimbState.Rewinding;
+    }
+
+    public boolean isRewindEnabled(){
+        return rewindEnabled;
     }
 
     public void off() {
@@ -95,10 +110,22 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         }
     }
 
+    public void rewinding() {
+        if (rewindEnabled) {
+            climbState = ClimbState.Rewinding;
+        }
+    }
+
+    @Override
+    public void dashboardInit() {
+        super.dashboardInit();
+        SmartDashboard.putBoolean(getName() + "/Rewind Enabled", false);
+    }
+
     @Override
     public void dashboardPeriodic(float deltaTime) {
-        // TODO Auto-generated method stub
-
+        SmartDashboard.putNumber(getName() + "/Right Selected Sensor Position", motorRight.getSelectedSensorPosition());
+        SmartDashboard.putNumber(getName() + "/Left Selected Sensor Position", motorLeft.getSelectedSensorPosition());
     }
 
     public void disable() {

@@ -254,6 +254,21 @@ public class Config {
                 0
         );
 
+        // Climb
+        climb.climbLeft.positionPIDF = new PIDF(//
+                0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // P
+                0, // I
+                10 * 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // D
+                1023f / 2650 /// F
+        );
+        
+        climb.climbRight.positionPIDF = new PIDF(//
+                0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // P
+                0, // I
+                10 * 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // D
+                1023f / 2650 /// F
+        );
+
         // SpinnyBoi
         spinnyboi.spinner.positionPIDF = new PIDF(//
                 0.05, // P
