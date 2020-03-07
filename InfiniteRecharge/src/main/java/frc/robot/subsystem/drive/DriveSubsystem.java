@@ -85,7 +85,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    private final Trajectory autoTrajectory;
+    private final Trajectory pickupTrajectory;
+    private final Trajectory returnTrajectory;
     private final RamseteController ramsete;
 
     private final PIDController leftAutoPID;
@@ -126,17 +127,33 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectoryConfig.addConstraint(kinematicsConstraint);
         trajectoryConfig.addConstraint(voltageConstraint);
 
-        autoTrajectory = TrajectoryGenerator.generateTrajectory(
+        pickupTrajectory = TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints
             List.of(
-            new Translation2d(2, 1.8),
-            new Translation2d(4, 1.8)
+                new Translation2d(1.5, 1.2),
+                new Translation2d(2, 1.5),
+                new Translation2d(4, 1.6)
             ),
             // End 5 meters ahead and 1 meter over of where we started, facing forward
-            new Pose2d(5, 1.8, new Rotation2d(0)),
+            new Pose2d(5, 1.75, new Rotation2d(0)),
             trajectoryConfig
+        );
+
+        TrajectoryConfig trajectoryConfigReversed = new TrajectoryConfig(
+            config.auto.cruiseSpeed_mps,
+            config.auto.maxAcceleration_mps
+        );
+        trajectoryConfigReversed.addConstraint(kinematicsConstraint);
+        trajectoryConfigReversed.addConstraint(voltageConstraint);
+        trajectoryConfigReversed.setReversed(true);
+
+        returnTrajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(5, 1.75, new Rotation2d(0)),
+            List.of(),
+            new Pose2d(0, 0, new Rotation2d(0)),
+            trajectoryConfigReversed
         );
 
         ramsete = new RamseteController(config.auto.b, config.auto.zeta);
@@ -544,8 +561,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
         return DRIVE_UTILS.ticksP100ToIps(getRightVelocity_tp100ms()) * DriveConstants.METERS_PER_INCH / config.drive.gearRatio;
     }
 
-	public Trajectory getAutoTrajectory() {
-		return autoTrajectory;
+	public Trajectory getPickupTrajectory() {
+		return pickupTrajectory;
+    }
+
+    public Trajectory returnReturnTrajectory() {
+        // yes, code
+        return returnTrajectory;
     }
     
     public Pose2d getPose() {
