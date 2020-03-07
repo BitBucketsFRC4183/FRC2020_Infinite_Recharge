@@ -60,8 +60,8 @@ public class OI {
     static final int OPERATOR_INTAKE_TOGGLE = PS4Constants.R1.getValue();
     static final int OPERATOR_NEXT_POSITION_ELEVATION_POV = 90;
     static final int OPERATOR_LAST_POSITION_ELEVATION_POV = 270;
-    static final int OPERATOR_SPINUP = PS4Constants.R2.getValue();
-    static final int OPERATOR_AUTO_AIM = PS4Constants.L1.getValue();
+    static final int OPERATOR_SPINUP = PS4Constants.L1.getValue();
+    static final int OPERATOR_AUTO_AIM = PS4Constants.R2.getValue();
     static final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
     static final int OPERATOR_CLIMB_EXTEND = PS4Constants.TRIANGLE.getValue();
     static final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
