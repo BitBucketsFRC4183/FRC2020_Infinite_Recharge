@@ -67,6 +67,10 @@ driveBase:
   radius: "{{ 22.65 * 2.54 / 100 / 2}}" # radius of robot in meters
   wheelRadius: "{{ 6 * 2.54 / 100 / 2}}" # 6 inch diameter wheels in meters
   gearRatio: "{{ 10 + 8.0 / 9 }}"
+startPosition:
+  x: 1.54
+  y: 5.33
+  heading: 3.14159
 transmissions:
 - motors:
   - id: "{{ defaults.ids.leftDriveLeader }}"
