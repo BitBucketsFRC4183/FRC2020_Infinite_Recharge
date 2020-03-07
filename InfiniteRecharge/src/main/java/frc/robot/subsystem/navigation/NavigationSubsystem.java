@@ -51,7 +51,13 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 	public NavigationSubsystem(Config config, VisionSubsystem visionSubsystem) {
         super(config);
         
-		this.visionSubsystem = visionSubsystem;
+        this.visionSubsystem = visionSubsystem;
+        
+        Rotation2d rotation = new Rotation2d(0);
+        odometry = new DifferentialDriveOdometry(
+            rotation,
+            new Pose2d(0, 0, rotation)
+        );
     }
     
     public void setDrive(DriveSubsystem drive) {
