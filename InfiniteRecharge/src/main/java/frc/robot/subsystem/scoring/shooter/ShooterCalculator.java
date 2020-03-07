@@ -5,11 +5,16 @@ import java.util.List;
 
 import frc.robot.subsystem.vision.VisionSubsystem;
 
+import frc.robot.utils.math.MathUtils;
+import frc.robot.config.Config;
+
 public class ShooterCalculator {
 
     private final List<VelocityPoint> points;
     VisionSubsystem visionSubsystem;
     SplineVelocityPoint splineVPoint;
+
+    private final Config config = new Config();
 
     public static class VelocityPoint implements Comparable<VelocityPoint> {
         final double distance_in;
@@ -86,6 +91,13 @@ public class ShooterCalculator {
         }
         // calculate the velocity for this distance_in
         return 0;
+    }
+
+    public double calculateSpeed_ticks() {
+        double speed_rpm = calculateSpeed_rpm();
+        double speed_ticks = MathUtils.unitConverter(speed_rpm, 600, config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio;
+
+        return speed_ticks;
     }
 
     // TODO: empirically test this

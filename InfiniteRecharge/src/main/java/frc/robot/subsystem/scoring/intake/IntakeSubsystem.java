@@ -130,7 +130,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
 
 
     @Override
-    protected void listTalons() {
+    public void listTalons() {
         talons.add(motor);
     }
 }

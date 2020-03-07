@@ -22,6 +22,7 @@ import frc.robot.config.ConfigChooser;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.SubsystemTest;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
+import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
 
 /**
@@ -90,13 +91,30 @@ public class DriveSubsystemTest extends SubsystemTest {
     @Test
     public void testGetLeftDistance_meters() throws Exception {
         // create and initialize the subsystem so we have motor objects
-        DriveSubsystem driveSubsystem = new DriveSubsystem(config, navigationSubsystem, oi);
+        DriveSubsystem driveSubsystem = new DriveSubsystem(config, navigationSubsystem, new VisionSubsystem(config), oi);
         driveSubsystem.initialize();
 
         // verify that spinning the wheel fully around once gives us a left distance of 6 inch wheel
         // a full wheel ritation is 2048 ticks 10.88 times because of the drive gear ratio
         when(leftMotorLeader.getSelectedSensorPosition()).thenReturn((int)(2048 * config.drive.gearRatio));
         assertEquals(config.drive.wheelRadius_in * 2 * Math.PI * .0254, driveSubsystem.getLeftDistance_meters(), .01);
+    }
+
+    /**
+     * Test the DriveSubsystem testGetLeftDistance_meters function
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testGetLeftVelocity_mps() throws Exception {
+        // create and initialize the subsystem so we have motor objects
+        DriveSubsystem driveSubsystem = new DriveSubsystem(config, navigationSubsystem, new VisionSubsystem(config), oi);
+        driveSubsystem.initialize();
+
+        // verify that spinning the wheel fully around once per 100ms gives us 
+        // a speed of 10 full rotations every second
+        when(leftMotorLeader.getSelectedSensorVelocity()).thenReturn((int)(2048 * config.drive.gearRatio));
+        assertEquals(config.drive.wheelRadius_in * 2 * Math.PI * .0254 * 10, driveSubsystem.getLeftVelocity_mps(), .01);
     }
 
     /**
