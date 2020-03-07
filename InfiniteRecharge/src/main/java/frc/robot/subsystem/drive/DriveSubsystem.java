@@ -604,6 +604,15 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
+    public void resetEncoders() {
+        for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
+            leftMotors[i].setSelectedSensorPosition(0);
+            rightMotors[i].setSelectedSensorPosition(0);
+        }
+    }
+
+
+
     @Override
 	public void listTalons() {
         for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {

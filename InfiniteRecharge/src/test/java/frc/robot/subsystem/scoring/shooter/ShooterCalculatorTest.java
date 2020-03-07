@@ -35,8 +35,8 @@ public class ShooterCalculatorTest {
 
         // check no valid target
         when(visionSubsystem.getValidTarget()).thenReturn(false);
-        assertEquals(0.0, shooterCalculator.calculateHoodAngle_deg(), 0);
-        assertEquals(0.0, shooterCalculator.calculateSpeed_rpm(), .1);
+        assertEquals(ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG, shooterCalculator.calculateHoodAngle_deg(), 0);
+        assertEquals(ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM, shooterCalculator.calculateSpeed_rpm(), .1);
     }
 
     /**

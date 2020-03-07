@@ -91,13 +91,4 @@ public class UnscentedKalmanFilterTest {
 
         System.out.println((t1 - t0) / 1000000 + "ms to run");
     }
-
-
-
-    @Test
-    public void ukf_time() {
-        for (int i = 0; i < 100; i++) {
-            testUKF();
-        }
-    }
 }

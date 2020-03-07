@@ -44,7 +44,7 @@ public class OI {
     // ****************************
     static final int DRIVE_LOW_SENSITIVE_BUTTON = PS4Constants.R1.getValue();
     static final int DRIVE_INVERT_BUTTON = PS4Constants.L1.getValue();
-    static final int DRIVE_AUTO_AIM = PS4Constants.R2.getValue();
+    static final int DRIVE_AUTO_AIM = PS4Constants.CIRCLE.getValue();
     static final int DRIVE_ALIGN_LOCK_BUTTON = PS4Constants.SHARE.getValue();
     static final int DRIVE_LOCK_BUTTON = PS4Constants.OPTIONS.getValue();
     static final int DRIVE_AUTO_ALIGN = PS4Constants.CROSS.getValue();
