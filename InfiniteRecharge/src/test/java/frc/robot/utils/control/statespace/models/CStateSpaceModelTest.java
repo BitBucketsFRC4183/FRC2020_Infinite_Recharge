@@ -65,12 +65,4 @@ public class CStateSpaceModelTest {
 
         System.out.println((t1 - t0) / 1000000 + "ms to run");
     }
-
-
-    @Test
-    public void simpleBot_time() {
-        for (int i = 0; i < 100; i++) {
-            simpleBot();
-        }
-    }
 }
