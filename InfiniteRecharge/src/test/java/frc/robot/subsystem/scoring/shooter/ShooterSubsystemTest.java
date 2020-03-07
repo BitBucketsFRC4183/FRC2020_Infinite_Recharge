@@ -90,6 +90,7 @@ public class ShooterSubsystemTest extends SubsystemTest {
      */
     @Test
     public void testSpinBMS() throws Exception {
+        config.enableBallManagementSubsystem = true;
         // create and initialize the subsystem so we have motor objects
         ShooterSubsystem shooterSubsystem = new ShooterSubsystem(config, visionSubsystem);
         shooterSubsystem.initialize();
