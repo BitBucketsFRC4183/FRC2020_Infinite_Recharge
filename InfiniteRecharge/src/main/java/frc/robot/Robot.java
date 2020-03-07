@@ -176,11 +176,11 @@ public class Robot extends TimedRobot {
         }))*/
         navigationSubsystem.reset();
         visionSubsystem.turnOnLEDs();
-        (new InstantCommand(() -> { intakeSubsystem.intake(); }))
-        .andThen(new AutoDrive(driveSubsystem))
+        //(new InstantCommand(() -> { intakeSubsystem.intake(); }))
+        (new AutoDrive(driveSubsystem))
         .andThen(new InstantCommand(() -> {
             System.out.println("Turning intake off");
-            intakeSubsystem.off();
+            //intakeSubsystem.off();
         }))
         .schedule();
     }
