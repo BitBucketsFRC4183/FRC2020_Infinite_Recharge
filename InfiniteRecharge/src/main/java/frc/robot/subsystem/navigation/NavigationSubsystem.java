@@ -75,19 +75,21 @@ public class NavigationSubsystem extends BitBucketSubsystem {
         ahrs = BitBucketsAHRS.instance();
         sys = new RobotSystem();
 
+        reset();
+    }
+
+    public void reset() {
         ahrs.reset();
         ahrs.setAngleAdjustment(0);
 
-        Rotation2d rotation = Rotation2d.fromDegrees(getYaw_deg());
+        Rotation2d rotation = new Rotation2d(0);//Rotation2d.fromDegrees(getYaw_deg());
 
-        odometry = new DifferentialDriveOdometry(
-            rotation,
-            new Pose2d(0,0, new Rotation2d(0))//.FRONT_OF_POWER_PORT, rotation)
+        odometry.resetPosition(
+            new Pose2d(0, 0, rotation),
+            rotation
         );
-    }
 
-    public void resetAHRS() {
-        ahrs.reset();
+        driveSubsystem.resetEncoders();
     }
 
   	@Override

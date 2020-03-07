@@ -91,4 +91,6 @@ public class DriveConstants {
 
 
     public static final double AUTO_ALIGN_KP = -1 * Math.PI / 180;
+    public static final double AUTO_ALIGN_KI = 0;
+    public static final double AUTO_ALIGN_KD = 0;
 }
