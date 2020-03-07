@@ -126,6 +126,8 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     public void dashboardPeriodic(float deltaTime) {
         SmartDashboard.putNumber(getName() + "/Right Selected Sensor Position", motorRight.getSelectedSensorPosition());
         SmartDashboard.putNumber(getName() + "/Left Selected Sensor Position", motorLeft.getSelectedSensorPosition());
+        SmartDashboard.putBoolean(getName() + "/Active", active);
+        SmartDashboard.putBoolean(getName() + "/Rewind Enabled", rewindEnabled);
     }
 
     public void disable() {
