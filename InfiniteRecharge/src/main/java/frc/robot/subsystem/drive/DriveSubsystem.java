@@ -85,7 +85,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    private final Trajectory autoTrajectory;
+    private final Trajectory pickupTrajectory;
+    private final Trajectory returnTrajectory;
     private final RamseteController ramsete;
 
     private final PIDController leftAutoPID;
@@ -126,16 +127,26 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectoryConfig.addConstraint(kinematicsConstraint);
         trajectoryConfig.addConstraint(voltageConstraint);
 
-        autoTrajectory = TrajectoryGenerator.generateTrajectory(
-             // Start at the origin facing the +X direction
+        pickupTrajectory = TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
+            // Pass through these two interior waypoints
             List.of(
-                new Translation2d(2, 0.5),
-                new Translation2d(4, 0.75)
+                new Translation2d(1.5, 1.2),
+                new Translation2d(2, 1.5),
+                new Translation2d(4, 1.6)
             ),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(5, 1, new Rotation2d(0)),
+            // End 5 meters ahead and 1 meter over of where we started, facing forward
+            new Pose2d(5, 1.75, new Rotation2d(0)),
+            trajectoryConfig
+        );
+
+        trajectoryConfig.setReversed(true);
+
+        returnTrajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(5, 1.75, new Rotation2d(0)),
+            List.of(),
+            new Pose2d(0, 0, new Rotation2d(0)),
             trajectoryConfig
         );
 
@@ -544,8 +555,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
         return DRIVE_UTILS.ticksP100ToIps(getRightVelocity_tp100ms()) * DriveConstants.METERS_PER_INCH / config.drive.gearRatio;
     }
 
-	public Trajectory getAutoTrajectory() {
-		return autoTrajectory;
+	public Trajectory getPickupTrajectory() {
+		return pickupTrajectory;
+    }
+
+    public Trajectory returnReturnTrajectory() {
+        // yes, code
+        return returnTrajectory;
     }
     
     public Pose2d getPose() {
