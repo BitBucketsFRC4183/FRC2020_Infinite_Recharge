@@ -23,6 +23,8 @@ public class AutoAlign extends CommandBase {
 
 
     public AutoAlign(DriveSubsystem driveSubsystem) {
+        addRequirements(driveSubsystem);
+
         DRIVE_SUBSYSTEM = driveSubsystem;
         VISION_SUBSYSTEM = DRIVE_SUBSYSTEM.getVision();
         NAVIGATION_SUBSYSTEM = DRIVE_SUBSYSTEM.getNavigation();
