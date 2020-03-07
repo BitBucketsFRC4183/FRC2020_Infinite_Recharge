@@ -372,7 +372,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public void autoAimVelocity() {
         autoAiming = true;
         shooterVelocity_ticks = shooterCalculator.calculateSpeed_ticks();
-        startSpinningUp();
+        // startSpinningUp();
 
         // TODO: do this stuff empirically (yay!)
         // the math rn isn' rly accurate
@@ -384,12 +384,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // autoAimAzimuth();
         autoAimHoodAngle();
         autoAimVelocity();
-        visionSubsystem.turnOnLEDs();
     }
+    
     public void stopAutoAim() {
-        visionSubsystem.turnOffLEDs();
         autoAiming = false;
-        stopSpinningUp();
+        // stopSpinningUp();
     }
 
     public void calculateAbsoluteDegreesToRotate() {

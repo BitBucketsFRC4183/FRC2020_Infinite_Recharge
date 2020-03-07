@@ -59,7 +59,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
         updateTargetInfo();
         distance = approximateDistanceFromTarget(ty);
-        adjustZoom();
+        autoZoom();
 
         SmartDashboard.putBoolean(getName() + "/Valid Target ", validTarget);
         SmartDashboard.putNumber(getName() + "/Estimated Distance ", distance);
@@ -89,7 +89,11 @@ public class VisionSubsystem extends BitBucketSubsystem {
         }
     }
 
-    public void adjustZoom() {
+    public void autoZoom() {
+
+        if (!VisionConstants.ENABLE_AUTO_ZOOM)
+            return;
+
         double pipelineToChangeTo = 0;
 
         //TODO: empirically test this
@@ -111,12 +115,10 @@ public class VisionSubsystem extends BitBucketSubsystem {
         //     pipelineToChangeTo++;
         // }
 
-        // System.out.println(validTarget);
         SmartDashboard.putNumber(getName() + "/Pipeline to Change to", pipelineToChangeTo);
-        // System.out.println(pipelineToChangeTo);
 
         zoom = pipelineToChangeTo + 1;
-        // SmartDashboard.getNumber(getName() + "/Pipeline to Change to", efaultValue)
+        // SmartDashboard.getNumber(getName() + "/Pipeline to Change to", 0)
         limelightTable.getEntry("pipeline").setDouble(pipelineToChangeTo);
 
         if (pipelineToChangeTo != 0)
