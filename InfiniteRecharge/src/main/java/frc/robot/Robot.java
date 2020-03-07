@@ -253,6 +253,12 @@ public class Robot extends TimedRobot {
         if (config.enableShooterSubsystem) {
             SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
 
+            if (oi.feeder()){
+                shooterSubsystem.spinFeeder();
+            } else {
+                shooterSubsystem.stopSpinningFeeder();
+            }
+
             // Spin up on pressing [spinUp] and auto aim on pressing [aimBot]
             if (oi.spinUp()) {
                 shooterSubsystem.startSpinningUp();
