@@ -87,7 +87,7 @@ public class OI {
     }
 
     public boolean feeder() {
-        return operatorControl.getPOV() == OPERATOR_FEEDER;
+        return operatorControl.getRawButton(OPERATOR_FEEDER);
     }
 
     public boolean nextPositionElevation() {
