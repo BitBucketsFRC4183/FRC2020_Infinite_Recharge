@@ -5,16 +5,21 @@ import java.awt.*;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
 import frc.robot.simulator.SimMain;
 import frc.robot.simulator.network.proto.RobotProto.MotorOutputs;
 import frc.robot.simulator.network.proto.RobotProto.MotorOutputs.MotorOutput;
 import frc.robot.simulator.sim.RobotPosition;
+import frc.robot.simulator.sim.SimulatorSettings;
 import frc.robot.simulator.sim.RobotPosition.Type;
+import frc.robot.simulator.sim.config.SimulatorConfig;
+import frc.robot.simulator.sim.config.serialization.ConfigReader;
 import frc.robot.simulator.sim.events.EventManager;
 import frc.robot.simulator.sim.events.FieldRenderEvent;
 import frc.robot.simulator.sim.events.RobotInitializedEvent;
+import frc.robot.simulator.sim.field.wheeldisplacement.Field;
 import frc.robot.subsystem.drive.DriveConstants;
 import frc.robot.subsystem.vision.VisionConstants;
 import frc.robot.utils.math.MathUtils;
@@ -47,6 +52,8 @@ public class Sim {
     private final Config config;
     private boolean robotInitialized;
     private NetworkTable limelightTable;
+    private SimulatorConfig simulatorConfig;
+    private ConfigReader configReader = new ConfigReader(new SimulatorSettings());
 
     /**
      * Initialize the sim with a config for our robot, so we know what motor ids to
@@ -54,6 +61,12 @@ public class Sim {
      */
     public Sim() {
         config = ConfigChooser.getConfig();
+        try {
+            simulatorConfig = configReader.loadConfig();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            simulatorConfig = new SimulatorConfig();
+        }
     }
 
     /**
@@ -146,9 +159,24 @@ public class Sim {
             g2d.setColor(Color.DARK_GRAY);
             g2d.drawOval(x, y, size, size);
 
+            // put a dot where the robot thinks it is
+            double rx = SmartDashboard.getNumber("DriveSubsystem/actual x", 0);
+            double ry = SmartDashboard.getNumber("DriveSubsystem/actual y", 0);
+            double rr = Math.sqrt(Math.pow(rx, 2.0) + Math.pow(ry, 2.0));
+            double rt = Math.atan2(rx, ry);
+            double fr = rr;
+            double ft = rt + simulatorConfig.startPosition.heading;
+            double fx = -fr * Math.cos(ft) + simulatorConfig.startPosition.x;
+            double fy = fr * Math.sin(ft) + simulatorConfig.startPosition.y;
+            final int dotRadius = 2;
+            int ax = (int)(Field.imageSize.x + robotRect.width) / 2 + (int) Math.round(fx / Field.metersPerPixelWidth);
+            int ay = (int)(Field.imageSize.y + robotRect.height) / 2 - (int) Math.round(fy / Field.metersPerPixelHeight);
+            g2d.setColor(Color.CYAN);
+            g2d.fillOval(ax - dotRadius, ay - dotRadius, 2 * dotRadius, 2 * dotRadius);
+
             // Draw a line showing the direction the turret is facing.
             g2d.setColor(Color.YELLOW);
-            double turretHeading = (aziumthMotorPositionInRadians * config.shooter.azimuthGearRatio) + fieldRenderEvent.getHeading();
+            double turretHeading = (aziumthMotorPositionInRadians * config.shooter.azimuthGearRatio) + Math.PI + fieldRenderEvent.getHeading();
             int startX = x + size / 2;
             int startY = y + size / 2;
             int endX = startX + (int) (Math.cos(turretHeading - Math.PI / 2) * (robotRect.width / 2));

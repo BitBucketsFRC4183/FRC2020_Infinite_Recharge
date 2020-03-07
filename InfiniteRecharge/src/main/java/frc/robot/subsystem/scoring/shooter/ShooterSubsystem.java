@@ -246,7 +246,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         double averageError = feederFilter.calculate((double) Math.abs(ballPropulsionMotor.getSelectedSensorVelocity() - shooterVelocity_ticks));
 
         // Spin up the feeder if the shooter is up to speed.
-        if (averageError <= config.shooter.feederSpinUpDeadband_ticks) {
+        if (averageError <= config.shooter.feederSpinUpDeadband_ticks && feeding) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     ShooterConstants.FEEDER_OUTPUT_PERCENT));
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
@@ -532,6 +532,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     public void zeroElevationSensor(){
         elevationMotor.setSelectedSensorPosition(0);
+    }
+
+    public void spinFeeder(){
+        feeding = true;
+    }
+
+    public void stopSpinningFeeder(){
+        feeding = false;
     }
 
     private double lastTime = System.nanoTime();
