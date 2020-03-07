@@ -3,20 +3,13 @@ package frc.robot.subsystem.drive.auto;
 import frc.robot.subsystem.drive.DriveConstants;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.Idle;
-import frc.robot.subsystem.drive.RotationDrive;
 import frc.robot.subsystem.drive.VelocityDrive;
 import frc.robot.subsystem.drive.DriveSubsystem.DriveMethod;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
-import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.CommandUtils;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 
 
 
@@ -25,16 +18,25 @@ public class AutoAlign extends CommandBase {
     private final VisionSubsystem VISION_SUBSYSTEM;
     private final NavigationSubsystem NAVIGATION_SUBSYSTEM;
 
+    private final PIDController PID;
+
 
 
     public AutoAlign(DriveSubsystem driveSubsystem) {
+        addRequirements(driveSubsystem);
+
         DRIVE_SUBSYSTEM = driveSubsystem;
         VISION_SUBSYSTEM = DRIVE_SUBSYSTEM.getVision();
         NAVIGATION_SUBSYSTEM = DRIVE_SUBSYSTEM.getNavigation();
+
+        PID = new PIDController(
+            DriveConstants.AUTO_ALIGN_KP,
+            DriveConstants.AUTO_ALIGN_KI,
+            DriveConstants.AUTO_ALIGN_KD
+        );
     }
 
     public void initialize() {
-        VISION_SUBSYSTEM.turnOnLEDs();
     }
 
     @Override
@@ -42,20 +44,19 @@ public class AutoAlign extends CommandBase {
         // Navigation yaw is defined as + for CCW but tx is defined as - for when it should turn CCW
         double tx = VISION_SUBSYSTEM.getFilteredTx(-NAVIGATION_SUBSYSTEM.getYaw_deg());
 
-        DRIVE_SUBSYSTEM.velocityDrive_auto(0, -tx * DriveConstants.AUTO_ALIGN_KP);
+        double omega_radps = PID.calculate(-tx);
+        DRIVE_SUBSYSTEM.velocityDrive_auto(0, omega_radps);
     }
 
     @Override
     public boolean isFinished() {
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.IDLE) {
             System.out.println("idle switch");
-            VISION_SUBSYSTEM.turnOffLEDs();
             return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
         }
 
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.VELOCITY) {
             System.out.println("velocity switch");
-            VISION_SUBSYSTEM.turnOffLEDs();
             return CommandUtils.stateChange(new VelocityDrive(DRIVE_SUBSYSTEM));
         }
 

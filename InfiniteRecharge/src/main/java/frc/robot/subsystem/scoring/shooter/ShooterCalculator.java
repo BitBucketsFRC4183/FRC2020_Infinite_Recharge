@@ -11,8 +11,11 @@ import frc.robot.config.Config;
 public class ShooterCalculator {
 
     private final List<VelocityPoint> points;
+    private boolean targetLocked = false;
     VisionSubsystem visionSubsystem;
     SplineVelocityPoint splineVPoint;
+    private double lastTargetHoodAngle;
+    private double lastTargetVelocity;
 
     private final Config config = new Config();
 
@@ -87,10 +90,15 @@ public class ShooterCalculator {
             double ty = visionSubsystem.getTy();
             double distance = visionSubsystem.approximateDistanceFromTarget(ty);
 
+            targetLocked = true;
             return splineVPoint.getSpeedSpline(distance);
         }
         // calculate the velocity for this distance_in
-        return 0;
+        if (!targetLocked){
+            return ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM;
+        } else {
+            return lastTargetVelocity;
+        }
     }
 
     public double calculateSpeed_ticks() {
@@ -108,11 +116,23 @@ public class ShooterCalculator {
         if (validTarget) {
             double ty = visionSubsystem.getTy();
             double distance = visionSubsystem.approximateDistanceFromTarget(ty);
-
-            return splineVPoint.getAngleSpline(distance);
+            double hoodAngle = splineVPoint.getAngleSpline(distance);
+            // Store the target angle in case we lose the target. 
+            if (!targetLocked){
+                lastTargetHoodAngle = hoodAngle;
+            }
+            targetLocked = true;
+            
+            return hoodAngle;
         }
         // calculate the hood angle for this distance_in
-        return 0;
+        if (!targetLocked){
+            return ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG;
+        } else {
+            return lastTargetHoodAngle;
+        }
     }
-
+    public void setTargetLocked(boolean b){
+        targetLocked = b;
+    }
 }
