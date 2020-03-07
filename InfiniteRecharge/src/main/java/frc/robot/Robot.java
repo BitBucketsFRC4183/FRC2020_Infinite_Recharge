@@ -175,7 +175,8 @@ public class Robot extends TimedRobot {
             intakeSubsystem.intake();
         }))*/
         navigationSubsystem.resetAHRS();
-        
+        visionSubsystem.turnOnLEDs();
+
         (new InstantCommand(() -> { intakeSubsystem.intake(); }))
         .andThen(new AutoDrive(driveSubsystem))
         .andThen(new InstantCommand(() -> {
@@ -195,6 +196,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         shooterSubsystem.rotateToDeg(0, ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
+        visionSubsystem.turnOnLEDs();
     }
 
     /**
