@@ -157,7 +157,7 @@ public class Sim {
 
             // Draw a line showing the direction the turret is facing.
             g2d.setColor(Color.YELLOW);
-            double turretHeading = (aziumthMotorPositionInRadians * config.shooter.azimuthGearRatio) + fieldRenderEvent.getHeading();
+            double turretHeading = (aziumthMotorPositionInRadians * config.shooter.azimuthGearRatio) + Math.PI + fieldRenderEvent.getHeading();
             int startX = x + size / 2;
             int startY = y + size / 2;
             int endX = startX + (int) (Math.cos(turretHeading - Math.PI / 2) * (robotRect.width / 2));
