@@ -11,6 +11,8 @@ public class VisionConstants {
     static final boolean USE_FILTER = false;
     static final int FILTER_LENGTH = 25;
 
+    static final boolean ENABLE_AUTO_ZOOM = false;
+
     public static double getTargetHeightInches() {
         return TARGET_HEIGHT_INCHES;
     }

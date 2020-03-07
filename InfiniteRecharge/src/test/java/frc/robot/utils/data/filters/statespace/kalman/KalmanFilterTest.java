@@ -99,11 +99,4 @@ public class KalmanFilterTest {
 
         System.out.println((t1 - t0) / 1000000 + "ms to run");
     }
-
-    @Test
-    public void motor_time() {
-        for (int i = 0; i < 100; i++) {
-            motor();
-        }
-    }
 }
