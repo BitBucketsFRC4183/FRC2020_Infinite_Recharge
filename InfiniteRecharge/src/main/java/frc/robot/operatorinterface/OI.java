@@ -68,6 +68,7 @@ public class OI {
     static final int OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER = PS4Constants.OPTIONS.getValue();
     static final int OPERATOR_CLIMB_RETRACT = PS4Constants.CROSS.getValue();
     static final int OPERATOR_CLIMB_ACTIVATE = PS4Constants.PS4.getValue();
+    static final int OPERATOR_FEEDER = PS4Constants.L2.getValue();
 
     // forced Idle for corresponding subsystems
     static final int DRIVER_IDLE = PS4Constants.TRACKPAD.getValue();
@@ -83,6 +84,10 @@ public class OI {
 
     public double manualAzimuthAxis() {
         return operatorControl.getRawAxis(OPERATOR_MANUAL_AZIMUTH_AXIS);
+    }
+
+    public boolean feeder() {
+        return operatorControl.getRawButton(OPERATOR_FEEDER);
     }
 
     public boolean nextPositionElevation() {
