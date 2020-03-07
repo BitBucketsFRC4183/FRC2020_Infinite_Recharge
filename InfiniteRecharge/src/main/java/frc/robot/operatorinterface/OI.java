@@ -183,15 +183,15 @@ public class OI {
         return driverControl.getRawButton(DRIVE_METHOD_SWITCH_BUTTON);
     }
 
-    public boolean climbextend() {
+    public boolean climbExtend() {
         return operatorControl.getRawButtonPressed(OPERATOR_CLIMB_EXTEND);
     }
 
-    public boolean climbretract() {
+    public boolean climbRetract() {
         return operatorControl.getRawButton(OPERATOR_CLIMB_RETRACT);
     }
 
-    public boolean climbactivate() {
+    public boolean climbActivate() {
         return operatorControl.getRawButton(OPERATOR_CLIMB_ACTIVATE) && driverControl.getRawButton(DRIVER_CLIMB_ACTIVATE);
     }
 }
