@@ -9,7 +9,6 @@ public class DriveUtils {
     
 	final double WHEEL_CIRCUMFERENCE_INCHES;
     final DifferentialDriveKinematics KINEMATICS;
-    final double MAX_ACCELERATION_MPSPS;
 
     final double MAX_ROTATION_RADPS;
 
@@ -22,12 +21,7 @@ public class DriveUtils {
         
         
         
-        // V = kS + kV*v + kA*a
-        // a = (V - kS - kV*v)/kA
-        // max acceleration = (V - kS)/kA
         SimpleMotorFeedforward cha = c.drive.characterization;
-
-        MAX_ACCELERATION_MPSPS = 1;//(DriveConstants.AUTO_MAX_VOLTAGE - cha.ks)/cha.ka;
 
         MAX_ROTATION_RADPS = Math.toRadians(c.drive.maxAllowedTurn_degps);
     }

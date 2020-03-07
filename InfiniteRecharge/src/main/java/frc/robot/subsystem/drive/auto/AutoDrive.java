@@ -27,16 +27,18 @@ public class AutoDrive extends RamseteCommand {
             driveSubsystem.getAutoTrajectory(),
             driveSubsystem::getPose,
             driveSubsystem.getRAMSETEController(),
+            driveSubsystem.getCharacterization(),
             driveSubsystem.getKinematics(),
-            driveSubsystem::setWheelSpeeds,
+            driveSubsystem::getWheelSpeeds,
+            driveSubsystem.getLeftAutoPID(),
+            driveSubsystem.getRightAutoPID(),
+            driveSubsystem::tankVolts,
             driveSubsystem
         );
 
         DRIVE_SUBSYSTEM = driveSubsystem;
         timer = new Timer();
     }
-
-
 
     public void initialize() {
         super.initialize();

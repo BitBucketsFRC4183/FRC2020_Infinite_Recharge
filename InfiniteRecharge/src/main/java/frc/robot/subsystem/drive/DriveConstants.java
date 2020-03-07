@@ -87,4 +87,8 @@ public class DriveConstants {
 
 
     static final double AUTO_MAX_VOLTAGE = 11;
+
+
+
+    public static final double AUTO_ALIGN_KP = -1 * Math.PI / 180;
 }
