@@ -390,6 +390,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         visionSubsystem.turnOffLEDs();
         autoAiming = false;
         stopSpinningUp();
+        shooterCalculator.setTargetLocked(false);
     }
 
     public void calculateAbsoluteDegreesToRotate() {
