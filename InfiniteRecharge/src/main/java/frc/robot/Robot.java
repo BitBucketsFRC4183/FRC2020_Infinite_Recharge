@@ -257,7 +257,7 @@ public class Robot extends TimedRobot {
             if (oi.spinUp()) {
                 shooterSubsystem.startSpinningUp();
             } else if (oi.operatorAimBot()) {
-                //shooterSubsystem.autoAim();
+                shooterSubsystem.autoAim();
             } else {
                 shooterSubsystem.stopSpinningUp();
                 shooterSubsystem.stopAutoAim();
