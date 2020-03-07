@@ -40,6 +40,8 @@ public class VisionSubsystem extends BitBucketSubsystem {
         tableInstance.startClientTeam(4183);
 
         limelightTable = tableInstance.getTable("limelight");
+
+        turnOnLEDs();
     }
 
     public void diagnosticsInitialize() {
