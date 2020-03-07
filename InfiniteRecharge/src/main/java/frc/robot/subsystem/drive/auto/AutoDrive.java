@@ -68,7 +68,6 @@ public class AutoDrive extends RamseteCommand {
     public boolean isFinished() {
         // whether the RAMSETE command trajectory has been executed
         boolean trajDone = super.isFinished();
-        trajDone = false;
 
         // go into idle once trajectory has been finished
         if (trajDone) {
