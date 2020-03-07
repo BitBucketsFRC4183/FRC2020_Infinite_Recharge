@@ -384,10 +384,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // autoAimAzimuth();
         autoAimHoodAngle();
         autoAimVelocity();
-        visionSubsystem.turnOnLEDs();
     }
+
     public void stopAutoAim() {
-        visionSubsystem.turnOffLEDs();
         autoAiming = false;
         stopSpinningUp();
         shooterCalculator.setTargetLocked(false);
