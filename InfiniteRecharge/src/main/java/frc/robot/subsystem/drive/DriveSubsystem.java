@@ -141,19 +141,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
             trajectoryConfig
         );
 
-        TrajectoryConfig trajectoryConfigReversed = new TrajectoryConfig(
-            config.auto.cruiseSpeed_mps,
-            config.auto.maxAcceleration_mps
-        );
-        trajectoryConfigReversed.addConstraint(kinematicsConstraint);
-        trajectoryConfigReversed.addConstraint(voltageConstraint);
-        trajectoryConfigReversed.setReversed(true);
+        trajectoryConfig.setReversed(true);
 
         returnTrajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(5, 1.75, new Rotation2d(0)),
             List.of(),
             new Pose2d(0, 0, new Rotation2d(0)),
-            trajectoryConfigReversed
+            trajectoryConfig
         );
 
         ramsete = new RamseteController(config.auto.b, config.auto.zeta);
