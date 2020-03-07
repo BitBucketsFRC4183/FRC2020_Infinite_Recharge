@@ -14,7 +14,7 @@ public class Config {
     public boolean enableBallManagementSubsystem = false;
     public boolean enableDriveSubsystem = true;
     public boolean enableClimbSubsystem = false;
-    public boolean enableIntakeSubsystem = false;
+    public boolean enableIntakeSubsystem = true;
     public boolean enableSpinnyboiSubsystem = false;
     public boolean enablePIDHelper = false;
 
@@ -185,10 +185,10 @@ public class Config {
     }
 
     public static class AutoConfig {
-        public double cruiseSpeed_mps = 0.3*4;
-        public double maxAcceleration_mps = 0.25;
+        public double cruiseSpeed_mps = 0.3*14;
+        public double maxAcceleration_mps = 2;
 
-        public double b = 1.75;
+        public double b = 2;
         public double zeta = 0.35;
 
         public double kP = 0.911;

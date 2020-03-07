@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 
 
@@ -20,11 +21,13 @@ public class AutoDrive extends RamseteCommand {
 
     private Timer timer;
 
+    private final Trajectory TRAJ;
 
 
-    public AutoDrive(DriveSubsystem driveSubsystem) {
+
+    public AutoDrive(DriveSubsystem driveSubsystem, Trajectory traj) {
         super(
-            driveSubsystem.getAutoTrajectory(),
+            traj,
             driveSubsystem::getPose,
             driveSubsystem.getRAMSETEController(),
             driveSubsystem.getCharacterization(),
@@ -38,6 +41,7 @@ public class AutoDrive extends RamseteCommand {
 
         DRIVE_SUBSYSTEM = driveSubsystem;
         timer = new Timer();
+        TRAJ = traj;
     }
 
     public void initialize() {
@@ -53,7 +57,7 @@ public class AutoDrive extends RamseteCommand {
         super.execute();
 
         Pose2d actual = DRIVE_SUBSYSTEM.getNavigation().getPose();
-        Pose2d desired = DRIVE_SUBSYSTEM.getAutoTrajectory().sample(timer.get()).poseMeters;
+        Pose2d desired = TRAJ.sample(timer.get()).poseMeters;
 
         SmartDashboard.putNumber("DriveSubsystem/actual x", actual.getTranslation().getX());
         SmartDashboard.putNumber("DriveSubsystem/actual y", actual.getTranslation().getY());
@@ -64,20 +68,4 @@ public class AutoDrive extends RamseteCommand {
         SmartDashboard.putNumber("DriveSubsystem/desired theta", desired.getRotation().getDegrees());
     }
 
-    @Override
-    public boolean isFinished() {
-        // whether the RAMSETE command trajectory has been executed
-        boolean trajDone = super.isFinished();
-
-        // go into idle once trajectory has been finished
-        if (trajDone) {
-            return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
-        }
-
-        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.IDLE) {
-            return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
-        }
-
-        return false;
-    }
 }

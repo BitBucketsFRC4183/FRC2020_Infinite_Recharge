@@ -26,6 +26,7 @@ import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.CommandUtils;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
+import frc.robot.subsystem.drive.Idle;
 import frc.robot.subsystem.drive.auto.AutoDrive;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.pidhelper.PIDHelperSubsystem;
@@ -176,12 +177,18 @@ public class Robot extends TimedRobot {
         }))*/
         navigationSubsystem.reset();
         visionSubsystem.turnOnLEDs();
-        //(new InstantCommand(() -> { intakeSubsystem.intake(); }))
-        (new AutoDrive(driveSubsystem))
+        new InstantCommand(() -> { intakeSubsystem.intake(); })
+        .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getPickupTrajectory()))
         .andThen(new InstantCommand(() -> {
             System.out.println("Turning intake off");
-            //intakeSubsystem.off();
+            driveSubsystem.tankVolts(0, 0);
+            intakeSubsystem.off();
         }))
+        .andThen(new AutoDrive(driveSubsystem, driveSubsystem.returnReturnTrajectory()))
+        .andThen(new InstantCommand(() -> {
+            driveSubsystem.tankVolts(0, 0);
+        }))
+        .andThen(new Idle(driveSubsystem))
         .schedule();
     }
 
@@ -194,8 +201,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        shooterSubsystem.rotateToDeg(0, ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
         visionSubsystem.turnOnLEDs();
+
+        if (config.enableShooterSubsystem) {
+            shooterSubsystem.rotateToDeg(0, ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
+        }
     }
 
     /**
@@ -342,7 +352,11 @@ public class Robot extends TimedRobot {
         return new Robot();
     }
 
-    public static Robot beat254() {
+    public static Robot beat(int teamNumber) {
         return win();
+    }
+
+    public static Robot beat254() {
+        return beat(254);
     }
 }
