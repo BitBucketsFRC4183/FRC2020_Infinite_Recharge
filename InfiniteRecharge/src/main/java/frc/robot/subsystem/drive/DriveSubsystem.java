@@ -37,8 +37,6 @@ import frc.robot.utils.data.filters.RisingEdgeFilter;
 import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
-import frc.robot.subsystem.drive.RamseteSpecial;
-
 
 
 public class DriveSubsystem extends BitBucketSubsystem {
