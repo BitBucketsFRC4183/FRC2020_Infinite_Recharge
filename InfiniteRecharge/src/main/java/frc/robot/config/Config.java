@@ -185,7 +185,7 @@ public class Config {
     }
 
     public static class AutoConfig {
-        public double cruiseSpeed_mps = 0.3*10;
+        public double cruiseSpeed_mps = 0.3*4;
         public double maxAcceleration_mps = 0.25;
 
         public double b = 1.75;
