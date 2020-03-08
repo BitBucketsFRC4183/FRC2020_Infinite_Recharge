@@ -4,8 +4,6 @@ physicsConstants;
 
 
 
-dt = 2/100;
-
 ts = 0:dt:1;
 us = 6 + 6*[sin(ts); cos(ts)];
 [~, t_width] = size(ts);
@@ -13,8 +11,9 @@ us = 6 + 6*[sin(ts); cos(ts)];
 t = 0;
 u = us(:, 1);
 
-f = @(x) robotSystemUKF_update(@robotSystemUKF_deriv, [t, t+dt], x, u);
-h = @(x) robotSystemUKF_output(x, u);
+deriv = @(x, u) robotSystemUKF_deriv(x, u, constants);
+f = @(x) robotSystemUKF_update(deriv, [t, t+dt], x, u);
+h = @(x) robotSystemUKF_output(x, u, constants);
 
 Q = diag([0.01, 0.01, pi/180, 0.02, 0.02])/50;
 R = diag([254/10000, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36]);
