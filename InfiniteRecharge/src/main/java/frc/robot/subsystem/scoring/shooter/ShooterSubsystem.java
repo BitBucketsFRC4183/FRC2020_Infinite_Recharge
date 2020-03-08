@@ -93,6 +93,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         azimuthMotor = MotorUtils.makeSRX(config.shooter.azimuth);
         elevationMotor = MotorUtils.makeSRX(config.shooter.elevation);
 
+        azimuthMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,LimitSwitchNormal.NormallyOpen,0);
+        azimuthMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector,LimitSwitchNormal.NormallyOpen,0);
+		
+        azimuthMotor.overrideLimitSwitchesEnable(true);
+
         elevationMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,LimitSwitchNormal.NormallyOpen,0);
         elevationMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector,LimitSwitchNormal.NormallyOpen,0);
 		
@@ -213,12 +218,27 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             }
         }
         // Checks if the limit switch for the elevation motor is closed, if it is: set the motor's sensor position to ELEVATION_LIMIT_SWITCH_DEG.
-            SmartDashboard.putBoolean(getName() + "/Reverse Limit Switch Closed?", elevationMotor.getSensorCollection().isRevLimitSwitchClosed());
+        // The reason it's a constant and not just 0 is because the limit switch could be somewhere else.
+            SmartDashboard.putBoolean(getName() + "/Reverse Elevation Limit Switch Closed?", elevationMotor.getSensorCollection().isRevLimitSwitchClosed());
         if (elevationMotor.getSensorCollection().isRevLimitSwitchClosed()){
             elevationMotor.setSelectedSensorPosition(
                     (int) (MathUtils.unitConverter(ShooterConstants.ELEVATION_LIMIT_SWITCH_DEG, 360,
                             config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio));
         }
+
+        SmartDashboard.putBoolean(getName() + "/Reverse Azimuth Limit Switch Closed?", azimuthMotor.getSensorCollection().isRevLimitSwitchClosed());
+        if (azimuthMotor.getSensorCollection().isRevLimitSwitchClosed()){
+            azimuthMotor.setSelectedSensorPosition(
+                    (int) (MathUtils.unitConverter(-ShooterConstants.AZIMUTH_LEFT_LIMIT_SWITCH_DEG, 360,
+                            config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio));
+        }
+        SmartDashboard.putBoolean(getName() + "/Forward Azimuth Limit Switch Closed?", azimuthMotor.getSensorCollection().isFwdLimitSwitchClosed());
+        if (azimuthMotor.getSensorCollection().isFwdLimitSwitchClosed()){
+            azimuthMotor.setSelectedSensorPosition(
+                    (int) (MathUtils.unitConverter(ShooterConstants.AZIMUTH_RIGHT_LIMIT_SWITCH_DEG, 360,
+                            config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio));
+        }
+
 
         //azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
         
