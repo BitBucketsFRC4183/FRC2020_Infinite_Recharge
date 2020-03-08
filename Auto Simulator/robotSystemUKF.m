@@ -46,10 +46,10 @@ for i=1:t_width
     % noise source comes from velocity noise
     % so basically do an unscented transform
     % to estimate position and yaw noise
-    QQ = eye(STATE_SIZE)*0.00000001;
-    QQ(vL:vR, vL:vR) = VQ;
-    v_sigmas = sigmas(x0, QQ, c);
-    [~, ~, Q, ~] = ut(f, x_sigmas, Wm, Wc, STATE_SIZE, zeros(STATE_SIZE));
+    %QQ = eye(STATE_SIZE)*0.00000001;
+    %QQ(vL:vR, vL:vR) = VQ;
+    %v_sigmas = sigmas(x0, QQ, c);
+    %[~, ~, Q, ~] = ut(f, x_sigmas, Wm, Wc, STATE_SIZE, zeros(STATE_SIZE));
 
     x0 = f(x0) + mvnrnd(zeros(STATE_SIZE, 1), Q)';
     y0 = h(x0);
