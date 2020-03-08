@@ -1,16 +1,10 @@
-% V = kS*sgn(v) + kV*v + kA*a
-% v = (vL + vR)/2
-% According to control engineering for FRC book...
-% (creatively named variables I know)
-% aL = (C1*vL + C2*VL)
-function xDot = robotSystemUKF_deriv(x, u)
-    physicsConstants;
+function xDot = robotSystemUKF_deriv(x, u, c)
+    xDot = zeros(c.STATE_SIZE, 1);
     
-    xDot = zeros(STATE_SIZE, 1);
-    
-    xDot(X) = (x(vL) + x(vR))/2*cos(x(THETA));
-    xDot(Y) = (x(vL) + x(vR))/2*sin(x(THETA));
-    xDot(THETA) = 1/(2*rb)*(x(vR) - x(vL));
-    xDot(vL:vR) = A*x(vL:vR) + B*u;
+    xDot(c.X) = (x(c.vL) + x(c.vR))/2*cos(x(c.THETA));
+    xDot(c.Y) = (x(c.vL) + x(c.vR))/2*sin(x(c.THETA));
+    xDot(c.THETA) = 1/(2*c.rb)*(x(c.vR) - x(c.vL));
+    xDot(c.vL:c.vR) = c.A*x(c.vL:c.vR) + c.B*u;
+    % yawffset doesn't change
 end
 
