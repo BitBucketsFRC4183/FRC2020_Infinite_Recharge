@@ -9,11 +9,13 @@ package frc.robot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.config.Config;
@@ -24,6 +26,7 @@ import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.climber.ClimbSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.CommandUtils;
+import frc.robot.utils.ProxyCommand;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
 import frc.robot.subsystem.drive.Idle;
@@ -33,7 +36,7 @@ import frc.robot.subsystem.pidhelper.PIDHelperSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
 import frc.robot.subsystem.scoring.shooter.ShooterConstants;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
-
+import java.util.function.BooleanSupplier;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -177,17 +180,45 @@ public class Robot extends TimedRobot {
         }))*/
         navigationSubsystem.reset();
         visionSubsystem.turnOnLEDs();
+
         new InstantCommand(() -> { intakeSubsystem.intake(); })
-        .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getPickupTrajectory()))
-        .andThen(new InstantCommand(() -> {
-            System.out.println("Turning intake off");
-            driveSubsystem.tankVolts(0, 0);
-            intakeSubsystem.off();
-        }))
-        .andThen(new AutoDrive(driveSubsystem, driveSubsystem.returnReturnTrajectory()))
+
+        // do the first pickup and return
+        .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getFirstPickupTrajectory()))
         .andThen(new InstantCommand(() -> {
             driveSubsystem.tankVolts(0, 0);
         }))
+        .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getFirstReturnTrajectory()))
+        .andThen(new InstantCommand(() -> {
+            driveSubsystem.tankVolts(0, 0);
+        }))
+
+        // only execute the 2nd pickup and return if we have the trajectories for those
+        // if we have a pickup, we'll have a return; so we don't have to worry about that
+        .andThen(new ConditionalCommand(
+            new ProxyCommand(() -> 
+                // get second pickup trajectory
+                new AutoDrive(driveSubsystem, driveSubsystem.getSecondPickupTrajectory())
+                // stop
+                .andThen(new InstantCommand(() -> {
+                    driveSubsystem.tankVolts(0, 0);
+                }))
+
+                // get second return traj
+                .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getSecondReturnTrajectory()))
+                // stop
+                .andThen(new InstantCommand(() -> {
+                    driveSubsystem.tankVolts(0, 0);
+                }))
+            ),
+            // just stop it if it's null (even though it's already stopped lol)
+            new InstantCommand(() -> {
+                driveSubsystem.tankVolts(0, 0);
+            }),
+            driveSubsystem::hasSecondTrajectory
+        ))
+
+        // all done
         .andThen(new Idle(driveSubsystem))
         .schedule();
     }
@@ -369,11 +400,5 @@ public class Robot extends TimedRobot {
 
     public static Robot beat254() {
         return beat(254);
-    }
-
-    public static Robot lose() {
-        // we don't lose!
-
-        return win();
     }
 }
