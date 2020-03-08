@@ -117,6 +117,10 @@ public class Config {
 
         public MotorConfig climbLeft = new MotorConfig();
         public MotorConfig climbRight = new MotorConfig();
+
+        ClimbConfig(){
+            climbLeft.inverted = true;
+        }
     }
 
     public static class SpinnyBoiConfig {
@@ -221,7 +225,7 @@ public class Config {
         // Climb
         climb.climbRight.id = CLIMB_RIGHT_MOTOR_ID;
         climb.climbLeft.id = CLIMB_LEFT_MOTOR_ID;
-        climb.climbLeft.followingID = climb.climbRight.id;
+
         // SpinnyBoi
         spinnyboi.spinner.id = SPINNYBOI_MOTOR_ID;
 

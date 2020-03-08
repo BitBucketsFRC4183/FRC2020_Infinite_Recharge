@@ -1,15 +1,17 @@
 package frc.robot.subsystem.climber;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
+import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
 public class ClimbSubsystem extends BitBucketSubsystem {
     public enum ClimbState {
-        Extending, Retracting, Off, Rewinding;
+        Extending, Retracting, Off, Winding, Rewinding;
     }
 
     private boolean active = false;
@@ -18,6 +20,10 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     protected WPI_TalonSRX motorLeft;
     private ClimbState climbState = ClimbState.Off;
 
+    // PREPARE FOR CARGO CULTED SHOOTER CODE!
+    private int targetPosition_ticks;
+    private int targetChange_ticks;
+    private int softLimit_ticks = ClimbConstants.SOFT_LIMIT_TICKS;
     public ClimbSubsystem(Config config) {
         super(config);
     }
@@ -27,8 +33,7 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         super.initialize();
         motorRight = MotorUtils.makeSRX(config.climb.climbRight);
         motorLeft = MotorUtils.makeSRX(config.climb.climbLeft);
-        motorLeft.setInverted(true);
-        motorLeft.follow(motorRight);
+        // Config exists for a reason.
     }
 
     @Override
@@ -53,26 +58,41 @@ public class ClimbSubsystem extends BitBucketSubsystem {
             switch (climbState) {
                 case Off:
                     motorRight.set(0);
-                    SmartDashboard.putString(getName() + "/ClimbState", "Retracted");
+                    motorLeft.set(0);
                     break;
 
                 case Extending:
-                    motorRight.set(
-                            SmartDashboard.getNumber(getName() + "/Climber Current", ClimbConstants.EXTEND_OUTPUT));
-                    SmartDashboard.putString(getName() + "/ClimbState", "Extending");
+                    // motorRight.set(
+                    // SmartDashboard.getNumber(getName() + "/Climber Current",
+                    // ClimbConstants.EXTEND_OUTPUT));
+                    targetPosition_ticks = ClimbConstants.EXTEND_TICKS;
+                    motorRight.set(ControlMode.MotionMagic, targetPosition_ticks);
+                    motorLeft.set(ControlMode.MotionMagic, targetPosition_ticks);
                     break;
 
                 // no holding state is needed, since a mechanical ratchet will hold the robot
                 // while its hanging
                 case Retracting:
-                    motorRight.set(
-                            SmartDashboard.getNumber(getName() + "/Climber Current", ClimbConstants.RETRACT_OUTPUT));
-                    SmartDashboard.putString(getName() + "/ClimbState", "Retracting");
+                    targetChange_ticks = (int) (SmartDashboard.getNumber(getName() + "/Retract Rate",
+                            ClimbConstants.RETRACT_RATE_TICKS) * deltaTime);
+                    targetPosition_ticks = targetPosition_ticks + targetChange_ticks;
+                    targetChange_ticks = 0;
+                    // motorRight.set(
+                    // SmartDashboard.getNumber(getName() + "/Climber Current",
+                    // ClimbConstants.RETRACT_OUTPUT));
+                    if (targetPosition_ticks > softLimit_ticks) {
+                        targetPosition_ticks = softLimit_ticks;
+                    }
+                    motorRight.set(ControlMode.MotionMagic, targetPosition_ticks);
+                    motorLeft.set(ControlMode.MotionMagic, targetPosition_ticks);
+                    break;
+                case Winding:
+                    motorLeft.set(-SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT));
+                    motorRight.set(-SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT));
                     break;
                 case Rewinding:
-                    motorRight.set(
-                            SmartDashboard.getNumber(getName() + "/Climber Current", ClimbConstants.REWIND_OUTPUT));
-                    SmartDashboard.putString(getName() + "/ClimbState", "Rewinding");
+                    motorLeft.set(SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT));
+                    motorRight.set(SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT));
                     break;
             }
         }
@@ -84,10 +104,6 @@ public class ClimbSubsystem extends BitBucketSubsystem {
 
     public boolean isExtending() {
         return climbState == ClimbState.Extending;
-    }
-
-    public boolean isRewinding(){
-        return climbState == ClimbState.Rewinding;
     }
 
     public boolean isRewindEnabled(){
@@ -116,6 +132,12 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         }
     }
 
+    public void winding() {
+        if (rewindEnabled) {
+            climbState = ClimbState.Winding;
+        }
+    }
+
     @Override
     public void dashboardInit() {
         super.dashboardInit();
@@ -126,11 +148,15 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     public void dashboardPeriodic(float deltaTime) {
         SmartDashboard.putNumber(getName() + "/Right Selected Sensor Position", motorRight.getSelectedSensorPosition());
         SmartDashboard.putNumber(getName() + "/Left Selected Sensor Position", motorLeft.getSelectedSensorPosition());
+        SmartDashboard.putNumber(getName() + "/Right Motor Output", motorRight.getMotorOutputPercent());
+        SmartDashboard.putNumber(getName() + "/Left Motor Output", motorLeft.getMotorOutputPercent());
         SmartDashboard.putBoolean(getName() + "/Active", active);
-        SmartDashboard.putBoolean(getName() + "/Rewind Enabled", rewindEnabled);
+        SmartDashboard.putString(getName() + "/Climb State", climbState.toString());
     }
 
     public void disable() {
+        motorLeft.set(0);
+        motorRight.set(0);
     }
 
     @Override

@@ -184,7 +184,7 @@ public class OI {
     }
 
     public boolean climbExtend() {
-        return operatorControl.getRawButtonPressed(OPERATOR_CLIMB_EXTEND);
+        return operatorControl.getRawButton(OPERATOR_CLIMB_EXTEND);
     }
 
     public boolean climbRetract() {
