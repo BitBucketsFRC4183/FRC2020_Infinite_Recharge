@@ -130,7 +130,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         //////////////////////// 
         //center
-        Trajectory centerPickup = TrajectoryGenerator.generateTrajectory(
+        Trajectory centerFirstPickup = TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints
@@ -144,32 +144,32 @@ public class DriveSubsystem extends BitBucketSubsystem {
             trajectoryConfig.setReversed(false)
         );
 
-        Trajectory centerReturn = TrajectoryGenerator.generateTrajectory(
+        Trajectory centerFirstReturn = TrajectoryGenerator.generateTrajectory(
             new Pose2d(5, 1.75, new Rotation2d(0)),
             List.of(),
             new Pose2d(0, 0, new Rotation2d(0)),
             trajectoryConfig.setReversed(true)
         );
 
-        trajectories.add(new FullTrajectory("center", centerPickup, centerReturn));
+        trajectories.add(new FullTrajectory("center", centerFirstPickup, centerFirstReturn));
 
         //////////////////////////
         // opposition trench
-        Trajectory oppTrenchPickup = TrajectoryGenerator.generateTrajectory(
+        Trajectory oppTrenchFirstPickup = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0, 0, new Rotation2d(0)),
             List.of(),
             new Pose2d(3.3, 0, new Rotation2d(0)),
             trajectoryConfig.setReversed(false)
         );
 
-        Trajectory oppTrenchReturn = TrajectoryGenerator.generateTrajectory(
+        Trajectory oppTrenchFirstReturn = TrajectoryGenerator.generateTrajectory(
             new Pose2d(3.3, 0, new Rotation2d(0)),
             List.of(),
             new Pose2d(0, 4.9, new Rotation2d(0)),
             trajectoryConfig.setReversed(true)
         );
 
-        trajectories.add(new FullTrajectory("opposition trench", oppTrenchPickup, oppTrenchReturn));
+        trajectories.add(new FullTrajectory("opposition trench", oppTrenchFirstPickup, oppTrenchFirstReturn));
 
         ramsete = new RamseteController(config.auto.b, config.auto.zeta);
 
@@ -579,12 +579,20 @@ public class DriveSubsystem extends BitBucketSubsystem {
         return DRIVE_UTILS.ticksP100ToIps(getRightVelocity_tp100ms()) * DriveConstants.METERS_PER_INCH / config.drive.gearRatio;
     }
 
-	public Trajectory getPickupTrajectory() {
-        return pickupTrajectoryChooser.getSelected().getPickupTrajectory();
+	public Trajectory getFirstPickupTrajectory() {
+        return pickupTrajectoryChooser.getSelected().getFirstPickupTrajectory();   
     }
 
-    public Trajectory getReturnTrajectory() {
-        return pickupTrajectoryChooser.getSelected().getReturnTrajectory();
+    public Trajectory getFirstReturnTrajectory() {
+        return pickupTrajectoryChooser.getSelected().getFirstReturnTrajectory();
+    }
+
+    public Trajectory getSecondPickupTrajectory() {
+        return pickupTrajectoryChooser.getSelected().getSecondPickupTrajectory();   
+    }
+
+    public Trajectory getSecondReturnTrajectory() {
+        return pickupTrajectoryChooser.getSelected().getSecondReturnTrajectory();
     }
     
     public Pose2d getPose() {
