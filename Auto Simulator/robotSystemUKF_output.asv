@@ -1,0 +1,17 @@
+function y = robotSystemUKF_output(x, u)
+    physicsConstants;
+    
+    y = zeros(c.OUTPUT_SIZE, 1);
+    
+    xLL = x(c.X) + c.xc*cos(x(c.THETA)) - c.yc*sin(x(c.THETA)) + r*cos(x(THETA));
+    yLL = y(c.X) + c.xc*sin(x(c.THETA)) + c.yc*cos(x(c.THETA)) + r*sin(x(THETA));
+    
+    y(D) = sqrt((xT - x(X))^2 + (yT - x(Y))^2);
+    % tan TX = y/x
+    y(TX) = atan2(yT - x(Y), xT - x(X)) - x(THETA);
+    y(VL_O) = x(vL);
+    y(VR_O) = x(vR);
+    y(LL_THETA) = x(THETA);
+    y(OMEGA) = (x(vR) - x(vL))/(2*rb);
+end
+
