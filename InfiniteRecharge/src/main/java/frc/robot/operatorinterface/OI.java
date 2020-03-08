@@ -20,6 +20,8 @@ public class OI {
     static final int OPERATOR_MANUAL_SPINUP_AXIS = PS4Constants.LEFT_TRIGGER.getValue();
     static final int OPERATOR_MANUAL_AZIMUTH_AXIS = PS4Constants.RIGHT_STICK_X.getValue();
     static final int OPERATOR_MANUAL_ELEVATION_AXIS = PS4Constants.RIGHT_STICK_Y.getValue();
+    static final int OPERATOR_MANUAL_CLIMB_LEFT = PS4Constants.LEFT_STICK_Y.getValue();
+    static final int OPERATOR_MANUAL_CLIMB_RIGHT = PS4Constants.RIGHT_STICK_Y.getValue();
 
     public double speed() {
         // Default to -1 to make up-stick positive because raw up-stick is negative
@@ -84,6 +86,12 @@ public class OI {
 
     public double manualAzimuthAxis() {
         return operatorControl.getRawAxis(OPERATOR_MANUAL_AZIMUTH_AXIS);
+    }
+    public double manualClimbLeft() {
+        return operatorControl.getRawAxis(OPERATOR_MANUAL_CLIMB_LEFT);
+    }
+    public double manualClimbRight() {
+        return operatorControl.getRawAxis(OPERATOR_MANUAL_CLIMB_RIGHT);
     }
 
     public boolean feeder() {
@@ -183,15 +191,15 @@ public class OI {
         return driverControl.getRawButton(DRIVE_METHOD_SWITCH_BUTTON);
     }
 
-    public boolean climbextend() {
-        return operatorControl.getRawButtonPressed(OPERATOR_CLIMB_EXTEND);
+    public boolean climbExtend() {
+        return operatorControl.getRawButton(OPERATOR_CLIMB_EXTEND);
     }
 
-    public boolean climbretract() {
+    public boolean climbRetract() {
         return operatorControl.getRawButton(OPERATOR_CLIMB_RETRACT);
     }
 
-    public boolean climbactivate() {
-        return operatorControl.getRawButton(OPERATOR_CLIMB_ACTIVATE) && driverControl.getRawButton(DRIVER_CLIMB_ACTIVATE);
+    public boolean climbActivate() {
+        return operatorControl.getRawButtonPressed(OPERATOR_CLIMB_ACTIVATE);
     }
 }

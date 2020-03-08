@@ -245,16 +245,18 @@ public class Robot extends TimedRobot {
         /////////////////////////////////////////////////////////////////////////////
         // Climb Subsystem
         if (config.enableClimbSubsystem) {
-            if (oi.climbactivate()) {
-                climbSubsystem.activateClimb();
-            }
-            if (oi.climbextend()) {
-                climbSubsystem.extending();
+            if (oi.climbActivate()) {
+                climbSubsystem.toggleActive();
             }
 
-            if (oi.climbretract()) {
-                climbSubsystem.retracting();
-            } else if (!climbSubsystem.isExtending()) {
+            if (climbSubsystem.isActive() && !climbSubsystem.isRewindEnabled()){
+                climbSubsystem.manualClimb(oi.manualClimbLeft(),oi.manualClimbRight());
+            }
+            if (oi.climbRetract() && climbSubsystem.isRewindEnabled()) {
+                climbSubsystem.rewinding();
+            } else if (oi.climbExtend() && climbSubsystem.isRewindEnabled()) {
+                climbSubsystem.winding();
+            } else {
                 climbSubsystem.off();
             }
         }
