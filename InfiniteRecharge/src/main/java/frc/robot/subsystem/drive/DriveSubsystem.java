@@ -132,7 +132,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
         //center
         Trajectory centerFirstPickup = TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
+            new Pose2d(0, 0, new Rotation2d()),
             // Pass through these two interior waypoints
             List.of(
                 new Translation2d(1.5, 1.2),
@@ -140,14 +140,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
                 new Translation2d(4, 1.6)
             ),
             // End 5 meters ahead and 1 meter over of where we started, facing forward
-            new Pose2d(5, 1.75, new Rotation2d(0)),
+            new Pose2d(5, 1.75, new Rotation2d()),
             trajectoryConfig.setReversed(false)
         );
-
         Trajectory centerFirstReturn = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(5, 1.75, new Rotation2d(0)),
+            new Pose2d(5, 1.75, new Rotation2d()),
             List.of(),
-            new Pose2d(0, 0, new Rotation2d(0)),
+            new Pose2d(0, 0, new Rotation2d()),
             trajectoryConfig.setReversed(true)
         );
 
@@ -156,20 +155,36 @@ public class DriveSubsystem extends BitBucketSubsystem {
         //////////////////////////
         // opposition trench
         Trajectory oppTrenchFirstPickup = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 0, new Rotation2d(0)),
+            new Pose2d(0, 0, new Rotation2d()),
             List.of(),
-            new Pose2d(3.3, 0, new Rotation2d(0)),
+            new Pose2d(3.3, 0, new Rotation2d()),
             trajectoryConfig.setReversed(false)
         );
-
         Trajectory oppTrenchFirstReturn = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(3.3, 0, new Rotation2d(0)),
+            new Pose2d(3.3, 0, new Rotation2d()),
             List.of(),
-            new Pose2d(0, 4.9, new Rotation2d(0)),
+            new Pose2d(0, 4.9, new Rotation2d()),
             trajectoryConfig.setReversed(true)
         );
 
-        trajectories.add(new FullTrajectory("opposition trench", oppTrenchFirstPickup, oppTrenchFirstReturn, centerFirstPickup, centerFirstReturn));
+        Trajectory oppTrenchSecondPickup = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 4.9, new Rotation2d()),
+            List.of(
+                new Translation2d(1.5, 6.1),
+                new Translation2d(2, 6.4),
+                new Translation2d(4, 6.5)
+            ),
+            new Pose2d(5, 6.65, new Rotation2d()),
+            trajectoryConfig.setReversed(false)
+        );
+        Trajectory oppTrenchSecondReturn = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(5, 6.65, new Rotation2d()),
+            List.of(),
+            new Pose2d(0, 4.9, new Rotation2d()),
+            trajectoryConfig.setReversed(true)
+        );
+
+        trajectories.add(new FullTrajectory("opposition trench", oppTrenchFirstPickup, oppTrenchFirstReturn, oppTrenchSecondPickup, oppTrenchSecondReturn));
 
         ramsete = new RamseteController(config.auto.b, config.auto.zeta);
 

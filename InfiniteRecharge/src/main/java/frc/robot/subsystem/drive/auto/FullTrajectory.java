@@ -27,41 +27,31 @@ public class FullTrajectory {
     private final Trajectory firstReturnTrajectory;
     private final Trajectory secondPickupTrajectory;
     private final Trajectory secondReturnTrajectory;
-    private final boolean secondTrajectory;
+    private final boolean hasSecondTrajectory;
 
     private FullTrajectory(String name, Trajectory firstPickupTrajectory, Trajectory firstReturnTrajectory,
-            Trajectory secondPickupTrajectory, Trajectory secondReturnTrajectory, boolean secondTrajectory) {
+            Trajectory secondPickupTrajectory, Trajectory secondReturnTrajectory, boolean hasSecondTrajectory) {
         this.name = name;
         this.firstPickupTrajectory = firstPickupTrajectory;
         this.firstReturnTrajectory = firstReturnTrajectory;
         this.secondPickupTrajectory = secondPickupTrajectory;
         this.secondReturnTrajectory = secondReturnTrajectory;
-        this.secondTrajectory = secondTrajectory;
+        this.hasSecondTrajectory = hasSecondTrajectory;
     }
 
     public FullTrajectory(String name, Trajectory pickupT, Trajectory returnT) {
         this(name,
-
                 pickupT,
-
                 returnT,
-
                 null,
-
                 null,
-
                 false
         );
     }
 
     public FullTrajectory(String name, Trajectory firstPickupTrajectory, Trajectory firstReturnTrajectory,
             Trajectory secondPickupTrajectory, Trajectory secondReturnTrajectory) {
-        this.name = name;
-        this.firstPickupTrajectory = firstPickupTrajectory;
-        this.firstReturnTrajectory = firstReturnTrajectory;
-        this.secondPickupTrajectory = secondPickupTrajectory;
-        this.secondReturnTrajectory = secondReturnTrajectory;
-        this.secondTrajectory = true;
+        this(name, firstPickupTrajectory, firstReturnTrajectory, secondPickupTrajectory, secondReturnTrajectory, true);
     }
     
 
@@ -86,7 +76,7 @@ public class FullTrajectory {
     }
 
     public boolean hasSecondTrajectory() {
-        return secondTrajectory;
+        return hasSecondTrajectory;
     }
 
 }
