@@ -1,5 +1,6 @@
 package frc.robot.subsystem.drive;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -29,6 +30,7 @@ import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.auto.FieldConstants;
+import frc.robot.subsystem.drive.auto.FullTrajectory;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
@@ -70,7 +72,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private static SendableChooser<JoystickScale> turnJoystickScaleChooser;
     private static SendableChooser<JoystickScale> rotationJoystickScaleChooser;
 
-
+    private static SendableChooser<FullTrajectory> pickupTrajectoryChooser;
 
     public boolean velocityMode;
 
@@ -84,9 +86,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-
-    private final Trajectory pickupTrajectory;
-    private final Trajectory returnTrajectory;
+    private final ArrayList<FullTrajectory> trajectories = new ArrayList<FullTrajectory>();
+    
     private final RamseteController ramsete;
 
     private final PIDController leftAutoPID;
@@ -127,7 +128,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectoryConfig.addConstraint(kinematicsConstraint);
         trajectoryConfig.addConstraint(voltageConstraint);
 
-        pickupTrajectory = TrajectoryGenerator.generateTrajectory(
+        //////////////////////// 
+        //center
+        Trajectory centerPickup = TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints
@@ -138,17 +141,35 @@ public class DriveSubsystem extends BitBucketSubsystem {
             ),
             // End 5 meters ahead and 1 meter over of where we started, facing forward
             new Pose2d(5, 1.75, new Rotation2d(0)),
-            trajectoryConfig
+            trajectoryConfig.setReversed(false)
         );
 
-        trajectoryConfig.setReversed(true);
-
-        returnTrajectory = TrajectoryGenerator.generateTrajectory(
+        Trajectory centerReturn = TrajectoryGenerator.generateTrajectory(
             new Pose2d(5, 1.75, new Rotation2d(0)),
             List.of(),
             new Pose2d(0, 0, new Rotation2d(0)),
-            trajectoryConfig
+            trajectoryConfig.setReversed(true)
         );
+
+        trajectories.add(new FullTrajectory("center", centerPickup, centerReturn));
+
+        //////////////////////////
+        // opposition trench
+        Trajectory oppTrenchPickup = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 0, new Rotation2d(0)),
+            List.of(),
+            new Pose2d(3.3, 0, new Rotation2d(0)),
+            trajectoryConfig.setReversed(false)
+        );
+
+        Trajectory oppTrenchReturn = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(3.3, 0, new Rotation2d(0)),
+            List.of(),
+            new Pose2d(0, 4.9, new Rotation2d(0)),
+            trajectoryConfig.setReversed(true)
+        );
+
+        trajectories.add(new FullTrajectory("opposition trench", oppTrenchPickup, oppTrenchReturn));
 
         ramsete = new RamseteController(config.auto.b, config.auto.zeta);
 
@@ -189,7 +210,15 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		
         SmartDashboard.putData(getName() + "/Rotation Joystick Scale", turnJoystickScaleChooser);
 
+        pickupTrajectoryChooser = new SendableChooser<FullTrajectory>();
+        pickupTrajectoryChooser.setDefaultOption(trajectories.get(0).getName(), trajectories.get(0));
+        
+        for (int i = 0; i < trajectories.size(); i++) {
+            i++;
+            pickupTrajectoryChooser.addOption(trajectories.get(i).getName(), trajectories.get(i));
+        }
 
+        SmartDashboard.putData(getName() + "/Pickup Trajectory", pickupTrajectoryChooser);
 
         leftMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
         rightMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
@@ -556,18 +585,16 @@ public class DriveSubsystem extends BitBucketSubsystem {
     }
 
 	public Trajectory getPickupTrajectory() {
-		return pickupTrajectory;
+        return pickupTrajectoryChooser.getSelected().getPickupTrajectory();
     }
 
-    public Trajectory returnReturnTrajectory() {
-        // yes, code
-        return returnTrajectory;
+    public Trajectory getReturnTrajectory() {
+        return pickupTrajectoryChooser.getSelected().getReturnTrajectory();
     }
     
     public Pose2d getPose() {
         return NAVIGATION_SUBSYSTEM.getPose();
     }
-
 
 
 	public void setWheelSpeeds(double leftSpeed_mps, double rightSpeed_mps) {
