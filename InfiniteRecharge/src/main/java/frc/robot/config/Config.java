@@ -1,5 +1,7 @@
 package frc.robot.config;
 
+import org.ejml.simple.SimpleMatrix;
+
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import frc.robot.config.Config.ShooterConfig.BallManagementConfig;
 import frc.robot.utils.control.pidf.PIDF;
@@ -153,6 +155,21 @@ public class Config {
         public double ROTATION_DRIVE_KP = 5 * 2 * Math.PI / 360;
 
         public SimpleMotorFeedforward characterization = new SimpleMotorFeedforward(0.163, 2.46, 0.251);
+
+
+
+        public boolean useFancyOdometry = false;
+
+        public SimpleMatrix Ac_char = new SimpleMatrix(2, 2, true, new double[] {
+            0.8678678537600736, 0.0071917452743623786, 0.005903949588909425, 0.8723072041767262
+        });
+
+        public SimpleMatrix Bc_char = new SimpleMatrix(2, 2, true, new double[] {
+            0.050392385308988936, -0.004313538469407867,
+            -0.002206154164037924, 0.047675029476658845
+        });
+
+
 
         public DriveConfig() {
         }
