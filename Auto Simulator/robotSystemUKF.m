@@ -4,9 +4,10 @@ physicsConstants;
 
 
 
-ts = 0:dt:2;
+T = 2;
+ts = 0:dt:T;
 [~, t_width] = size(ts);
-us = -6+12*rand(2, t_width);%6 + 6*[sin(ts); cos(ts)];
+us = -6+12*rand(2, t_width).*exp(-(ts - T/2).^2);%6 + 6*[sin(ts); cos(ts)];
 
 t = 0;
 u = us(:, 1);
@@ -16,8 +17,9 @@ f = @(x) robotSystemUKF_update(deriv, [t, t+dt], x, u);
 h = @(x) robotSystemUKF_output(x, u, constants);
 
 Q = diag([0.0005, 0.0005, 0.005*pi/180, 0.02, 0.02, 0.00000001])/50;
+Q(constants.VL:constants.VR, constants.VL:constants.VR) = constants.VQ;
 R = diag([254/10000, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36]);
-P = eye(6)*0.01;%diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001, 2*pi/180]);
+P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001, 2*pi/180]);
 
 x_hat = [1; 1; pi/2; 0; 0; 0;];
 x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
