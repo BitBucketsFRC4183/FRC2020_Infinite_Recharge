@@ -12,12 +12,12 @@ public class Config {
     //////////////////////////////////////////////////////////////////////////////
     // Subsystem Enablers
 
-    public boolean enableShooterSubsystem = false;
-    public boolean enableBallManagementSubsystem = false;
+    public boolean enableShooterSubsystem = true;
+    public boolean enableBallManagementSubsystem = true;
     public boolean enableDriveSubsystem = true;
     public boolean enableClimbSubsystem = true;
     public boolean enableIntakeSubsystem = true;
-    public boolean enableSpinnyboiSubsystem = false;
+    public boolean enableSpinnyboiSubsystem = true;
     public boolean enablePIDHelper = false;
 
     //////////////////////////////////////////////////////////////////////////////
