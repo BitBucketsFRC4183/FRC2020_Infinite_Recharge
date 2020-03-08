@@ -117,6 +117,10 @@ public class Config {
 
         public MotorConfig climbLeft = new MotorConfig();
         public MotorConfig climbRight = new MotorConfig();
+
+        ClimbConfig(){
+            climbLeft.inverted = true;
+        }
     }
 
     public static class SpinnyBoiConfig {
@@ -221,7 +225,7 @@ public class Config {
         // Climb
         climb.climbRight.id = CLIMB_RIGHT_MOTOR_ID;
         climb.climbLeft.id = CLIMB_LEFT_MOTOR_ID;
-        climb.climbLeft.followingID = climb.climbRight.id;
+
         // SpinnyBoi
         spinnyboi.spinner.id = SPINNYBOI_MOTOR_ID;
 
@@ -252,6 +256,21 @@ public class Config {
                 0, // D
                 0, /// F,
                 0
+        );
+
+        // Climb
+        climb.climbLeft.positionPIDF = new PIDF(//
+                0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // P
+                0, // I
+                10 * 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // D
+                1023f / 2650 /// F
+        );
+        
+        climb.climbRight.positionPIDF = new PIDF(//
+                0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // P
+                0, // I
+                10 * 0.1 * 1023f / 176 * 2 * 2 * 2 * 2, // D
+                1023f / 2650 /// F
         );
 
         // SpinnyBoi
