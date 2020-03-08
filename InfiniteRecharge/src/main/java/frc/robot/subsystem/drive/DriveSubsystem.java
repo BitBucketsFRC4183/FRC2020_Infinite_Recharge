@@ -152,7 +152,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectories.add(new FullTrajectory("center", centerFirstPickup, centerFirstReturn));
 
         //////////////////////////
-        // opposition trench
+        // opponent trench
         startingPoint = FieldConstants.START_OPPONENT_TRENCH;
         Trajectory oppTrenchFirstPickup = TrajectoryGenerator.generateTrajectory(
             new Pose2d(
@@ -207,7 +207,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
             trajectoryConfig.setReversed(true).setEndVelocity(0)
         );
 
-        trajectories.add(new FullTrajectory("opposition trench", oppTrenchFirstPickup, oppTrenchFirstReturn, oppTrenchSecondPickup, oppTrenchSecondReturn));
+        trajectories.add(new FullTrajectory("opponent trench", oppTrenchFirstPickup, oppTrenchFirstReturn, oppTrenchSecondPickup, oppTrenchSecondReturn));
 
         ramsete = new RamseteController(config.auto.b, config.auto.zeta);
 
