@@ -169,7 +169,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
             trajectoryConfig.setReversed(true)
         );
 
-        trajectories.add(new FullTrajectory("opposition trench", oppTrenchFirstPickup, oppTrenchFirstReturn));
+        trajectories.add(new FullTrajectory("opposition trench", oppTrenchFirstPickup, oppTrenchFirstReturn, centerFirstPickup, centerFirstReturn));
 
         ramsete = new RamseteController(config.auto.b, config.auto.zeta);
 
@@ -585,6 +585,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     public Trajectory getFirstReturnTrajectory() {
         return pickupTrajectoryChooser.getSelected().getFirstReturnTrajectory();
+    }
+
+    public boolean hasSecondTrajectory() {
+        return pickupTrajectoryChooser.getSelected().hasSecondTrajectory();
     }
 
     public Trajectory getSecondPickupTrajectory() {

@@ -7,10 +7,12 @@
 
 package frc.robot.subsystem.drive.auto;
 
+import java.util.Collections;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -25,43 +27,49 @@ public class FullTrajectory {
     private final Trajectory firstReturnTrajectory;
     private final Trajectory secondPickupTrajectory;
     private final Trajectory secondReturnTrajectory;
+    private final boolean secondTrajectory;
 
-    public FullTrajectory(String name, Trajectory firstPickupT, Trajectory firstReturnT, Trajectory secondPickupT, Trajectory secondReturnT) {
+    private FullTrajectory(String name, Trajectory firstPickupTrajectory, Trajectory firstReturnTrajectory,
+            Trajectory secondPickupTrajectory, Trajectory secondReturnTrajectory, boolean secondTrajectory) {
         this.name = name;
-        firstPickupTrajectory = firstPickupT;
-        firstReturnTrajectory = firstReturnT;
-        secondPickupTrajectory = secondPickupT;
-        secondReturnTrajectory = secondReturnT;
+        this.firstPickupTrajectory = firstPickupTrajectory;
+        this.firstReturnTrajectory = firstReturnTrajectory;
+        this.secondPickupTrajectory = secondPickupTrajectory;
+        this.secondReturnTrajectory = secondReturnTrajectory;
+        this.secondTrajectory = secondTrajectory;
     }
 
     public FullTrajectory(String name, Trajectory pickupT, Trajectory returnT) {
         this(name,
 
-            pickupT,
+                pickupT,
 
-            returnT, 
+                returnT,
 
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0, 0, new Rotation2d(0)),
-                List.of(), 
-                new Pose2d(0, 0, new Rotation2d(0)),
-                new TrajectoryConfig(1, 1)
-            ), 
+                null,
 
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0, 0, new Rotation2d(0)),
-                List.of(), 
-                new Pose2d(0, 0, new Rotation2d(0)),
-                new TrajectoryConfig(1, 1)
-            )
+                null,
+
+                false
         );
     }
+
+    public FullTrajectory(String name, Trajectory firstPickupTrajectory, Trajectory firstReturnTrajectory,
+            Trajectory secondPickupTrajectory, Trajectory secondReturnTrajectory) {
+        this.name = name;
+        this.firstPickupTrajectory = firstPickupTrajectory;
+        this.firstReturnTrajectory = firstReturnTrajectory;
+        this.secondPickupTrajectory = secondPickupTrajectory;
+        this.secondReturnTrajectory = secondReturnTrajectory;
+        this.secondTrajectory = true;
+    }
+    
 
     public String getName() {
         return name;
     }
 
-    public Trajectory getFirstPickupTrajectory(){
+    public Trajectory getFirstPickupTrajectory() {
         return firstPickupTrajectory;
     }
 
@@ -77,6 +85,8 @@ public class FullTrajectory {
         return secondReturnTrajectory;
     }
 
-    
+    public boolean hasSecondTrajectory() {
+        return secondTrajectory;
+    }
 
 }
