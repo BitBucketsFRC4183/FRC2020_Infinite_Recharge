@@ -132,21 +132,16 @@ public class DriveSubsystem extends BitBucketSubsystem {
         //center
         Trajectory centerFirstPickup = TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.FRONT_OF_POWER_PORT),
-                new Rotation2d(0)
-            ),
+            // new Pose2d(0, 0, new Rotation2d()
+            new Pose2d(0.0, 0.0, new Rotation2d()),
             // Pass through these two interior waypoints
             List.of(
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_1),
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_2)
+                new Translation2d(3.11, 1.70),
+                new Translation2d(4.03, 1.70)
             ),
             // End 5 meters ahead and 1 meter over of where we started, facing forward
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3),
-                new Rotation2d(0)
-            ),
-            trajectoryConfig
+            new Pose2d(4.94, 1.70, new Rotation2d()),
+            trajectoryConfig.setReversed(false)
         );
         Trajectory centerFirstReturn = TrajectoryGenerator.generateTrajectory(
             new Pose2d(5, 1.75, new Rotation2d()),
