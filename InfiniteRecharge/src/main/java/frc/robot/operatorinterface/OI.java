@@ -20,6 +20,11 @@ public class OI {
     static final int OPERATOR_MANUAL_SPINUP_AXIS = PS4Constants.LEFT_TRIGGER.getValue();
     static final int OPERATOR_MANUAL_AZIMUTH_AXIS = PS4Constants.RIGHT_STICK_X.getValue();
     static final int OPERATOR_MANUAL_ELEVATION_AXIS = PS4Constants.RIGHT_STICK_Y.getValue();
+    static final int OPERATOR_MANUAL_CLIMB_LEFT = PS4Constants.LEFT_STICK_Y.getValue();
+    static final int OPERATOR_MANUAL_CLIMB_RIGHT = PS4Constants.RIGHT_STICK_Y.getValue();
+
+    static final int PIT_REWIND_CLIMB_LEFT = PS4Constants.LEFT_STICK_Y.getValue();
+    static final int PIT_REWIND_CLIMB_RIGHT = PS4Constants.RIGHT_STICK_Y.getValue();
 
     public double speed() {
         // Default to -1 to make up-stick positive because raw up-stick is negative
@@ -66,7 +71,6 @@ public class OI {
     static final int OPERATOR_CLIMB_EXTEND = PS4Constants.TRIANGLE.getValue();
     static final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
     static final int OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER = PS4Constants.OPTIONS.getValue();
-    static final int OPERATOR_CLIMB_RETRACT = PS4Constants.CROSS.getValue();
     static final int OPERATOR_CLIMB_ACTIVATE = PS4Constants.PS4.getValue();
     static final int OPERATOR_FEEDER = PS4Constants.L2.getValue();
 
@@ -82,8 +86,22 @@ public class OI {
         return -operatorControl.getRawAxis(OPERATOR_MANUAL_ELEVATION_AXIS);
     }
 
+    public double pitRewindLeft() {
+        return operatorControl.getRawAxis(PIT_REWIND_CLIMB_LEFT);
+    }
+
+    public double pitRewindRight() {
+        return operatorControl.getRawAxis(PIT_REWIND_CLIMB_RIGHT);
+    }
+
     public double manualAzimuthAxis() {
         return operatorControl.getRawAxis(OPERATOR_MANUAL_AZIMUTH_AXIS);
+    }
+    public double manualClimbLeft() {
+        return operatorControl.getRawAxis(OPERATOR_MANUAL_CLIMB_LEFT);
+    }
+    public double manualClimbRight() {
+        return operatorControl.getRawAxis(OPERATOR_MANUAL_CLIMB_RIGHT);
     }
 
     public boolean feeder() {
@@ -183,15 +201,11 @@ public class OI {
         return driverControl.getRawButton(DRIVE_METHOD_SWITCH_BUTTON);
     }
 
-    public boolean climbextend() {
-        return operatorControl.getRawButtonPressed(OPERATOR_CLIMB_EXTEND);
+    public boolean climbExtend() {
+        return operatorControl.getRawButton(OPERATOR_CLIMB_EXTEND);
     }
 
-    public boolean climbretract() {
-        return operatorControl.getRawButton(OPERATOR_CLIMB_RETRACT);
-    }
-
-    public boolean climbactivate() {
-        return operatorControl.getRawButton(OPERATOR_CLIMB_ACTIVATE) && driverControl.getRawButton(DRIVER_CLIMB_ACTIVATE);
+    public boolean climbActivate() {
+        return operatorControl.getRawButtonPressed(OPERATOR_CLIMB_ACTIVATE);
     }
 }
