@@ -191,7 +191,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		forwardJoystickScaleChooser.addOption("Square", JoystickScale.SQUARE);
 		forwardJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
 		forwardJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
-
 		SmartDashboard.putData(getName() + "/Forward Joystick Scale", forwardJoystickScaleChooser);
 
 		turnJoystickScaleChooser = new SendableChooser<JoystickScale>();
@@ -199,7 +198,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		turnJoystickScaleChooser.setDefaultOption("Square", JoystickScale.SQUARE);
 		turnJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
 		turnJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
-		
         SmartDashboard.putData(getName() + "/Turn Joystick Scale", turnJoystickScaleChooser);
         
         rotationJoystickScaleChooser = new SendableChooser<JoystickScale>();
@@ -207,17 +205,14 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		rotationJoystickScaleChooser.setDefaultOption("Square", JoystickScale.SQUARE);
 		rotationJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
 		rotationJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
-		
         SmartDashboard.putData(getName() + "/Rotation Joystick Scale", turnJoystickScaleChooser);
 
         pickupTrajectoryChooser = new SendableChooser<FullTrajectory>();
         pickupTrajectoryChooser.setDefaultOption(trajectories.get(0).getName(), trajectories.get(0));
-        
         for (int i = 0; i < trajectories.size(); i++) {
             i++;
             pickupTrajectoryChooser.addOption(trajectories.get(i).getName(), trajectories.get(i));
         }
-
         SmartDashboard.putData(getName() + "/Pickup Trajectory", pickupTrajectoryChooser);
 
         leftMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
