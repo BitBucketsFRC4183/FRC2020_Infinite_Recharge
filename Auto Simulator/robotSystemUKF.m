@@ -4,7 +4,7 @@ physicsConstants;
 
 
 
-T = 2;
+T = 5;
 ts = 0:dt:T;
 [~, t_width] = size(ts);
 us = 6 + 6*[sin(ts); cos(ts)];
