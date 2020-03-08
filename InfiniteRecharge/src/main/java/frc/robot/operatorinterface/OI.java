@@ -23,6 +23,9 @@ public class OI {
     static final int OPERATOR_MANUAL_CLIMB_LEFT = PS4Constants.LEFT_STICK_Y.getValue();
     static final int OPERATOR_MANUAL_CLIMB_RIGHT = PS4Constants.RIGHT_STICK_Y.getValue();
 
+    static final int PIT_REWIND_CLIMB_LEFT = PS4Constants.LEFT_STICK_Y.getValue();
+    static final int PIT_REWIND_CLIMB_RIGHT = PS4Constants.RIGHT_STICK_Y.getValue();
+
     public double speed() {
         // Default to -1 to make up-stick positive because raw up-stick is negative
         return (invertDrive() ? 1.0 : -1.0) * driverControl.getRawAxis(DRIVE_SPEED_AXIS);
@@ -68,7 +71,6 @@ public class OI {
     static final int OPERATOR_CLIMB_EXTEND = PS4Constants.TRIANGLE.getValue();
     static final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
     static final int OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER = PS4Constants.OPTIONS.getValue();
-    static final int OPERATOR_CLIMB_RETRACT = PS4Constants.CROSS.getValue();
     static final int OPERATOR_CLIMB_ACTIVATE = PS4Constants.PS4.getValue();
     static final int OPERATOR_FEEDER = PS4Constants.L2.getValue();
 
@@ -82,6 +84,14 @@ public class OI {
 
     public double manualElevationAxis() {
         return -operatorControl.getRawAxis(OPERATOR_MANUAL_ELEVATION_AXIS);
+    }
+
+    public double pitRewindLeft() {
+        return operatorControl.getRawAxis(PIT_REWIND_CLIMB_LEFT);
+    }
+
+    public double pitRewindRight() {
+        return operatorControl.getRawAxis(PIT_REWIND_CLIMB_RIGHT);
     }
 
     public double manualAzimuthAxis() {
@@ -193,10 +203,6 @@ public class OI {
 
     public boolean climbExtend() {
         return operatorControl.getRawButton(OPERATOR_CLIMB_EXTEND);
-    }
-
-    public boolean climbRetract() {
-        return operatorControl.getRawButton(OPERATOR_CLIMB_RETRACT);
     }
 
     public boolean climbActivate() {
