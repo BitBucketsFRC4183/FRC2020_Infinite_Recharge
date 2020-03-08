@@ -206,6 +206,11 @@ public class Robot extends TimedRobot {
         if (config.enableShooterSubsystem) {
             shooterSubsystem.rotateToDeg(0, ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
         }
+
+        if (config.enableClimbSubsystem) {
+            climbSubsystem.disableClimb();
+            climbSubsystem.disableRewind();
+        }
     }
 
     /**
@@ -245,18 +250,18 @@ public class Robot extends TimedRobot {
         /////////////////////////////////////////////////////////////////////////////
         // Climb Subsystem
         if (config.enableClimbSubsystem) {
-            if (oi.climbactivate()) {
-                climbSubsystem.activateClimb();
-            }
-            if (oi.climbextend()) {
-                climbSubsystem.extending();
+            if (oi.climbActivate()) {
+                climbSubsystem.toggleActive();
             }
 
-            if (oi.climbretract()) {
-                climbSubsystem.retracting();
-            } else if (!climbSubsystem.isExtending()) {
-                climbSubsystem.off();
+            if (climbSubsystem.isActive()) {
+                if (!climbSubsystem.isRewindEnabled()) {
+                    climbSubsystem.manualClimb(oi.manualClimbLeft(),oi.manualClimbRight());
+                } else if (climbSubsystem.isRewindEnabled()) {
+                    climbSubsystem.pitRewind(oi.pitRewindLeft(), oi.pitRewindRight());
+                }
             }
+
         }
         //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
