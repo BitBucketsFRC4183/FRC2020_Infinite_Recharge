@@ -26,6 +26,7 @@ import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.climber.ClimbSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.CommandUtils;
+import frc.robot.utils.ProxyCommand;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
 import frc.robot.subsystem.drive.Idle;
@@ -180,8 +181,6 @@ public class Robot extends TimedRobot {
         navigationSubsystem.reset();
         visionSubsystem.turnOnLEDs();
 
-        BooleanSupplier sup = () -> driveSubsystem.getSecondPickupTrajectory().getInitialPose().getRotation().getDegrees() != 0; 
-
         new InstantCommand(() -> { intakeSubsystem.intake(); })
 
         // do the first pickup and return
@@ -197,8 +196,9 @@ public class Robot extends TimedRobot {
         // only execute the 2nd pickup and return if we have the trajectories for those
         // if we have a pickup, we'll have a return; so we don't have to worry about that
         .andThen(new ConditionalCommand(
-            // get second pickup trajectory
-            new AutoDrive(driveSubsystem, driveSubsystem.getSecondPickupTrajectory())
+            new ProxyCommand(() -> 
+                // get second pickup trajectory
+                new AutoDrive(driveSubsystem, driveSubsystem.getSecondPickupTrajectory())
                 // stop
                 .andThen(new InstantCommand(() -> {
                     driveSubsystem.tankVolts(0, 0);
@@ -209,13 +209,13 @@ public class Robot extends TimedRobot {
                 // stop
                 .andThen(new InstantCommand(() -> {
                     driveSubsystem.tankVolts(0, 0);
-                })
+                }))
             ),
             // just stop it if it's null (even though it's already stopped lol)
             new InstantCommand(() -> {
                 driveSubsystem.tankVolts(0, 0);
             }),
-            sup
+            driveSubsystem::hasSecondTrajectory
         ))
 
         // all done
