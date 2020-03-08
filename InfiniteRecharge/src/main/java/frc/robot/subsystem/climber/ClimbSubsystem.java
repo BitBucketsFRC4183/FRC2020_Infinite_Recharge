@@ -11,7 +11,7 @@ import frc.robot.utils.talonutils.MotorUtils;
 
 public class ClimbSubsystem extends BitBucketSubsystem {
     public enum ClimbState {
-        Extending, Retracting, Off, Winding, Rewinding;
+        Off, Winding, Rewinding;
     }
 
     private boolean active = false;
@@ -20,10 +20,6 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     protected WPI_TalonSRX motorLeft;
     private ClimbState climbState = ClimbState.Off;
 
-    // PREPARE FOR CARGO CULTED SHOOTER CODE!
-    private int targetPosition_ticks;
-    private int targetChange_ticks;
-    private int softLimit_ticks = ClimbConstants.SOFT_LIMIT_TICKS;
     public ClimbSubsystem(Config config) {
         super(config);
     }
@@ -33,7 +29,6 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         super.initialize();
         motorRight = MotorUtils.makeSRX(config.climb.climbRight);
         motorLeft = MotorUtils.makeSRX(config.climb.climbLeft);
-        // Config exists for a reason.
     }
 
     @Override
@@ -54,37 +49,11 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     @Override
     public void periodic(float deltaTime) {
         rewindEnabled = SmartDashboard.getBoolean(getName() + "/Rewind Enabled", false);
-        if (active || rewindEnabled) {
+        if (rewindEnabled) {
             switch (climbState) {
                 case Off:
                     motorRight.set(0);
                     motorLeft.set(0);
-                    break;
-
-                case Extending:
-                    // motorRight.set(
-                    // SmartDashboard.getNumber(getName() + "/Climber Current",
-                    // ClimbConstants.EXTEND_OUTPUT));
-                    targetPosition_ticks = ClimbConstants.EXTEND_TICKS;
-                    motorRight.set(ControlMode.MotionMagic, targetPosition_ticks);
-                    motorLeft.set(ControlMode.MotionMagic, targetPosition_ticks);
-                    break;
-
-                // no holding state is needed, since a mechanical ratchet will hold the robot
-                // while its hanging
-                case Retracting:
-                    targetChange_ticks = (int) (SmartDashboard.getNumber(getName() + "/Retract Rate",
-                            ClimbConstants.RETRACT_RATE_TICKS) * deltaTime);
-                    targetPosition_ticks = targetPosition_ticks + targetChange_ticks;
-                    targetChange_ticks = 0;
-                    // motorRight.set(
-                    // SmartDashboard.getNumber(getName() + "/Climber Current",
-                    // ClimbConstants.RETRACT_OUTPUT));
-                    if (targetPosition_ticks > softLimit_ticks) {
-                        targetPosition_ticks = softLimit_ticks;
-                    }
-                    motorRight.set(ControlMode.MotionMagic, targetPosition_ticks);
-                    motorLeft.set(ControlMode.MotionMagic, targetPosition_ticks);
                     break;
                 case Winding:
                     motorLeft.set(-SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT));
@@ -98,31 +67,35 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         }
     }
 
-    public void activateClimb() {
-        active = true;
-    }
-
-    public boolean isExtending() {
-        return climbState == ClimbState.Extending;
+    public void toggleActive() {
+        active = !active;
     }
 
     public boolean isRewindEnabled(){
         return rewindEnabled;
     }
 
+    public boolean isActive(){
+        return active;
+    }
+
     public void off() {
         climbState = ClimbState.Off;
     }
 
-    public void retracting() {
-        if (active) {
-            climbState = ClimbState.Retracting;
-        }
-    }
+    public void manualClimb(double leftStick, double rightStick){
+        leftStick = Math.abs(leftStick);
+        rightStick = Math.abs(rightStick);
 
-    public void extending() {
-        if (active) {
-            climbState = ClimbState.Extending;
+        if (leftStick > ClimbConstants.DEADBAND) {
+            motorLeft.set(ControlMode.PercentOutput, leftStick * ClimbConstants.OUTPUT);
+        } else {
+            motorLeft.set(ControlMode.PercentOutput, 0);
+        }
+        if (rightStick > ClimbConstants.DEADBAND) {
+            motorRight.set(ControlMode.PercentOutput, rightStick * ClimbConstants.OUTPUT);
+        } else {
+            motorRight.set(ControlMode.PercentOutput, 0);
         }
     }
 
@@ -146,8 +119,6 @@ public class ClimbSubsystem extends BitBucketSubsystem {
 
     @Override
     public void dashboardPeriodic(float deltaTime) {
-        SmartDashboard.putNumber(getName() + "/Right Selected Sensor Position", motorRight.getSelectedSensorPosition());
-        SmartDashboard.putNumber(getName() + "/Left Selected Sensor Position", motorLeft.getSelectedSensorPosition());
         SmartDashboard.putNumber(getName() + "/Right Motor Output", motorRight.getMotorOutputPercent());
         SmartDashboard.putNumber(getName() + "/Left Motor Output", motorLeft.getMotorOutputPercent());
         SmartDashboard.putBoolean(getName() + "/Active", active);
