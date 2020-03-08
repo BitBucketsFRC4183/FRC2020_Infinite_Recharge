@@ -185,31 +185,14 @@ public class Robot extends TimedRobot {
 
         // do the first pickup and return
         .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getFirstPickupTrajectory()))
-        .andThen(new InstantCommand(() -> {
-            driveSubsystem.tankVolts(0, 0);
-        }))
         .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getFirstReturnTrajectory()))
-        .andThen(new InstantCommand(() -> {
-            driveSubsystem.tankVolts(0, 0);
-        }))
 
         // only execute the 2nd pickup and return if we have the trajectories for those
         // if we have a pickup, we'll have a return; so we don't have to worry about that
         .andThen(new ConditionalCommand(
             new ProxyCommand(() -> 
-                // get second pickup trajectory
                 new AutoDrive(driveSubsystem, driveSubsystem.getSecondPickupTrajectory())
-                // stop
-                .andThen(new InstantCommand(() -> {
-                    driveSubsystem.tankVolts(0, 0);
-                }))
-
-                // get second return traj
                 .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getSecondReturnTrajectory()))
-                // stop
-                .andThen(new InstantCommand(() -> {
-                    driveSubsystem.tankVolts(0, 0);
-                }))
             ),
             // just stop it if it's null (even though it's already stopped lol)
             new InstantCommand(() -> {
