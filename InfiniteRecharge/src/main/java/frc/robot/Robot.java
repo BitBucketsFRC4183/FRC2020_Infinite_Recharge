@@ -370,4 +370,10 @@ public class Robot extends TimedRobot {
     public static Robot beat254() {
         return beat(254);
     }
+
+    public static Robot lose() {
+        // we don't lose!
+
+        return win();
+    }
 }
