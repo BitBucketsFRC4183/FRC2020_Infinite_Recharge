@@ -1,5 +1,6 @@
 package frc.robot.subsystem.drive;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +40,6 @@ import frc.robot.utils.data.filters.RisingEdgeFilter;
 import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
-
-
 public class DriveSubsystem extends BitBucketSubsystem {
     public enum DriveMethod {
         AUTO,
@@ -52,11 +51,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private DriveMethod driveMethod = DriveMethod.IDLE; // default
     private RisingEdgeFilter driveMethodSwitchFilter = new RisingEdgeFilter();
 
-
-
     private DriverStation driverStation;
-
-
 
     private WPI_TalonFX[] leftMotors;
     private WPI_TalonFX[] rightMotors;
@@ -65,29 +60,21 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private final VisionSubsystem VISION_SUBSYSTEM;
     private final OI OI;
 
-
-
     // Allow the driver to try different scaling functions on the joysticks
 	private static SendableChooser<JoystickScale> forwardJoystickScaleChooser;
     private static SendableChooser<JoystickScale> turnJoystickScaleChooser;
     private static SendableChooser<JoystickScale> rotationJoystickScaleChooser;
 
+    // Let the driver choose the auto path based on where the robot is placed
     private static SendableChooser<FullTrajectory> pickupTrajectoryChooser;
+    private final ArrayList<FullTrajectory> trajectories = new ArrayList<FullTrajectory>();
 
     public boolean velocityMode;
 
-
-
     private double rawSpeed = 0, rawTurn = 0;
-
-
 
     private final DriveUtils DRIVE_UTILS;
 
-
-
-    private final ArrayList<FullTrajectory> trajectories = new ArrayList<FullTrajectory>();
-    
     private final RamseteController ramsete;
 
     private final PIDController leftAutoPID;
@@ -97,10 +84,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private SpeedControllerGroup rightGroup;
 
     private DifferentialDrive differentialDrive;
-    
-
-
-
 
     public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, VisionSubsystem visionSubsystem, OI oi) {
         super(config);
@@ -127,61 +110,102 @@ public class DriveSubsystem extends BitBucketSubsystem {
         );
         trajectoryConfig.addConstraint(kinematicsConstraint);
         trajectoryConfig.addConstraint(voltageConstraint);
+        trajectoryConfig.setStartVelocity(0);
+
+        Translation2d startingPoint;
 
         //////////////////////// 
         //center
+        startingPoint = FieldConstants.START_CENTER_POWER_PORT;
         Trajectory centerFirstPickup = TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            // new Pose2d(0, 0, new Rotation2d()
-            new Pose2d(0.0, 0.0, new Rotation2d()),
+            // Start in front of the power port
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint), 
+                new Rotation2d()
+            ),
             // Pass through these two interior waypoints
             List.of(
-                new Translation2d(3.11, 1.70),
-                new Translation2d(4.03, 1.70)
+                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_1, startingPoint),
+                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_2, startingPoint)
             ),
-            // End 5 meters ahead and 1 meter over of where we started, facing forward
-            new Pose2d(4.94, 1.70, new Rotation2d()),
-            trajectoryConfig.setReversed(false)
+            // End at where the third ball is
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3, startingPoint),
+                new Rotation2d()
+            ),
+            trajectoryConfig.setReversed(false).setEndVelocity(0)
         );
         Trajectory centerFirstReturn = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(5, 1.75, new Rotation2d()),
+            // Start at where the third ball is
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3, startingPoint),
+                new Rotation2d()
+            ),
             List.of(),
-            new Pose2d(0, 0, new Rotation2d()),
-            trajectoryConfig.setReversed(true)
+            // Return to the power port
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint), 
+                new Rotation2d()
+            ),
+            trajectoryConfig.setReversed(true).setEndVelocity(0)
         );
 
         trajectories.add(new FullTrajectory("center", centerFirstPickup, centerFirstReturn));
 
         //////////////////////////
         // opposition trench
+        startingPoint = FieldConstants.START_OPPONENT_TRENCH;
         Trajectory oppTrenchFirstPickup = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 0, new Rotation2d()),
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.START_OPPONENT_TRENCH, startingPoint),
+                new Rotation2d()
+            ),
             List.of(),
-            new Pose2d(3.3, 0, new Rotation2d()),
-            trajectoryConfig.setReversed(false)
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.THEIR_TWO_POWER_CELLS, startingPoint), 
+                new Rotation2d()
+            ),
+            trajectoryConfig.setReversed(false).setEndVelocity(0)
         );
         Trajectory oppTrenchFirstReturn = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(3.3, 0, new Rotation2d()),
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.THEIR_TWO_POWER_CELLS, startingPoint), 
+                new Rotation2d()
+            ),
             List.of(),
-            new Pose2d(0, 4.9, new Rotation2d()),
-            trajectoryConfig.setReversed(true)
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint),
+                new Rotation2d()
+            ),
+            trajectoryConfig.setReversed(true).setEndVelocity(0)
         );
 
         Trajectory oppTrenchSecondPickup = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 4.9, new Rotation2d()),
-            List.of(
-                new Translation2d(1.5, 6.1),
-                new Translation2d(2, 6.4),
-                new Translation2d(4, 6.5)
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint),
+                new Rotation2d()
             ),
-            new Pose2d(5, 6.65, new Rotation2d()),
-            trajectoryConfig.setReversed(false)
+            List.of(
+                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_1, startingPoint),
+                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_2, startingPoint)
+            ),
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3, startingPoint),
+                new Rotation2d()
+            ),
+            trajectoryConfig.setReversed(false).setEndVelocity(0)
         );
         Trajectory oppTrenchSecondReturn = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(5, 6.65, new Rotation2d()),
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3, startingPoint),
+                new Rotation2d()
+            ),
             List.of(),
-            new Pose2d(0, 4.9, new Rotation2d()),
-            trajectoryConfig.setReversed(true)
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint), 
+                new Rotation2d()
+            ),
+            trajectoryConfig.setReversed(true).setEndVelocity(0)
         );
 
         trajectories.add(new FullTrajectory("opposition trench", oppTrenchFirstPickup, oppTrenchFirstReturn, oppTrenchSecondPickup, oppTrenchSecondReturn));
