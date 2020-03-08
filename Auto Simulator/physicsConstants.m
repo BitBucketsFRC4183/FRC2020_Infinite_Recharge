@@ -1,24 +1,4 @@
-% drive motor constants
-b = 4.093255526065792E-5;
-R = 0.04666464678901319;
-Kt = 0.01823032208047652;
-Kw = 0.017857232059815025;
-
 constants.rb = 0.6070775928431744/2;
-m = 39.3051396;
-J = 2.1621037;
-r = 0.0762;
-
-G = 10.88888888888888888;
-e = 1;%0.9;
-
-C1 = -(Kt*Kw*G*G)/(R*r*r);
-C2 = G*Kt/(R*r);
-
-Am = (1/m + rb * rb / J);
-Bm = (1/m - rb * rb / J);
-
-
 
 % robot state
 constants.X = 1;
@@ -26,6 +6,7 @@ constants.Y = 2;
 constants.THETA = 3;
 constants.vL = 4;
 constants.vR = 5;
+constants.OFFSET = 6; % alternatively, YAWFFSET
 
 % robot input
 constants.VL = 1;
@@ -40,7 +21,7 @@ constants.LL_THETA = 5;
 constants.OMEGA = 6;
 
 
-constants.STATE_SIZE = 5;
+constants.STATE_SIZE = 6;
 constants.INPUT_SIZE = 2;
 constants.OUTPUT_SIZE = 6;
 
@@ -61,18 +42,7 @@ constants.B = [
   -0.126961060623545   2.551095849721741
 ];
 
-Ay_c = zeros(3);
-Ay_c(1:2, 1:2) = A;
-Ay_c(3, 1) = 1/(2*rb);
-Ay_c(3, 2) = -1/(2*rb);
-
-By_c = zeros(3, 2);
-By_c(1:2, 1:2) = B;
-
 dt = 2/100; % 2ms default
-
-sysy_c = ss(Ay_c, By_c, eye(3), zeros(3, 2));
-sysy_d = c2d(sysy_c, dt);
 
 constants.VQ = [
     0.006307812352729869, 0.006149384611897019;
@@ -81,6 +51,6 @@ constants.VQ = [
 
 constants.IN_TO_M = 254 / 10000;
 
-constants.yc = 0.6956 * IN_TO_M;
-constants.xc = 6.7643 * IN_TO_M;
-constants.rLL = 7.6252 * IN_TO_M;
+constants.yc = 0.6956 * constants.IN_TO_M;
+constants.xc = 6.7643 * constants.IN_TO_M;
+constants.rLL = 7.6252 * constants.IN_TO_M;
