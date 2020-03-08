@@ -182,9 +182,8 @@ public class Robot extends TimedRobot {
         .andThen(new InstantCommand(() -> {
             System.out.println("Turning intake off");
             driveSubsystem.tankVolts(0, 0);
-            intakeSubsystem.off();
         }))
-        .andThen(new AutoDrive(driveSubsystem, driveSubsystem.returnReturnTrajectory()))
+        .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getReturnTrajectory()))
         .andThen(new InstantCommand(() -> {
             driveSubsystem.tankVolts(0, 0);
         }))
