@@ -59,6 +59,8 @@ public class FocusedExcellenceConfiguration extends Config {
 
         drive.encoderType = EncoderType.Quadrature;
 
+        drive.useFancyOdometry = false;
+
         drive.initMotorConfigArrays();
     }
 }
