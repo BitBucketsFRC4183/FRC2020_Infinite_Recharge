@@ -68,8 +68,8 @@ driveBase:
   wheelRadius: "{{ 6 * 2.54 / 100 / 2}}" # 6 inch diameter wheels in meters
   gearRatio: "{{ 10 + 8.0 / 9 }}"
 startPosition:
-  x: 1.54
-  y: 5.33
+  x: -3.5 # for opposition trench, 1.54 for the center
+  y: 5
   heading: 3.14159
 transmissions:
 - motors:
