@@ -1,5 +1,6 @@
 package frc.robot.subsystem.drive;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -29,6 +30,7 @@ import frc.robot.config.Config;
 import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.auto.FieldConstants;
+import frc.robot.subsystem.drive.auto.FullTrajectory;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
@@ -70,7 +72,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private static SendableChooser<JoystickScale> turnJoystickScaleChooser;
     private static SendableChooser<JoystickScale> rotationJoystickScaleChooser;
 
-
+    private static SendableChooser<FullTrajectory> pickupTrajectoryChooser;
 
     public boolean velocityMode;
 
@@ -84,9 +86,8 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-
-    private final Trajectory pickupTrajectory;
-    private final Trajectory returnTrajectory;
+    private final ArrayList<FullTrajectory> trajectories = new ArrayList<FullTrajectory>();
+    
     private final RamseteController ramsete;
 
     private final PIDController leftAutoPID;
@@ -127,33 +128,63 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectoryConfig.addConstraint(kinematicsConstraint);
         trajectoryConfig.addConstraint(voltageConstraint);
 
-        pickupTrajectory = TrajectoryGenerator.generateTrajectory(
+        //////////////////////// 
+        //center
+        Trajectory centerFirstPickup = TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.FRONT_OF_POWER_PORT),
-                new Rotation2d(0)
-            ),
+            // new Pose2d(0, 0, new Rotation2d()
+            new Pose2d(0.0, 0.0, new Rotation2d()),
             // Pass through these two interior waypoints
             List.of(
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_1),
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_2)
+                new Translation2d(3.11, 1.70),
+                new Translation2d(4.03, 1.70)
             ),
             // End 5 meters ahead and 1 meter over of where we started, facing forward
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3),
-                new Rotation2d(0)
-            ),
-            trajectoryConfig
+            new Pose2d(4.94, 1.70, new Rotation2d()),
+            trajectoryConfig.setReversed(false)
         );
-
-        trajectoryConfig.setReversed(true);
-
-        returnTrajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(5, 1.75, new Rotation2d(0)),
+        Trajectory centerFirstReturn = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(5, 1.75, new Rotation2d()),
             List.of(),
-            new Pose2d(0, 0, new Rotation2d(0)),
-            trajectoryConfig
+            new Pose2d(0, 0, new Rotation2d()),
+            trajectoryConfig.setReversed(true)
         );
+
+        trajectories.add(new FullTrajectory("center", centerFirstPickup, centerFirstReturn));
+
+        //////////////////////////
+        // opposition trench
+        Trajectory oppTrenchFirstPickup = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 0, new Rotation2d()),
+            List.of(),
+            new Pose2d(3.3, 0, new Rotation2d()),
+            trajectoryConfig.setReversed(false)
+        );
+        Trajectory oppTrenchFirstReturn = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(3.3, 0, new Rotation2d()),
+            List.of(),
+            new Pose2d(0, 4.9, new Rotation2d()),
+            trajectoryConfig.setReversed(true)
+        );
+
+        Trajectory oppTrenchSecondPickup = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 4.9, new Rotation2d()),
+            List.of(
+                new Translation2d(1.5, 6.1),
+                new Translation2d(2, 6.4),
+                new Translation2d(4, 6.5)
+            ),
+            new Pose2d(5, 6.65, new Rotation2d()),
+            trajectoryConfig.setReversed(false)
+        );
+        Trajectory oppTrenchSecondReturn = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(5, 6.65, new Rotation2d()),
+            List.of(),
+            new Pose2d(0, 4.9, new Rotation2d()),
+            trajectoryConfig.setReversed(true)
+        );
+
+        trajectories.add(new FullTrajectory("opposition trench", oppTrenchFirstPickup, oppTrenchFirstReturn, oppTrenchSecondPickup, oppTrenchSecondReturn));
 
         ramsete = new RamseteController(config.auto.b, config.auto.zeta);
 
@@ -175,7 +206,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		forwardJoystickScaleChooser.addOption("Square", JoystickScale.SQUARE);
 		forwardJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
 		forwardJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
-
 		SmartDashboard.putData(getName() + "/Forward Joystick Scale", forwardJoystickScaleChooser);
 
 		turnJoystickScaleChooser = new SendableChooser<JoystickScale>();
@@ -183,7 +213,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		turnJoystickScaleChooser.setDefaultOption("Square", JoystickScale.SQUARE);
 		turnJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
 		turnJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
-		
         SmartDashboard.putData(getName() + "/Turn Joystick Scale", turnJoystickScaleChooser);
         
         rotationJoystickScaleChooser = new SendableChooser<JoystickScale>();
@@ -191,10 +220,15 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		rotationJoystickScaleChooser.setDefaultOption("Square", JoystickScale.SQUARE);
 		rotationJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
 		rotationJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
-		
         SmartDashboard.putData(getName() + "/Rotation Joystick Scale", turnJoystickScaleChooser);
 
-
+        pickupTrajectoryChooser = new SendableChooser<FullTrajectory>();
+        pickupTrajectoryChooser.setDefaultOption(trajectories.get(0).getName(), trajectories.get(0));
+        for (int i = 0; i < trajectories.size(); i++) {
+            i++;
+            pickupTrajectoryChooser.addOption(trajectories.get(i).getName(), trajectories.get(i));
+        }
+        SmartDashboard.putData(getName() + "/Pickup Trajectory", pickupTrajectoryChooser);
 
         leftMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
         rightMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
@@ -560,19 +594,29 @@ public class DriveSubsystem extends BitBucketSubsystem {
         return DRIVE_UTILS.ticksP100ToIps(getRightVelocity_tp100ms()) * DriveConstants.METERS_PER_INCH / config.drive.gearRatio;
     }
 
-	public Trajectory getPickupTrajectory() {
-		return pickupTrajectory;
+	public Trajectory getFirstPickupTrajectory() {
+        return pickupTrajectoryChooser.getSelected().getFirstPickupTrajectory();   
     }
 
-    public Trajectory returnReturnTrajectory() {
-        // yes, code
-        return returnTrajectory;
+    public Trajectory getFirstReturnTrajectory() {
+        return pickupTrajectoryChooser.getSelected().getFirstReturnTrajectory();
+    }
+
+    public boolean hasSecondTrajectory() {
+        return pickupTrajectoryChooser.getSelected().hasSecondTrajectory();
+    }
+
+    public Trajectory getSecondPickupTrajectory() {
+        return pickupTrajectoryChooser.getSelected().getSecondPickupTrajectory();   
+    }
+
+    public Trajectory getSecondReturnTrajectory() {
+        return pickupTrajectoryChooser.getSelected().getSecondReturnTrajectory();
     }
     
     public Pose2d getPose() {
         return NAVIGATION_SUBSYSTEM.getPose();
     }
-
 
 
 	public void setWheelSpeeds(double leftSpeed_mps, double rightSpeed_mps) {
