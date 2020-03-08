@@ -79,6 +79,8 @@ public class JuniorConfiguration extends Config {
 
         drive.initMotorConfigArrays();
 
+        drive.useFancyOdometry = false;
+
         double velocityKp = 0.14014 * 4;
 
         // Drive

@@ -1,6 +1,4 @@
-function x3 = robotSystemUKF_update(f, ts, x1, u)
-    physicsConstants;
-    
+function x3 = robotSystemUKF_update(f, ts, x1, u)    
     f_u = @(T, X) f(X, u);
     [~, x2] = ode45(f_u, ts, x1);
     [steps, ~] = size(x2);

@@ -25,4 +25,11 @@ public class FieldConstants {
     public static final Translation2d OUR_POWER_CELL_3 = new Translation2d(
         3.400298, -0.000127
     );
+
+    /** Use the coordinate system the robot likes */
+    public static Translation2d transformToRobot(Translation2d x) {
+        Translation2d temp = x.minus(FRONT_OF_POWER_PORT);
+
+        return new Translation2d(-temp.getY(), temp.getX());
+    }
 }
