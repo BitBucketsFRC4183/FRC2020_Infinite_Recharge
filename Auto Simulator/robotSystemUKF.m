@@ -7,7 +7,7 @@ physicsConstants;
 T = 2;
 ts = 0:dt:T;
 [~, t_width] = size(ts);
-us = -6+12*rand(2, t_width).*exp(-(ts - T/2).^2);%6 + 6*[sin(ts); cos(ts)];
+us = 6 + 6*[sin(ts); cos(ts)];
 
 t = 0;
 u = us(:, 1);
