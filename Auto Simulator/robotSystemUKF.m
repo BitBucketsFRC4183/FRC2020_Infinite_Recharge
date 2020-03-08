@@ -4,9 +4,9 @@ physicsConstants;
 
 
 
-ts = 0:dt:1;
-us = 6 + 6*[sin(ts); cos(ts)];
+ts = 0:dt:2;
 [~, t_width] = size(ts);
+us = -6+12*rand(2, t_width);%6 + 6*[sin(ts); cos(ts)];
 
 t = 0;
 u = us(:, 1);
@@ -15,12 +15,13 @@ deriv = @(x, u) robotSystemUKF_deriv(x, u, constants);
 f = @(x) robotSystemUKF_update(deriv, [t, t+dt], x, u);
 h = @(x) robotSystemUKF_output(x, u, constants);
 
-Q = diag([0.01, 0.01, pi/180, 0.02, 0.02])/50;
+Q = diag([0.0005, 0.0005, 0.005*pi/180, 0.02, 0.02, 0.00000001])/50;
 R = diag([254/10000, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36]);
-P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001]);
+P = eye(6)*0.01;%diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001, 2*pi/180]);
 
-x_hat = [1; 1; pi/2; 0; 0;];
-x0 = x_hat;% + mvnrnd(zeros(STATE_SIZE, 1), P)';
+x_hat = [1; 1; pi/2; 0; 0; 0;];
+x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
+disp(x0);
 
 AbsTol = [0.01; 0.01; pi / 90; 0.05; 0.05];
 RelTol = AbsTol;
@@ -32,10 +33,10 @@ Ys_hat = zeros(t_width, 1);
 Thetas = zeros(t_width, 1);
 Thetas_hat = zeros(t_width, 1);
 Thetas_m = zeros(t_width, 1);
-Eigs = zeros(t_width, STATE_SIZE);
-Outputs = zeros(t_width, OUTPUT_SIZE);
-Outputs_hat = zeros(t_width, OUTPUT_SIZE);
-Outputs_exact = zeros(t_width, OUTPUT_SIZE);
+Eigs = zeros(t_width, constants.STATE_SIZE);
+Outputs = zeros(t_width, constants.OUTPUT_SIZE);
+Outputs_hat = zeros(t_width, constants.OUTPUT_SIZE);
+Outputs_exact = zeros(t_width, constants.OUTPUT_SIZE);
 
 for i=1:t_width
     u = us(:, i);
@@ -50,20 +51,20 @@ for i=1:t_width
     %v_sigmas = sigmas(x0, QQ, c);
     %[~, ~, Q, ~] = ut(f, x_sigmas, Wm, Wc, STATE_SIZE, zeros(STATE_SIZE));
 
-    x0 = f(x0) + mvnrnd(zeros(STATE_SIZE, 1), Q)';
+    x0 = f(x0) + mvnrnd(zeros(constants.STATE_SIZE, 1), Q)';
     y0 = h(x0);
-    y = y0 + mvnrnd(zeros(OUTPUT_SIZE, 1), R)';
+    y = y0 + mvnrnd(zeros(constants.OUTPUT_SIZE, 1), R)';
     %y(TX) = y(TX) - 5*pi/180;
     
     [x_hat, P] = ukf(f, x_hat, P, h, y, Q, R);
     
-    Xs(i) = x0(X);
-    Ys(i) = x0(Y);
-    Xs_hat(i) = x_hat(X);
-    Ys_hat(i) = x_hat(Y);
-    Thetas(i) = x0(THETA);
-    Thetas_hat(i) = x_hat(THETA);
-    %Thetas_m(i) = y(LL_THETA);
+    Xs(i) = x0(constants.X);
+    Ys(i) = x0(constants.Y);
+    Xs_hat(i) = x_hat(constants.X);
+    Ys_hat(i) = x_hat(constants.Y);
+    Thetas(i) = x0(constants.THETA);
+    Thetas_hat(i) = x_hat(constants.THETA);
+    %Thetas_m(i) = y(constants.LL_THETA);
     Eigs(i, :) = eig(P);
     Outputs(i, :) = y;
     Outputs_hat(i, :) = h(x_hat);

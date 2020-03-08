@@ -9,7 +9,7 @@ function y = robotSystemUKF_output(x, u, c)
     y(c.TX) = atan2(c.yT - x(c.Y), c.xT - x(c.X)) - x(c.THETA);
     y(c.VL_O) = x(c.vL);
     y(c.VR_O) = x(c.vR);
-    y(c.LL_THETA) = x(c.THETA);
+    y(c.LL_THETA) = x(c.THETA) + x(c.OFFSET);
     y(c.OMEGA) = (x(c.vR) - x(c.vL))/(2*c.rb);
 end
 
