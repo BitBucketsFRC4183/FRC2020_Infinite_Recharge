@@ -48,27 +48,34 @@ public class ClimbSubsystem extends BitBucketSubsystem {
 
     @Override
     public void periodic(float deltaTime) {
+        rewindEnabled = SmartDashboard.getBoolean(getName() + "/Rewind Enabled", false);    
+    }
+
+    public void pitRewind(double leftStick, double rightStick) {
         rewindEnabled = SmartDashboard.getBoolean(getName() + "/Rewind Enabled", false);
-        if (rewindEnabled) {
-            switch (climbState) {
-                case Off:
-                    motorRight.set(0);
-                    motorLeft.set(0);
-                    break;
-                case Winding:
-                    motorLeft.set(-SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT));
-                    motorRight.set(-SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT));
-                    break;
-                case Rewinding:
-                    motorLeft.set(SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT));
-                    motorRight.set(SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT));
-                    break;
-            }
+        if (!rewindEnabled) {
+            return;
         }
+
+        // invert because otherwise down is positive
+        leftStick *= -1;
+        rightStick *= -1;
+
+        motorLeft.set(SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT) * leftStick);
+        motorRight.set(SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT) * rightStick);
     }
 
     public void toggleActive() {
         active = !active;
+    }
+
+    public void disableClimb() {
+        active = false;
+    }
+
+    public void disableRewind() {
+        SmartDashboard.putBoolean(getName() + "/Rewind Enabled", false);
+        rewindEnabled = false;
     }
 
     public boolean isRewindEnabled(){
@@ -77,10 +84,6 @@ public class ClimbSubsystem extends BitBucketSubsystem {
 
     public boolean isActive(){
         return active;
-    }
-
-    public void off() {
-        climbState = ClimbState.Off;
     }
 
     public void manualClimb(double leftStick, double rightStick){
@@ -99,22 +102,10 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         }
     }
 
-    public void rewinding() {
-        if (rewindEnabled) {
-            climbState = ClimbState.Rewinding;
-        }
-    }
-
-    public void winding() {
-        if (rewindEnabled) {
-            climbState = ClimbState.Winding;
-        }
-    }
-
     @Override
     public void dashboardInit() {
         super.dashboardInit();
-        SmartDashboard.putBoolean(getName() + "/Rewind Enabled", false);
+        disableRewind();
     }
 
     @Override

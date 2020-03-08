@@ -13,7 +13,7 @@ public class Config {
     public boolean enableShooterSubsystem = false;
     public boolean enableBallManagementSubsystem = false;
     public boolean enableDriveSubsystem = true;
-    public boolean enableClimbSubsystem = false;
+    public boolean enableClimbSubsystem = true;
     public boolean enableIntakeSubsystem = true;
     public boolean enableSpinnyboiSubsystem = false;
     public boolean enablePIDHelper = false;
@@ -108,7 +108,7 @@ public class Config {
     }
 
     public static class IntakeConfig {
-        public boolean intakePivotEnabled = true;
+        public boolean intakePivotEnabled = false;
 
         public MotorConfig intake = new MotorConfig();
     }
