@@ -159,20 +159,27 @@ public class Sim {
             g2d.setColor(Color.DARK_GRAY);
             g2d.drawOval(x, y, size, size);
 
-            // put a dot where the robot thinks it is
-            double rx = SmartDashboard.getNumber("DriveSubsystem/actual x", 0);
-            double ry = SmartDashboard.getNumber("DriveSubsystem/actual y", 0);
-            double rr = Math.sqrt(Math.pow(rx, 2.0) + Math.pow(ry, 2.0));
-            double rt = Math.atan2(rx, ry);
-            double fr = rr;
-            double ft = rt + simulatorConfig.startPosition.heading;
-            double fx = -fr * Math.cos(ft) + simulatorConfig.startPosition.x;
-            double fy = fr * Math.sin(ft) + simulatorConfig.startPosition.y;
-            final int dotRadius = 2;
-            int ax = (int)(Field.imageSize.x + robotRect.width) / 2 + (int) Math.round(fx / Field.metersPerPixelWidth);
-            int ay = (int)(Field.imageSize.y + robotRect.height) / 2 - (int) Math.round(fy / Field.metersPerPixelHeight);
+            // put a dot where the robot thinks it is, with a line in the direction it's pointing
+            double posReportedX_m = SmartDashboard.getNumber("DriveSubsystem/actual x", 0);
+            double posReportedY_m = SmartDashboard.getNumber("DriveSubsystem/actual y", 0);
+            double posReportedHdg_rad = SmartDashboard.getNumber("DriveSubsystem/actual theta", 0);
+            double posReportedPolarR_m = Math.sqrt(Math.pow(posReportedX_m, 2.0) + Math.pow(posReportedY_m, 2.0));
+            double posReportedPolarT_rad = Math.atan2(posReportedY_m, posReportedX_m);
+            double posFieldPolarR_m = posReportedPolarR_m;
+            double posFieldPolarT_rad = posReportedPolarT_rad + simulatorConfig.startPosition.heading + (Math.PI / 2);
+            double posFieldHdg_rad = posReportedHdg_rad + simulatorConfig.startPosition.heading + (Math.PI / 2);
+            double posFieldX_m = posFieldPolarR_m * Math.cos(posFieldPolarT_rad) + simulatorConfig.startPosition.x;
+            double posFieldY_m = posFieldPolarR_m * Math.sin(posFieldPolarT_rad) + simulatorConfig.startPosition.y;
+            final int dotRadius_px = 2;
+            final int tailRadius_px = 10;
+            int posGraphicsX_px = (int)(Field.imageSize.x) / 2 + (int) Math.round(posFieldX_m / Field.metersPerPixelWidth);
+            int posGraphicsY_px = (int)(Field.imageSize.y) / 2 - (int) Math.round(posFieldY_m / Field.metersPerPixelHeight);
+            int tailEndX_px = posGraphicsX_px + (int)(Math.cos(posFieldHdg_rad) * tailRadius_px);
+            int tailEndY_px = posGraphicsY_px + (int)(Math.sin(posFieldHdg_rad) * tailRadius_px);
             g2d.setColor(Color.CYAN);
-            g2d.fillOval(ax - dotRadius, ay - dotRadius, 2 * dotRadius, 2 * dotRadius);
+            g2d.fillOval(posGraphicsX_px - dotRadius_px, posGraphicsY_px - dotRadius_px, 2 * dotRadius_px, 2 * dotRadius_px);
+            // currently reported theta is very wrong - so drawing the line is disabled as it's just a distraction
+            // g2d.drawLine(posGraphicsX_px, posGraphicsY_px, tailEndX_px, tailEndY_px);
 
             // Draw a line showing the direction the turret is facing.
             g2d.setColor(Color.YELLOW);
