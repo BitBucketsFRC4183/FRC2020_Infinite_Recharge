@@ -64,7 +64,7 @@ defaults:
   elevationGearing: "{{ 350.0/1.0 }}"
 hideFollowers: true
 driveBase:
-  radius: "{{ 22.65 * 2.54 / 100 / 2}}" # radius of robot in meters
+  radius: "{{ 23.90069263162104 * 2.54 / 100 / 2}}" # radius of robot in meters
   wheelRadius: "{{ 6 * 2.54 / 100 / 2}}" # 6 inch diameter wheels in meters
   gearRatio: "{{ 10 + 8.0 / 9 }}"
 startPosition:
