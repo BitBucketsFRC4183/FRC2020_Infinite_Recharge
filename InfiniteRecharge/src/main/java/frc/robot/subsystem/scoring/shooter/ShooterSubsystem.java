@@ -158,16 +158,16 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         shooterCalculator.initialize(visionSubsystem);
 
-        // ballPropulsionMotor.configClosedloopRamp(0);
-        // ballPropulsionFollower.configClosedloopRamp(0);
+        ballPropulsionMotor.configClosedloopRamp(0);        
+        ballPropulsionFollower.configClosedloopRamp(0);
 
-        // ballPropulsionMotor.enableVoltageCompensation(true);
-        // ballPropulsionMotor.configVoltageCompSaturation(6.5);
+        ballPropulsionMotor.enableVoltageCompensation(true);
+        ballPropulsionMotor.configVoltageCompSaturation(8);
 
-        // ballPropulsionFollower.enableVoltageCompensation(true);
-        // ballPropulsionFollower.configVoltageCompSaturation(6.5);
+        ballPropulsionFollower.enableVoltageCompensation(true);
+        ballPropulsionFollower.configVoltageCompSaturation(8);
 
-        // ballPropulsionMotor.configVelocityMeasurementWindow(1);
+        ballPropulsionMotor.configVelocityMeasurementWindow(1);
     }
 
     @Override
@@ -367,12 +367,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAimHoodAngle() {
+        SmartDashboard.putNumber(getName() + "/Limelight hood angle", shooterCalculator.calculateHoodAngle_deg());
         rotateToDeg(getAzimuthDeg(), shooterCalculator.calculateHoodAngle_deg());
     }
 
     public void autoAimVelocity() {
         autoAiming = true;
         shooterVelocity_ticks = shooterCalculator.calculateSpeed_ticks();
+        SmartDashboard.putNumber(getName() + "/Limelight velocity", shooterVelocity_ticks);
         startSpinningUp();
 
         // TODO: do this stuff empirically (yay!)
@@ -475,7 +477,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target", ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
 
         SmartDashboard.putNumber(getName() + "/Shooter %Output", 0.5); // TODO TEMPORARY
-
     }
 
     @Override
