@@ -13,6 +13,8 @@ public class VisionConstants {
 
     static final boolean ENABLE_AUTO_ZOOM = false;
 
+    static final double TX_BIAS_DEG = Math.PI; // about 3.1, so why not
+
     public static double getTargetHeightInches() {
         return TARGET_HEIGHT_INCHES;
     }
