@@ -247,17 +247,17 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         SmartDashboard.putNumber(getName() + "/averageError", averageError);
         // Spin up the feeder if the shooter is up to speed.
-        // if (averageError <= config.shooter.feederSpinUpDeadband_ticks && feeding) {
+        if (averageError <= config.shooter.feederSpinUpDeadband_ticks && feeding) {
             feeder.set(SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     ShooterConstants.FEEDER_OUTPUT_PERCENT));
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
             upToSpeed = true;
-        // } // If it isn't though, turn the feeder off.
-        // else {
-        //     upToSpeed = false;
-        //     feeder.set(0);
-        //     SmartDashboard.putString(getName() + "/Feeder State", "Cannot fire: Shooter hasn't been spun up!");
-        // }
+        } // If it isn't though, turn the feeder off.
+        else {
+            upToSpeed = false;
+            feeder.set(0);
+            SmartDashboard.putString(getName() + "/Feeder State", "Cannot fire: Shooter hasn't been spun up!");
+        }
         // Spin up the shooter.
         // If we're auto-aiming, it'll use the ticks specified by the vision subsystem.
         // Otherwise, it'll use the one set in NT
