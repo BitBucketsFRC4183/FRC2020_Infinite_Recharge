@@ -48,11 +48,11 @@ repositories {
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
 
-configurations.all {
-    // Refresh snapshot dependencies every build. This will force new simulator updates to be fetched
-    // immediately.
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
+// configurations.all {
+//     // Refresh snapshot dependencies every build. This will force new simulator updates to be fetched
+//     // immediately.
+//     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+// }
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.

@@ -151,6 +151,61 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         trajectories.add(new FullTrajectory("center", centerFirstPickup, centerFirstReturn));
 
+        //////////////////////// 
+        //right of center
+        startingPoint = FieldConstants.START_RIGHT_POWER_PORT;
+        Trajectory rightFirstPickup = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.START_RIGHT_POWER_PORT, startingPoint), 
+                new Rotation2d()
+            ), 
+            List.of(), 
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.BEFORE_OUR_POWER_CELL_1, startingPoint),
+                new Rotation2d()
+            ), 
+            trajectoryConfig.setReversed(false).setEndVelocity(0)
+        );
+        Trajectory rightFirstReturn = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.BEFORE_OUR_POWER_CELL_1, startingPoint), 
+                new Rotation2d()
+            ), 
+            List.of(), 
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.ALSO_BEFORE_OUR_POWER_CELL_1, startingPoint),
+                new Rotation2d()
+            ), 
+            trajectoryConfig.setReversed(true).setEndVelocity(0)
+        );
+
+        Trajectory rightSecondPickup = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.ALSO_BEFORE_OUR_POWER_CELL_1, startingPoint), 
+                new Rotation2d()
+            ), 
+            List.of(), 
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.OUR_TWO_POWER_CELLS, startingPoint),
+                new Rotation2d()
+            ), 
+            trajectoryConfig.setReversed(false).setEndVelocity(0)
+        );
+        Trajectory rightSecondReturn = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.OUR_TWO_POWER_CELLS, startingPoint), 
+                new Rotation2d()
+            ), 
+            List.of(), 
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.ALSO_BEFORE_OUR_POWER_CELL_1, startingPoint),
+                new Rotation2d()
+            ), 
+            trajectoryConfig.setReversed(true).setEndVelocity(0)
+        );
+
+        trajectories.add(new FullTrajectory("right of center/power port", rightFirstPickup, rightFirstReturn, rightSecondPickup, rightSecondReturn));
+
         //////////////////////////
         // opponent trench
         startingPoint = FieldConstants.START_OPPONENT_TRENCH;
@@ -247,8 +302,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         pickupTrajectoryChooser = new SendableChooser<FullTrajectory>();
         pickupTrajectoryChooser.setDefaultOption(trajectories.get(0).getName(), trajectories.get(0));
-        for (int i = 0; i < trajectories.size(); i++) {
-            i++;
+        for (int i = 1; i < trajectories.size(); i++) {
             pickupTrajectoryChooser.addOption(trajectories.get(i).getName(), trajectories.get(i));
         }
         SmartDashboard.putData(getName() + "/Pickup Trajectory", pickupTrajectoryChooser);
