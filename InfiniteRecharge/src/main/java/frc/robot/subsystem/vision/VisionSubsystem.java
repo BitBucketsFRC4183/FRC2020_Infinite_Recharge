@@ -81,7 +81,7 @@ public class VisionSubsystem extends BitBucketSubsystem {
         if (tv == 1) {
             validTarget = true;
 
-            tx = queryLimelightNetworkTable("tx");
+            tx = queryLimelightNetworkTable("tx") + VisionConstants.TX_BIAS_DEG;
             ty = queryLimelightNetworkTable("ty");
             ty -= pan;
         } else {
