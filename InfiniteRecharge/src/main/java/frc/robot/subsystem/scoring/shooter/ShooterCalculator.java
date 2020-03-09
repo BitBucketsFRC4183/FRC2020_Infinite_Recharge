@@ -67,9 +67,9 @@ public class ShooterCalculator {
      */
     public ShooterCalculator() {
         this(Arrays.asList(
-            new VelocityPoint(109, 5000, 45), // initiation line
-            new VelocityPoint(130, 5000, 45.5),
-            new VelocityPoint(150, 5000, 45),
+            new VelocityPoint(109, 4500, 43), // initiation line
+            new VelocityPoint(130, 4500, 43.5),
+            new VelocityPoint(150, 4500, 43),
             new VelocityPoint(196, 5200, 46),
             new VelocityPoint(206, 5050, 45),
             new VelocityPoint(323, 6100, 53),
