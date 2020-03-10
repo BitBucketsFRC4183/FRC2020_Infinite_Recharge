@@ -175,7 +175,6 @@ public class Robot extends TimedRobot {
         .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getFirstReturnTrajectory()))
 
 
-
         // raise the hood angle and sh00t
         .andThen(() -> shootStuff())
 
@@ -199,6 +198,8 @@ public class Robot extends TimedRobot {
         // if we have a pickup, we'll have a return; so we don't have to worry about that
         .andThen(new ConditionalCommand(
             new ProxyCommand(() -> 
+
+                // get the second set of balls and shoot
                 new AutoDrive(driveSubsystem, driveSubsystem.getSecondPickupTrajectory())
                 .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getSecondReturnTrajectory()))
                 .andThen(() -> shootStuff())
@@ -209,7 +210,7 @@ public class Robot extends TimedRobot {
                     return shooterSubsystem.isUpToSpeed();
                 }))
                 .andThen(new WaitCommand(3))
-                
+
                 .andThen(() -> stopEverything())
             ),
             // stop it if we dont have a second path
