@@ -15,7 +15,7 @@ public class FieldConstants {
         -3.5, INITIALIZATION_LINE
     );
 
-    public static final Translation2d START_RIGHT_POWER_PORT = new Translation2d(
+    public static final Translation2d START_OUR_TRENCH = new Translation2d(
         2.8, INITIALIZATION_LINE
     );
 

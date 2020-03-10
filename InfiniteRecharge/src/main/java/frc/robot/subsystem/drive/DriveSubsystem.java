@@ -153,10 +153,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         //////////////////////// 
         //our trench
-        startingPoint = FieldConstants.START_RIGHT_POWER_PORT;
+        startingPoint = FieldConstants.START_OUR_TRENCH;
         Trajectory rightFirstPickup = TrajectoryGenerator.generateTrajectory(
             new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_RIGHT_POWER_PORT, startingPoint), 
+                FieldConstants.transformToRobot(FieldConstants.START_OUR_TRENCH, startingPoint), 
                 new Rotation2d()
             ), 
             List.of(), 
