@@ -68,7 +68,6 @@ public class OI {
     static final int OPERATOR_SPINUP = PS4Constants.L1.getValue();
     static final int OPERATOR_AUTO_AIM = PS4Constants.R2.getValue();
     static final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
-    static final int OPERATOR_CLIMB_EXTEND = PS4Constants.TRIANGLE.getValue();
     static final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
     static final int OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER = PS4Constants.OPTIONS.getValue();
     static final int OPERATOR_CLIMB_ACTIVATE = PS4Constants.PS4.getValue();
@@ -199,10 +198,6 @@ public class OI {
 
     public boolean rotationToVelocity() {
         return driverControl.getRawButton(DRIVE_METHOD_SWITCH_BUTTON);
-    }
-
-    public boolean climbExtend() {
-        return operatorControl.getRawButton(OPERATOR_CLIMB_EXTEND);
     }
 
     public boolean climbActivate() {
