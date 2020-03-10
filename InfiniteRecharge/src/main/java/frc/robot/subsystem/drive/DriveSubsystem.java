@@ -315,59 +315,62 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-    public void velocityDrive_auto(double ips, double radps) {
-        selectVelocityMode(true);
+    // public void velocityDrive_auto(double ips, double radps) {
+    //     selectVelocityMode(true);
 
 
 
-        ips *= config.drive.gearRatio;
-        double diffSpeed_ips = radps * config.drive.gearRatio * config.drive.trackWidth_in / 2.0;
+    //     ips *= config.drive.gearRatio;
+    //     double diffSpeed_ips = radps * config.drive.gearRatio * config.drive.trackWidth_in / 2.0;
 
-        // Compute, report, and limit lateral acceleration
-		if (Math.abs(radps * ips) > DriveConstants.MAX_LAT_ACCELERATION_IPSPS) {
-			ips = Math.signum(ips) * DriveConstants.MAX_LAT_ACCELERATION_IPSPS / Math.abs(radps);
-		}
-		double latAccel_gs = radps * ips / 12.0 / DriveConstants.STANDARD_G_FTPSPS;
-        double turnRadius_inches = ips / radps;
+    //     // Compute, report, and limit lateral acceleration
+	// 	if (Math.abs(radps * ips) > DriveConstants.MAX_LAT_ACCELERATION_IPSPS) {
+	// 		ips = Math.signum(ips) * DriveConstants.MAX_LAT_ACCELERATION_IPSPS / Math.abs(radps);
+	// 	}
+	// 	double latAccel_gs = radps * ips / 12.0 / DriveConstants.STANDARD_G_FTPSPS;
+    //     double turnRadius_inches = ips / radps;
         
 
 
-        int speed_tickP100 = DRIVE_UTILS.ipsToTicksP100(ips);
-		int diffSpeed_tickP100 = DRIVE_UTILS.ipsToTicksP100(diffSpeed_ips);
+    //     int speed_tickP100 = DRIVE_UTILS.ipsToTicksP100(ips);
+	// 	int diffSpeed_tickP100 = DRIVE_UTILS.ipsToTicksP100(diffSpeed_ips);
 
-		int leftSpeed_tickP100 = speed_tickP100 + diffSpeed_tickP100;
-        int rightSpeed_tickP100 = speed_tickP100 - diffSpeed_tickP100;
+	// 	int leftSpeed_tickP100 = speed_tickP100 + diffSpeed_tickP100;
+    //     int rightSpeed_tickP100 = speed_tickP100 - diffSpeed_tickP100;
         
-        SmartDashboard.putNumber(getName() + "/ls_tp100", leftSpeed_tickP100);
-        SmartDashboard.putNumber(getName() + "/rs_tp100", rightSpeed_tickP100);
+    //     SmartDashboard.putNumber(getName() + "/ls_tp100", leftSpeed_tickP100);
+    //     SmartDashboard.putNumber(getName() + "/rs_tp100", rightSpeed_tickP100);
 
-        setLeftVelocity(leftSpeed_tickP100);
-        setRightVelocity(rightSpeed_tickP100);
+    //     setLeftVelocity(leftSpeed_tickP100);
+    //     setRightVelocity(rightSpeed_tickP100);
         
-        SmartDashboard.putNumber(getName() + "/commandedSpeed_ips", ips);
-    }
+    //     SmartDashboard.putNumber(getName() + "/commandedSpeed_ips", ips);
+    // }
 
     public void velocityDrive(double speed, double turn) {
         speed = forwardJoystickScaleChooser.getSelected().rescale(speed, DriveConstants.JOYSTICK_DEADBAND);
         turn = turnJoystickScaleChooser.getSelected().rescale(turn, DriveConstants.JOYSTICK_DEADBAND);
 
-		double ips = MathUtils.map(
-            speed,
-            -1.0,
-            1.0,
-            -config.drive.maxAllowedSpeed_ips,
-            config.drive.maxAllowedSpeed_ips
-        );
+        leftMotors[0].set(ControlMode.PercentOutput, 0.8*(0.5 * speed - 0.5 * turn) * ((config.drive.invertLeftCommand) ? -1 : 1));
+        leftMotors[0].set(ControlMode.PercentOutput, 0.8*(0.5 * speed + 0.5 * turn) * ((config.drive.invertRightCommand) ? -1 : 1));
 
-        double radps = MathUtils.map(
-            turn,
-            -1.0,
-            1.0,
-            -DRIVE_UTILS.MAX_ROTATION_RADPS,
-            DRIVE_UTILS.MAX_ROTATION_RADPS
-        );
+		// double ips = MathUtils.map(
+        //     speed,
+        //     -1.0,
+        //     1.0,
+        //     -config.drive.maxAllowedSpeed_ips,
+        //     config.drive.maxAllowedSpeed_ips
+        // );
 
-        velocityDrive_auto(ips, radps);
+        // double radps = MathUtils.map(
+        //     turn,
+        //     -1.0,
+        //     1.0,
+        //     -DRIVE_UTILS.MAX_ROTATION_RADPS,
+        //     DRIVE_UTILS.MAX_ROTATION_RADPS
+        // );
+
+        // velocityDrive_auto(ips, radps);
     }
 
     public void rotationDrive(double speed, double turn, double yaw0) {
@@ -410,7 +413,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-        velocityDrive_auto(ips, omega);
+        //velocityDrive_auto(ips, omega);
     }
 
 
