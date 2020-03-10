@@ -251,6 +251,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
             elevationMotor.setSelectedSensorPosition(
                     (int) (MathUtils.unitConverter(ShooterConstants.ELEVATION_LIMIT_SWITCH_DEG, 360,
                             config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio));
+// 254
         }
         if (leftAzimuthLimitSwitchClosed) {
             azimuthMotor.setSelectedSensorPosition(
@@ -263,7 +264,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                             config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio));
         }
 
-        // azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
+        azimuthMotor.set(ControlMode.MotionMagic, targetPositionAzimuth_ticks);
 
         if (spinningUp) {
             spinUp();
@@ -395,13 +396,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         return getElevationDeg() + offset;
     }
 
-    public void autoAimAzimuth() {
+    public void autoAimTurret() {
         rotateToDeg(absoluteDegreesToRotateAzimuth, getElevationDeg());
+
+        SmartDashboard.putNumber(getName() + "/Limelight hood angle", shooterCalculator.calculateHoodAngle_deg());
+        rotateToDeg(getAzimuthDeg(), shooterCalculator.calculateHoodAngle_deg());
     }
 
     public void autoAimHoodAngle() {
-        SmartDashboard.putNumber(getName() + "/Limelight hood angle", shooterCalculator.calculateHoodAngle_deg());
-        rotateToDeg(getAzimuthDeg(), shooterCalculator.calculateHoodAngle_deg());
     }
 
     public void autoAimVelocity() {
@@ -417,8 +419,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAim() {
-        // autoAimAzimuth();
-        autoAimHoodAngle();
+        autoAimTurret();
         autoAimVelocity();
     }
 
@@ -437,7 +438,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         // If enabled in the constants file, calculate the average of the last values
         // passed in (up to what FILTER_LENGTH is in VisionConstants.java).
-        absoluteDegreesToRotateAzimuth = visionSubsystem.getFilteredTx(getAzimuthDeg());
+        absoluteDegreesToRotateAzimuth = visionSubsystem.getFilteredTx(getAzimuthDeg()) + 
+            MathUtils.unitConverter(azimuthMotor.getSelectedSensorPosition(),
+                config.shooter.azimuth.ticksPerRevolution, 360) * config.shooter.azimuthGearRatio;
     }
 
     public double getDegreesToRotate() {
