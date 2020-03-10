@@ -19,4 +19,6 @@ public class ShooterConstants {
     public static final double BANG_BANG_MAINTAIN_SPEED_PERCENT = 0.6;
     public static final int DEFAULT_ELEVATION_TARGET_DEG = 55;
     public static final float ELEVATION_LIMIT_SWITCH_DEG = 0f;
+    public static final float AZIMUTH_LEFT_LIMIT_SWITCH_DEG = 90;
+    public static final float AZIMUTH_RIGHT_LIMIT_SWITCH_DEG = 180;
 }
