@@ -17,12 +17,13 @@ f = @(x) robotSystemUKF_update(deriv, [t, t+dt], x, u);
 h = @(x) robotSystemUKF_output(x, u, constants);
 
 Q = diag([0.0005, 0.0005, 0.005*pi/180, 0.02, 0.02, 0.00000001])/50;
-Q(constants.VL:constants.VR, constants.VL:constants.VR) = constants.VQ;
+%Q(constants.VL:constants.VR, constants.VL:constants.VR) = constants.VQ;
 R = diag([254/10000, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36]);
 P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001, 2*pi/180]);
 
 x_hat = [1; 1; pi/2; 0; 0; 0;];
-x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
+x0 = [1.05, 0.95, pi/2 + pi/12, 0, 0, 5*pi/180]';
+%x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
 disp(x0);
 
 AbsTol = [0.01; 0.01; pi / 90; 0.05; 0.05];
