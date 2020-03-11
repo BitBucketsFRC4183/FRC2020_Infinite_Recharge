@@ -28,14 +28,14 @@ public class MathUtilsTest {
             0.006149384611897, 0.006451202836650
         });
         
-        SimpleMatrix P = MathUtils.chol(Q.copy(), false);
+        SimpleMatrix P = MathUtils.chol(Q, false);
 
         assertTrue(P.isIdentical(new SimpleMatrix(2, 2, true, new double[] {
             0.079421737280985, 0.077426971789111,
             0,                 0.021360404402027
         }), TOLERANCE));
 
-        P = MathUtils.chol(Q.copy(), true);
+        P = MathUtils.chol(Q, true);
 
         assertTrue(P.isIdentical(new SimpleMatrix(2, 2, true, new double[] {
             0.079421737280985,                   0,
