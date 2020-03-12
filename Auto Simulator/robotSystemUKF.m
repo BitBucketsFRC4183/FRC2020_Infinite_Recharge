@@ -4,11 +4,11 @@ physicsConstants;
 
 
 
-T = 15;
+T = pi;
 ts = 0:dt:T;
 [~, t_width] = size(ts);
-%us = 6 + 6*[sin(ts); cos(ts)];
-us = rand(2, t_width)*6;
+us = 6 + 6*[sin(ts); cos(ts)];
+%us = rand(2, t_width)*6;
 
 t = 0;
 u = us(:, 1);
@@ -17,14 +17,14 @@ deriv = @(x, u) robotSystemUKF_deriv(x, u, constants);
 f = @(x) robotSystemUKF_update(deriv, [t, t+dt], x, u);
 h = @(x) robotSystemUKF_output(x, u, constants);
 
-Q = diag([0.0005, 0.0005, 0.005*pi/180, 0.02, 0.02, 0.00000001])/50;
-Q(constants.VL:constants.VR, constants.VL:constants.VR) = constants.VQ;
+%Q = diag([0.0005, 0.0005, 0.005*pi/180, 0.02, 0.02, 0.00000001])/50;
+%Q(constants.VL:constants.VR, constants.VL:constants.VR) = constants.VQ;
 R = diag([254/10000, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36]);
 P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001, 2*pi/180]);
 
 x_hat = [1; 1; pi/2; 0; 0; 0;];
-x0 = [1.05, 0.95, pi/2 + pi/12, 0, 0, 5*pi/180]';
-%x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
+%x0 = [1.05, 0.95, pi/2 + pi/12, 0, 0, 5*pi/180]';
+x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
 disp(x0);
 
 AbsTol = [0.01; 0.01; pi / 90; 0.05; 0.05];
@@ -42,12 +42,21 @@ Outputs = zeros(t_width, constants.OUTPUT_SIZE);
 Outputs_hat = zeros(t_width, constants.OUTPUT_SIZE);
 Outputs_exact = zeros(t_width, constants.OUTPUT_SIZE);
 
+Qc = zeros(constants.STATE_SIZE, constants.STATE_SIZE);
+Qc(constants.vL:constants.vR, constants.vL:constants.vR) = constants.VQ/T;
+
 for i=1:t_width
     u = us(:, i);
     t = ts(i);
     
     % estimate process noise covariance
     % noise source comes from velocity noise
+    Ac = robotSystemUKF_deriv_linearized(x_hat, constants);
+    sysc = ss(Ac, zeros(constants.STATE_SIZE), zeros(1, constants.STATE_SIZE), zeros(1, constants.STATE_SIZE));
+    Ad = c2d(sysc, dt).A;
+    F = [-Ac, Qc; zeros(constants.STATE_SIZE), Ac'];
+    G = expm(F*dt);
+    Q = Ad*G(1:constants.STATE_SIZE, constants.STATE_SIZE+1:2*constants.STATE_SIZE);
     % so basically do an unscented transform
     % to estimate position and yaw noise
     %QQ = eye(STATE_SIZE)*0.00000001;
