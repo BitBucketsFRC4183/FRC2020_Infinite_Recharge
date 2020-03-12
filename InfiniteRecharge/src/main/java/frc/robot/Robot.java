@@ -159,33 +159,38 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        /*shooterSubsystem.spinBMS();
-        shooterSubsystem.rotateToDeg(0, 45);
-        shooterSubsystem.startSpinningUp();
-
-        intakeSubsystem.toggleIntakeArm();
-
-        new WaitUntilCommand(() -> {
-            System.out.println("Wait until");
-            return shooterSubsystem.isUpToSpeed();
-        })
-        .andThen(new WaitCommand(5)) // for BMS
-        .andThen(new InstantCommand(() -> {
-            System.out.println("Turning everything off");
-            shooterSubsystem.stopSpinningUp();
-            shooterSubsystem.holdFire();
-            shooterSubsystem.rotateToDeg(0, 0);
-
-            intakeSubsystem.intake();
-        }))*/
         navigationSubsystem.reset();
         visionSubsystem.turnOnLEDs();
+        shooterSubsystem.spinBMS();
 
-        new InstantCommand(() -> { intakeSubsystem.intake(); })
+
+        //intakeSubsystem.toggleIntakeArm();
+        
+        new InstantCommand(() -> { 
+            intakeSubsystem.intake(); 
+        })
 
         // do the first pickup and return
         .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getFirstPickupTrajectory()))
         .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getFirstReturnTrajectory()))
+
+
+
+        // raise the hood angle and sh00t
+        .andThen(new InstantCommand(() -> {
+            driveSubsystem.tankVolts(0, 0);
+            shooterSubsystem.rotateToDeg(0, 45);
+            shooterSubsystem.startSpinningUp();
+            shooterSubsystem.spinFeeder();
+        }))
+
+        .andThen(new WaitCommand(4)) // to shoot the shots
+        // stop shooting and lower the hood
+        .andThen(new InstantCommand(() -> {
+            shooterSubsystem.stopSpinningUp();
+            shooterSubsystem.stopSpinningFeeder();
+            shooterSubsystem.rotateToDeg(0, 0);
+        }))
 
         // only execute the 2nd pickup and return if we have the trajectories for those
         // if we have a pickup, we'll have a return; so we don't have to worry about that
@@ -193,17 +198,37 @@ public class Robot extends TimedRobot {
             new ProxyCommand(() -> 
                 new AutoDrive(driveSubsystem, driveSubsystem.getSecondPickupTrajectory())
                 .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getSecondReturnTrajectory()))
+                .andThen(new InstantCommand(() -> {
+                    shooterSubsystem.rotateToDeg(0, 45);
+                    shooterSubsystem.startSpinningUp();
+                    shooterSubsystem.spinFeeder();
+                }))
+                .andThen(new WaitCommand(4)) // to shoot the shots
+                .andThen(() -> stopEverything())
             ),
-            // just stop it if it's null (even though it's already stopped lol)
+            // stop it if we dont have a second path
             new InstantCommand(() -> {
-                driveSubsystem.tankVolts(0, 0);
+                stopEverything();
             }),
             driveSubsystem::hasSecondTrajectory
         ))
 
+        // stop everything
+        .andThen(() -> stopEverything())
+
         // all done
         .andThen(new Idle(driveSubsystem))
         .schedule();
+    }
+
+    public void stopEverything(){
+        System.out.println("Turning everything off");
+        driveSubsystem.tankVolts(0, 0);
+        shooterSubsystem.stopSpinningFeeder();
+        shooterSubsystem.stopSpinningUp();
+        shooterSubsystem.holdFire();
+        shooterSubsystem.rotateToDeg(0, 0);
+        intakeSubsystem.off();
     }
 
     /**
