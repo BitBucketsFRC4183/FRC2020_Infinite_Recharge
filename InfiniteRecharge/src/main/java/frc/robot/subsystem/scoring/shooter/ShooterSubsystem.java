@@ -190,10 +190,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         ballPropulsionFollower.configClosedloopRamp(0);
 
         ballPropulsionMotor.enableVoltageCompensation(true);
-        ballPropulsionMotor.configVoltageCompSaturation(8);
+        ballPropulsionMotor.configVoltageCompSaturation(12);
+        ballPropulsionMotor.configNominalOutputReverse(0);
+        ballPropulsionMotor.setNeutralMode(NeutralMode.Coast);
 
         ballPropulsionFollower.enableVoltageCompensation(true);
-        ballPropulsionFollower.configVoltageCompSaturation(8);
+        ballPropulsionFollower.configVoltageCompSaturation(12);
+        ballPropulsionFollower.configNominalOutputReverse(0);
+        ballPropulsionFollower.setNeutralMode(NeutralMode.Coast);
 
         ballPropulsionMotor.configVelocityMeasurementWindow(1);
     }
