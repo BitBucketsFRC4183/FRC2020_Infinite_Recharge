@@ -45,7 +45,7 @@ public class AutoAlign extends CommandBase {
         double tx = VISION_SUBSYSTEM.getFilteredTx(-NAVIGATION_SUBSYSTEM.getYaw_deg());
 
         double omega_radps = PID.calculate(-tx);
-        DRIVE_SUBSYSTEM.velocityDrive_auto(0, omega_radps);
+        //DRIVE_SUBSYSTEM.velocityDrive_auto(0, omega_radps);
     }
 
     @Override

@@ -4,10 +4,11 @@ physicsConstants;
 
 
 
-T = 5;
+T = 15;
 ts = 0:dt:T;
 [~, t_width] = size(ts);
-us = 6 + 6*[sin(ts); cos(ts)];
+%us = 6 + 6*[sin(ts); cos(ts)];
+us = rand(2, t_width)*6;
 
 t = 0;
 u = us(:, 1);
@@ -22,7 +23,8 @@ R = diag([254/10000, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36]);
 P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001, 2*pi/180]);
 
 x_hat = [1; 1; pi/2; 0; 0; 0;];
-x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
+x0 = [1.05, 0.95, pi/2 + pi/12, 0, 0, 5*pi/180]';
+%x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
 disp(x0);
 
 AbsTol = [0.01; 0.01; pi / 90; 0.05; 0.05];

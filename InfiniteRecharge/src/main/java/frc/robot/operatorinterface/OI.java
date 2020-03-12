@@ -57,9 +57,9 @@ public class OI {
     static final int DRIVER_CLIMB_ACTIVATE = PS4Constants.PS4.getValue();
     // static final int DRIVER_ROTATION_CONTROL = PS4Constants.TRIANGLE.getValue();
     // static final int DRIVER_COLOR_CONTROL = PS4Constants.CROSS.getValue();
-    static final int DRIVER_SPINNYBOI_FORWARD = PS4Constants.TRIANGLE.getValue();
-    static final int DRIVER_SPINNYBOI_BACKWARD = PS4Constants.CROSS.getValue();
 
+    static final int OPERATOR_SPINNYBOI_FORWARD = PS4Constants.TRIANGLE.getValue();
+    static final int OPERATOR_SPINNYBOI_BACKWARD = PS4Constants.CROSS.getValue();
     static final int OPERATOR_INTAKE_IN_POV = 180;
     static final int OPERATOR_INTAKE_OUT_POV = 0;
     static final int OPERATOR_INTAKE_TOGGLE = PS4Constants.R1.getValue();
@@ -68,7 +68,6 @@ public class OI {
     static final int OPERATOR_SPINUP = PS4Constants.L1.getValue();
     static final int OPERATOR_AUTO_AIM = PS4Constants.R2.getValue();
     static final int OPERATOR_FIRE = PS4Constants.CIRCLE.getValue();
-    static final int OPERATOR_CLIMB_EXTEND = PS4Constants.TRIANGLE.getValue();
     static final int OPERATOR_TURRET_ZERO = PS4Constants.SQUARE.getValue();
     static final int OPERATOR_SET_ELEVATION_TO_DASHBOARD_NUMBER = PS4Constants.OPTIONS.getValue();
     static final int OPERATOR_CLIMB_ACTIVATE = PS4Constants.PS4.getValue();
@@ -165,11 +164,11 @@ public class OI {
     // }
 
     public boolean spinnyBoiForward(){
-        return driverControl.getRawButtonPressed(DRIVER_SPINNYBOI_FORWARD);
+        return operatorControl.getRawButtonPressed(OPERATOR_SPINNYBOI_FORWARD);
     }
 
     public boolean spinnyBoiBackward(){
-        return driverControl.getRawButtonPressed(DRIVER_SPINNYBOI_BACKWARD);
+        return operatorControl.getRawButtonPressed(OPERATOR_SPINNYBOI_BACKWARD);
     }
 
     /**
@@ -199,10 +198,6 @@ public class OI {
 
     public boolean rotationToVelocity() {
         return driverControl.getRawButton(DRIVE_METHOD_SWITCH_BUTTON);
-    }
-
-    public boolean climbExtend() {
-        return operatorControl.getRawButton(OPERATOR_CLIMB_EXTEND);
     }
 
     public boolean climbActivate() {
