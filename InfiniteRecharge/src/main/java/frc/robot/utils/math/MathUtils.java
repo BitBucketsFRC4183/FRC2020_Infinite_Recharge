@@ -50,9 +50,11 @@ public class MathUtils {
      */
     // mayhaps got from https://ejml.org/wiki/index.php?title=Matrix_Decompositions#SimpleMatrix
     public static SimpleMatrix chol(SimpleMatrix matrix, boolean lower) {
-        CholeskyDecomposition_F64<DMatrixRMaj> decomp = DecompositionFactory_DDRM.chol(matrix.numRows(), lower);
+        SimpleMatrix mat = matrix.copy();
 
-        if (!decomp.decompose(matrix.getMatrix())) {
+        CholeskyDecomposition_F64<DMatrixRMaj> decomp = DecompositionFactory_DDRM.chol(mat.numRows(), lower);
+
+        if (!decomp.decompose(mat.getMatrix())) {
             return null; // and hope it doesn't die
         }
 

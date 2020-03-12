@@ -4,7 +4,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import org.ejml.simple.SimpleMatrix;
+
 public class MathUtilsTest {
+    private static final double TOLERANCE = 0.0000001;
 
     @Test
     public void testUnitConverter() {
@@ -18,4 +21,28 @@ public class MathUtilsTest {
         assertEquals(1024, MathUtils.unitConverter(90, 360, 4096), 0);
     }
 
+    @Test
+    public void testPositiveDefiniteCholesky() {
+        SimpleMatrix Q = new SimpleMatrix(2, 2, true, new double[] {
+            0.006307812352730, 0.006149384611897,
+            0.006149384611897, 0.006451202836650
+        });
+        
+        SimpleMatrix P = MathUtils.chol(Q, false);
+
+        assertTrue(P.isIdentical(new SimpleMatrix(2, 2, true, new double[] {
+            0.079421737280985, 0.077426971789111,
+            0,                 0.021360404402027
+        }), TOLERANCE));
+
+        P = MathUtils.chol(Q, true);
+
+        assertTrue(P.isIdentical(new SimpleMatrix(2, 2, true, new double[] {
+            0.079421737280985,                   0,
+            0.077426971789111,   0.021360404402027
+        }), TOLERANCE));
+    }
+
+    // positive semi definite matrix Cholesky decomposition isn't supported yet
+    // (coming Soon(TM))
 }

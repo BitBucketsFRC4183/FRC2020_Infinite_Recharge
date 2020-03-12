@@ -165,7 +165,7 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
 
         // choose sigma points as mean +/- rows of sqrt(P*(L+lambda))
         // where sqrt(P) is a lower triangular matrix A such that AA'=P
-        SimpleMatrix xs = MathUtils.chol(P.copy(), true).scale(Math.sqrt(L + lambda));
+        SimpleMatrix xs = MathUtils.chol(P, true).scale(Math.sqrt(L + lambda));
         // a row vector from xs
         SimpleMatrix vec;
 
