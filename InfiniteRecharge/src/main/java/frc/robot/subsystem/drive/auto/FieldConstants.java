@@ -15,7 +15,7 @@ public class FieldConstants {
         -3.5, INITIALIZATION_LINE
     );
 
-    public static final Translation2d START_RIGHT_POWER_PORT = new Translation2d(
+    public static final Translation2d START_OUR_TRENCH = new Translation2d(
         2.8, INITIALIZATION_LINE
     );
 
@@ -25,23 +25,23 @@ public class FieldConstants {
         3, 1.4
     );
     public static final Translation2d ALSO_BEFORE_OUR_POWER_CELL_1 = new Translation2d(
-        3.01, 1.41
+        2.9, 1.39
     );
 
     public static final Translation2d OUR_POWER_CELL_1 = new Translation2d(
-        3, 1.83 
+        2.9, 1.83 
     );
 
     public static final Translation2d OUR_POWER_CELL_2 = new Translation2d(
-        3, 0.91
+        2.9, 0.91
     );
 
     public static final Translation2d OUR_POWER_CELL_3 = new Translation2d(
-        3, -0.3
+        2.9, -0.3
     );
 
     public static final Translation2d OUR_TWO_POWER_CELLS = new Translation2d(
-        3, -1.5
+        2.9, -1.5
     );
 
     public static final Translation2d THEIR_TWO_POWER_CELLS = new Translation2d(
