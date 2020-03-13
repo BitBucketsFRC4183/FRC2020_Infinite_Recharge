@@ -3,25 +3,21 @@ package frc.robot.subsystem.climber;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
-import frc.robot.utils.math.MathUtils;
+import frc.robot.utils.dashboard.DashboardFactory;
 import frc.robot.utils.talonutils.MotorUtils;
 
 public class ClimbSubsystem extends BitBucketSubsystem {
-    public enum ClimbState {
-        Off, Winding, Rewinding;
-    }
 
+    private final ClimbDashboard climbDashboard;
     private boolean active = false;
-    private boolean rewindEnabled = false;
     protected WPI_TalonSRX motorRight;
     protected WPI_TalonSRX motorLeft;
-    private ClimbState climbState = ClimbState.Off;
 
     public ClimbSubsystem(Config config) {
         super(config);
+        climbDashboard = DashboardFactory.create(ClimbDashboard.class);
     }
 
     @Override
@@ -48,12 +44,10 @@ public class ClimbSubsystem extends BitBucketSubsystem {
 
     @Override
     public void periodic(float deltaTime) {
-        rewindEnabled = SmartDashboard.getBoolean(getName() + "/Rewind Enabled", false);    
     }
 
     public void pitRewind(double leftStick, double rightStick) {
-        rewindEnabled = SmartDashboard.getBoolean(getName() + "/Rewind Enabled", false);
-        if (!rewindEnabled) {
+        if (!isRewindEnabled()) {
             return;
         }
 
@@ -61,8 +55,8 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         leftStick *= -1;
         rightStick *= -1;
 
-        motorLeft.set(SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT) * leftStick);
-        motorRight.set(SmartDashboard.getNumber(getName() + "/Climber Wind", ClimbConstants.REWIND_OUTPUT) * rightStick);
+        motorLeft.set(climbDashboard.rewindOutput() * leftStick);
+        motorRight.set(climbDashboard.rewindOutput() * rightStick);
     }
 
     public void toggleActive() {
@@ -74,12 +68,11 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     }
 
     public void disableRewind() {
-        SmartDashboard.putBoolean(getName() + "/Rewind Enabled", false);
-        rewindEnabled = false;
+        climbDashboard.putRewindEnabled(false);
     }
 
     public boolean isRewindEnabled(){
-        return rewindEnabled;
+        return climbDashboard.rewindEnabled();
     }
 
     public boolean isActive(){
@@ -91,12 +84,12 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         rightStick = Math.abs(rightStick);
 
         if (leftStick > ClimbConstants.DEADBAND) {
-            motorLeft.set(ControlMode.PercentOutput, leftStick * ClimbConstants.OUTPUT);
+            motorLeft.set(ControlMode.PercentOutput, leftStick * climbDashboard.windOutput());
         } else {
             motorLeft.set(ControlMode.PercentOutput, 0);
         }
         if (rightStick > ClimbConstants.DEADBAND) {
-            motorRight.set(ControlMode.PercentOutput, rightStick * ClimbConstants.OUTPUT);
+            motorRight.set(ControlMode.PercentOutput, rightStick * climbDashboard.windOutput());
         } else {
             motorRight.set(ControlMode.PercentOutput, 0);
         }
@@ -106,14 +99,14 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     public void dashboardInit() {
         super.dashboardInit();
         disableRewind();
+
     }
 
     @Override
     public void dashboardPeriodic(float deltaTime) {
-        SmartDashboard.putNumber(getName() + "/Right Motor Output", motorRight.getMotorOutputPercent());
-        SmartDashboard.putNumber(getName() + "/Left Motor Output", motorLeft.getMotorOutputPercent());
-        SmartDashboard.putBoolean(getName() + "/Active", active);
-        SmartDashboard.putString(getName() + "/Climb State", climbState.toString());
+        climbDashboard.putLeftMotorOutput(motorLeft.getMotorOutputPercent());
+        climbDashboard.putRightMotorOutput(motorRight.getMotorOutputPercent());
+        climbDashboard.putActive(active);
     }
 
     public void disable() {
