@@ -4,7 +4,7 @@ physicsConstants;
 
 
 
-T = pi;
+T = 5;
 ts = 0:dt:T;
 [~, t_width] = size(ts);
 us = 6 + 6*[sin(ts); cos(ts)];
@@ -24,7 +24,12 @@ P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001, 2*pi/180]);
 
 x_hat = [1; 1; pi/2; 0; 0; 0;];
 %x0 = [1.05, 0.95, pi/2 + pi/12, 0, 0, 5*pi/180]';
-x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
+e = 100;
+while (e >= 4*constants.IN_TO_M)
+    x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
+    
+    e = sqrt((x0(constants.X) - x_hat(constants.X))^2 + (x0(constants.Y) - x_hat(constants.Y))^2);
+end
 disp(x0);
 
 AbsTol = [0.01; 0.01; pi / 90; 0.05; 0.05];
