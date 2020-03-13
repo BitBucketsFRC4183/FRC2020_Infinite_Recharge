@@ -73,6 +73,17 @@ public class VisionSubsystem extends BitBucketSubsystem {
         return distance_no_zoom * zoom;
     }
 
+    public double approximateTyFromDistance(final double distance) {
+
+        final double ty = Math.toDegrees(
+            Math.atan (
+                (VisionConstants.TARGET_HEIGHT_INCHES - VisionConstants.CAMERA_HEIGHT_INCHES) / distance
+            )
+        ) - VisionConstants.CAMERA_MOUNTING_ANGLE;
+
+        return ty;
+    }
+
     public double queryLimelightNetworkTable(final String value) {
         return limelightTable.getEntry(value).getDouble(defaultVal);
     }
