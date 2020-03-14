@@ -4,7 +4,7 @@ physicsConstants;
 
 
 
-T = 5;
+T = 15;
 ts = 0:dt:T;
 [~, t_width] = size(ts);
 us = 6 + 6*[sin(ts); cos(ts)];
@@ -74,7 +74,7 @@ for i=1:t_width
     y = y0 + mvnrnd(zeros(constants.OUTPUT_SIZE, 1), R)';
     %y(TX) = y(TX) - 5*pi/180;
     
-    [x_hat, P] = ukf(f, x_hat, P, h, y, Q, R);
+    [x_hat, P, K] = ukf(f, x_hat, P, h, y, Q, R);
     
     Xs(i) = x0(constants.X);
     Ys(i) = x0(constants.Y);
@@ -82,7 +82,7 @@ for i=1:t_width
     Ys_hat(i) = x_hat(constants.Y);
     Thetas(i) = x0(constants.THETA);
     Thetas_hat(i) = x_hat(constants.THETA);
-    %Thetas_m(i) = y(constants.LL_THETA);
+    Thetas_m(i) = y0(constants.LL_THETA);
     Eigs(i, :) = eig(P);
     Outputs(i, :) = y;
     Outputs_hat(i, :) = h(x_hat);
