@@ -175,16 +175,16 @@ public class Robot extends TimedRobot {
         .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getFirstReturnTrajectory()))
 
 
-
         // raise the hood angle and sh00t
-        .andThen(new InstantCommand(() -> {
-            driveSubsystem.tankVolts(0, 0);
-            shooterSubsystem.rotateToDeg(0, 45);
-            shooterSubsystem.startSpinningUp();
-            shooterSubsystem.spinFeeder();
-        }))
+        .andThen(() -> shootStuff())
 
-        .andThen(new WaitCommand(4)) // to shoot the shots
+        // to shoot the shots
+        .andThen(new WaitUntilCommand(() -> {
+            System.out.println("Wait until");
+            return shooterSubsystem.isUpToSpeed();
+        }))
+        .andThen(new WaitCommand(3))
+
         // stop shooting and lower the hood
         .andThen(new InstantCommand(() -> {
             shooterSubsystem.stopSpinningUp();
@@ -192,18 +192,25 @@ public class Robot extends TimedRobot {
             shooterSubsystem.rotateToDeg(0, 0);
         }))
 
+        .andThen(new WaitCommand(1)) // so that we're sure that the hood angle can go down
+
         // only execute the 2nd pickup and return if we have the trajectories for those
         // if we have a pickup, we'll have a return; so we don't have to worry about that
         .andThen(new ConditionalCommand(
             new ProxyCommand(() -> 
+
+                // get the second set of balls and shoot
                 new AutoDrive(driveSubsystem, driveSubsystem.getSecondPickupTrajectory())
                 .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getSecondReturnTrajectory()))
-                .andThen(new InstantCommand(() -> {
-                    shooterSubsystem.rotateToDeg(0, 45);
-                    shooterSubsystem.startSpinningUp();
-                    shooterSubsystem.spinFeeder();
+                .andThen(() -> shootStuff())
+                
+                // to shoot the shots
+                .andThen(new WaitUntilCommand(() -> {
+                    System.out.println("Wait until");
+                    return shooterSubsystem.isUpToSpeed();
                 }))
-                .andThen(new WaitCommand(4)) // to shoot the shots
+                .andThen(new WaitCommand(3))
+
                 .andThen(() -> stopEverything())
             ),
             // stop it if we dont have a second path
@@ -222,13 +229,20 @@ public class Robot extends TimedRobot {
     }
 
     public void stopEverything(){
-        System.out.println("Turning everything off");
         driveSubsystem.tankVolts(0, 0);
         shooterSubsystem.stopSpinningFeeder();
         shooterSubsystem.stopSpinningUp();
         shooterSubsystem.holdFire();
         shooterSubsystem.rotateToDeg(0, 0);
         intakeSubsystem.off();
+        new Idle(driveSubsystem);
+    }
+
+    public void shootStuff() {
+        driveSubsystem.tankVolts(0, 0);
+        shooterSubsystem.rotateToDeg(0, 45);
+        shooterSubsystem.startSpinningUp();
+        shooterSubsystem.spinFeeder();
     }
 
     /**
@@ -393,6 +407,10 @@ public class Robot extends TimedRobot {
         for (BitBucketSubsystem subsystem : subsystems) {
             subsystem.disable();
         }
+    }
+
+    public DriveSubsystem getDriveSubsystem() {
+        return driveSubsystem;
     }
 
     // COMMANDS the robot to WIN!

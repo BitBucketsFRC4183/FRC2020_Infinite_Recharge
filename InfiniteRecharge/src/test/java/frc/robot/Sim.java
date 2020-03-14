@@ -21,6 +21,7 @@ import frc.robot.simulator.sim.events.FieldRenderEvent;
 import frc.robot.simulator.sim.events.RobotInitializedEvent;
 import frc.robot.simulator.sim.field.wheeldisplacement.Field;
 import frc.robot.subsystem.drive.DriveConstants;
+import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.vision.VisionConstants;
 import frc.robot.utils.math.MathUtils;
 
@@ -160,9 +161,10 @@ public class Sim {
             g2d.drawOval(x, y, size, size);
 
             // put a dot where the robot thinks it is, with a line in the direction it's pointing
-            double posReportedX_m = SmartDashboard.getNumber("DriveSubsystem/actual x", 0);
-            double posReportedY_m = SmartDashboard.getNumber("DriveSubsystem/actual y", 0);
-            double posReportedHdg_rad = SmartDashboard.getNumber("DriveSubsystem/actual theta", 0);
+            Robot robot = (Robot)SimMain.getRobot();
+            double posReportedX_m = robot.getDriveSubsystem().getPose().getTranslation().getX();
+            double posReportedY_m = robot.getDriveSubsystem().getPose().getTranslation().getY();
+            double posReportedHdg_rad = robot.getDriveSubsystem().getPose().getRotation().getRadians();
             double posReportedPolarR_m = Math.sqrt(Math.pow(posReportedX_m, 2.0) + Math.pow(posReportedY_m, 2.0));
             double posReportedPolarT_rad = Math.atan2(posReportedY_m, posReportedX_m);
             double posFieldPolarR_m = posReportedPolarR_m;
