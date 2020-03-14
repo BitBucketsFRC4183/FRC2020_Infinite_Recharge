@@ -2,7 +2,7 @@
 % https://www.mathworks.com/matlabcentral/fileexchange/18217-learning-the-unscented-kalman-filter
 % with some minor tweaks
 
-function [x,P]=ukf(fstate,x,P,hmeas,z,Q,R)
+function [x,P,K]=ukf(fstate,x,P,hmeas,z,Q,R)
 % UKF   Unscented Kalman Filter for nonlinear dynamic systems
 % [x, P] = ukf(f,x,P,h,z,Q,R) returns state estimate, x and state covariance, P 
 % for nonlinear dynamic system (for simplicity, noises are assumed as additive):
@@ -57,7 +57,7 @@ end
 %
 L=numel(x);                                 %numer of states
 m=numel(z);                                 %numer of measurements
-alpha=1e-3;                                 %default, tunable
+alpha=1e-2;                                 %default, tunable
 ki=0;                                       %default, tunable
 beta=2;                                     %default, tunable
 lambda=alpha^2*(L+ki)-L;                    %scaling factor
