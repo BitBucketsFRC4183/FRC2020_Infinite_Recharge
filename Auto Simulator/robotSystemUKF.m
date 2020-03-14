@@ -89,6 +89,9 @@ for i=1:t_width
     Outputs_exact(i, :) = y0;
 end
 
+err = x0 - x_hat;
+disp("Yawffset error: " + err(constants.OFFSET)*180/pi + " degrees");
+
 
 
 figure(1)
