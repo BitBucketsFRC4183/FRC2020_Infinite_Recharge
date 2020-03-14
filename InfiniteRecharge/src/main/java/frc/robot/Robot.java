@@ -409,6 +409,10 @@ public class Robot extends TimedRobot {
         }
     }
 
+    public DriveSubsystem getDriveSubsystem() {
+        return driveSubsystem;
+    }
+
     // COMMANDS the robot to WIN!
     public static Robot win() {
         System.out.println("Leif WAS here");
