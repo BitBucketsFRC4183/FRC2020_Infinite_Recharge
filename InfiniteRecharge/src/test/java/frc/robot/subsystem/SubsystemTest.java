@@ -77,6 +77,9 @@ public abstract class SubsystemTest {
         mockStatic(SolenoidJNI.class);
         when(SolenoidJNI.checkSolenoidModule(anyInt())).thenReturn(true);
         when(SolenoidJNI.checkSolenoidChannel(anyInt())).thenReturn(true);
+
+        // mock out the SmartDashboard as well
+        mockStatic(SmartDashboard.class);
     }
 
 }
