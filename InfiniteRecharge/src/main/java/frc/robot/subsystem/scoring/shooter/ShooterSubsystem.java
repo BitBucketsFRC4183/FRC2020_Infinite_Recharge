@@ -401,10 +401,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     }
 
     public void autoAimTurret() {
-        rotateToDeg(absoluteDegreesToRotateAzimuth, getElevationDeg());
-
+        var hoodAngle = shooterCalculator.calculateHoodAngle_deg();
         SmartDashboard.putNumber(getName() + "/Limelight hood angle", shooterCalculator.calculateHoodAngle_deg());
-        rotateToDeg(getAzimuthDeg(), shooterCalculator.calculateHoodAngle_deg());
+        rotateToDeg(absoluteDegreesToRotateAzimuth, hoodAngle);
     }
 
     public void autoAimHoodAngle() {
