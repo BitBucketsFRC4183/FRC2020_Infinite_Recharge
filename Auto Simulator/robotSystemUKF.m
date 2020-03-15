@@ -4,7 +4,7 @@ physicsConstants;
 
 
 
-T = 5;
+T = 15;
 ts = 0:dt:T;
 [~, t_width] = size(ts);
 us = 6 + 6*[sin(ts); cos(ts)];
@@ -57,23 +57,28 @@ for i=1:t_width
     
     % estimate process noise covariance
     % noise source comes from velocity noise
+    % linearize about current point
+    Ac = robotSystemUKF_deriv_linearized(x0, constants);
+    sysc = ss(Ac, zeros(constants.STATE_SIZE), zeros(1, constants.STATE_SIZE), zeros(1, constants.STATE_SIZE));
+    Ad = c2d(sysc, dt).A;
+    F = [-Ac, Qc; zeros(constants.STATE_SIZE), Ac'];
+    G = expm(F*dt);
+    Q = Ad*G(1:constants.STATE_SIZE, constants.STATE_SIZE+1:2*constants.STATE_SIZE);
+
+    x0 = f(x0) + mvnrnd(zeros(constants.STATE_SIZE, 1), Q)';
+    y0 = h(x0);
+    y = y0 + mvnrnd(zeros(constants.OUTPUT_SIZE, 1), R)';
+    %y(TX) = y(TX) - 5*pi/180;
+    
+    % at this point, the estimator doesn't know the real noise model
+    % so it must guess based on what it has
+    
     Ac = robotSystemUKF_deriv_linearized(x_hat, constants);
     sysc = ss(Ac, zeros(constants.STATE_SIZE), zeros(1, constants.STATE_SIZE), zeros(1, constants.STATE_SIZE));
     Ad = c2d(sysc, dt).A;
     F = [-Ac, Qc; zeros(constants.STATE_SIZE), Ac'];
     G = expm(F*dt);
     Q = Ad*G(1:constants.STATE_SIZE, constants.STATE_SIZE+1:2*constants.STATE_SIZE);
-    % so basically do an unscented transform
-    % to estimate position and yaw noise
-    %QQ = eye(STATE_SIZE)*0.00000001;
-    %QQ(vL:vR, vL:vR) = VQ;
-    %v_sigmas = sigmas(x0, QQ, c);
-    %[~, ~, Q, ~] = ut(f, x_sigmas, Wm, Wc, STATE_SIZE, zeros(STATE_SIZE));
-
-    x0 = f(x0) + mvnrnd(zeros(constants.STATE_SIZE, 1), Q)';
-    y0 = h(x0);
-    y = y0 + mvnrnd(zeros(constants.OUTPUT_SIZE, 1), R)';
-    %y(TX) = y(TX) - 5*pi/180;
     
     [x_hat, P, K] = ukf(f, x_hat, P, h, y, Q, R);
     
