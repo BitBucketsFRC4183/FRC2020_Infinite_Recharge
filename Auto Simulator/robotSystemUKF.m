@@ -4,6 +4,8 @@ physicsConstants;
 
 
 
+dt = 0.02;
+
 T = 15;
 ts = 0:dt:T;
 [~, t_width] = size(ts);
