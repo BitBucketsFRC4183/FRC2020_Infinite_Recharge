@@ -49,7 +49,7 @@ Outputs_hat = zeros(t_width, constants.OUTPUT_SIZE);
 Outputs_exact = zeros(t_width, constants.OUTPUT_SIZE);
 
 Qc = zeros(constants.STATE_SIZE, constants.STATE_SIZE);
-Qc(constants.vL:constants.vR, constants.vL:constants.vR) = constants.VQ/T;
+Qc(constants.vL:constants.vR, constants.vL:constants.vR) = constants.VQc;
 
 for i=1:t_width
     u = us(:, i);
