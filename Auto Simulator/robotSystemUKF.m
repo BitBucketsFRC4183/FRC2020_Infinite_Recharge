@@ -4,7 +4,7 @@ physicsConstants;
 
 
 
-T = 15;
+T = 5;
 ts = 0:dt:T;
 [~, t_width] = size(ts);
 us = 6 + 6*[sin(ts); cos(ts)];
@@ -42,6 +42,7 @@ Ys_hat = zeros(t_width, 1);
 Thetas = zeros(t_width, 1);
 Thetas_hat = zeros(t_width, 1);
 Thetas_m = zeros(t_width, 1);
+Thetas_mf = zeros(t_width, 1);
 Eigs = zeros(t_width, constants.STATE_SIZE);
 Outputs = zeros(t_width, constants.OUTPUT_SIZE);
 Outputs_hat = zeros(t_width, constants.OUTPUT_SIZE);
@@ -82,7 +83,8 @@ for i=1:t_width
     Ys_hat(i) = x_hat(constants.Y);
     Thetas(i) = x0(constants.THETA);
     Thetas_hat(i) = x_hat(constants.THETA);
-    Thetas_m(i) = y0(constants.LL_THETA);
+    Thetas_m(i) = y(constants.LL_THETA);
+    Thetas_mf(i) = y0(constants.LL_THETA);
     Eigs(i, :) = eig(P);
     Outputs(i, :) = y;
     Outputs_hat(i, :) = h(x_hat);
@@ -106,8 +108,9 @@ hold on;
 plot(ts, Thetas);
 plot(ts, Thetas_hat);
 plot(ts, Thetas_m);
+plot(ts, Thetas_mf);
 hold off;
-legend("True yaw", "Estimated yaw", "Measured yaw");
+legend("True yaw", "Estimated yaw", "Measured yaw", "Theoretical measured yaw");
 
 figure(3);
 hold on;
