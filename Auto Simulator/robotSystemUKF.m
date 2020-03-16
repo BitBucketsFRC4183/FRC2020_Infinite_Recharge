@@ -6,7 +6,7 @@ physicsConstants;
 
 dt = 0.02;
 
-T = 15;
+T = 5;
 ts = 0:dt:T;
 [~, t_width] = size(ts);
 us = 6 + 6*[sin(ts); cos(ts)];
@@ -21,8 +21,8 @@ h = @(x) robotSystemUKF_output(x, u, constants);
 
 %Q = diag([0.0005, 0.0005, 0.005*pi/180, 0.02, 0.02, 0.00000001])/50;
 %Q(constants.VL:constants.VR, constants.VL:constants.VR) = constants.VQ;
-R = diag([254/10000, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36]);
-P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001, 2*pi/180]);
+R = diag([2*0.0254, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36].^2);
+P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001, 2*pi/180].^2);
 
 x_hat = [1; 1; pi/2; 0; 0; 0;];
 %x0 = [1.05, 0.95, pi/2 + pi/12, 0, 0, 5*pi/180]';
@@ -41,6 +41,8 @@ Xs = zeros(t_width, 1);
 Ys = zeros(t_width, 1);
 Xs_hat = zeros(t_width, 1);
 Ys_hat = zeros(t_width, 1);
+Xs_trig = zeros(t_width, 1);
+Ys_trig = zeros(t_width, 1);
 Thetas = zeros(t_width, 1);
 Thetas_hat = zeros(t_width, 1);
 Thetas_m = zeros(t_width, 1);
@@ -84,10 +86,20 @@ for i=1:t_width
     
     [x_hat, P, K] = ukf(f, x_hat, P, h, y, Q, R);
     
+    % y(c.TX) = atan2(c.yT - x(c.Y), c.xT - x(c.X)) - x(c.THETA);
+    % (c.yT - x(c.Y))/c.xT - x(c.X) = tan(TX + THETA)
+    % y(c.LL_THETA) = x(c.THETA) + x(c.OFFSET);
+    % THETA = LL_THETA - OFFSET
+    angle = y(constants.LL_THETA) - x_hat(constants.OFFSET) + y(constants.TX);
+    x_trig = constants.xT - y(constants.D) * cos(angle);
+    y_trig = constants.yT - y(constants.D) * sin(angle);
+    
     Xs(i) = x0(constants.X);
     Ys(i) = x0(constants.Y);
     Xs_hat(i) = x_hat(constants.X);
     Ys_hat(i) = x_hat(constants.Y);
+    Xs_trig(i) = x_trig;
+    Ys_trig(i) = y_trig;
     Thetas(i) = x0(constants.THETA);
     Thetas_hat(i) = x_hat(constants.THETA);
     Thetas_m(i) = y(constants.LL_THETA);
@@ -107,8 +119,9 @@ figure(1)
 hold on;
 plot(Xs, Ys);
 plot(Xs_hat, Ys_hat);
+%plot(Xs_trig, Ys_trig);
 hold off;
-legend("True position", "Estimated position");
+legend("True position", "Estimated position (UKF)", "Estimated position (trig)");
 
 figure(2)
 hold on;

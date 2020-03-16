@@ -20,6 +20,15 @@ public abstract class UnscentedTransform {
 
 
 
+        /**
+         * Create settings to use for determing spread of sigma points
+         * 
+         * @param alpha tuning parameter that controls spread of sigma points, usually made
+         *     really small such as 10^-3
+         * @param kappa tuning parameter that controls spread of sigma points, usually set to 0
+         * @param beta parameter used to capture some information of the probability distribution
+         *     For a Gaussian distribution, 2 is optimal, so this is usually assumed.
+         */
         public SigmaPointsSettings(int L, double alpha, double kappa, double beta) {
             this.L = L;
 
@@ -37,6 +46,15 @@ public abstract class UnscentedTransform {
             W = 1.0 / (2 * (L + lambda));
         }
 
+        /**
+         * Create settings to use for determing spread of sigma points
+         * 
+         * @param alpha tuning parameter that controls spread of sigma points, usually made
+         *     really small such as 10^-3
+         * @param kappa tuning parameter that controls spread of sigma points, usually set to 0
+         * @param beta parameter used to capture some information of the probability distribution
+         *     For a Gaussian distribution, 2 is optimal, so this is usually assumed.
+         */
         public SigmaPointsSettings(int L, double alpha, double beta) {
             this(L, alpha, 0, beta);
         }
@@ -130,14 +148,12 @@ public abstract class UnscentedTransform {
      * @return f(x)
      */
     public abstract SimpleMatrix f(SimpleMatrix x);
-    public Distribution approximateDistribution(SigmaPoints points) {
-        SimpleMatrix[] transformed = new SimpleMatrix[points.getPoints().length];
+    public Distribution approximateDistribution(SimpleMatrix[] sigmas, SigmaPointsSettings settings) {
+        SimpleMatrix[] transformed = new SimpleMatrix[sigmas.length];
 
         for (int i = 0; i < transformed.length; i++) {
-            transformed[i] = f(points.getPoints()[i].copy());
+            transformed[i] = f(sigmas[i].copy());
         }
-
-        SigmaPointsSettings settings = points.getSettings();
 
         SimpleMatrix mean = transformed[0].scale(settings.getWm0());
         for (int i = 1; i < transformed.length; i++) {
@@ -162,5 +178,9 @@ public abstract class UnscentedTransform {
         }
 
         return new Distribution(mean, covariance, transformed, es);
+    }
+
+    public Distribution approximateDistribution(SigmaPoints points) {
+        return approximateDistribution(points.getPoints(), points.getSettings());
     }
 }
