@@ -234,6 +234,6 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
 
     @Override
     protected SimpleMatrix getExpectedOutput() {
-        return yAvg;
+        return distY.getMean();
     }
 }
