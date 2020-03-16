@@ -11,7 +11,9 @@ B = [
 sysd = ss(A, B, eye(2), zeros(2), 0.02);
 sysc = d2c(sysd);
 
+disp("Ac = ");
 disp(sysc.A);
+disp("Bc = ");
 disp(sysc.B);
 
 B2 = [
@@ -22,4 +24,22 @@ B2 = [
 sysd2 = ss(A, B2, eye(2), zeros(1), 0.02);
 sysc2 = d2c(sysd2);
 
-disp(sysc2.B);
+%disp(sysc2.B);
+
+Qd = [
+    0.006307812352729869, 0.006149384611897019;
+    0.006149384611897019, 0.006451202836649863;
+];
+
+nAd = inv(A);
+
+M = [
+    nAd, nAd*Qd;
+    zeros(2, 2), A';
+];
+
+Mc = logm(M)/0.02;
+Qc = Mc(1:2, 3:4);
+
+disp("Qc = ");
+disp(Qc);

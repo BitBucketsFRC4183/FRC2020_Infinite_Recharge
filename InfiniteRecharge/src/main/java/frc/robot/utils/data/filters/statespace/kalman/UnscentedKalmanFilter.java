@@ -6,7 +6,9 @@ import frc.robot.utils.control.statespace.models.StateSpaceModel;
 import frc.robot.utils.control.statespace.observer.OutputObserver;
 import frc.robot.utils.control.statespace.system.StateSpaceSystem;
 import frc.robot.utils.data.noise.Noise;
-import frc.robot.utils.math.MathUtils;
+import frc.robot.utils.data.statistics.transforms.UnscentedTransform;
+import frc.robot.utils.data.statistics.transforms.UnscentedTransform.Distribution;
+import frc.robot.utils.data.statistics.transforms.UnscentedTransform.SigmaPointsSettings;
 
 /**
  * Unscented Kalman Filters are an extension to Kalman Filters that tend to be more reliable
@@ -29,25 +31,16 @@ import frc.robot.utils.math.MathUtils;
  *     https://en.wikipedia.org/wiki/Kalman_filter#Unscented_Kalman_filter
  */
 public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, OutputObserver> {
-    /** tuning parameter */
-    private final double lambda;
-    /** weight for Mean estimate of the mean sigma point */
-    private final double Wm0;
-    /** weight for Covariance estimate of the mean sigma point */
-    private final double Wc0;
-    /** weights for Mean and Covariance estimates for all non-mean sigma points */
-    private final double W;
+    private final SigmaPointsSettings sigmaPointSettings;
+    private final UnscentedTransform updateX;
+    private final UnscentedTransform yOutput;
 
-    /** sigma points to use for the Unscented Transform (TM) */
-    private SimpleMatrix[] sigmaPoints;
-
-    /** deviations in apriori state from mean */
-    private SimpleMatrix[] eX;
-    /** deviations in apriori output from mean */
-    private SimpleMatrix[] eY;
+    private Distribution distX;
+    private Distribution distY;
 
     /** average of transformed sigma points, or expected a priori output */
     private SimpleMatrix yAvg;
+
 
 
 
@@ -56,13 +49,9 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
      * 
      * @param sys any state space system to be filtered
      * @param P0 initial state estimate covariance
-     * @param alpha tuning parameter that controls spread of sigma points, usually made
-     *     really small such as 10^-3
-     * @param kappa tuning parameter that controls spread of sigma points, usually set to 0
-     * @param beta parameter used to capture some information of the probability distribution
-     *     For a Gaussian distribution, 2 is optimal, so this is usually assumed.
+     * @param sigmaPointSettings settings used to determine spread of sigma points used in unscented transform
      */
-    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0, double alpha, double kappa, double beta) {
+    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0, SigmaPointsSettings sigmaPointSettings) {
         super(sys);
 
 
@@ -70,24 +59,25 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
         // initialize the estimate covariance
         P = P0;
 
-        // get the number of states
-        int L = sys.getModel().getNumStates();
+        this.sigmaPointSettings = sigmaPointSettings;
+        updateX = new UnscentedTransform() {
+            @Override
+            public SimpleMatrix f(SimpleMatrix x) {
+                return SYS.getModel().propogate(x);
+            }
+        };
 
-        // calculate lambda
-        lambda = alpha * alpha * (L + kappa) - L;
-        // we will use 2L+1 sigma points as suggested by Julie and Ulhmann
-        // the first is the estimated mean of the distribution and the rest
-        // are symmetric around it
-        // by adding the mean, it needs a different weight for both mean
-        // and covariance calculations, so calculate these weights
-        Wm0 = lambda / (lambda + L);
-        Wc0 = lambda / (lambda + L) + (1 - alpha * alpha + beta);
-        // for any other sigma point that is not the mean, just use the
-        // same weight such that 2L*W + Wm0 = 1
-        W = 1.0 / (2 * (L + lambda));
-
-        // initialize the set of sigma points
-        sigmaPoints = new SimpleMatrix[2*L + 1];
+        yOutput = new UnscentedTransform() {
+            @Override
+            public SimpleMatrix f(SimpleMatrix x) {
+                return SYS.getObserver().getOutput(
+                    x,
+                    SYS.getModel().getInput(),
+                    SYS.getModel().getLastTime(),
+                    SYS.getModel().getCount()
+                );
+            }
+        };
     }
 
     /**
@@ -95,13 +85,35 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
      * 
      * @param sys any state space system to be filtered
      * @param P0 initial state estimate covariance
-     * @param alpha tuning parameter that controls spread of sigma points, usually made
-     *     really small such as 10^-3
-     * @param beta parameter used to capture some information of the probability distribution
-     *     For a Gaussian distribution, 2 is optimal, so this is usually assumed.
+     * @param alpha see documentation for {@link UnscentedTransform}
+     * @param kappa see documentation for {@link UnscentedTransform}
+     * @param beta see documentation for {@link UnscentedTransform}
+     */
+    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0, double alpha, double kappa, double beta) {
+        this(sys, P0, new SigmaPointsSettings(sys.getModel().getNumStates(), alpha, beta, kappa));
+    }
+
+    /**
+     * Create an Unscented Kalman Filter for a system. kappa is defaulted to 0
+     * 
+     * @param sys any state space system to be filtered
+     * @param P0 initial state estimate covariance
+     * @param alpha see documentation for {@link UnscentedTransform}
+     * @param beta see documentation for {@link UnscentedTransform}
      */
     public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0, double alpha, double beta) {
-        this(sys, P0, alpha, 0, beta);
+        this(sys, P0, new SigmaPointsSettings(sys.getModel().getNumStates(), alpha, beta));
+    }
+
+    /**
+     * Create an Unscented Kalman Filter for a system. kappa is defaulted to 0
+     * 
+     * @param sys any state space system to be filtered
+     * @param P0 initial state estimate covariance
+     * @param alpha see documentation for {@link UnscentedTransform}
+     */
+    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0, double alpha) {
+        this(sys, P0, new SigmaPointsSettings(sys.getModel().getNumStates(), alpha));
     }
 
     /**
@@ -112,19 +124,8 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
      * @param alpha tuning parameter that controls spread of sigma points, usually made
      *     really small such as 10^-3
      */
-    public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0, double alpha) {
-        this(sys, P0, alpha, 0, 2);
-    }
-
-    /**
-     * Create an Unscented Kalman Filter for a system. alpha, kappa, and beta are defaulted to 10^-3,
-     *     0, and 2 respectively
-     * 
-     * @param sys any state space system to be filtered
-     * @param P0 initial state estimate covariance
-     */
     public UnscentedKalmanFilter(StateSpaceSystem<StateSpaceModel, OutputObserver> sys, SimpleMatrix P0) {
-        this(sys, P0, Math.pow(10, -3), 0, 2);
+        this(sys, P0, new SigmaPointsSettings(sys.getModel().getNumStates()));
     }
 
 
@@ -148,97 +149,21 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
 
         SimpleMatrix x = model.getState();
 
-        // first one is the mean, or expected value, of the state, which is
-        // already known
-        sigmaPoints[0] = x;
-        // propogate it to the next state
-        sigmaPoints[0] = model.propogate(sigmaPoints[0]);
-        // other sigma points require some linear algebra to find, so that
-        // is done a few lines below
-
-        // x_apriori is a (weighted) mean of all transformed sigma points
-        // so just start with the first one since we already know the value
-        x_apriori = sigmaPoints[0].scale(Wm0);
-
-        // number of states in the system
-        int L = model.getNumStates();
-
-        // choose sigma points as mean +/- rows of sqrt(P*(L+lambda))
-        // where sqrt(P) is a lower triangular matrix A such that AA'=P
-        SimpleMatrix xs = MathUtils.chol(P, true).scale(Math.sqrt(L + lambda));
-        // a row vector from xs
-        SimpleMatrix vec;
-
-        /** calculate the other 2L sigma points */
-        for (int i = 1; i <= L; i++) {
-            // get the i-th row vector from xs
-            vec = xs.extractVector(false, i - 1);
-
-            // choose the i-th sigma point
-            sigmaPoints[i] = x.plus(vec);
-            // and propogate it to the next time step
-            sigmaPoints[i] = model.propogate(sigmaPoints[i]);
-
-            // choose the (L+i)-th sigma point
-            sigmaPoints[L + i] = x.minus(vec);
-            // also propogate it to the next time step
-            sigmaPoints[L + i] = model.propogate(sigmaPoints[L + i]);
-        }
-
-        // now the sigma points have all been generated and transformed
+        // generate the approximate distribution from sigma points around x with covariance P
+        distX = updateX.approximateDistribution(sigmaPointSettings.generateSigmaPoints(x, P));
     }
 
 
 
     @Override
     protected SimpleMatrix predictState() {
-        StateSpaceModel model = SYS.getModel();
-        int L = model.getNumStates();
-
-
-
-        // a priori state is a weighted sum of transformed sigma points
-        // the 0th sigma point is quirky and has a different weight so
-        // just start with that and for-loop in the rest
-        SimpleMatrix x = sigmaPoints[0].scale(Wm0);
-
-        // add other weighted sigma points
-        for (int i = 1; i <= 2*L; i++) {
-            x = x.plus(sigmaPoints[i].scale(W));
-        }
-
-        // at this point "x" is the a priori estimate
-
-        return x;
+        // return mean of distribution
+        return distX.getMean();
     }
 
     @Override
     protected SimpleMatrix predictP() {
         StateSpaceModel model = SYS.getModel();
-        int L = model.getNumStates();
-
-        // calculate state covariance empirically as a weighted average of
-        // square errors of just the sigma points, assuming they are
-        // representative of the entire distribution
-
-        // deviations of sigma points from mean
-        eX = new SimpleMatrix[2*L + 1];
-        // covariance of x to return
-        SimpleMatrix p = new SimpleMatrix(L, L);
-
-        // loop through all the 2L+1 sigma points
-        for (int i = 0; i <= 2*L; i++) {
-            // calculate deviation from mean of this sigma point
-            eX[i] = (sigmaPoints[i].minus(x_apriori));
-
-            // add eX*eX' * weight to covariance, but mean point
-            // is quirky and has a different mean
-            if (i == 0) {
-                p = eX[0].mult(eX[0].transpose()).scale(Wc0);
-            } else {
-                p = p.plus(eX[i].mult(eX[i].transpose()).scale(W));
-            }
-        }
 
         Noise processNoise = model.getNoiseSource().getNoise(
             model.getState(),
@@ -249,49 +174,16 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
 
         // add in the process noise's covariance because real world
         // systems b like that
-        return p.plus(processNoise.getCovariance());
+        return distX.getCovariance().plus(processNoise.getCovariance());
     }
 
     @Override
     protected SimpleMatrix getS() {
         StateSpaceModel model = SYS.getModel();
         OutputObserver outputObserver = SYS.getObserver();
-        int L = model.getNumStates();
 
-        // calculate covariance of a priori output estimate by
-        // getting outputs of the transformed sigma points
-        // and just finding their covariance empirically, assuming
-        // they are representative of the entire distribution
-
-        // outputs of transformed sigma points
-        SimpleMatrix[] ys = new SimpleMatrix[2*L + 1];
-
-        // already calculated transformed sigma points, just get the output
-        for (int i = 0; i <= 2*L; i++) {
-            ys[i] = outputObserver.getOutput(sigmaPoints[i], model.getInput(), model.getLastTime(), model.getCount());
-        }
-
-        // a priori/mean estimate of output
-        // mean is quirky and has a different weight, so start with it
-        yAvg = ys[0].scale(Wm0);
-        for (int i = 1; i <= 2*L; i++) {
-            // add in the rest of the weighted means to get average
-            yAvg = yAvg.plus(ys[i].scale(W));
-        }
-
-        // deviations in y from a priori output yAvg
-        eY = new SimpleMatrix[2*L + 1];
-        for (int i = 0; i <= 2*L; i++) {
-            // just calculate the deviation
-            eY[i] = ys[i].minus(yAvg);
-        }
-
-        // find covariance of eY by adding eY*eY' (weighted)
-        // again the mean just b like that so start with mean
-        SimpleMatrix s = eY[0].mult(eY[0].transpose()).scale(Wc0);
-        for (int i = 1; i <= 2*L; i++) {
-            s = s.plus(eY[i].mult(eY[i].transpose()).scale(W));
-        }
+        // a very hacky way to deal with it!
+        distY = yOutput.approximateDistribution(distX.getSigmaPoints(), sigmaPointSettings);
 
         Noise outputNoise = outputObserver.getNoiseSource().getNoise(
             x_apriori,
@@ -302,7 +194,7 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
 
         // there's always some noise from the output so just add
         // its covariance
-        return s.plus(outputNoise.getCovariance());
+        return distY.getCovariance().plus(outputNoise.getCovariance());
     }
 
     @Override
@@ -317,15 +209,18 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
         // cross variance just between one sigma point and its output
         SimpleMatrix cross;
 
+        SimpleMatrix[] eX = distX.getDeviations();
+        SimpleMatrix[] eY = distY.getDeviations();
+
         for (int i = 0; i <= 2*L; i++) {
             // calculate this sigma point's individual cross variance
             cross = eX[i].mult(eY[i].transpose());
 
             // add it to the bunch
             if (i == 0) {
-                C = cross.scale(Wc0);
+                C = cross.scale(sigmaPointSettings.getWc0());
             } else {
-                C = C.plus(cross.scale(W));
+                C = C.plus(cross.scale(sigmaPointSettings.getW()));
             }
         }
 
@@ -339,6 +234,6 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
 
     @Override
     protected SimpleMatrix getExpectedOutput() {
-        return yAvg;
+        return distY.getMean();
     }
 }
