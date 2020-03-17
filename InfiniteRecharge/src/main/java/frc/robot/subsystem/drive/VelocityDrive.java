@@ -37,10 +37,6 @@ public class VelocityDrive extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.ROTATION) {
-            return CommandUtils.stateChange(new RotationDrive(DRIVE_SUBSYSTEM));
-        }
-        
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.IDLE) {
             return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
         }
