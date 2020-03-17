@@ -27,16 +27,12 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.config.Config;
-import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.auto.FieldConstants;
 import frc.robot.subsystem.drive.auto.FullTrajectory;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
-import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.JoystickScale;
-import frc.robot.utils.data.filters.RisingEdgeFilter;
-import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
 public class DriveSubsystem extends BitBucketSubsystem {
@@ -44,12 +40,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
         AUTO, // drive in auto
         IDLE, // don't do anything
         VELOCITY, // just regular driving... this used to be using the TalonFX velocity control, now it's open loop
-        ROTATION, // an experiment we never got to
         ALIGN // auto align the drive base with the vision target
     };
     private DriveMethod driveMethod = DriveMethod.IDLE; // default
-    // used for switching from velocity to rotation and back but we probably won't use it
-    private RisingEdgeFilter driveMethodSwitchFilter = new RisingEdgeFilter();
 
     private DriverStation driverStation;
 
@@ -61,8 +54,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private final NavigationSubsystem NAVIGATION_SUBSYSTEM;
     // vision so we can access data from the LL to auto align in commands
     private final VisionSubsystem VISION_SUBSYSTEM;
-    // OI so we can figure out when to switch from velocity to rotation... not used anymore
-    private final OI OI;
 
     // Allow the driver to try different scaling functions on the joysticks
 	private static SendableChooser<JoystickScale> forwardJoystickScaleChooser;
@@ -73,9 +64,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
     // Let the driver choose the auto path based on where the robot is placed
     private static SendableChooser<FullTrajectory> pickupTrajectoryChooser;
     private final ArrayList<FullTrajectory> trajectories = new ArrayList<FullTrajectory>();
-
-    // whether its in velocity mode
-    public boolean velocityMode;
 
     // store the raw inputs from joysticks for commands to query
     private double rawSpeed = 0, rawTurn = 0;
@@ -97,22 +85,22 @@ public class DriveSubsystem extends BitBucketSubsystem {
     private SpeedControllerGroup leftGroup;
     private SpeedControllerGroup rightGroup;
 
-    // differential drive representing our drive base
+    // differential drive representing our drive base, used in tracking trajectories
+    // during auto
     private DifferentialDrive differentialDrive;
 
     /**
      * Create an instance of the DriveSubsystem
      * 
-     * @param config configuration file to use
+     * @param config set of configuration values to use
      * @param navigationSubsystem navigation subsystem to get information about our position on the field
      * @param visionSubsystem vision subsystem to get information about the target
      * @param oi Operator Interface so we can easily talk to the joysticks
      */
-    public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, VisionSubsystem visionSubsystem, OI oi) {
+    public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, VisionSubsystem visionSubsystem) {
         super(config);
         NAVIGATION_SUBSYSTEM = navigationSubsystem;
         VISION_SUBSYSTEM = visionSubsystem;
-        OI = oi;
 
         // create the drive utils
         DRIVE_UTILS = new DriveUtils(config);
@@ -477,69 +465,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         // velocityDrive_auto(ips, radps);
     }
-
-    // never got used...
-    public void rotationDrive(double speed, double turn, double yaw0) {
-        speed = forwardJoystickScaleChooser.getSelected().rescale(speed, DriveConstants.JOYSTICK_DEADBAND);
-        turn = rotationJoystickScaleChooser.getSelected().rescale(turn, DriveConstants.JOYSTICK_DEADBAND);
-
-        double ips = MathUtils.map(
-            speed,
-            -1.0,
-            1.0,
-            -config.drive.maxAllowedSpeed_ips,
-            config.drive.maxAllowedSpeed_ips
-        );
-
-        double offset = MathUtils.map(
-            turn,
-            -1.0,
-            1.0,
-            -DriveConstants.ROTATION_DRIVE_MAX_OFFSET_DEG,
-            DriveConstants.ROTATION_DRIVE_MAX_OFFSET_DEG
-        );
-
-
-        double yaw = NAVIGATION_SUBSYSTEM.getYaw_deg();
-        SmartDashboard.putNumber(getName() + "/yaw", yaw);
-        double yawCommand = yaw0 + offset;
-        SmartDashboard.putNumber(getName() + "/yaw command", yawCommand);
-
-        double yawError = yaw - yawCommand;
-        SmartDashboard.putNumber(getName() + "/yaw error", yawError);
-
-        yawError = (yawError + 720.0) % (360.0);
-        if (yawError > 180) {
-            // additional = yawError - 180
-            // -180 + additional
-            yawError -= 360;
-        }
-
-        double omega = yawError * config.drive.ROTATION_DRIVE_KP;
-
-
-
-        //velocityDrive_auto(ips, omega);
-    }
-
-
-
-    // put motors in velocity profile slot, in case we were using position
-    // this never got used this year since we're only commanding velocities for motors
-    // its one of those things thats been inhereted from previous years' code and
-    // kept just in case its needed
-    private void selectVelocityMode(boolean needVelocityMode) {
-		if (needVelocityMode && !velocityMode) {
-			for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
-				leftMotors[i].selectProfileSlot(MotorUtils.velocitySlot, 0);
-				rightMotors[i].selectProfileSlot(MotorUtils.velocitySlot, 0);
-            }
-            
-			velocityMode = true;
-		} else {
-			velocityMode = false;
-        }
-    }
 	
 
 
@@ -592,30 +517,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-        boolean switchHeld = OI.rotationToVelocity();
-        boolean doSwitch = driveMethodSwitchFilter.calculate(switchHeld);
 
         if (driverStation.isOperatorControl()) {
             if (driveMethod == DriveMethod.AUTO || driveMethod == DriveMethod.IDLE) {
                 driveMethod = DriveMethod.VELOCITY;
-            }
-
-            // won't happen by AZ North (and now AZ North won't happen!)
-            // if (doSwitch) {
-            //     switch (driveMethod) {
-            //         case VELOCITY: {
-            //             //driveMethod = DriveMethod.ROTATION;
-            //             break;
-            //         }
-            //         case ROTATION: {
-            //             driveMethod = DriveMethod.VELOCITY;
-            //             break;
-            //         }
-            //         default: // just keep it I guess? shouldn't get here anyways
-            //     }
-            // }
-
-            if (autoAligning) {
+            } else if (autoAligning) {
                 driveMethod = DriveMethod.ALIGN;
             } else {
                 driveMethod = DriveMethod.VELOCITY;
@@ -785,7 +691,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
     public PIDController getLeftAutoPID() { return leftAutoPID; }
     public PIDController getRightAutoPID() { return rightAutoPID; }
 
-    // command a voltage to both motors, currently only being used to stop both after a trajectory is finished
+    // command a voltage to both motors
+    // currently being used to stop both after a trajectory is finished
+    // and used by the RAMSETE controller to command a trajectory
     public void tankVolts(double leftVolts, double rightVolts) {
         leftGroup.setVoltage(leftVolts * ((config.drive.invertLeftCommand) ? -1 : 1));
         rightGroup.setVoltage(rightVolts * ((config.drive.invertRightCommand) ? -1 : 1));

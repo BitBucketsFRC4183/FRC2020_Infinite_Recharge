@@ -116,8 +116,11 @@ public abstract class BitBucketSubsystem extends SubsystemBase {
 
     // list of Talons this subsystem uses, used in CANChecker
     protected List<BaseTalon> talons = new ArrayList<BaseTalon>();
-    // add talons to talons list
+    /**
+	 * Child subsystems override this to add their BaseTalon to the "talons" list
+	 * for use by the CANChecker
+	 */
     public abstract void listTalons();
-    // return the talons being used
+    // return the talons being used so the CANChecker has a list of Talons to deal with
     public List<BaseTalon> getTalons() { return talons; }
 }

@@ -82,7 +82,7 @@ public class Robot extends TimedRobot {
 
         if (config.enableDriveSubsystem) {
             navigationSubsystem = new NavigationSubsystem(config, visionSubsystem);
-            driveSubsystem = new DriveSubsystem(config, navigationSubsystem, visionSubsystem, oi);
+            driveSubsystem = new DriveSubsystem(config, navigationSubsystem, visionSubsystem);
             navigationSubsystem.setDrive(driveSubsystem); // Java
             subsystems.add(driveSubsystem);
             subsystems.add(navigationSubsystem);
