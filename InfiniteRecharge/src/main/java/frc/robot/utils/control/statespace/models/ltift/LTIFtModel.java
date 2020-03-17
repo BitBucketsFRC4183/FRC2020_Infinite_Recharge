@@ -7,6 +7,13 @@ import org.ejml.simple.SimpleMatrix;
 
 
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 /** LTI model + F(t), without any dependence of control u on output y */
 public abstract class LTIFtModel extends LinearizedModel {
     // LTI

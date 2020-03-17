@@ -4,6 +4,13 @@ import org.ejml.simple.SimpleMatrix;
 
 import frc.robot.utils.data.filters.Filter;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 /**
  * Filter that deals with extrapolating the internal state of a
  * state space system given (possibly noisy) sensor data

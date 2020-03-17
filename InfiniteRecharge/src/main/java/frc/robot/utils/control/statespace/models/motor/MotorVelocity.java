@@ -7,6 +7,13 @@ import frc.robot.utils.control.statespace.models.motors.MotorType;
 
 
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class MotorVelocity extends CLTIModel {
     public MotorVelocity(double t, MotorType type, double I) {
         super(

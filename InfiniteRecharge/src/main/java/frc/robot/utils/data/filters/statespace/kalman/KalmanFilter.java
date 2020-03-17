@@ -8,6 +8,13 @@ import frc.robot.utils.control.statespace.system.StateSpaceSystem;
 import frc.robot.utils.data.noise.Noise;
 
 /*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
+/*
  * (Note: This class can be used as an Extended Kalman Filter too!)
  * 
  * Kalman Filters are an effective way to fuse data from multiple sensors to remove errors

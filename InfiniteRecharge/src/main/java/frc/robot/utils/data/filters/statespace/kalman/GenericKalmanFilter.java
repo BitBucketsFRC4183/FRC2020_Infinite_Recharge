@@ -7,6 +7,13 @@ import frc.robot.utils.control.statespace.observer.OutputObserver;
 import frc.robot.utils.control.statespace.system.StateSpaceSystem;
 import frc.robot.utils.data.filters.statespace.GenericLuenbergerObserver;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 /**
  * Class to represent any type of Kalman filter.
  * The Kalman filter is a type of Luenberger observer with a changing gain

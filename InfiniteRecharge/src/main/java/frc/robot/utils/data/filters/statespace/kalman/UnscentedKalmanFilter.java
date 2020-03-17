@@ -10,6 +10,13 @@ import frc.robot.utils.data.statistics.transforms.UnscentedTransform;
 import frc.robot.utils.data.statistics.transforms.UnscentedTransform.Distribution;
 import frc.robot.utils.data.statistics.transforms.UnscentedTransform.SigmaPointsSettings;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 /**
  * Unscented Kalman Filters are an extension to Kalman Filters that tend to be more reliable
  * for non-linear systems. The regular Kalman filter assumes that the next state and output are linear

@@ -25,6 +25,18 @@ import java.util.HashMap;
 
 
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file and
+ * everything in this package. This
+ * was an attempt to consolidate
+ * different APIs used for different
+ * motor controller types, but it
+ * never got tested
+ * ==================================
+ */
 /**
  * To generalize to different types of motor controllers (TalonSRX/SparkMax as of right now)
  * that all have different method names/etc, it's useful to have an abstract class for a generic

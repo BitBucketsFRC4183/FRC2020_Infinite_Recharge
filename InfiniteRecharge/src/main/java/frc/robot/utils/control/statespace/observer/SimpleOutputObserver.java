@@ -2,6 +2,13 @@ package frc.robot.utils.control.statespace.observer;
 
 import org.ejml.simple.SimpleMatrix;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class SimpleOutputObserver extends LinearizedOutputObserver {
     private final SimpleMatrix C;
     private final SimpleMatrix D;

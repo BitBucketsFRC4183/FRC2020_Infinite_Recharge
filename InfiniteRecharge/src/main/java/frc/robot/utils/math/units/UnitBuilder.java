@@ -3,6 +3,13 @@ package frc.robot.utils.math.units;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class UnitBuilder {
     private ArrayList<BaseUnit> nums = new ArrayList<BaseUnit>();
     private ArrayList<BaseUnit> denoms = new ArrayList<BaseUnit>();
