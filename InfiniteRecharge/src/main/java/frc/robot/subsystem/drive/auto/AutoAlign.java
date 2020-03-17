@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
 
+// now we just align the turret so we don't use this
 public class AutoAlign extends CommandBase {
     private final DriveSubsystem DRIVE_SUBSYSTEM;
     private final VisionSubsystem VISION_SUBSYSTEM;
@@ -29,6 +30,7 @@ public class AutoAlign extends CommandBase {
         VISION_SUBSYSTEM = DRIVE_SUBSYSTEM.getVision();
         NAVIGATION_SUBSYSTEM = DRIVE_SUBSYSTEM.getNavigation();
 
+        // PID controller to convert angle error to angular velocity
         PID = new PIDController(
             DriveConstants.AUTO_ALIGN_KP,
             DriveConstants.AUTO_ALIGN_KI,
