@@ -7,6 +7,13 @@ import frc.robot.utils.control.statespace.models.C2D;
 
 
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class CLTIFModel extends LTIFModel {
     protected final double DT;
 

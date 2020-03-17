@@ -7,6 +7,13 @@ import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
 
 import org.ejml.simple.SimpleMatrix;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public abstract class CStateSpaceModel extends StateSpaceModel {
     private double[] inputVectorTemp;
     private double[] stateVectorTemp;

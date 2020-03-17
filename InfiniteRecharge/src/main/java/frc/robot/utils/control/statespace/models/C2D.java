@@ -6,6 +6,13 @@ import frc.robot.utils.math.MathUtils;
 
 
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 // MATLAB's implementation  of continuous to discrete system equation
 public class C2D {
     public static ABFTriple c2d(ABFTriple ABF, double dt) {

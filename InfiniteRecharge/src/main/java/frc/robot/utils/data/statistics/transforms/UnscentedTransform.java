@@ -4,6 +4,13 @@ import org.ejml.simple.SimpleMatrix;
 
 import frc.robot.utils.math.MathUtils;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public abstract class UnscentedTransform {
     public static class SigmaPointsSettings {
         /** Dimension of vector */

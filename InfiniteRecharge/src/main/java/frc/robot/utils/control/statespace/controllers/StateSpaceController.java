@@ -7,6 +7,13 @@ import org.ejml.simple.SimpleMatrix;
 
 
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public abstract class StateSpaceController {
     protected final StateSpaceModel MODEL;
     protected Reference ref;

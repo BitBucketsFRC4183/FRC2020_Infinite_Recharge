@@ -5,6 +5,13 @@ import org.ejml.data.DMatrixRMaj;
 import frc.robot.utils.math.units.Quantity;
 import frc.robot.utils.math.units.Units;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class MotorType {
     public static final MotorType BAG = new BAG();
     public static final MotorType CIM = new CIM();
