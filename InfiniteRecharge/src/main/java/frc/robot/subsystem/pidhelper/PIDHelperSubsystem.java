@@ -18,6 +18,7 @@ import frc.robot.utils.talonutils.MotorUtils;
 
 
 
+// a subsystem we tried to make to help us tune PID from the Dashboard, didn't get done
 public class PIDHelperSubsystem extends BitBucketSubsystem {
     private final String MOTOR_ID = getName() + "/Motor ID";
     private final String MOTOR_TYPE = getName() + "/Controller type";
