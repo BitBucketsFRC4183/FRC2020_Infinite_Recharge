@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 
 
 
+// autonomously drive
 public class AutoDrive extends RamseteCommand {
     private final DriveSubsystem DRIVE_SUBSYSTEM;
 
@@ -59,6 +60,7 @@ public class AutoDrive extends RamseteCommand {
         Pose2d actual = DRIVE_SUBSYSTEM.getNavigation().getPose();
         Pose2d desired = TRAJ.sample(timer.get()).poseMeters;
 
+        // get target and actual positions
         SmartDashboard.putNumber("DriveSubsystem/actual x", actual.getTranslation().getX());
         SmartDashboard.putNumber("DriveSubsystem/actual y", actual.getTranslation().getY());
         SmartDashboard.putNumber("DriveSubsystem/actual theta", actual.getRotation().getDegrees());
