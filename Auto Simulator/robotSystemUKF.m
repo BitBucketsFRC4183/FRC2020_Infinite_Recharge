@@ -21,17 +21,14 @@ h = @(x) robotSystemUKF_output(x, u, constants);
 
 %Q = diag([0.0005, 0.0005, 0.005*pi/180, 0.02, 0.02, 0.00000001])/50;
 %Q(constants.VL:constants.VR, constants.VL:constants.VR) = constants.VQ;
+derr_in = 5;
+stdev = derr_in * constants.IN_TO_M / sqrt(2) / 2;
 R = diag([pi/180, pi/90, 0.005, 0.005, 0.5*pi/180, pi/36].^2);
-P = diag([254/10000*1, 254/10000*1, 2*pi/180, 0.0001, 0.0001, 2*pi/180].^2);
+P = diag([stdev, stdev, 2*pi/180, 0.0001, 0.0001, 2*pi/180].^2);
 
 x_hat = [1; 1; pi/2; 0; 0; 0;];
 %x0 = [1.05, 0.95, pi/2 + pi/12, 0, 0, 5*pi/180]';
-e = 100;
-while (e >= 4*constants.IN_TO_M)
-    x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
-    
-    e = sqrt((x0(constants.X) - x_hat(constants.X))^2 + (x0(constants.Y) - x_hat(constants.Y))^2);
-end
+x0 = x_hat + mvnrnd(zeros(constants.STATE_SIZE, 1), P)';
 disp(x0);
 
 AbsTol = [0.01; 0.01; pi / 90; 0.05; 0.05];
