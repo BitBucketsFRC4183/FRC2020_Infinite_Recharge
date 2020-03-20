@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import frc.robot.utils.math.Polynomial;
 
+// spline for interpolation between known data points
 public class Spline {
     private final Polynomial[] polys;
     private final double[] xs;

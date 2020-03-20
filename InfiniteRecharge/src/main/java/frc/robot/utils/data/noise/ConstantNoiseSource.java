@@ -2,6 +2,13 @@ package frc.robot.utils.data.noise;
 
 import org.ejml.simple.SimpleMatrix;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class ConstantNoiseSource extends NoiseSource {
     private Noise noise;
 

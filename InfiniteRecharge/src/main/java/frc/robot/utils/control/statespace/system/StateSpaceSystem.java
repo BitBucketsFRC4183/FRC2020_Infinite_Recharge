@@ -6,6 +6,13 @@ import frc.robot.utils.control.statespace.models.StateSpaceModel;
 import frc.robot.utils.control.statespace.observer.OutputObserver;
 import frc.robot.utils.data.filters.statespace.StateSpaceFilter;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 /**
  * Describes a state space system formed with a model of system dynamics and a
  * model of sensor measurements.

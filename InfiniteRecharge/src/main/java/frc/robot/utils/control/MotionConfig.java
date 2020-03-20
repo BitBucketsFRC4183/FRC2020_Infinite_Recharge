@@ -4,6 +4,13 @@ import frc.robot.utils.control.pidf.PID;
 import frc.robot.utils.control.motionprofile.motionmagic.MotionMagic;
 import frc.robot.utils.control.controltype.ControlType;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class MotionConfig {
     private PID pid;
     private MotionMagic mm;

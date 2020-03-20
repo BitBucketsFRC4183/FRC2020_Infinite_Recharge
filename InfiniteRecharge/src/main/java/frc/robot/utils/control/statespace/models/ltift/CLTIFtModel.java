@@ -5,6 +5,13 @@ import org.ejml.simple.SimpleMatrix;
 import frc.robot.utils.control.statespace.models.ABCouple;
 import frc.robot.utils.control.statespace.models.C2D;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public abstract class CLTIFtModel extends LTIFtModel {
     private final double DT;
 

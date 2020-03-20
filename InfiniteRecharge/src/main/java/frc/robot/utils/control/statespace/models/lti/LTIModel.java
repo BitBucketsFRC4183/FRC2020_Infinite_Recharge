@@ -8,6 +8,13 @@ import frc.robot.utils.control.statespace.models.ltif.LTIFModel;
 
 
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class LTIModel extends LTIFModel {
     public LTIModel(ABCouple AB) {
         this(AB.getA(), AB.getB());

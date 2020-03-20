@@ -2,6 +2,13 @@ package frc.robot.utils.control.statespace.models.motors;
 
 
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class CIM extends MotorType {
     public CIM() {
         super(

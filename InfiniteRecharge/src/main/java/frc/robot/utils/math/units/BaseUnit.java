@@ -3,6 +3,13 @@ package frc.robot.utils.math.units;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class BaseUnit {
     /** Dimensions for BaseUnits to measure */
     public enum Dimension {
