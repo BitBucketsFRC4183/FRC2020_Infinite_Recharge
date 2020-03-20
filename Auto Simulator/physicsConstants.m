@@ -13,7 +13,7 @@ constants.VL = 1;
 constants.VR = 2;
 
 % system outputs
-constants.D = 1;
+constants.TY = 1;
 constants.TX = 2;
 constants.VL_O = 3;
 constants.VR_O = 4;
@@ -59,3 +59,7 @@ constants.IN_TO_M = 254 / 10000;
 constants.yc = 0.6956 * constants.IN_TO_M;
 constants.xc = 6.7643 * constants.IN_TO_M;
 constants.rLL = 7.6252 * constants.IN_TO_M;
+
+constants.targetHeight = 89.75 * constants.IN_TO_M;
+constants.cameraHeight = 22.6 * constants.IN_TO_M;
+constants.cameraAngle = 30 * pi/180;

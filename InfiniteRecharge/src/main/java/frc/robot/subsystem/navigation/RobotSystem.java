@@ -5,6 +5,13 @@ import org.ejml.simple.SimpleMatrix;
 import frc.robot.utils.control.statespace.models.ltif.CLTIFModel;
 import frc.robot.utils.control.statespace.models.motors.MotorType;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class RobotSystem {
     public final double R_R = 0.3145536;
     public final double M = 39.3051396;

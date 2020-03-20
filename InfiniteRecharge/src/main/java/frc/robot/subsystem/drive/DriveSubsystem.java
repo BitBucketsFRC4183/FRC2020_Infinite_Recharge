@@ -27,88 +27,107 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.config.Config;
-import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.auto.FieldConstants;
 import frc.robot.subsystem.drive.auto.FullTrajectory;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
-import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.JoystickScale;
-import frc.robot.utils.data.filters.RisingEdgeFilter;
-import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
 public class DriveSubsystem extends BitBucketSubsystem {
     public enum DriveMethod {
-        AUTO,
-        IDLE,
-        VELOCITY,
-        ROTATION,
-        ALIGN
+        AUTO, // drive in auto
+        IDLE, // don't do anything
+        VELOCITY, // just regular driving... this used to be using the TalonFX velocity control, now it's open loop
+        ALIGN // auto align the drive base with the vision target
     };
     private DriveMethod driveMethod = DriveMethod.IDLE; // default
-    private RisingEdgeFilter driveMethodSwitchFilter = new RisingEdgeFilter();
 
     private DriverStation driverStation;
 
+    // arrays of left and right TalonFXs
     private WPI_TalonFX[] leftMotors;
     private WPI_TalonFX[] rightMotors;
 
+    // navigation so we know information about our location on the field
     private final NavigationSubsystem NAVIGATION_SUBSYSTEM;
+    // vision so we can access data from the LL to auto align in commands
     private final VisionSubsystem VISION_SUBSYSTEM;
-    private final OI OI;
 
     // Allow the driver to try different scaling functions on the joysticks
 	private static SendableChooser<JoystickScale> forwardJoystickScaleChooser;
     private static SendableChooser<JoystickScale> turnJoystickScaleChooser;
+    // for rotation drive, never got used :(
     private static SendableChooser<JoystickScale> rotationJoystickScaleChooser;
 
     // Let the driver choose the auto path based on where the robot is placed
     private static SendableChooser<FullTrajectory> pickupTrajectoryChooser;
     private final ArrayList<FullTrajectory> trajectories = new ArrayList<FullTrajectory>();
 
-    public boolean velocityMode;
-
+    // store the raw inputs from joysticks for commands to query
     private double rawSpeed = 0, rawTurn = 0;
 
+    // "constants" that may vary per robot
     private final DriveUtils DRIVE_UTILS;
 
+    // RAMSETE controller used during auto for positioning on the field
     private final RamseteController ramsete;
 
+    // PID controllers for the left and right sides of the drive base during auto
+    // we tried just using the TalonFX's PID controller that updates at 1kHz, but
+    // got bad results that were instantly cured when we used WPI's 50Hz PID.
+    // not quite sure what the cause was but it works /shrug
     private final PIDController leftAutoPID;
     private final PIDController rightAutoPID;
 
+    // left and right motors but in a SpeedControllerGroup
     private SpeedControllerGroup leftGroup;
     private SpeedControllerGroup rightGroup;
 
+    // differential drive representing our drive base, used in tracking trajectories
+    // during auto
     private DifferentialDrive differentialDrive;
 
-    public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, VisionSubsystem visionSubsystem, OI oi) {
+    /**
+     * Create an instance of the DriveSubsystem
+     * 
+     * @param config set of configuration values to use
+     * @param navigationSubsystem navigation subsystem to get information about our position on the field
+     * @param visionSubsystem vision subsystem to get information about the target
+     * @param oi Operator Interface so we can easily talk to the joysticks
+     */
+    public DriveSubsystem(Config config, NavigationSubsystem navigationSubsystem, VisionSubsystem visionSubsystem) {
         super(config);
         NAVIGATION_SUBSYSTEM = navigationSubsystem;
         VISION_SUBSYSTEM = visionSubsystem;
-        OI = oi;
 
+        // create the drive utils
         DRIVE_UTILS = new DriveUtils(config);
 
+        // voltage constraint on the auto path following so we don't ask the motors to do
+        // more than they can
         DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
             config.drive.characterization,
             DRIVE_UTILS.KINEMATICS,
             DriveConstants.AUTO_MAX_VOLTAGE
         );
 
+        // kinematics constraint so the code knows how the drive base behaves and the max allowed speed
         DifferentialDriveKinematicsConstraint kinematicsConstraint = new DifferentialDriveKinematicsConstraint(
             DRIVE_UTILS.KINEMATICS,
             config.auto.cruiseSpeed_mps
         );
 
+        // create the configuration for the trajectory using the max speed and acceleration
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
             config.auto.cruiseSpeed_mps,
             config.auto.maxAcceleration_mps
         );
+        // ... but put in constraints
         trajectoryConfig.addConstraint(kinematicsConstraint);
         trajectoryConfig.addConstraint(voltageConstraint);
+        // we start at rest
         trajectoryConfig.setStartVelocity(0);
 
         Translation2d startingPoint;
@@ -264,8 +283,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         trajectories.add(new FullTrajectory("opponent trench", oppTrenchFirstPickup, oppTrenchFirstReturn, oppTrenchSecondPickup, oppTrenchSecondReturn));
 
+        // create the RAMSETE controller with the specified tuning parameters
         ramsete = new RamseteController(config.auto.b, config.auto.zeta);
 
+        // create the PID controllers
         leftAutoPID = new PIDController(config.auto.kP, 0, 0);
         rightAutoPID = new PIDController(config.auto.kP, 0, 0);
     }
@@ -307,13 +328,17 @@ public class DriveSubsystem extends BitBucketSubsystem {
         }
         SmartDashboard.putData(getName() + "/Pickup Trajectory", pickupTrajectoryChooser);
 
+        // instantiate the left and right motor arrays
         leftMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
         rightMotors = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE];
 
+        // and a temporary array with just the follower motors per side
         WPI_TalonFX[] tempLeft = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE - 1];
         WPI_TalonFX[] tempRight = new WPI_TalonFX[config.drive.MOTORS_PER_SIDE - 1];
 
+        // loop through all the motors
         for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
+            // create the motors given their config
             leftMotors[i] = MotorUtils.makeFX(config.drive.leftMotors[i]);
             rightMotors[i] = MotorUtils.makeFX(config.drive.rightMotors[i]);
 
@@ -329,14 +354,17 @@ public class DriveSubsystem extends BitBucketSubsystem {
                 DriveConstants.CONTROLLER_TIMEOUT_MS
             );
 
+            // so we can push it to its starting position after testing :)
             leftMotors[i].setNeutralMode(NeutralMode.Coast);
             rightMotors[i].setNeutralMode(NeutralMode.Coast);
 
+            // so we don't head any Falcon500s screaming because they stall too easily
             leftMotors[i].configClosedloopRamp(0.5);
             rightMotors[i].configClosedloopRamp(0.5);
 
 
 
+            // so we can compensate for voltage sag from the battery
             leftMotors[i].enableVoltageCompensation(true);
             leftMotors[i].configVoltageCompSaturation(DriveConstants.MAX_VOLTS);
 
@@ -350,9 +378,12 @@ public class DriveSubsystem extends BitBucketSubsystem {
             }
         }
 
+        // they won't accept it if you just give an array like a normal person
+        // so you have to take the first index then the rest of the array
         leftGroup = new SpeedControllerGroup(leftMotors[0], tempLeft);
         rightGroup = new SpeedControllerGroup(rightMotors[0], tempRight);
 
+        // create the differential drive with the motors
         differentialDrive = new DifferentialDrive(leftGroup, rightGroup);
 
 
@@ -368,6 +399,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
+
+    // we used to have closed loop driving but not its open loop
+    // this would take a translational and rotational speed and convert them into
+    // native velocity units for the Falcons and command it
 
     // public void velocityDrive_auto(double ips, double radps) {
     //     selectVelocityMode(true);
@@ -401,12 +436,16 @@ public class DriveSubsystem extends BitBucketSubsystem {
     //     SmartDashboard.putNumber(getName() + "/commandedSpeed_ips", ips);
     // }
 
+    // drive the robot with a given percent speed and percent turn... worked much better than closed loop
+    // so now we're trying to figure out how to bring back closed loop driving because we have dignity
     public void velocityDrive(double speed, double turn) {
         speed = forwardJoystickScaleChooser.getSelected().rescale(speed, DriveConstants.JOYSTICK_DEADBAND);
         turn = turnJoystickScaleChooser.getSelected().rescale(turn, DriveConstants.JOYSTICK_DEADBAND);
 
         leftMotors[0].set(ControlMode.PercentOutput, (speed + turn) * ((config.drive.invertLeftCommand) ? -1 : 1));
         rightMotors[0].set(ControlMode.PercentOutput, (speed - turn) * ((config.drive.invertRightCommand) ? -1 : 1));
+
+        // used to be used to convert to speeds and call velocityDrive_auto()
 
 		// double ips = MathUtils.map(
         //     speed,
@@ -426,68 +465,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         // velocityDrive_auto(ips, radps);
     }
-
-    public void rotationDrive(double speed, double turn, double yaw0) {
-        speed = forwardJoystickScaleChooser.getSelected().rescale(speed, DriveConstants.JOYSTICK_DEADBAND);
-        turn = rotationJoystickScaleChooser.getSelected().rescale(turn, DriveConstants.JOYSTICK_DEADBAND);
-
-        double ips = MathUtils.map(
-            speed,
-            -1.0,
-            1.0,
-            -config.drive.maxAllowedSpeed_ips,
-            config.drive.maxAllowedSpeed_ips
-        );
-
-        double offset = MathUtils.map(
-            turn,
-            -1.0,
-            1.0,
-            -DriveConstants.ROTATION_DRIVE_MAX_OFFSET_DEG,
-            DriveConstants.ROTATION_DRIVE_MAX_OFFSET_DEG
-        );
-
-
-        double yaw = NAVIGATION_SUBSYSTEM.getYaw_deg();
-        SmartDashboard.putNumber(getName() + "/yaw", yaw);
-        double yawCommand = yaw0 + offset;
-        SmartDashboard.putNumber(getName() + "/yaw command", yawCommand);
-
-        double yawError = yaw - yawCommand;
-        SmartDashboard.putNumber(getName() + "/yaw error", yawError);
-
-        yawError = (yawError + 720.0) % (360.0);
-        if (yawError > 180) {
-            // additional = yawError - 180
-            // -180 + additional
-            yawError -= 360;
-        }
-
-        double omega = yawError * config.drive.ROTATION_DRIVE_KP;
-
-
-
-        //velocityDrive_auto(ips, omega);
-    }
-
-
-
-    private void selectVelocityMode(boolean needVelocityMode) {
-		if (needVelocityMode && !velocityMode) {
-			for (int i = 0; i < config.drive.MOTORS_PER_SIDE; i++) {
-				leftMotors[i].selectProfileSlot(MotorUtils.velocitySlot, 0);
-				rightMotors[i].selectProfileSlot(MotorUtils.velocitySlot, 0);
-            }
-            
-			velocityMode = true;
-		} else {
-			velocityMode = false;
-        }
-    }
 	
 
 
 
+    // disable all motors
     public void disable() {
         leftMotors[0].set(ControlMode.PercentOutput, 0.0);
 		rightMotors[0].set(ControlMode.PercentOutput, 0.0);
@@ -496,6 +478,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
+    // calculate the estimated speed (assuming no slippage etc) of the robot given wheel velocities
     public double getSpeed_ips() {
         double leftSpeed = DRIVE_UTILS.ticksP100ToIps(leftMotors[0].getSelectedSensorVelocity());
         double rightSpeed = DRIVE_UTILS.ticksP100ToIps(rightMotors[0].getSelectedSensorVelocity());
@@ -505,6 +488,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
+    // get the method its using to drive
     public DriveMethod getDriveMethod() { return driveMethod; }
 
 
@@ -533,30 +517,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 
 
-        boolean switchHeld = OI.rotationToVelocity();
-        boolean doSwitch = driveMethodSwitchFilter.calculate(switchHeld);
 
         if (driverStation.isOperatorControl()) {
             if (driveMethod == DriveMethod.AUTO || driveMethod == DriveMethod.IDLE) {
                 driveMethod = DriveMethod.VELOCITY;
-            }
-
-            // won't happen by AZ North
-            // if (doSwitch) {
-            //     switch (driveMethod) {
-            //         case VELOCITY: {
-            //             //driveMethod = DriveMethod.ROTATION;
-            //             break;
-            //         }
-            //         case ROTATION: {
-            //             driveMethod = DriveMethod.VELOCITY;
-            //             break;
-            //         }
-            //         default: // just keep it I guess? shouldn't get here anyways
-            //     }
-            // }
-
-            if (autoAligning) {
+            } else if (autoAligning) {
                 driveMethod = DriveMethod.ALIGN;
             } else {
                 driveMethod = DriveMethod.VELOCITY;
@@ -582,11 +547,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
             SmartDashboard.putNumber(getName() + "/right  vel", rightMotors[0].getSelectedSensorVelocity());
             SmartDashboard.putNumber(getName() + "/right speed error", rightMotors[0].getClosedLoopError());
             SmartDashboard.putNumber(getName() + "/right  setpoint", rightMotors[0].getClosedLoopTarget());
-
-
-
-            SmartDashboard.putNumber(getName() + "/Velocity (in/s)", getApproxV());
-            SmartDashboard.putNumber(getName() + "/Omega (rad/s)", getApproxOmega());
 
             SmartDashboard.putNumber(getName() + "/left ticks", leftMotors[0].getSelectedSensorPosition());
             SmartDashboard.putNumber(getName() + "/right ticks", rightMotors[0].getSelectedSensorPosition());
@@ -644,18 +604,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
         return ((config.drive.invertRightCommand) ? -1 : 1) * rightMotors[0].getSelectedSensorVelocity();
     }
 
-    public double getApproxV() {
-        return 
-            config.drive.wheelRadius_in * 
-            (getLeftVelocity_tp100ms() + getRightVelocity_tp100ms()) / 2.0;
-    }
-
-    public double getApproxOmega() {
-        return
-            config.drive.wheelRadius_in * 
-            (getRightVelocity_tp100ms() - getLeftVelocity_tp100ms()) / (config.drive.trackWidth_in / 2.0);
-    }
-
 
 
     public double getLeftDistance_meters() {
@@ -699,6 +647,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     }
 
 
+    // set the wheel speeds in meters per second so RAMSETE can work
 	public void setWheelSpeeds(double leftSpeed_mps, double rightSpeed_mps) {
         double leftTps = DRIVE_UTILS.ipsToTicksP100(leftSpeed_mps / DriveConstants.METERS_PER_INCH);
         double rightTps = DRIVE_UTILS.ipsToTicksP100(rightSpeed_mps / DriveConstants.METERS_PER_INCH);
@@ -742,6 +691,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
     public PIDController getLeftAutoPID() { return leftAutoPID; }
     public PIDController getRightAutoPID() { return rightAutoPID; }
 
+    // command a voltage to both motors
+    // currently being used to stop both after a trajectory is finished
+    // and used by the RAMSETE controller to command a trajectory
     public void tankVolts(double leftVolts, double rightVolts) {
         leftGroup.setVoltage(leftVolts * ((config.drive.invertLeftCommand) ? -1 : 1));
         rightGroup.setVoltage(rightVolts * ((config.drive.invertRightCommand) ? -1 : 1));

@@ -2,6 +2,13 @@ package frc.robot.utils.control.statespace.models.motors;
 
 
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class pro775 extends MotorType {
     public pro775() {
         super(

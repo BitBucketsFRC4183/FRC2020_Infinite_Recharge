@@ -33,17 +33,22 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
     private AHRS ahrs;
 
+    // recent acceleration data from IMU
     private DoubleDataWindow imuAcc = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
+    // recent gyroscope data from IMU
     private DoubleDataWindow imuGyro = new DoubleDataWindow(NavigationConstants.IMU_DATA_SIZE);
+    // time to update localization stuff
     private DoubleDataWindow dts = new DoubleDataWindow(50);
 
     private DriveSubsystem driveSubsystem;
     private VisionSubsystem visionSubsystem;
 
+    // robot system used for localization
     private RobotSystem sys;
 
 
 
+    // odometry, until we get localization to work, and in case we can't use localization for some reason
     private DifferentialDriveOdometry odometry;
 
 

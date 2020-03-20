@@ -5,6 +5,13 @@ import org.ejml.simple.SimpleMatrix;
 import frc.robot.utils.control.statespace.models.lti.CLTIModel;
 import frc.robot.utils.control.statespace.models.motors.MotorType;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 public class MotorPosition extends CLTIModel {
     public MotorPosition(double t, MotorType type, double I) {
         super(

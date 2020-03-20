@@ -6,6 +6,13 @@ import frc.robot.utils.control.statespace.models.linearized.LinearizedModel;
 import frc.robot.utils.control.statespace.observer.OutputObserver;
 import frc.robot.utils.control.statespace.system.StateSpaceSystem;
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 /**
  * Luenberger observer for a system with linearized dynamics
  */

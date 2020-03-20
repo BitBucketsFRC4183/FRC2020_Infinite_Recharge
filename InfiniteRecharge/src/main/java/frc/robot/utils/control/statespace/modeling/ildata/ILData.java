@@ -12,6 +12,13 @@ import java.io.PrintWriter;
 
 
 
+/*
+ * ==================================
+ * 2020 Code Review Party Information
+ * 
+ * Feel free to ignore this file
+ * ==================================
+ */
 /**
  * Measure moment of inertia (I) and inductance (L) through a motor by running it
  * at a set voltage. Warning: this requires changing all motor units to SI and

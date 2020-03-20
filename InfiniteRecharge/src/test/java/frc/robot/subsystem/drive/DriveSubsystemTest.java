@@ -91,7 +91,7 @@ public class DriveSubsystemTest extends SubsystemTest {
     @Test
     public void testGetLeftDistance_meters() throws Exception {
         // create and initialize the subsystem so we have motor objects
-        DriveSubsystem driveSubsystem = new DriveSubsystem(config, navigationSubsystem, new VisionSubsystem(config), oi);
+        DriveSubsystem driveSubsystem = new DriveSubsystem(config, navigationSubsystem, new VisionSubsystem(config));
         driveSubsystem.initialize();
 
         // verify that spinning the wheel fully around once gives us a left distance of 6 inch wheel
@@ -108,7 +108,7 @@ public class DriveSubsystemTest extends SubsystemTest {
     @Test
     public void testGetLeftVelocity_mps() throws Exception {
         // create and initialize the subsystem so we have motor objects
-        DriveSubsystem driveSubsystem = new DriveSubsystem(config, navigationSubsystem, new VisionSubsystem(config), oi);
+        DriveSubsystem driveSubsystem = new DriveSubsystem(config, navigationSubsystem, new VisionSubsystem(config));
         driveSubsystem.initialize();
 
         // verify that spinning the wheel fully around once per 100ms gives us 

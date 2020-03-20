@@ -11,5 +11,6 @@ package frc.robot.subsystem.navigation;
  * Add your docs here.
  */
 public class NavigationConstants {
+    // amount of data to keep for testing things like variance of gyroscope and accelerometer values
     public static final int IMU_DATA_SIZE = 50;
 }
