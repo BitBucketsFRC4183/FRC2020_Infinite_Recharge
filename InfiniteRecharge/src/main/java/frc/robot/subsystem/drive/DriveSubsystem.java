@@ -699,6 +699,15 @@ public class DriveSubsystem extends BitBucketSubsystem {
         rightGroup.setVoltage(rightVolts * ((config.drive.invertRightCommand) ? -1 : 1));
     }
 
+    // left and right volts are used for determining Kalman filter estimates
+    public double getLeftVolts() {
+        return leftMotors[0].getMotorOutputVoltage();
+    }
+
+    public double getRightVolts() {
+        return rightMotors[0].getMotorOutputVoltage();
+    }
+
 
 
     public void resetEncoders() {

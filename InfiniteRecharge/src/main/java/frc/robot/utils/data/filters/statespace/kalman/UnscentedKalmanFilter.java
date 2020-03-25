@@ -45,9 +45,6 @@ public class UnscentedKalmanFilter extends GenericKalmanFilter<StateSpaceModel, 
     private Distribution distX;
     private Distribution distY;
 
-    /** average of transformed sigma points, or expected a priori output */
-    private SimpleMatrix yAvg;
-
 
 
 
