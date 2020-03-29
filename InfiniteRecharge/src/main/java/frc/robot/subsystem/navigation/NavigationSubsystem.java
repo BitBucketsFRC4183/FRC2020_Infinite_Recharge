@@ -19,14 +19,12 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.navigation.systems.RobotSystem1;
+import frc.robot.subsystem.navigation.systems.RobotSystemConfig;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.utils.data.DoubleDataWindow;
 import frc.robot.utils.data.filters.statespace.kalman.UnscentedKalmanFilter;
 import frc.robot.subsystem.vision.VisionSubsystem;
 
-/**
- * Add your docs here.
- */
 public class NavigationSubsystem extends BitBucketSubsystem {
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
@@ -86,7 +84,15 @@ public class NavigationSubsystem extends BitBucketSubsystem {
         super.initialize();
 
         ahrs = BitBucketsAHRS.instance();
-        sys = new RobotSystem1(config, this);
+
+        RobotSystemConfig systemConfig = new RobotSystemConfig();
+
+        systemConfig.azimuthDegrees = shooterSubsystem::getAzimuthDeg;
+        systemConfig.leftVolts      = driveSubsystem::getLeftVolts;
+        systemConfig.rightVolts     = driveSubsystem::getRightVolts;
+        systemConfig.tyFromDistance = visionSubsystem::approximateTyFromDistance;
+
+        sys = new RobotSystem1(config, systemConfig);
 
         reset();
     }

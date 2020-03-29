@@ -14,6 +14,7 @@ public class NavigationConstants {
     // amount of data to keep for testing things like variance of gyroscope and accelerometer values
     public static final int IMU_DATA_SIZE = 50;
 
+    // x and y positions of the power port on the field, aka the LimeLight target
     public static final double TARGET_X = 1.700784;
     public static final double TARGET_Y = 7.9915;
 
