@@ -3,11 +3,7 @@ package frc.robot.subsystem.navigation.systems;
 import org.ejml.simple.SimpleMatrix;
 
 import frc.robot.config.Config;
-import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.navigation.NavigationConstants;
-import frc.robot.subsystem.navigation.NavigationSubsystem;
-import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
-import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.control.statespace.models.CStateSpaceModel;
 import frc.robot.utils.control.statespace.observer.OutputObserver;
 import frc.robot.utils.control.statespace.system.StateSpaceSystem;
@@ -18,6 +14,13 @@ import frc.robot.utils.control.statespace.system.StateSpaceSystem;
  * 
  * Feel free to ignore this file
  * ==================================
+ */
+/**
+ * Primary robot system, considers all sensors.
+ * In the future, we'll want to switch to a different system if a sensor
+ * is down, such as the LimeLight not seeing a target. This setup would
+ * also help if we're being pushed as then we can rely on the NavX IMU
+ * and the LL to determine our position, without considering wheel encoders
  */
 public class RobotSystem1 extends StateSpaceSystem<CStateSpaceModel, OutputObserver> {
     // states
@@ -42,7 +45,7 @@ public class RobotSystem1 extends StateSpaceSystem<CStateSpaceModel, OutputObser
     private static SimpleMatrix tempVs = new SimpleMatrix(2, 1);
     private static SimpleMatrix tempUs = new SimpleMatrix(2, 1);
 
-    public static CStateSpaceModel generateModel(Config config, DriveSubsystem drive) {
+    public static CStateSpaceModel generateModel(Config config, RobotSystemConfig systemConfig) {
         // these error tolerances are also pretty arbitrary. the limiting factor in the KF here
         // is not error tolerances in our differential equation solver, but rather system and
         // sensor noise
@@ -80,8 +83,8 @@ public class RobotSystem1 extends StateSpaceSystem<CStateSpaceModel, OutputObser
 
 
 
-                double VL = drive.getLeftVolts();
-                double VR = drive.getRightVolts();
+                double VL = systemConfig.leftVolts.getAsDouble();
+                double VR = systemConfig.rightVolts.getAsDouble();
 
                 tempUs.set(0, VL);
                 tempUs.set(1, VR);
@@ -98,12 +101,12 @@ public class RobotSystem1 extends StateSpaceSystem<CStateSpaceModel, OutputObser
         };
     }
 
-    public static OutputObserver generateObserver(Config config, ShooterSubsystem shooter, VisionSubsystem vision) {
+    public static OutputObserver generateObserver(Config config, RobotSystemConfig systemConfig) {
         return new OutputObserver(6) {
             @Override
             public SimpleMatrix getOutput(SimpleMatrix state, SimpleMatrix input, double t, int k) {
                 double theta = state.get(X_THETA);
-                double azimuth = Math.toRadians(shooter.getAzimuthDeg());
+                double azimuth = Math.toRadians(systemConfig.azimuthDegrees.getAsDouble());
 
                 double x = state.get(X_X)
                     + config.shooter.xTurretCenter * Math.cos(theta)
@@ -128,7 +131,7 @@ public class RobotSystem1 extends StateSpaceSystem<CStateSpaceModel, OutputObser
                 double[] out = new double[Y_LENGTH];
 
                 out[Y_TX] = tx;
-                out[Y_TY] = vision.approximateTyFromDistance(d);
+                out[Y_TY] = systemConfig.tyFromDistance.apply(d);
                 out[Y_VL] = state.get(X_VL);
                 out[Y_VR] = state.get(X_VR);
                 out[Y_YAW] = theta + state.get(X_OFFSET);
@@ -140,10 +143,10 @@ public class RobotSystem1 extends StateSpaceSystem<CStateSpaceModel, OutputObser
 
 
 
-    public RobotSystem1(Config config, NavigationSubsystem navigation) {
+    public RobotSystem1(Config config, RobotSystemConfig systemConfig) {
         super(
-            generateModel(navigation.getConfig(), navigation.getDrive()),
-            generateObserver(config, navigation.getShooter(), navigation.getVision())
+            generateModel(config, systemConfig),
+            generateObserver(config, systemConfig)
         );
     }
 }

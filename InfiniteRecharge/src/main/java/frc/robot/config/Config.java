@@ -173,6 +173,13 @@ public class Config {
 
         public boolean useFancyOdometry = false;
 
+        // these are matrices used for describing the time evolution of our drive base's velocities
+        // CODE REVIEW PARTY: feel free to ignore these
+        // the state is x = [left velocity, right velocity]'
+        // the input is u = [left voltage,  right voltage]'
+        // in discrete time: x(t + 20ms) = Ad*x(t) + Bd*u(t)
+        // in continuous time: x' = Ac*x(t) + Bc*u(t)
+        
         // discrete time
         public SimpleMatrix Ad_char = new SimpleMatrix(2, 2, true, new double[] {
             0.8678678537600736, 0.0071917452743623786,
