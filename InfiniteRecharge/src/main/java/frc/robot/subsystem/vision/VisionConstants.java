@@ -8,13 +8,8 @@ public class VisionConstants {
     static final double TARGET_HEIGHT_INCHES = 89.75;//ignore these-> //81.0;//82.25;//89.75;//98.25;//82.25;// 98.25;// for the absolute top part of the tape
     // height of the camera from above the ground
     static final double CAMERA_HEIGHT_INCHES = 22.6;
-    // cemra mounting angle
+    // camera mounting angle
     static final double CAMERA_MOUNTING_ANGLE = 30;
-
-    // what angle the ball shoots at
-    // not used anywhere
-    // and also wrong? since we control the angle of the shot
-    static final double BALL_SHOOTING_ANGLE = 30; // wild guess
 
     // bool to use/not use running average filter for calculating the tx
     static final boolean USE_FILTER = false;
@@ -28,6 +23,8 @@ public class VisionConstants {
     static final double TX_BIAS_DEG = Math.PI; // about 3.1, so why not
 
     // getteeeeeeeeeeeeeeers
+    // They are here because the variable itself is package private
+    // they are used in the sim
     public static double getTargetHeightInches() {
         return TARGET_HEIGHT_INCHES;
     }
