@@ -12,11 +12,10 @@ import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-
 public class VisionSubsystem extends BitBucketSubsystem {
 
     private boolean validTarget = false;
-    
+
     private final double defaultVal = 0.0;
     private NetworkTable limelightTable;
 
@@ -67,55 +66,93 @@ public class VisionSubsystem extends BitBucketSubsystem {
         SmartDashboard.putNumber(getName() + "/Estimated Distance ", distance);
     }
 
+    /**
+     * Uses the formula found https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
+     * d = (h2-h1) / tan(a1+a2)
+     * h2 -> height of target
+     * h1 -> height of cmera
+     * a1 -> mounting angle of the camera
+     * a2 -> ty
+     * @param ty The vertical offset from the target, given by the LL
+     * @return The estimated distance from the target
+     */
     public double approximateDistanceFromTarget(final double ty) {
         double distance_no_zoom = (VisionConstants.TARGET_HEIGHT_INCHES - VisionConstants.CAMERA_HEIGHT_INCHES)
                 / Math.tan(Math.toRadians(VisionConstants.CAMERA_MOUNTING_ANGLE + ty));
+        // LL doesn't account for zoom so we have to do that as well
+        // Zoom is updated periodically in autoZoom()
         return distance_no_zoom * zoom;
     }
 
+    /**
+     * [NOT USED ANYWHERE] Finds ty from distance. Only implemented for testing for localization
+     * The formula is just the distance one but to solve for ty
+     * @param distance Estimated distance from target in inches
+     * @return Approximate value of ty
+     */
     public double approximateTyFromDistance(final double distance) {
-
         final double ty = Math.toDegrees(
-            Math.atan (
-                (VisionConstants.TARGET_HEIGHT_INCHES - VisionConstants.CAMERA_HEIGHT_INCHES) / distance
-            )
-        ) - VisionConstants.CAMERA_MOUNTING_ANGLE;
+                Math.atan((VisionConstants.TARGET_HEIGHT_INCHES - VisionConstants.CAMERA_HEIGHT_INCHES) / distance))
+                - VisionConstants.CAMERA_MOUNTING_ANGLE;
 
         return ty;
     }
 
+    /**
+     * Helper method to get a value from the LL NT
+     * @param value key you want to get
+     * @return value associated with the key passed in
+     */
     public double queryLimelightNetworkTable(final String value) {
         return limelightTable.getEntry(value).getDouble(defaultVal);
     }
 
-	public void updateTargetInfo() {
-        
+    /**
+     * Update tv (valid target) and tx and ty (horizontal and vertical offsets from
+     * target)
+     */
+    public void updateTargetInfo() {
+
         final double tv = queryLimelightNetworkTable("tv");
         if (tv == 1) {
             validTarget = true;
 
+            // Add the tx offset (for drive auto-align) to the tx
             tx = queryLimelightNetworkTable("tx") + VisionConstants.TX_BIAS_DEG;
             ty = queryLimelightNetworkTable("ty");
+            // LL doesn't count for the pan so we have to that ourselves
             ty -= pan;
         } else {
             validTarget = false;
         }
     }
 
+    /**
+     * Changes to the correct LL pipeline (which are correspondingly set to zoom levels) based on the distance from the target
+     * We never really got a lot of time to test this sooooooo
+     */
     public void autoZoom() {
-
+        // Like we said, we never got a lot of time to test it
+        // So sometimes we wanted to test the robot but not mess with vision
+        // In that case, we disable auto zoom (and change the pipelines manually)
+        // But we still have to set the zoom and pan, which is why this if block exists
         if (!VisionConstants.ENABLE_AUTO_ZOOM) {
+            // Get the current pipeline
             double currentPipeline = limelightTable.getEntry("getpipe").getDouble(0);
+            // In our case in happened to be that the zoom was just the pipeline number plus 1
             zoom = currentPipeline + 1;
+            // The pan was always set to 1 except for pipeline 0 (1x zoom)
+            // Therefore this
             if (currentPipeline != 0)
                 pan = 1;
+            // We dont return anything
             return;
         }
 
         double pipelineToChangeTo = 0;
 
-        //TODO: empirically test this
-        //higher zoom (higher pipeline) the further u go
+        // TODO: empirically test this
+        // higher zoom (higher pipeline) the further u go
         if (distance >= 0) {
             pipelineToChangeTo = 0;
         }
@@ -126,11 +163,14 @@ public class VisionSubsystem extends BitBucketSubsystem {
             pipelineToChangeTo = 2;
         }
 
+        // attempted to cycle through pipline if no valid target
+        // but it locked up the whole code and we never got time to fix it and put it on a different thread or something
+
         // while (!validTarget) {
-        //     if (pipelineToChangeTo == 2) {
-        //         pipelineToChangeTo = 0;
-        //     }
-        //     pipelineToChangeTo++;
+        // if (pipelineToChangeTo == 2) {
+        // pipelineToChangeTo = 0;
+        // }
+        // pipelineToChangeTo++;
         // }
 
         SmartDashboard.putNumber(getName() + "/Pipeline to Change to", pipelineToChangeTo);
@@ -160,13 +200,14 @@ public class VisionSubsystem extends BitBucketSubsystem {
         if (VisionConstants.USE_FILTER) {
             // make sure there's a valid target before adding new value
             if (validTarget) {
+                // calculate the running average of tx and the offset then remove the offset to not mess with the result
                 return txFilter.calculate(tx + offset) - offset;
-            // use last average
             } else {
+                // use last average if no target but it's enabled
                 return txFilter.getAverage() - offset;
             }
         } else {
-            // just return raw value
+            // just return raw value if no filter
             return tx;
         }
     }
@@ -197,10 +238,11 @@ public class VisionSubsystem extends BitBucketSubsystem {
 
     }
 
-    public void disable(){
+    public void disable() {
         turnOffLEDs();
     }
 
     @Override
-    public void listTalons() {}
+    public void listTalons() {
+    }
 }
