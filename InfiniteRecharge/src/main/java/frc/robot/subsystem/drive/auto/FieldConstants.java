@@ -2,7 +2,10 @@ package frc.robot.subsystem.drive.auto;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
-// all units in m
+/**
+ * Constants of where multiplle points are on the map
+ * Units in M, calculated from the center of the field
+ */
 public class FieldConstants {
     public static final double INITIALIZATION_LINE = 5;
 
@@ -29,7 +32,7 @@ public class FieldConstants {
     );
 
     public static final Translation2d OUR_POWER_CELL_1 = new Translation2d(
-        2.9, 1.83 
+        2.9, 1.83
     );
 
     public static final Translation2d OUR_POWER_CELL_2 = new Translation2d(
@@ -48,7 +51,7 @@ public class FieldConstants {
         -3.5, 0.75
     );
 
-    /** Use the coordinate system the robot likes 
+    /** Use the coordinate system the robot likes
      * @param pointToGo The point where you want to move to; most likely one of the POWER_CELL points in the class
      * @param startingPoint Where you're starting on the initiation line, will be one of the START_ points in the class
     */

@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.subsystem.drive.auto;
 
 import java.util.Collections;
@@ -18,7 +11,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 
 /**
- * Add your docs here.
+ * FullTrajectory with a name, a first pickup and return, and sometimes a second pickup and return trajectory
  */
 public class FullTrajectory {
 
@@ -29,6 +22,15 @@ public class FullTrajectory {
     private final Trajectory secondReturnTrajectory;
     private final boolean hasSecondTrajectory;
 
+    /**
+     * Constructor for both trajectories, also sets the 'hasSecondTrajectory' bool appropriately
+     * @param name
+     * @param firstPickupTrajectory
+     * @param firstReturnTrajectory
+     * @param secondPickupTrajectory
+     * @param secondReturnTrajectory
+     * @param hasSecondTrajectory
+     */
     private FullTrajectory(String name, Trajectory firstPickupTrajectory, Trajectory firstReturnTrajectory,
             Trajectory secondPickupTrajectory, Trajectory secondReturnTrajectory, boolean hasSecondTrajectory) {
         this.name = name;
@@ -39,6 +41,13 @@ public class FullTrajectory {
         this.hasSecondTrajectory = hasSecondTrajectory;
     }
 
+    /**
+     * Constructor for only 1 pickup and only 1 returnt trajectory
+     * sets the 'hasSecondTrajectory' bool appropriately
+     * @param name Name of trajectory
+     * @param pickupT First pickup trajectory
+     * @param returnT First return trajectory
+     */
     public FullTrajectory(String name, Trajectory pickupT, Trajectory returnT) {
         this(name,
                 pickupT,
@@ -49,11 +58,19 @@ public class FullTrajectory {
         );
     }
 
+    /**
+     * Constructor for both trajectories
+     * @param name Name of trajectory
+     * @param firstPickupTrajectory
+     * @param firstReturnTrajectory
+     * @param secondPickupTrajectory
+     * @param secondReturnTrajectory
+     */
     public FullTrajectory(String name, Trajectory firstPickupTrajectory, Trajectory firstReturnTrajectory,
             Trajectory secondPickupTrajectory, Trajectory secondReturnTrajectory) {
         this(name, firstPickupTrajectory, firstReturnTrajectory, secondPickupTrajectory, secondReturnTrajectory, true);
     }
-    
+
 
     public String getName() {
         return name;
