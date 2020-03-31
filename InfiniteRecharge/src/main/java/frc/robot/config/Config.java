@@ -78,6 +78,14 @@ public class Config {
         public MotorConfig shooter = new MotorConfig();
         public MotorConfig shooterFollower = new MotorConfig();
 
+        // meters as all good things are
+        // relative to center of robot
+        // not necessarily CoM of robot but like, same thing
+        public double xTurretCenter = 0.17181322;
+        public double yTurretCenter = 0.01766824;
+        // distance from center of turret to LL camera
+        public double rLL = 0.19368008;
+
         public float[] elevationPositions_deg = new float[] { //
                 0, /// Comment so that VSCode doesn't ruin my format.
                 10, // Comment so that VSCode doesn't ruin my format.
@@ -165,13 +173,33 @@ public class Config {
 
         public boolean useFancyOdometry = false;
 
+        // these are matrices used for describing the time evolution of our drive base's velocities
+        // CODE REVIEW PARTY: feel free to ignore these
+        // the state is x = [left velocity, right velocity]'
+        // the input is u = [left voltage,  right voltage]'
+        // in discrete time: x(t + 20ms) = Ad*x(t) + Bd*u(t)
+        // in continuous time: x' = Ac*x(t) + Bc*u(t)
+        
+        // discrete time
+        public SimpleMatrix Ad_char = new SimpleMatrix(2, 2, true, new double[] {
+            0.8678678537600736, 0.0071917452743623786,
+            0.005903949588909425, 0.8723072041767262
+        });
+
+        public SimpleMatrix Bd_char = new SimpleMatrix(2, 2, true, new double[] {
+            0.050392385308988936, -0.004313538469407867,
+            -0.002206154164037924, 0.047675029476658845
+        });
+
+        // continuous time
         public SimpleMatrix Ac_char = new SimpleMatrix(2, 2, true, new double[] {
-            0.8678678537600736, 0.0071917452743623786, 0.005903949588909425, 0.8723072041767262
+            -7.087195478354283, 0.413285738104402,
+            0.339280393075371, -6.832080740045777
         });
 
         public SimpleMatrix Bc_char = new SimpleMatrix(2, 2, true, new double[] {
-            0.050392385308988936, -0.004313538469407867,
-            -0.002206154164037924, 0.047675029476658845
+            2.702895517197959, -0.241632861263366,
+            -0.126961060623545, 2.551095849721741
         });
 
 

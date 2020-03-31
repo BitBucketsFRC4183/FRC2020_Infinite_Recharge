@@ -7,7 +7,6 @@
 
 package frc.robot.subsystem.navigation;
 
-import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -19,14 +18,13 @@ import frc.robot.config.Config;
 
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.DriveSubsystem;
-import frc.robot.subsystem.drive.auto.FieldConstants;
+import frc.robot.subsystem.navigation.systems.RobotSystem1;
+import frc.robot.subsystem.navigation.systems.RobotSystemConfig;
+import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.utils.data.DoubleDataWindow;
-
+import frc.robot.utils.data.filters.statespace.kalman.UnscentedKalmanFilter;
 import frc.robot.subsystem.vision.VisionSubsystem;
 
-/**
- * Add your docs here.
- */
 public class NavigationSubsystem extends BitBucketSubsystem {
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
@@ -42,9 +40,10 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
     private DriveSubsystem driveSubsystem;
     private VisionSubsystem visionSubsystem;
+    private ShooterSubsystem shooterSubsystem;
 
     // robot system used for localization
-    private RobotSystem sys;
+    private RobotSystem1 sys;
 
 
 
@@ -53,10 +52,11 @@ public class NavigationSubsystem extends BitBucketSubsystem {
 
 
     
-	public NavigationSubsystem(Config config, VisionSubsystem visionSubsystem) {
+	public NavigationSubsystem(Config config, VisionSubsystem visionSubsystem, ShooterSubsystem shooterSubsystem) {
         super(config);
         
         this.visionSubsystem = visionSubsystem;
+        this.shooterSubsystem = shooterSubsystem;
         
         Rotation2d rotation = new Rotation2d(0);
         odometry = new DifferentialDriveOdometry(
@@ -84,7 +84,15 @@ public class NavigationSubsystem extends BitBucketSubsystem {
         super.initialize();
 
         ahrs = BitBucketsAHRS.instance();
-        sys = new RobotSystem();
+
+        RobotSystemConfig systemConfig = new RobotSystemConfig();
+
+        systemConfig.azimuthDegrees = shooterSubsystem::getAzimuthDeg;
+        systemConfig.leftVolts      = driveSubsystem::getLeftVolts;
+        systemConfig.rightVolts     = driveSubsystem::getRightVolts;
+        systemConfig.tyFromDistance = visionSubsystem::approximateTyFromDistance;
+
+        sys = new RobotSystem1(config, systemConfig);
 
         reset();
     }
@@ -146,8 +154,6 @@ public class NavigationSubsystem extends BitBucketSubsystem {
         double yaw = getYaw_deg();
 
         double v0 = 0.01;
-
-        sys.getModel(v0, yaw);
 
         double t1 = System.nanoTime();
         double dt = (t1 - t0) / 1000000000;
@@ -247,6 +253,11 @@ public class NavigationSubsystem extends BitBucketSubsystem {
         // TODO Auto-generated method stub
 
     }
+
+    public Config getConfig() { return config; }
+    public DriveSubsystem getDrive() { return driveSubsystem; }
+    public VisionSubsystem getVision() { return visionSubsystem; }
+    public ShooterSubsystem getShooter() { return shooterSubsystem; }
 
     public void disable(){
     }
