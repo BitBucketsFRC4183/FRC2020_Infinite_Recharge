@@ -20,6 +20,10 @@ public class Noise {
         this.Q = Q;
     }
 
+    public Noise(SimpleMatrix Q) {
+        this(Q, SimpleMatrix.identity(Q.numCols()));
+    }
+
 
 
     public SimpleMatrix getG() { return G; }

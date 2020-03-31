@@ -623,7 +623,10 @@ public class DriveSubsystem extends BitBucketSubsystem {
     }
 
 	public Trajectory getFirstPickupTrajectory() {
-        return pickupTrajectoryChooser.getSelected().getFirstPickupTrajectory();   
+        Trajectory traj = pickupTrajectoryChooser.getSelected().getFirstPickupTrajectory();
+
+        NAVIGATION_SUBSYSTEM.setInitialPose(traj.getInitialPose());
+        return traj;
     }
 
     public Trajectory getFirstReturnTrajectory() {

@@ -197,6 +197,12 @@ public class Config {
             0.339280393075371, -6.832080740045777
         });
 
+        // continuous time system noise
+        public SimpleMatrix QVc_char = new SimpleMatrix(2, 2, true, new double[] {
+            0.359432446406913, 0.349630210052408,
+            0.349630210052408, 0.366367970306715
+        });
+
         public SimpleMatrix Bc_char = new SimpleMatrix(2, 2, true, new double[] {
             2.702895517197959, -0.241632861263366,
             -0.126961060623545, 2.551095849721741
