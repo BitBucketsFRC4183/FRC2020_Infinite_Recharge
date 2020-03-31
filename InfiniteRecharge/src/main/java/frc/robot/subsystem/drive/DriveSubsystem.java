@@ -63,6 +63,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     // Let the driver choose the auto path based on where the robot is placed
     private static SendableChooser<FullTrajectory> pickupTrajectoryChooser;
+    // List of all the FullTrajectories we will follow
     private final ArrayList<FullTrajectory> trajectories = new ArrayList<FullTrajectory>();
 
     // store the raw inputs from joysticks for commands to query
@@ -91,7 +92,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     /**
      * Create an instance of the DriveSubsystem
-     * 
+     *
      * @param config set of configuration values to use
      * @param navigationSubsystem navigation subsystem to get information about our position on the field
      * @param visionSubsystem vision subsystem to get information about the target
@@ -130,15 +131,16 @@ public class DriveSubsystem extends BitBucketSubsystem {
         // we start at rest
         trajectoryConfig.setStartVelocity(0);
 
+        // where the robot starts at in auto
         Translation2d startingPoint;
 
-        //////////////////////// 
-        //center
+        ////////////////////////
+        // auto trajectory for if we start at the center of the initiation line
         startingPoint = FieldConstants.START_CENTER_POWER_PORT;
         Trajectory centerFirstPickup = TrajectoryGenerator.generateTrajectory(
             // Start in front of the power port
             new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint), 
+                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint),
                 new Rotation2d()
             ),
             // Pass through these two interior waypoints
@@ -151,6 +153,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
                 FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3, startingPoint),
                 new Rotation2d()
             ),
+            // we are not reversed and we end at a velocity of 0
             trajectoryConfig.setReversed(false).setEndVelocity(0)
         );
         Trajectory centerFirstReturn = TrajectoryGenerator.generateTrajectory(
@@ -162,64 +165,69 @@ public class DriveSubsystem extends BitBucketSubsystem {
             List.of(),
             // Return to the power port
             new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint), 
+                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint),
+                new Rotation2d()
+            ),
+            // // we ARE reversed and we end at a velocity of 0
+            trajectoryConfig.setReversed(true).setEndVelocity(0)
+        );
+
+        // add this trajectory to the list of trajectories
+        trajectories.add(new FullTrajectory("center", centerFirstPickup, centerFirstReturn));
+
+        // __code review party__: the following two trajectories are basically the same thing but with different constants
+        // hopefully the var names will self-document enough
+
+        ////////////////////////
+        //our trench
+        startingPoint = FieldConstants.START_OUR_TRENCH;
+        Trajectory rightFirstPickup = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.START_OUR_TRENCH, startingPoint),
+                new Rotation2d()
+            ),
+            List.of(),
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.BEFORE_OUR_POWER_CELL_1, startingPoint),
+                new Rotation2d()
+            ),
+            trajectoryConfig.setReversed(false).setEndVelocity(0)
+        );
+        Trajectory rightFirstReturn = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.BEFORE_OUR_POWER_CELL_1, startingPoint),
+                new Rotation2d()
+            ),
+            List.of(),
+            new Pose2d(
+                FieldConstants.transformToRobot(FieldConstants.ALSO_BEFORE_OUR_POWER_CELL_1, startingPoint),
                 new Rotation2d()
             ),
             trajectoryConfig.setReversed(true).setEndVelocity(0)
         );
 
-        trajectories.add(new FullTrajectory("center", centerFirstPickup, centerFirstReturn));
-
-        //////////////////////// 
-        //our trench
-        startingPoint = FieldConstants.START_OUR_TRENCH;
-        Trajectory rightFirstPickup = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_OUR_TRENCH, startingPoint), 
-                new Rotation2d()
-            ), 
-            List.of(), 
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.BEFORE_OUR_POWER_CELL_1, startingPoint),
-                new Rotation2d()
-            ), 
-            trajectoryConfig.setReversed(false).setEndVelocity(0)
-        );
-        Trajectory rightFirstReturn = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.BEFORE_OUR_POWER_CELL_1, startingPoint), 
-                new Rotation2d()
-            ), 
-            List.of(), 
+        Trajectory rightSecondPickup = TrajectoryGenerator.generateTrajectory(
             new Pose2d(
                 FieldConstants.transformToRobot(FieldConstants.ALSO_BEFORE_OUR_POWER_CELL_1, startingPoint),
                 new Rotation2d()
-            ), 
-            trajectoryConfig.setReversed(true).setEndVelocity(0)
-        );
-
-        Trajectory rightSecondPickup = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.ALSO_BEFORE_OUR_POWER_CELL_1, startingPoint), 
-                new Rotation2d()
-            ), 
-            List.of(), 
+            ),
+            List.of(),
             new Pose2d(
                 FieldConstants.transformToRobot(FieldConstants.OUR_TWO_POWER_CELLS, startingPoint),
                 new Rotation2d()
-            ), 
+            ),
             trajectoryConfig.setReversed(false).setEndVelocity(0)
         );
         Trajectory rightSecondReturn = TrajectoryGenerator.generateTrajectory(
             new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.OUR_TWO_POWER_CELLS, startingPoint), 
+                FieldConstants.transformToRobot(FieldConstants.OUR_TWO_POWER_CELLS, startingPoint),
                 new Rotation2d()
-            ), 
-            List.of(), 
+            ),
+            List.of(),
             new Pose2d(
                 FieldConstants.transformToRobot(FieldConstants.ALSO_BEFORE_OUR_POWER_CELL_1, startingPoint),
                 new Rotation2d()
-            ), 
+            ),
             trajectoryConfig.setReversed(true).setEndVelocity(0)
         );
 
@@ -235,14 +243,14 @@ public class DriveSubsystem extends BitBucketSubsystem {
             ),
             List.of(),
             new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.THEIR_TWO_POWER_CELLS, startingPoint), 
+                FieldConstants.transformToRobot(FieldConstants.THEIR_TWO_POWER_CELLS, startingPoint),
                 new Rotation2d()
             ),
             trajectoryConfig.setReversed(false).setEndVelocity(0)
         );
         Trajectory oppTrenchFirstReturn = TrajectoryGenerator.generateTrajectory(
             new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.THEIR_TWO_POWER_CELLS, startingPoint), 
+                FieldConstants.transformToRobot(FieldConstants.THEIR_TWO_POWER_CELLS, startingPoint),
                 new Rotation2d()
             ),
             List.of(),
@@ -275,7 +283,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
             ),
             List.of(),
             new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint), 
+                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint),
                 new Rotation2d()
             ),
             trajectoryConfig.setReversed(true).setEndVelocity(0)
@@ -313,7 +321,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 		turnJoystickScaleChooser.addOption("Cube", JoystickScale.CUBE);
 		turnJoystickScaleChooser.addOption("Sine", JoystickScale.SINE);
         SmartDashboard.putData(getName() + "/Turn Joystick Scale", turnJoystickScaleChooser);
-        
+
         rotationJoystickScaleChooser = new SendableChooser<JoystickScale>();
         rotationJoystickScaleChooser.addOption("Linear", JoystickScale.LINEAR);
 		rotationJoystickScaleChooser.setDefaultOption("Square", JoystickScale.SQUARE);
@@ -343,14 +351,14 @@ public class DriveSubsystem extends BitBucketSubsystem {
             rightMotors[i] = MotorUtils.makeFX(config.drive.rightMotors[i]);
 
             leftMotors[i].setStatusFramePeriod(
-                StatusFrameEnhanced.Status_13_Base_PIDF0, 
-				DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
+                StatusFrameEnhanced.Status_13_Base_PIDF0,
+				DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS,
                 DriveConstants.CONTROLLER_TIMEOUT_MS
             );
-                                            
+
             rightMotors[i].setStatusFramePeriod(
-                StatusFrameEnhanced.Status_13_Base_PIDF0, 
-				DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS, 
+                StatusFrameEnhanced.Status_13_Base_PIDF0,
+				DriveConstants.HIGH_STATUS_FRAME_PERIOD_MS,
                 DriveConstants.CONTROLLER_TIMEOUT_MS
             );
 
@@ -418,7 +426,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 	// 	}
 	// 	double latAccel_gs = radps * ips / 12.0 / DriveConstants.STANDARD_G_FTPSPS;
     //     double turnRadius_inches = ips / radps;
-        
+
 
 
     //     int speed_tickP100 = DRIVE_UTILS.ipsToTicksP100(ips);
@@ -426,13 +434,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
 	// 	int leftSpeed_tickP100 = speed_tickP100 + diffSpeed_tickP100;
     //     int rightSpeed_tickP100 = speed_tickP100 - diffSpeed_tickP100;
-        
+
     //     SmartDashboard.putNumber(getName() + "/ls_tp100", leftSpeed_tickP100);
     //     SmartDashboard.putNumber(getName() + "/rs_tp100", rightSpeed_tickP100);
 
     //     setLeftVelocity(leftSpeed_tickP100);
     //     setRightVelocity(rightSpeed_tickP100);
-        
+
     //     SmartDashboard.putNumber(getName() + "/commandedSpeed_ips", ips);
     // }
 
@@ -465,7 +473,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
         // velocityDrive_auto(ips, radps);
     }
-	
+
 
 
 
@@ -623,7 +631,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     }
 
 	public Trajectory getFirstPickupTrajectory() {
-        return pickupTrajectoryChooser.getSelected().getFirstPickupTrajectory();   
+        return pickupTrajectoryChooser.getSelected().getFirstPickupTrajectory();
     }
 
     public Trajectory getFirstReturnTrajectory() {
@@ -635,13 +643,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
     }
 
     public Trajectory getSecondPickupTrajectory() {
-        return pickupTrajectoryChooser.getSelected().getSecondPickupTrajectory();   
+        return pickupTrajectoryChooser.getSelected().getSecondPickupTrajectory();
     }
 
     public Trajectory getSecondReturnTrajectory() {
         return pickupTrajectoryChooser.getSelected().getSecondReturnTrajectory();
     }
-    
+
     public Pose2d getPose() {
         return NAVIGATION_SUBSYSTEM.getPose();
     }
@@ -659,7 +667,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(getLeftVelocity_mps(), getRightVelocity_mps());
     }
-    
+
     public DifferentialDriveKinematics getKinematics() {
         return DRIVE_UTILS.KINEMATICS;
     }
