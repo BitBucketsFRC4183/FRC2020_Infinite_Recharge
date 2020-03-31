@@ -8,6 +8,10 @@ public class SplineVelocityPoint {
     private final Spline speedSpline;
     private final Spline angleSpline;
 
+/**
+ * Given an arraylist of velocity points, it calculates splines for velocity and distance for a given distance
+ * @param vPoints Arraylist of velocity points, used to calculate the spline (defined in ShooterCalculator.java)
+ */
     public SplineVelocityPoint(List<VelocityPoint> vPoints) {
         double[] distanceX =  new double[vPoints.size()];
         double[] speedY = new double[vPoints.size()];

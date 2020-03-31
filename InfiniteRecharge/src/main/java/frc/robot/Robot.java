@@ -159,30 +159,34 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        // reset nav system, turn on LL leds
         navigationSubsystem.reset();
         visionSubsystem.turnOnLEDs();
+        // begin spinning up our hopper
         shooterSubsystem.spinBMS();
 
-
         //intakeSubsystem.toggleIntakeArm();
-        
-        new InstantCommand(() -> { 
-            intakeSubsystem.intake(); 
+
+        // start the command sequence
+        // and turn the intake
+        new InstantCommand(() -> {
+            intakeSubsystem.intake();
         })
 
         // do the first pickup and return
         .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getFirstPickupTrajectory()))
         .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getFirstReturnTrajectory()))
 
-
         // raise the hood angle and sh00t
         .andThen(() -> shootStuff())
 
-        // to shoot the shots
+        // wait until we're done shooting
         .andThen(new WaitUntilCommand(() -> {
             System.out.println("Wait until");
             return shooterSubsystem.isUpToSpeed();
         }))
+        // the isUpToSpeed() was broken or something so we added this for a fix? dont quite remember
+        // either way, we wait to make *sure* we're done shooting
         .andThen(new WaitCommand(3))
 
         // stop shooting and lower the hood
@@ -192,18 +196,19 @@ public class Robot extends TimedRobot {
             shooterSubsystem.rotateToDeg(0, 0);
         }))
 
-        .andThen(new WaitCommand(1)) // so that we're sure that the hood angle can go down
+        // so that we're sure that the hood angle can go down
+        .andThen(new WaitCommand(1))
 
         // only execute the 2nd pickup and return if we have the trajectories for those
         // if we have a pickup, we'll have a return; so we don't have to worry about that
         .andThen(new ConditionalCommand(
-            new ProxyCommand(() -> 
+            new ProxyCommand(() ->
 
                 // get the second set of balls and shoot
                 new AutoDrive(driveSubsystem, driveSubsystem.getSecondPickupTrajectory())
                 .andThen(new AutoDrive(driveSubsystem, driveSubsystem.getSecondReturnTrajectory()))
                 .andThen(() -> shootStuff())
-                
+
                 // to shoot the shots
                 .andThen(new WaitUntilCommand(() -> {
                     System.out.println("Wait until");
@@ -211,12 +216,14 @@ public class Robot extends TimedRobot {
                 }))
                 .andThen(new WaitCommand(3))
 
+                // we are done so stop it
                 .andThen(() -> stopEverything())
             ),
             // stop it if we dont have a second path
             new InstantCommand(() -> {
                 stopEverything();
             }),
+            // only IF we have a second trajectory in the first place
             driveSubsystem::hasSecondTrajectory
         ))
 
@@ -228,6 +235,9 @@ public class Robot extends TimedRobot {
         .schedule();
     }
 
+    /**
+     * helper method to disable everything we need once we're done
+     */
     public void stopEverything(){
         driveSubsystem.tankVolts(0, 0);
         shooterSubsystem.stopSpinningFeeder();
@@ -238,10 +248,17 @@ public class Robot extends TimedRobot {
         new Idle(driveSubsystem);
     }
 
+    /**
+     * helper method to do everything we need to shoot a ball
+     */
     public void shootStuff() {
+        // stop moving
         driveSubsystem.tankVolts(0, 0);
+        // rotate the hood angle to 45deg
         shooterSubsystem.rotateToDeg(0, 45);
+        // start spinning up the shooter
         shooterSubsystem.startSpinningUp();
+        // spin the feeder (which feeds to the shooter)
         shooterSubsystem.spinFeeder();
     }
 
