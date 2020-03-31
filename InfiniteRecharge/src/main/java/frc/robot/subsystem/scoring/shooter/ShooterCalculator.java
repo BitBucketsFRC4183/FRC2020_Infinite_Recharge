@@ -10,6 +10,7 @@ import frc.robot.config.Config;
 
 public class ShooterCalculator {
 
+    // Arraylist of velocity points, used to calculate the spline
     private final List<VelocityPoint> points;
     private boolean targetLocked = false;
     VisionSubsystem visionSubsystem;
@@ -61,9 +62,10 @@ public class ShooterCalculator {
     ShooterCalculator(List<VelocityPoint> points) {
         this.points = points;
     }
-    
+
     /**
      * Default constructor with our calculated data points
+     * These points were obtained by testing the robot irl at multiple points
      */
     public ShooterCalculator() {
         this(Arrays.asList(
@@ -83,7 +85,11 @@ public class ShooterCalculator {
         this.splineVPoint = new SplineVelocityPoint(points);
     }
 
-    // TODO: empirically test this
+    /**
+     * If we have a valid target, then get the distance and then return the needed RPM to make the shot
+     * TODO: test empirically
+     * @return needed RPM to make the shot
+     */
     public double calculateSpeed_rpm() {
         boolean validTarget = visionSubsystem.getValidTarget();
         if (validTarget) {
@@ -94,6 +100,7 @@ public class ShooterCalculator {
             return splineVPoint.getSpeedSpline(distance);
         }
         // calculate the velocity for this distance_in
+        // If we don't have a target locked (we've lost the target) then return a default velocity
         if (!targetLocked){
             return ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM;
         } else {
@@ -101,6 +108,10 @@ public class ShooterCalculator {
         }
     }
 
+    /**
+     * Gets the speed in rpm and converts it to ticks
+     * @return gets needed speed in ticks
+     */
     public double calculateSpeed_ticks() {
         double speed_rpm = calculateSpeed_rpm();
         double speed_ticks = MathUtils.unitConverter(speed_rpm, 600, config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio;
@@ -111,21 +122,26 @@ public class ShooterCalculator {
     // TODO: empirically test this
     // decreases as u get closer
     // increases as u get it farther
+    /**
+     * Gets the distance if we have a valid target then gets the needed angle from the spline
+     * @return hood angle needed to make a shot
+     */
     public double calculateHoodAngle_deg() {
         boolean validTarget = visionSubsystem.getValidTarget();
         if (validTarget) {
             double ty = visionSubsystem.getTy();
             double distance = visionSubsystem.approximateDistanceFromTarget(ty);
             double hoodAngle = splineVPoint.getAngleSpline(distance);
-            // Store the target angle in case we lose the target. 
+            // Store the target angle in case we lose the target.
             if (!targetLocked){
                 lastTargetHoodAngle = hoodAngle;
             }
             targetLocked = true;
-            
+
             return hoodAngle;
         }
         // calculate the hood angle for this distance_in
+        // If we don't have a target locked (we've lost the target) then return a default angle
         if (!targetLocked){
             return ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG;
         } else {
