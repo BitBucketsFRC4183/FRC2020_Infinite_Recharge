@@ -161,6 +161,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         // reset nav system, turn on LL leds
         navigationSubsystem.reset();
+        navigationSubsystem.setInitialPose(driveSubsystem.getFirstPickupTrajectory().getInitialPose());
         visionSubsystem.turnOnLEDs();
         // begin spinning up our hopper
         shooterSubsystem.spinBMS();

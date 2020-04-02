@@ -22,7 +22,6 @@ import frc.robot.subsystem.navigation.systems.RobotSystem1;
 import frc.robot.subsystem.navigation.systems.RobotSystemConfig;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.utils.data.DoubleDataWindow;
-import frc.robot.utils.data.filters.statespace.kalman.UnscentedKalmanFilter;
 import frc.robot.subsystem.vision.VisionSubsystem;
 
 public class NavigationSubsystem extends BitBucketSubsystem {
@@ -109,6 +108,10 @@ public class NavigationSubsystem extends BitBucketSubsystem {
         );
 
         driveSubsystem.resetEncoders();
+    }
+
+    public void setInitialPose(Pose2d pose) {
+        sys.setInitialPose(pose);
     }
 
   	@Override
