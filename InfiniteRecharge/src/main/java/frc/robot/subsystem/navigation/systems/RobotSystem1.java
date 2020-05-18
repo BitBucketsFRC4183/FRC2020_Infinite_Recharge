@@ -34,20 +34,20 @@ import frc.robot.utils.math.MathUtils;
 public class RobotSystem1 extends StateSpaceSystem<StateSpaceModel, OutputObserver> {
     // states
     private static final int X_LENGTH = 6;
-    private static final int X_X = 1; // x position of robot (m)
-    private static final int X_Y = 2; // y position of robot (m)
-    private static final int X_THETA = 3; // heading of robot (rad)
-    private static final int X_VL = 4; // velocity of left wheels (m/s)
-    private static final int X_VR = 5; // velocity of right wheels (m/s)
-    private static final int X_OFFSET = 6; // offset of yaw from NavX. 
+    private static final int X_X = 0; // x position of robot (m)
+    private static final int X_Y = 1; // y position of robot (m)
+    private static final int X_THETA = 2; // heading of robot (rad)
+    private static final int X_VL = 3; // velocity of left wheels (m/s)
+    private static final int X_VR = 4; // velocity of right wheels (m/s)
+    private static final int X_OFFSET = 5; // offset of yaw from NavX. 
 
     // outputs
     private static final int Y_LENGTH = 5;
-    private static final int Y_TY = 1;
-    private static final int Y_TX = 2;
-    private static final int Y_VL = 3;
-    private static final int Y_VR = 4;
-    private static final int Y_YAW = 5; // yaw = theta + offset, where offset describes the initial heading of the robot
+    private static final int Y_TY = 0;
+    private static final int Y_TX = 1;
+    private static final int Y_VL = 2;
+    private static final int Y_VR = 3;
+    private static final int Y_YAW = 4; // yaw = theta + offset, where offset describes the initial heading of the robot
 
 
 
