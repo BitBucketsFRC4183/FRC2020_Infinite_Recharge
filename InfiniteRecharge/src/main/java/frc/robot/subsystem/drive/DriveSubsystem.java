@@ -34,6 +34,7 @@ import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.JoystickScale;
 import frc.robot.utils.talonutils.MotorUtils;
+import frc.robot.subsystem.drive.auto.AutoConfig;
 
 public class DriveSubsystem extends BitBucketSubsystem {
     public enum DriveMethod {
@@ -117,13 +118,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
         // kinematics constraint so the code knows how the drive base behaves and the max allowed speed
         DifferentialDriveKinematicsConstraint kinematicsConstraint = new DifferentialDriveKinematicsConstraint(
             DRIVE_UTILS.KINEMATICS,
-            config.auto.cruiseSpeed_mps
+            AutoConfig.cruiseSpeed_mps
         );
 
         // create the configuration for the trajectory using the max speed and acceleration
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-            config.auto.cruiseSpeed_mps,
-            config.auto.maxAcceleration_mps
+            AutoConfig.cruiseSpeed_mps,
+            AutoConfig.maxAcceleration_mps
         );
         // ... but put in constraints
         trajectoryConfig.addConstraint(kinematicsConstraint);
@@ -292,11 +293,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectories.add(new FullTrajectory("opponent trench", oppTrenchFirstPickup, oppTrenchFirstReturn, oppTrenchSecondPickup, oppTrenchSecondReturn));
 
         // create the RAMSETE controller with the specified tuning parameters
-        ramsete = new RamseteController(config.auto.b, config.auto.zeta);
+        ramsete = new RamseteController(AutoConfig.b, AutoConfig.zeta);
 
         // create the PID controllers
-        leftAutoPID = new PIDController(config.auto.kP, 0, 0);
-        rightAutoPID = new PIDController(config.auto.kP, 0, 0);
+        leftAutoPID = new PIDController(AutoConfig.kP, 0, 0);
+        rightAutoPID = new PIDController(AutoConfig.kP, 0, 0);
     }
 
 
