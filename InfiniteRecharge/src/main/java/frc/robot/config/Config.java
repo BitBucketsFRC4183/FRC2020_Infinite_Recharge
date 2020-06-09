@@ -32,9 +32,6 @@ public class Config {
 
     public int BALLMANAGEMENT_MOTOR_ID = 14;
 
-    // Intake
-    public int INTAKE_MOTOR_ID = 10;
-
     // Climb
     public int CLIMB_LEFT_MOTOR_ID = 12;
     public int CLIMB_RIGHT_MOTOR_ID = 8;
@@ -116,12 +113,6 @@ public class Config {
             azimuth.inverted = true;
             elevation.inverted = false;
         }
-    }
-
-    public static class IntakeConfig {
-        public boolean intakePivotEnabled = true;
-
-        public MotorConfig intake = new MotorConfig();
     }
 
     public static class ClimbConfig {
@@ -240,23 +231,11 @@ public class Config {
         }
     }
 
-    public static class AutoConfig {
-        public double cruiseSpeed_mps = 0.3*14;
-        public double maxAcceleration_mps = 2;
-
-        public double b = 2;
-        public double zeta = 0.35;
-
-        public double kP = 0.911;
-    }
-
     public ShooterConfig shooter = new ShooterConfig();
     public BallManagementConfig ballManagement = new BallManagementConfig();
     public DriveConfig drive = new DriveConfig();
-    public IntakeConfig intake = new IntakeConfig();
     public SpinnyBoiConfig spinnyboi = new SpinnyBoiConfig();
     public ClimbConfig climb = new ClimbConfig();
-    public AutoConfig auto = new AutoConfig();
 
     public Config() {
 
@@ -270,9 +249,6 @@ public class Config {
         shooter.shooter.id = SHOOTER_MOTOR_ID;
         shooter.shooterFollower.id = SHOOTER_FOLLOWER_MOTOR_ID;
         ballManagement.spinner.id = BALLMANAGEMENT_MOTOR_ID;
-
-        // Intake
-        intake.intake.id = INTAKE_MOTOR_ID;
 
         // Climb
         climb.climbRight.id = CLIMB_RIGHT_MOTOR_ID;
