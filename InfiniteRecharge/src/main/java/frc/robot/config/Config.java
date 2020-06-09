@@ -3,7 +3,6 @@ package frc.robot.config;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import frc.robot.config.Config.ShooterConfig.BallManagementConfig;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class Config {
@@ -51,72 +50,6 @@ public class Config {
 
     //////////////////////////////////////////////////////////////////////////////
     // Motor Configs
-    public static class ShooterConfig {
-        public float azimuthGearRatio = 28f / 130f;
-
-        public float elevationGearRatio = 40f / 70f;
-
-        public float shooterGearRatio = .45f / 1f;
-
-        public float defaultAzimuthTurnVelocity_deg = 10;
-        public float defaultElevationTurnVelocity_deg = 10;
-
-        public double manualAzimuthDeadband = 0.2;
-        public double manualElevationDeadband = 0.2;
-
-        public float leftAzimuthSoftLimit_deg = 90;
-        public float rightAzimuthSoftLimit_deg = 180;
-        
-        public float forwardElevationSoftLimit_deg = 60;
-        public float backwardElevationSoftLimit_deg = 0;
-
-        public float feederSpinUpDeadband_ticks = 50;
-
-        public MotorConfig azimuth = new MotorConfig();
-        public MotorConfig elevation = new MotorConfig();
-        public MotorConfig feeder = new MotorConfig();
-        public MotorConfig shooter = new MotorConfig();
-        public MotorConfig shooterFollower = new MotorConfig();
-
-        // meters as all good things are
-        // relative to center of robot
-        // not necessarily CoM of robot but like, same thing
-        public double xTurretCenter = 0.17181322;
-        public double yTurretCenter = 0.01766824;
-        // distance from center of turret to LL camera
-        public double rLL = 0.19368008;
-
-        public float[] elevationPositions_deg = new float[] { //
-                0, /// Comment so that VSCode doesn't ruin my format.
-                10, // Comment so that VSCode doesn't ruin my format.
-                40, // Comment so that VSCode doesn't ruin my format.
-                50, // Comment so that VSCode doesn't ruin my format.
-                60 /// Comment so that VSCode doesn't ruin my format.
-        };
-
-        public static class BallManagementConfig {
-            public MotorConfig spinner = new MotorConfig();
-
-            public BallManagementConfig() {
-                spinner.encoderType = MotorConfig.EncoderType.None;
-            }
-        }
-
-        public ShooterConfig() {
-            shooter.encoderType = MotorConfig.EncoderType.Integrated;
-            shooter.inverted = true;
-            shooterFollower.inverted = true;
-
-            azimuth.motionMagicAcceleration = 1350;
-            azimuth.motionMagicCruiseVelocity = 1350;
-
-            elevation.motionMagicAcceleration = 1350;
-            elevation.motionMagicCruiseVelocity = 1350;
-
-            azimuth.inverted = true;
-            elevation.inverted = false;
-        }
-    }
 
     public static class IntakeConfig {
         public boolean intakePivotEnabled = true;
