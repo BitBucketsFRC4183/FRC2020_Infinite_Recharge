@@ -102,7 +102,7 @@ public class ShooterCalculator {
         // calculate the velocity for this distance_in
         // If we don't have a target locked (we've lost the target) then return a default velocity
         if (!targetLocked){
-            return ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM;
+            return config.shooter.DEFAULT_SHOOTER_VELOCITY_RPM;
         } else {
             return lastTargetVelocity;
         }
@@ -143,7 +143,7 @@ public class ShooterCalculator {
         // calculate the hood angle for this distance_in
         // If we don't have a target locked (we've lost the target) then return a default angle
         if (!targetLocked){
-            return ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG;
+            return config.shooter.DEFAULT_ELEVATION_TARGET_DEG;
         } else {
             return lastTargetHoodAngle;
         }
