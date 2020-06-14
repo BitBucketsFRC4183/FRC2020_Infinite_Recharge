@@ -118,13 +118,13 @@ public class DriveSubsystem extends BitBucketSubsystem {
         // kinematics constraint so the code knows how the drive base behaves and the max allowed speed
         DifferentialDriveKinematicsConstraint kinematicsConstraint = new DifferentialDriveKinematicsConstraint(
             DRIVE_UTILS.KINEMATICS,
-            AutoConfig.cruiseSpeed_mps
+            config.auto.cruiseSpeed_mps
         );
 
         // create the configuration for the trajectory using the max speed and acceleration
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-            AutoConfig.cruiseSpeed_mps,
-            AutoConfig.maxAcceleration_mps
+            config.auto.cruiseSpeed_mps,
+            config.auto.maxAcceleration_mps
         );
         // ... but put in constraints
         trajectoryConfig.addConstraint(kinematicsConstraint);
@@ -293,11 +293,11 @@ public class DriveSubsystem extends BitBucketSubsystem {
         trajectories.add(new FullTrajectory("opponent trench", oppTrenchFirstPickup, oppTrenchFirstReturn, oppTrenchSecondPickup, oppTrenchSecondReturn));
 
         // create the RAMSETE controller with the specified tuning parameters
-        ramsete = new RamseteController(AutoConfig.b, AutoConfig.zeta);
+        ramsete = new RamseteController(config.auto.b, config.auto.zeta);
 
         // create the PID controllers
-        leftAutoPID = new PIDController(AutoConfig.kP, 0, 0);
-        rightAutoPID = new PIDController(AutoConfig.kP, 0, 0);
+        leftAutoPID = new PIDController(config.auto.kP, 0, 0);
+        rightAutoPID = new PIDController(config.auto.kP, 0, 0);
     }
 
 

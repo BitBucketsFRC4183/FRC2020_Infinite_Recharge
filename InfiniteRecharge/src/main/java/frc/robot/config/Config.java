@@ -3,7 +3,7 @@ package frc.robot.config;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import frc.robot.config.Config.ShooterConfig.BallManagementConfig;
+import frc.robot.config.BallManagementConfig;
 import frc.robot.subsystem.drive.auto.AutoConfig;
 import frc.robot.subsystem.scoring.intake.IntakeConfig;
 import frc.robot.utils.control.pidf.PIDF;

@@ -11,7 +11,6 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
 
-import frc.robot.subsystem.scoring.intake.IntakeConfig;
 import frc.robot.config.MotorConfig;
 
 public class IntakeSubsystem extends BitBucketSubsystem {
@@ -36,14 +35,14 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     @Override
     public void initialize() {
         super.initialize();
-        if (IntakeConfig.intakePivotEnabled){
+        if (config.intake.intakePivotEnabled){
             intakePivet = new DoubleSolenoid(RobotMap.INTAKE_PNEUMATIC_OPEN_CHANNEL, RobotMap.INTAKE_PNEUMATIC_CLOSED_CHANNEL); 
             intakePivet.set(Value.kForward);
             SmartDashboard.putString(getName() + "/Intake Pivet", "Enabled");
         } else {
             SmartDashboard.putString(getName() + "/Intake Pivet", "Disabled");
         }
-        motor = MotorUtils.makeSRX(new MotorConfig());
+        motor = MotorUtils.makeSRX(config.intake.intake);
         
         dashboardInit();
         
@@ -53,7 +52,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     public void dashboardInit() {
         // TODO Auto-generated method stub
         super.dashboardInit();
-        SmartDashboard.putNumber(getName() + "/Intake Speed", IntakeConfig.INTAKE_OUTPUT);
+        SmartDashboard.putNumber(getName() + "/Intake Speed", config.intake.INTAKE_OUTPUT);
     }
 
     @Override
@@ -81,12 +80,12 @@ public class IntakeSubsystem extends BitBucketSubsystem {
             break;
 
         case Intaking:
-            motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", IntakeConfig.INTAKE_OUTPUT));
+            motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", config.intake.INTAKE_OUTPUT));
             SmartDashboard.putString(getName() + "/IntakeState", "Intaking");
             break;
 
         case Outaking:
-            motor.set(-SmartDashboard.getNumber(getName() + "/Intake Speed", IntakeConfig.OUTAKE_OUTPUT));
+            motor.set(-SmartDashboard.getNumber(getName() + "/Intake Speed", config.intake.OUTAKE_OUTPUT));
             SmartDashboard.putString(getName() + "/IntakeState", "Outaking");
             break;
         }
@@ -105,7 +104,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     }
 
     public void toggleIntakeArm(){
-        if(IntakeConfig.intakePivotEnabled){
+        if(config.intake.intakePivotEnabled){
             Value armState = intakePivet.get();
             if (armState == Value.kForward) {
                 armState = Value.kReverse;

@@ -58,14 +58,14 @@ public class IntakeSubsystemTest extends SubsystemTest {
     public void beforeTest() throws Exception {
         super.beforeTest();
         config = ConfigChooser.getConfig();
-        IntakeConfig.intakePivotEnabled = true;
+        config.intake.intakePivotEnabled = true;
 
         // when our subsystem is initialized, it will create a motor and a solenoid. We
         // don't want
         // actual motors and solenoids to be created, we want mock ones. Make sure we
         // return our mocked
         // instances instead of new real instances.
-        whenNew(WPI_TalonSRX.class).withArguments(eq(Config.INTAKE_MOTOR_ID)).thenReturn(motor);
+        whenNew(WPI_TalonSRX.class).withArguments(eq(config.intake.intake.id)).thenReturn(motor);
         whenNew(DoubleSolenoid.class).withArguments(anyInt(), anyInt()).thenReturn(intakePivet);
     }
 
