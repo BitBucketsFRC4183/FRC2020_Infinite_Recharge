@@ -4,6 +4,8 @@ import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import frc.robot.config.Config.ShooterConfig.BallManagementConfig;
+import frc.robot.subsystem.drive.auto.AutoConfig;
+import frc.robot.subsystem.scoring.intake.IntakeConfig;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class Config {
@@ -31,6 +33,9 @@ public class Config {
     public int FEEDER_MOTOR_ID = 9;
 
     public int BALLMANAGEMENT_MOTOR_ID = 14;
+
+    // Intake
+    public static final int INTAKE_MOTOR_ID = 10;
 
     // Climb
     public int CLIMB_LEFT_MOTOR_ID = 12;
@@ -234,8 +239,10 @@ public class Config {
     public ShooterConfig shooter = new ShooterConfig();
     public BallManagementConfig ballManagement = new BallManagementConfig();
     public DriveConfig drive = new DriveConfig();
+    public IntakeConfig intake = new IntakeConfig();
     public SpinnyBoiConfig spinnyboi = new SpinnyBoiConfig();
     public ClimbConfig climb = new ClimbConfig();
+    public AutoConfig auto = new AutoConfig();
 
     public Config() {
 
@@ -249,6 +256,9 @@ public class Config {
         shooter.shooter.id = SHOOTER_MOTOR_ID;
         shooter.shooterFollower.id = SHOOTER_FOLLOWER_MOTOR_ID;
         ballManagement.spinner.id = BALLMANAGEMENT_MOTOR_ID;
+
+        // Intake
+        intake.intake.id = INTAKE_MOTOR_ID;
 
         // Climb
         climb.climbRight.id = CLIMB_RIGHT_MOTOR_ID;

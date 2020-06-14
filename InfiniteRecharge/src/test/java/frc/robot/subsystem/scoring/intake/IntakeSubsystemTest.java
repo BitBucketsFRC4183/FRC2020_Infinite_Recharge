@@ -65,7 +65,7 @@ public class IntakeSubsystemTest extends SubsystemTest {
         // actual motors and solenoids to be created, we want mock ones. Make sure we
         // return our mocked
         // instances instead of new real instances.
-        whenNew(WPI_TalonSRX.class).withArguments(eq(IntakeConfig.INTAKE_MOTOR_ID)).thenReturn(motor);
+        whenNew(WPI_TalonSRX.class).withArguments(eq(Config.INTAKE_MOTOR_ID)).thenReturn(motor);
         whenNew(DoubleSolenoid.class).withArguments(anyInt(), anyInt()).thenReturn(intakePivet);
     }
 
