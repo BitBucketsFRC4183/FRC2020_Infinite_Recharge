@@ -15,8 +15,6 @@ import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
 
 import frc.robot.utils.data.filters.RunningAverageFilter;
-import frc.robot.subsystem.scoring.shooter.ShooterConstants;
-import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementConstants;
 import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.subsystem.scoring.shooter.ShooterCalculator;
@@ -63,9 +61,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private double backwardElevationSoftLimit_ticks;
 
     // Class Declarations
-    RunningAverageFilter azimuthFilter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
-    RunningAverageFilter elevationFilter = new RunningAverageFilter(ShooterConstants.FILTER_LENGTH);
-    RunningAverageFilter feederFilter = new RunningAverageFilter(ShooterConstants.FEEDER_FILTER_LENGTH);
+    RunningAverageFilter azimuthFilter = new RunningAverageFilter(config.shooter.FILTER_LENGTH);
+    RunningAverageFilter elevationFilter = new RunningAverageFilter(config.shooter.FILTER_LENGTH);
+    RunningAverageFilter feederFilter = new RunningAverageFilter(config.shooter.FEEDER_FILTER_LENGTH);
 
     public BallManagementSubsystem ballManagementSubsystem;
     private VisionSubsystem visionSubsystem;
@@ -253,18 +251,18 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         // be somewhere else.
         if (reverseElevationLimitSwitchClosed) {
             elevationMotor.setSelectedSensorPosition(
-                    (int) (MathUtils.unitConverter(ShooterConstants.ELEVATION_LIMIT_SWITCH_DEG, 360,
+                    (int) (MathUtils.unitConverter(config.shooter.ELEVATION_LIMIT_SWITCH_DEG, 360,
                             config.shooter.elevation.ticksPerRevolution) / config.shooter.elevationGearRatio));
 // 254
         }
         if (leftAzimuthLimitSwitchClosed) {
             azimuthMotor.setSelectedSensorPosition(
-                    (int) (MathUtils.unitConverter(-ShooterConstants.AZIMUTH_LEFT_LIMIT_SWITCH_DEG, 360,
+                    (int) (MathUtils.unitConverter(-config.shooter.AZIMUTH_LEFT_LIMIT_SWITCH_DEG, 360,
                             config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio));
         }
         if (rightAzimuthLimitSwitchClosed) {
             azimuthMotor.setSelectedSensorPosition(
-                    (int) (MathUtils.unitConverter(ShooterConstants.AZIMUTH_RIGHT_LIMIT_SWITCH_DEG, 360,
+                    (int) (MathUtils.unitConverter(config.shooter.AZIMUTH_RIGHT_LIMIT_SWITCH_DEG, 360,
                             config.shooter.azimuth.ticksPerRevolution) / config.shooter.azimuthGearRatio));
         }
 
@@ -513,12 +511,12 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     @Override
     protected void dashboardInit() {
         super.dashboardInit();
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM);
-        SmartDashboard.putNumber(getName() + "/Feeder Output Percent", ShooterConstants.FEEDER_OUTPUT_PERCENT);
+        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", config.shooter.DEFAULT_SHOOTER_VELOCITY_RPM);
+        SmartDashboard.putNumber(getName() + "/Feeder Output Percent", config.shooter.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Dashboard Elevation Target",
-                ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
+                config.shooter.DEFAULT_ELEVATION_TARGET_DEG);
 
         SmartDashboard.putNumber(getName() + "/Shooter %Output", 0.5); // TODO TEMPORARY
     }
@@ -561,9 +559,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 MathUtils.unitConverter(error, config.shooter.shooter.ticksPerRevolution, 600)
                         / config.shooter.shooterGearRatio);
 
-        if (ShooterConstants.USE_BANG_BANG) {
+        if (config.shooter.USE_BANG_BANG) {
             if (error < -tp100ms / 2) {
-                ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_RAMP_UP_PERCENT);
+                ballPropulsionMotor.set(ControlMode.PercentOutput, config.shooter.BANG_BANG_RAMP_UP_PERCENT);
                 // I.e if our error is -300 and our tp100ms is 300, our -tp100ms is -300.
                 // divide that by 2 and you get -150.
                 // -300 is less than -150, so the shooter will ramp up.
@@ -572,9 +570,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                 // so it will continue on to the other if statements.
 
             } else if (error < 0 && error > -tp100ms / 8) {
-                ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_MAINTAIN_SPEED_PERCENT);
-            } else if (error < ShooterConstants.BANG_BANG_ERROR) {
-                ballPropulsionMotor.set(ControlMode.PercentOutput, ShooterConstants.BANG_BANG_PERCENT);
+                ballPropulsionMotor.set(ControlMode.PercentOutput, config.shooter.BANG_BANG_MAINTAIN_SPEED_PERCENT);
+            } else if (error < config.shooter.BANG_BANG_ERROR) {
+                ballPropulsionMotor.set(ControlMode.PercentOutput, config.shooter.BANG_BANG_PERCENT);
             } else {
                 ballPropulsionMotor.set(ControlMode.PercentOutput, 0);
             }
@@ -645,13 +643,13 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         if (smartDashboardGetterRateLimiterClock >= 1) {
             smartDashboardGetterRateLimiterClock = 0;
             shooterVelocity_rpm = SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM",
-                    ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM);
+                    config.shooter.DEFAULT_SHOOTER_VELOCITY_RPM);
 
             feederOutputPercent = SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
-                    ShooterConstants.FEEDER_OUTPUT_PERCENT);
+                    config.shooter.FEEDER_OUTPUT_PERCENT);
 
             BMSOutputPercent = SmartDashboard.getNumber(getName() + "/BallManagementSubsystem/Output Percent",
-                    BallManagementConstants.BMS_OUTPUT_PERCENT);
+                    config.ballManagement.BMS_OUTPUT_PERCENT);
 
             azimuthTurnRate = SmartDashboard.getNumber(getName() + "/Azimuth Turn Rate",
                     config.shooter.defaultAzimuthTurnVelocity_deg);
