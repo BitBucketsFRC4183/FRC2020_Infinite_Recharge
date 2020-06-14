@@ -34,7 +34,6 @@ import frc.robot.subsystem.drive.auto.AutoDrive;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.pidhelper.PIDHelperSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
-import frc.robot.subsystem.scoring.shooter.ShooterConstants;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import java.util.function.BooleanSupplier;
 /**
@@ -275,7 +274,7 @@ public class Robot extends TimedRobot {
         visionSubsystem.turnOnLEDs();
 
         if (config.enableShooterSubsystem) {
-            shooterSubsystem.rotateToDeg(0, ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG);
+            shooterSubsystem.rotateToDeg(0, config.shooter.DEFAULT_ELEVATION_TARGET_DEG);
         }
 
         if (config.enableClimbSubsystem) {
@@ -385,7 +384,7 @@ public class Robot extends TimedRobot {
 
             if (oi.setElevationToDashboardNumber()) {
                 shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(),
-                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG));
+                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", config.shooter.DEFAULT_ELEVATION_TARGET_DEG));
             }
         }
 

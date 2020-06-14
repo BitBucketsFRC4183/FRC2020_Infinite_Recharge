@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import frc.robot.config.ShooterConfig;
 import frc.robot.subsystem.vision.VisionSubsystem;
 
 /**
@@ -35,8 +36,8 @@ public class ShooterCalculatorTest {
 
         // check no valid target
         when(visionSubsystem.getValidTarget()).thenReturn(false);
-        assertEquals(ShooterConstants.DEFAULT_ELEVATION_TARGET_DEG, shooterCalculator.calculateHoodAngle_deg(), 0);
-        assertEquals(ShooterConstants.DEFAULT_SHOOTER_VELOCITY_RPM, shooterCalculator.calculateSpeed_rpm(), .1);
+        assertEquals(ShooterConfig.DEFAULT_ELEVATION_TARGET_DEG, shooterCalculator.calculateHoodAngle_deg(), 0);
+        assertEquals(ShooterConfig.DEFAULT_SHOOTER_VELOCITY_RPM, shooterCalculator.calculateSpeed_rpm(), .1);
     }
 
     /**
