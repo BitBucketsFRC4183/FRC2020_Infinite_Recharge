@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class BallManagementSubsystem extends BitBucketSubsystem {
 
@@ -21,6 +22,7 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
     // Motors
 
     // Talons
+    @Log.SpeedController
     WPI_TalonSRX motor;
 
     //////////////////////////////////////////////////////////////////////////////
