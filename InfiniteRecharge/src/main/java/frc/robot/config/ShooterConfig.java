@@ -1,8 +1,10 @@
 package frc.robot.config;
 
 import frc.robot.config.MotorConfig;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 
-public class ShooterConfig {
+public class ShooterConfig implements Loggable {
 
     // Constants
 
@@ -14,8 +16,6 @@ public class ShooterConfig {
 
     public static final double FEEDER_OUTPUT_PERCENT = 0.8;
 
-    public static final float DEFAULT_SHOOTER_VELOCITY_RPM = 6000;
-
     public static final boolean USE_BANG_BANG = false;
     public static final double BANG_BANG_PERCENT = 1.0;
     public static final double BANG_BANG_RAMP_UP_PERCENT = 0.4;
@@ -25,6 +25,10 @@ public class ShooterConfig {
     public static final float ELEVATION_LIMIT_SWITCH_DEG = 0f;
     public static final float AZIMUTH_LEFT_LIMIT_SWITCH_DEG = 90;
     public static final float AZIMUTH_RIGHT_LIMIT_SWITCH_DEG = 180;
+
+    // Dashboard Config
+
+    private float shooterVelocity_rpm;
 
     // Config
 
@@ -83,5 +87,19 @@ public class ShooterConfig {
 
         azimuth.inverted = true;
         elevation.inverted = false;
+    }
+
+    @Config(defaultValueNumeric = 6000, name = "Shooter Velocity (RPM)")
+    public void setShooterVelocity_rpm(float shooterVelocity_rpm) {
+        this.shooterVelocity_rpm = shooterVelocity_rpm;
+    }
+
+    @Override
+    public String configureLogName() {
+        return "Shooter";
+    }
+
+    public float getShooterVelocity_rpm() {
+        return shooterVelocity_rpm;
     }
 }
