@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import frc.robot.config.Config;
 import frc.robot.config.ShooterConfig;
 import frc.robot.subsystem.vision.VisionSubsystem;
 
@@ -24,6 +25,8 @@ public class ShooterCalculatorTest {
     @Mock
     VisionSubsystem visionSubsystem;
 
+    Config config = new Config();
+
     /**
      * Test the ShooterCalculator calculateHoodAngle_deg with no target
      * 
@@ -31,13 +34,15 @@ public class ShooterCalculatorTest {
      */
     @Test
     public void testCalculateHoodAngle_degNoTarget() throws Exception {
-        ShooterCalculator shooterCalculator = new ShooterCalculator();
+        ShooterCalculator shooterCalculator = new ShooterCalculator(config);
         shooterCalculator.initialize(visionSubsystem);
 
         // check no valid target
         when(visionSubsystem.getValidTarget()).thenReturn(false);
         assertEquals(ShooterConfig.DEFAULT_ELEVATION_TARGET_DEG, shooterCalculator.calculateHoodAngle_deg(), 0);
-        assertEquals(ShooterConfig.DEFAULT_SHOOTER_VELOCITY_RPM, shooterCalculator.calculateSpeed_rpm(), .1);
+
+        config.shooter.setShooterVelocity_rpm(1000);
+        assertEquals(1000, shooterCalculator.calculateSpeed_rpm(), .1);
     }
 
     /**
@@ -49,7 +54,7 @@ public class ShooterCalculatorTest {
     public void testCalculateHoodAngle_degExactTarget() throws Exception {
         // create the shooter calculator with test points so we don't worry about changing our unit tests
         // when we have real data
-        ShooterCalculator shooterCalculator = new ShooterCalculator(Arrays.asList(
+        ShooterCalculator shooterCalculator = new ShooterCalculator(config, Arrays.asList(
             new ShooterCalculator.VelocityPoint(10, 1000, 10),
             new ShooterCalculator.VelocityPoint(20, 2000, 20)
         ));
@@ -76,7 +81,7 @@ public class ShooterCalculatorTest {
     public void testCalculateHoodAngle_degIntermediateTarget() throws Exception {
         // create the shooter calculator with test points so we don't worry about changing our unit tests
         // when we have real data
-        ShooterCalculator shooterCalculator = new ShooterCalculator(Arrays.asList(
+        ShooterCalculator shooterCalculator = new ShooterCalculator(config, Arrays.asList(
             new ShooterCalculator.VelocityPoint(10, 1000, 10),
             new ShooterCalculator.VelocityPoint(20, 2000, 20)
         ));

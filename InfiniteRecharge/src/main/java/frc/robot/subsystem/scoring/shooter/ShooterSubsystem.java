@@ -13,7 +13,7 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.math.MathUtils;
 import frc.robot.utils.talonutils.MotorUtils;
-
+import io.github.oblarg.oblog.annotations.Log;
 import frc.robot.utils.data.filters.RunningAverageFilter;
 import frc.robot.subsystem.scoring.shooter.ball_management.BallManagementSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
@@ -40,10 +40,15 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private boolean reverseElevationLimitSwitchClosed;
 
     // Integers
+
+    @Log(name = "Azimuth Target Position (Ticks)")
     private int targetPositionAzimuth_ticks;
+
     private int targetChangeAzimuth_ticks;
 
+    @Log(name = "Elevation Target Position (Ticks)")
     private int targetPositionElevation_ticks;
+
     private int targetChangeElevation_ticks;
 
     // Floats
@@ -65,9 +70,14 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     RunningAverageFilter elevationFilter = new RunningAverageFilter(config.shooter.FILTER_LENGTH);
     RunningAverageFilter feederFilter = new RunningAverageFilter(config.shooter.FEEDER_FILTER_LENGTH);
 
+    @Log.Exclude
+    @io.github.oblarg.oblog.annotations.Config.Exclude
     public BallManagementSubsystem ballManagementSubsystem;
+
+    @Log.Exclude
+    @io.github.oblarg.oblog.annotations.Config.Exclude
     private VisionSubsystem visionSubsystem;
-    private ShooterCalculator shooterCalculator = new ShooterCalculator();
+    private ShooterCalculator shooterCalculator;
 
     //////////////////////////////////////////////////////////////////////////////
     // Motors
@@ -77,6 +87,8 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private WPI_TalonSRX elevationMotor;
     private WPI_TalonFX ballPropulsionMotor;
     private WPI_TalonFX ballPropulsionFollower;
+
+    @Log.SpeedController
     private WPI_TalonSRX feeder;
 
     // Neos
@@ -86,7 +98,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
     double smartDashboardGetterRateLimiterClock;
 
-    private double shooterVelocity_rpm;
     private double feederOutputPercent;
     private double BMSOutputPercent;
     private double azimuthTurnRate;
@@ -98,6 +109,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     public ShooterSubsystem(Config config, VisionSubsystem visionSubsystem) {
         super(config);
         this.visionSubsystem = visionSubsystem;
+        shooterCalculator = new ShooterCalculator(config);
     }
 
     @Override
@@ -282,7 +294,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
      */
     public void spinUp() {
         if (!autoAiming) {
-            shooterVelocity_ticks = (float) MathUtils.unitConverter(shooterVelocity_rpm, 600,
+            shooterVelocity_ticks = (float) MathUtils.unitConverter(config.shooter.getShooterVelocity_rpm(), 600,
                     config.shooter.shooter.ticksPerRevolution) * config.shooter.shooterGearRatio;
         }
         double averageError = feederFilter
@@ -511,7 +523,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     @Override
     protected void dashboardInit() {
         super.dashboardInit();
-        SmartDashboard.putNumber(getName() + "/Shooter Velocity RPM", config.shooter.DEFAULT_SHOOTER_VELOCITY_RPM);
         SmartDashboard.putNumber(getName() + "/Feeder Output Percent", config.shooter.FEEDER_OUTPUT_PERCENT);
         SmartDashboard.putNumber(getName() + "/Azimuth Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
         SmartDashboard.putNumber(getName() + "/Elevation Turn Rate", config.shooter.defaultAzimuthTurnVelocity_deg);
@@ -599,7 +610,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
             SmartDashboard.putNumber(getName() + "/Shooter current", ballPropulsionMotor.getSupplyCurrent());
 
-            SmartDashboard.putNumber(getName() + "/Target Position ", targetPositionAzimuth_ticks);
             SmartDashboard.putNumber(getName() + "/Absolute Degrees to Rotate", absoluteDegreesToRotateAzimuth);
             SmartDashboard.putNumber(getName() + "/Azimuth Position ", azimuthMotor.getSelectedSensorPosition());
 
@@ -617,7 +627,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
                                     config.shooter.elevation.ticksPerRevolution, 360)
                                     * config.shooter.elevationGearRatio);
 
-            SmartDashboard.putNumber(getName() + "/Elevation Target Position ", targetPositionElevation_ticks);
             SmartDashboard.putNumber(getName() + "/Elevation Position ", elevationMotor.getSelectedSensorPosition());
 
             SmartDashboard
@@ -642,8 +651,6 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         if (smartDashboardGetterRateLimiterClock >= 1) {
             smartDashboardGetterRateLimiterClock = 0;
-            shooterVelocity_rpm = SmartDashboard.getNumber(getName() + "/Shooter Velocity RPM",
-                    config.shooter.DEFAULT_SHOOTER_VELOCITY_RPM);
 
             feederOutputPercent = SmartDashboard.getNumber(getName() + "/Feeder Output Percent",
                     config.shooter.FEEDER_OUTPUT_PERCENT);
@@ -673,5 +680,9 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         targetPositionElevation_ticks = 0;
         targetChangeElevation_ticks = 0;
         absoluteDegreesToRotateAzimuth = 0;
+    }
+    @Override
+    public String configureLogName() {
+        return "Shooter";
     }
 }

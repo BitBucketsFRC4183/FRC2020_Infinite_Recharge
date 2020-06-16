@@ -27,6 +27,8 @@ import frc.robot.subsystem.climber.ClimbSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.CommandUtils;
 import frc.robot.utils.ProxyCommand;
+import io.github.oblarg.oblog.Logger;
+import io.github.oblarg.oblog.annotations.Log;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
 import frc.robot.subsystem.drive.Idle;
@@ -59,6 +61,7 @@ public class Robot extends TimedRobot {
 
     private final OI oi = new OI();
 
+    @Log.Exclude
     private List<BitBucketSubsystem> subsystems = new ArrayList<>();
 
     private CANChecker canChecker;
@@ -114,6 +117,12 @@ public class Robot extends TimedRobot {
             canChecker.addTalons(subsystem.getTalons());
         }
 
+        // The first argument is the root container
+        // The second argument is whether logging and config should be given separate tabs
+        // NOTE: This must happen after robot initialization so the Logged fields are all valid objects
+        Logger.configureLoggingAndConfig(this, false);
+        Logger.configureLoggingAndConfig(config, false);
+
         lastTime = System.currentTimeMillis();
     }
 
@@ -140,6 +149,9 @@ public class Robot extends TimedRobot {
         }
 
         CommandScheduler.getInstance().run();
+
+        // update Oblog entries
+        Logger.updateEntries();
 
         lastTime = currentTime;
     }
