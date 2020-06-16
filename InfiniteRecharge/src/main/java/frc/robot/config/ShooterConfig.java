@@ -29,6 +29,8 @@ public class ShooterConfig implements Loggable {
     // Dashboard Config
 
     private float shooterVelocity_rpm;
+    private float azimuthTurnRate_deg;
+    private float elevationTurnRate_deg;
 
     // Config
 
@@ -38,8 +40,7 @@ public class ShooterConfig implements Loggable {
 
     public float shooterGearRatio = .45f / 1f;
 
-    public float defaultAzimuthTurnVelocity_deg = 10;
-    public float defaultElevationTurnVelocity_deg = 10;
+    
 
     public double manualAzimuthDeadband = 0.2;
     public double manualElevationDeadband = 0.2;
@@ -89,6 +90,15 @@ public class ShooterConfig implements Loggable {
         elevation.inverted = false;
     }
 
+    @Config(defaultValueNumeric = 10, name = "Azimuth Turn Rate (Degrees)")
+    public void setAzimuthTurnRate_deg(float azimuthTurnRate_deg) {
+        this.azimuthTurnRate_deg = azimuthTurnRate_deg;
+    }
+    @Config(defaultValueNumeric = 10, name = "Elevation Turn Rate (Degrees)")
+    public void setElevationTurnRate_deg(float elevationTurnRate_deg) {
+        this.elevationTurnRate_deg = elevationTurnRate_deg;
+    }
+
     @Config(defaultValueNumeric = 6000, name = "Shooter Velocity (RPM)")
     public void setShooterVelocity_rpm(float shooterVelocity_rpm) {
         this.shooterVelocity_rpm = shooterVelocity_rpm;
@@ -99,6 +109,12 @@ public class ShooterConfig implements Loggable {
         return "Shooter";
     }
 
+    public float getAzimuthTurnRate_deg() {
+        return azimuthTurnRate_deg;
+    }
+    public float getElevationTurnRate_deg() {
+        return elevationTurnRate_deg;
+    }
     public float getShooterVelocity_rpm() {
         return shooterVelocity_rpm;
     }
