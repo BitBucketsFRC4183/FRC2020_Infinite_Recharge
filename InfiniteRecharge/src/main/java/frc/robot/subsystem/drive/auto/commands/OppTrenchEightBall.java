@@ -19,7 +19,7 @@ public class OppTrenchEightBall {
     Trajectory secondReturn;
 
     /**
-     * auto trajectory for if we start at our trench
+     * auto trajectory for if we start at the opponent's trench
      * @param config TrajectoryConfig with parameters and constraints added
      */
     public OppTrenchEightBall(TrajectoryConfig config) {
