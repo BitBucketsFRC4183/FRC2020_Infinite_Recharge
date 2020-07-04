@@ -30,6 +30,9 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.drive.auto.FieldConstants;
 import frc.robot.subsystem.drive.auto.FullTrajectory;
+import frc.robot.subsystem.drive.auto.commands.CenterThreeBall;
+import frc.robot.subsystem.drive.auto.commands.OppTrenchEightBall;
+import frc.robot.subsystem.drive.auto.commands.TrenchFiveBall;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.JoystickScale;
@@ -131,165 +134,17 @@ public class DriveSubsystem extends BitBucketSubsystem {
         // we start at rest
         trajectoryConfig.setStartVelocity(0);
 
-        // where the robot starts at in auto
-        Translation2d startingPoint;
+        // make new trajectory and it to the list
+        CenterThreeBall center = new CenterThreeBall(trajectoryConfig);
+        trajectories.add(center.getFullTrajectory());
+
+        TrenchFiveBall ourTrench = new TrenchFiveBall(trajectoryConfig);
+        trajectories.add(ourTrench.getFullTrajectory());
+
+        OppTrenchEightBall oppTrench = new OppTrenchEightBall(trajectoryConfig);
+        trajectories.add(oppTrench.getFullTrajectory());
 
         ////////////////////////
-        // auto trajectory for if we start at the center of the initiation line
-        startingPoint = FieldConstants.START_CENTER_POWER_PORT;
-        Trajectory centerFirstPickup = TrajectoryGenerator.generateTrajectory(
-            // Start in front of the power port
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint),
-                new Rotation2d()
-            ),
-            // Pass through these two interior waypoints
-            List.of(
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_1, startingPoint),
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_2, startingPoint)
-            ),
-            // End at where the third ball is
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3, startingPoint),
-                new Rotation2d()
-            ),
-            // we are not reversed and we end at a velocity of 0
-            trajectoryConfig.setReversed(false).setEndVelocity(0)
-        );
-        Trajectory centerFirstReturn = TrajectoryGenerator.generateTrajectory(
-            // Start at where the third ball is
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3, startingPoint),
-                new Rotation2d()
-            ),
-            List.of(),
-            // Return to the power port
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint),
-                new Rotation2d()
-            ),
-            // // we ARE reversed and we end at a velocity of 0
-            trajectoryConfig.setReversed(true).setEndVelocity(0)
-        );
-
-        // add this trajectory to the list of trajectories
-        trajectories.add(new FullTrajectory("center", centerFirstPickup, centerFirstReturn));
-
-        // __code review party__: the following two trajectories are basically the same thing but with different constants
-        // hopefully the var names will self-document enough
-
-        ////////////////////////
-        //our trench
-        startingPoint = FieldConstants.START_OUR_TRENCH;
-        Trajectory rightFirstPickup = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_OUR_TRENCH, startingPoint),
-                new Rotation2d()
-            ),
-            List.of(),
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.BEFORE_OUR_POWER_CELL_1, startingPoint),
-                new Rotation2d()
-            ),
-            trajectoryConfig.setReversed(false).setEndVelocity(0)
-        );
-        Trajectory rightFirstReturn = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.BEFORE_OUR_POWER_CELL_1, startingPoint),
-                new Rotation2d()
-            ),
-            List.of(),
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.ALSO_BEFORE_OUR_POWER_CELL_1, startingPoint),
-                new Rotation2d()
-            ),
-            trajectoryConfig.setReversed(true).setEndVelocity(0)
-        );
-
-        Trajectory rightSecondPickup = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.ALSO_BEFORE_OUR_POWER_CELL_1, startingPoint),
-                new Rotation2d()
-            ),
-            List.of(),
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.OUR_TWO_POWER_CELLS, startingPoint),
-                new Rotation2d()
-            ),
-            trajectoryConfig.setReversed(false).setEndVelocity(0)
-        );
-        Trajectory rightSecondReturn = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.OUR_TWO_POWER_CELLS, startingPoint),
-                new Rotation2d()
-            ),
-            List.of(),
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.ALSO_BEFORE_OUR_POWER_CELL_1, startingPoint),
-                new Rotation2d()
-            ),
-            trajectoryConfig.setReversed(true).setEndVelocity(0)
-        );
-
-        trajectories.add(new FullTrajectory("our trench", rightFirstPickup, rightFirstReturn, rightSecondPickup, rightSecondReturn));
-
-        //////////////////////////
-        // opponent trench
-        startingPoint = FieldConstants.START_OPPONENT_TRENCH;
-        Trajectory oppTrenchFirstPickup = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_OPPONENT_TRENCH, startingPoint),
-                new Rotation2d()
-            ),
-            List.of(),
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.THEIR_TWO_POWER_CELLS, startingPoint),
-                new Rotation2d()
-            ),
-            trajectoryConfig.setReversed(false).setEndVelocity(0)
-        );
-        Trajectory oppTrenchFirstReturn = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.THEIR_TWO_POWER_CELLS, startingPoint),
-                new Rotation2d()
-            ),
-            List.of(),
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint),
-                new Rotation2d()
-            ),
-            trajectoryConfig.setReversed(true).setEndVelocity(0)
-        );
-
-        Trajectory oppTrenchSecondPickup = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint),
-                new Rotation2d()
-            ),
-            List.of(
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_1, startingPoint),
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_2, startingPoint)
-            ),
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3, startingPoint),
-                new Rotation2d()
-            ),
-            trajectoryConfig.setReversed(false).setEndVelocity(0)
-        );
-        Trajectory oppTrenchSecondReturn = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.OUR_POWER_CELL_3, startingPoint),
-                new Rotation2d()
-            ),
-            List.of(),
-            new Pose2d(
-                FieldConstants.transformToRobot(FieldConstants.START_CENTER_POWER_PORT, startingPoint),
-                new Rotation2d()
-            ),
-            trajectoryConfig.setReversed(true).setEndVelocity(0)
-        );
-
-        trajectories.add(new FullTrajectory("opponent trench", oppTrenchFirstPickup, oppTrenchFirstReturn, oppTrenchSecondPickup, oppTrenchSecondReturn));
 
         // create the RAMSETE controller with the specified tuning parameters
         ramsete = new RamseteController(config.auto.b, config.auto.zeta);
@@ -401,7 +256,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
         leftMotors[0].selectProfileSlot(MotorUtils.velocitySlot, 0);
         rightMotors[0].selectProfileSlot(MotorUtils.velocitySlot, 0);
 
-        setDefaultCommand(new Idle(this));
     }
 
 
@@ -446,7 +300,7 @@ public class DriveSubsystem extends BitBucketSubsystem {
 
     // drive the robot with a given percent speed and percent turn... worked much better than closed loop
     // so now we're trying to figure out how to bring back closed loop driving because we have dignity
-    public void velocityDrive(double speed, double turn) {
+    public void drive(double speed, double turn) {
         speed = forwardJoystickScaleChooser.getSelected().rescale(speed, DriveConstants.JOYSTICK_DEADBAND);
         turn = turnJoystickScaleChooser.getSelected().rescale(turn, DriveConstants.JOYSTICK_DEADBAND);
 

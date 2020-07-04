@@ -2,15 +2,13 @@ package frc.robot.subsystem.drive.auto;
 
 import frc.robot.subsystem.drive.DriveConstants;
 import frc.robot.subsystem.drive.DriveSubsystem;
-import frc.robot.subsystem.drive.Idle;
-import frc.robot.subsystem.drive.VelocityDrive;
 import frc.robot.subsystem.drive.DriveSubsystem.DriveMethod;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.CommandUtils;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
+import frc.robot.subsystem.drive.VelocityDrive;
 
 
 // now we just align the turret so we don't use this
@@ -54,7 +52,7 @@ public class AutoAlign extends CommandBase {
     public boolean isFinished() {
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.IDLE) {
             System.out.println("idle switch");
-            return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
+            return true;
         }
 
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.VELOCITY) {

@@ -79,6 +79,18 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         return active;
     }
 
+    public void moveArms(double leftStick, double rightStick) {
+        if (!isActive()) {
+            return;
+        }
+
+        if (!isRewindEnabled()) {
+            pitRewind(leftStick, rightStick);
+        } else if (isRewindEnabled()) {
+            manualClimb(leftStick, rightStick);
+        }
+    }
+
     public void manualClimb(double leftStick, double rightStick){
         leftStick = Math.abs(leftStick);
         rightStick = Math.abs(rightStick);

@@ -28,15 +28,13 @@ public enum PS4Constants {
 	TRACKPAD (14);
 	
 	
-	private int value;
-	private PS4Constants(int value) {
-		this.value = value;
+	private int id;
+	private PS4Constants(int id) {
+		this.id = id;
 	}
 	
-	public int getValue() {
-		return value;
+	public int getId() {
+		return id;
 	}
 
 }
-
-

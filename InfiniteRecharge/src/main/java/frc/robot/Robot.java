@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
@@ -36,6 +37,7 @@ import frc.robot.subsystem.pidhelper.PIDHelperSubsystem;
 import frc.robot.subsystem.scoring.intake.IntakeSubsystem;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import java.util.function.BooleanSupplier;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -56,8 +58,6 @@ public class Robot extends TimedRobot {
     public float deltaTime;
     public long currentTime;
     public long lastTime;
-
-    private final OI oi = new OI();
 
     private List<BitBucketSubsystem> subsystems = new ArrayList<>();
 
@@ -106,6 +106,10 @@ public class Robot extends TimedRobot {
             subsystems.add(new PIDHelperSubsystem(config));
         }
 
+        wireUpButtons();
+
+        //////////
+
         canChecker = new CANChecker();
 
         for (BitBucketSubsystem subsystem : subsystems) {
@@ -115,6 +119,88 @@ public class Robot extends TimedRobot {
         }
 
         lastTime = System.currentTimeMillis();
+    }
+
+    public void wireUpButtons() {
+
+        Buttons b = new Buttons();
+
+        //////////////////////////////////////////////
+        // Drive Subsystem
+        if (config.enableDriveSubsystem) {
+            b.driveAutoAim.whenHeld(new InstantCommand(() -> driveSubsystem.setAutoAligning(true), driveSubsystem)).whenReleased(new InstantCommand(() -> driveSubsystem.setAutoAligning(false), driveSubsystem));
+
+            driveSubsystem.setDefaultCommand(new RunCommand(
+                () -> driveSubsystem.drive(
+                    b.driverControl.getRawAxis(b.driveSpeed),
+                    b.driverControl.getRawAxis(b.driveTurn)),
+                driveSubsystem)
+            );
+        }
+
+        //////////////////////////////////////////////
+        // Intake Subsystem
+        if (config.enableIntakeSubsystem) {
+            b.operatorToggleIntake.whenPressed(new InstantCommand(() -> intakeSubsystem.toggleIntakeArm(), intakeSubsystem));
+
+            b.operatorIntake.whenHeld(new InstantCommand(() -> intakeSubsystem.intake(), intakeSubsystem)).whenReleased(new InstantCommand(() -> intakeSubsystem.off(), intakeSubsystem));
+            b.operatorOutake.whenHeld(new InstantCommand(() -> intakeSubsystem.outake(), intakeSubsystem)).whenReleased(new InstantCommand(() -> intakeSubsystem.off(), intakeSubsystem));
+        }
+
+        //////////////////////////////////////////////
+        // Climb Subsystem
+        if (config.enableClimbSubsystem) {
+            b.operatorActivateClimb.and(b.driveActivateClimb).whenActive(new InstantCommand(() -> climbSubsystem.toggleActive(), climbSubsystem));
+
+            // continuously call moveArms() with the axis valuse
+            // moveArms() will apprpriately call pitRewind or manualClimb
+            climbSubsystem.setDefaultCommand(new RunCommand(
+                () -> climbSubsystem.moveArms(
+                    b.operatorControl.getRawAxis(b.operatorClimbLeft), 
+                    b.operatorControl.getRawAxis(b.operatorClimbRight)), 
+                climbSubsystem)
+            );
+            
+        }
+
+
+        //////////////////////////////////////////////
+        // Shooter Subsystem
+        if (config.enableShooterSubsystem) {
+            b.operatorAimBot.whenHeld(new InstantCommand(() -> shooterSubsystem.autoAim(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.stopAutoAim(), shooterSubsystem));
+            b.operatorSpinUp.whenHeld(new InstantCommand(() -> shooterSubsystem.startSpinningUp(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.stopSpinningUp(), shooterSubsystem));
+            b.operatorFeeder.whenHeld(new InstantCommand(() -> shooterSubsystem.spinFeeder(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.stopSpinningFeeder(), shooterSubsystem));
+            b.operatorFire.whenHeld(new InstantCommand(() -> shooterSubsystem.spinBMS(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.holdFire(), shooterSubsystem));
+
+            shooterSubsystem.setDefaultCommand(new RunCommand(
+                () -> shooterSubsystem.rotate(
+                    Math.abs(b.operatorControl.getRawAxis(b.operatorAzimuth)), 
+                    Math.abs(b.operatorControl.getRawAxis(b.operatorElevation))),
+                shooterSubsystem)
+            );
+
+            b.operatorNextElevation.whenPressed(new InstantCommand(() -> shooterSubsystem.nextPositionElevation(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.resetPositionElevationSwitcher(), shooterSubsystem));
+            b.operatorLastElevation.whenPressed(new InstantCommand(() -> shooterSubsystem.lastPositionElevation(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.resetPositionElevationSwitcher(), shooterSubsystem));
+
+
+            b.setElevationToDashboardNum.whenPressed(new InstantCommand(() -> {
+                shooterSubsystem.rotateToDeg(
+                    shooterSubsystem.getTargetAzimuthDeg(),
+                    SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", config.shooter.DEFAULT_ELEVATION_TARGET_DEG)
+                );
+            }, shooterSubsystem));
+
+
+            b.operatorZero.whenPressed(new InstantCommand(() -> shooterSubsystem.rotateToDeg(0, 0), shooterSubsystem));
+
+        }
+
+        //////////////////////////////////////////////
+        // SpinnyBoi Subsystem
+        if (config.enableSpinnyboiSubsystem) {
+            b.operatorSpinForward.whenHeld(new InstantCommand(() -> spinnyBoiSubsystem.forward(), spinnyBoiSubsystem)).whenReleased(new InstantCommand(() -> spinnyBoiSubsystem.off(), spinnyBoiSubsystem));
+            b.operatorSpinBackward.whenHeld(new InstantCommand(() -> spinnyBoiSubsystem.forward(), spinnyBoiSubsystem)).whenReleased(new InstantCommand(() -> spinnyBoiSubsystem.off(), spinnyBoiSubsystem));
+        }
     }
 
     /**
@@ -290,116 +376,10 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
 
         //////////////////////////////////////////////////////////////////////////////
-        // Drive Subsystem
-
-        if (config.enableDriveSubsystem) {
-            driveSubsystem.setDriverRawSpeed(oi.speed());
-            driveSubsystem.setDriverRawTurn(oi.turn());
-
-            driveSubsystem.setAutoAligning(oi.driveAimBot());
-        }
-
-        //////////////////////////////////////////////////////////////////////////////
-        // Intake Subsystem
-
-        if (config.enableIntakeSubsystem) {
-            // Intake on pressing circle.
-            if (oi.intaking()) {
-                intakeSubsystem.intake();
-            } else if (oi.outaking()) {
-                intakeSubsystem.outake();
-            } else {
-                intakeSubsystem.off();
-            }
-
-            // Pivot Intake Bar
-            if (oi.barDownButtonPressed()) {
-                intakeSubsystem.toggleIntakeArm();
-            }
-        }
-        /////////////////////////////////////////////////////////////////////////////
-        // Climb Subsystem
-        if (config.enableClimbSubsystem) {
-            if (oi.climbActivate()) {
-                climbSubsystem.toggleActive();
-            }
-
-            if (climbSubsystem.isActive()) {
-                if (!climbSubsystem.isRewindEnabled()) {
-                    climbSubsystem.manualClimb(oi.manualClimbLeft(),oi.manualClimbRight());
-                } else if (climbSubsystem.isRewindEnabled()) {
-                    climbSubsystem.pitRewind(oi.pitRewindLeft(), oi.pitRewindRight());
-                }
-            }
-
-        }
-        //////////////////////////////////////////////////////////////////////////////
         // Shooter Subsystem
-
         if (config.enableShooterSubsystem) {
-            SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);
-
-            if (oi.feeder()){
-                shooterSubsystem.spinFeeder();
-            } else {
-                shooterSubsystem.stopSpinningFeeder();
-            }
-
-            // Spin up on pressing [spinUp] and auto aim on pressing [aimBot]
-            if (oi.spinUp()) {
-                shooterSubsystem.startSpinningUp();
-            } else if (oi.operatorAimBot()) {
-                shooterSubsystem.autoAim();
-            } else {
-                shooterSubsystem.stopSpinningUp();
-                shooterSubsystem.stopAutoAim();
-            }
-
-            // Fire on pressing [fire]
-            if (oi.fire()) {
-                shooterSubsystem.spinBMS();
-            } else {
-                shooterSubsystem.holdFire();
-            }
-
-            // Rotate the turret with [manualAzimuthAxis]
-            if (Math.abs(oi.manualAzimuthAxis()) >= config.shooter.manualAzimuthDeadband
-                    || Math.abs(oi.manualElevationAxis()) >= config.shooter.manualElevationDeadband) {
-                shooterSubsystem.rotate(oi.manualAzimuthAxis(), oi.manualElevationAxis());
-            } else {
-                shooterSubsystem.rotate(0, 0);
-            }
-
-            if (oi.zero()) {
-                shooterSubsystem.rotateToDeg(0, 0);
-            }
-
-            if (oi.nextPositionElevation()) {
-                shooterSubsystem.nextPositionElevation();
-            } else if (oi.lastPositionElevation()) {
-                shooterSubsystem.lastPositionElevation();
-            } else {
-                shooterSubsystem.resetPositionElevationSwitcher();
-            }
-
-            if (oi.setElevationToDashboardNumber()) {
-                shooterSubsystem.rotateToDeg(shooterSubsystem.getTargetAzimuthDeg(),
-                        SmartDashboard.getNumber(shooterSubsystem.getName() + "/Dashboard Elevation Target", config.shooter.DEFAULT_ELEVATION_TARGET_DEG));
-            }
+            SmartDashboard.putNumber("BallManagementSubsystem/Output Percent", 50);            
         }
-
-        // //////////////////////////////////////////////////////////////////////////////
-        // // SpinnyBoi Subsystem
-        if (config.enableSpinnyboiSubsystem) {
-            if (oi.spinnyBoiForward()) {
-                spinnyBoiSubsystem.forward();
-            } else if (oi.spinnyBoiBackward()) {
-                spinnyBoiSubsystem.backward();
-            } else {
-                spinnyBoiSubsystem.off();
-            }
-        }
-
     }
 
     @Override
