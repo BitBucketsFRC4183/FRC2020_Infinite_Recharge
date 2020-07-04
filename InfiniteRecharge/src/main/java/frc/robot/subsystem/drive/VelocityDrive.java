@@ -25,7 +25,7 @@ public class VelocityDrive extends CommandBase {
         double rawSpeed = DRIVE_SUBSYSTEM.getDriverRawSpeed();
         double rawTurn = DRIVE_SUBSYSTEM.getDriverRawTurn();
 
-        DRIVE_SUBSYSTEM.velocityDrive(rawSpeed, rawTurn);
+        DRIVE_SUBSYSTEM.drive(rawSpeed, rawTurn);
 
         
 
@@ -37,10 +37,6 @@ public class VelocityDrive extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.IDLE) {
-            return CommandUtils.stateChange(new Idle(DRIVE_SUBSYSTEM));
-        }
-
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.ALIGN) {
             return CommandUtils.stateChange(new AutoAlign(DRIVE_SUBSYSTEM));
         }

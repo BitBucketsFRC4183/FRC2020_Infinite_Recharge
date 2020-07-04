@@ -29,7 +29,7 @@ public class Idle extends CommandBase {
 
     public boolean isFinished() {
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveMethod.VELOCITY) {
-            return CommandUtils.stateChange(new VelocityDrive(DRIVE_SUBSYSTEM));
+            return true;
         }
 
         if (DRIVE_SUBSYSTEM.getDriveMethod() == DriveSubsystem.DriveMethod.ALIGN) {
