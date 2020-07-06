@@ -35,7 +35,7 @@ public class Config {
     public int BALLMANAGEMENT_MOTOR_ID = 14;
 
     // Intake
-    public static final int INTAKE_MOTOR_ID = 10;
+    public int INTAKE_MOTOR_ID = 10;
 
     // Climb
     public int CLIMB_LEFT_MOTOR_ID = 12;
