@@ -18,7 +18,7 @@ public class ShooterCalculator {
     private double lastTargetHoodAngle;
     private double lastTargetVelocity;
 
-    private final Config config = new Config();
+    private final Config config;
 
     public static class VelocityPoint implements Comparable<VelocityPoint> {
         final double distance_in;
@@ -59,16 +59,18 @@ public class ShooterCalculator {
      * Only unit tests should call this constructor
      * @param points
      */
-    ShooterCalculator(List<VelocityPoint> points) {
+    ShooterCalculator(Config config, List<VelocityPoint> points) {
         this.points = points;
+        this.config = config;
     }
 
     /**
      * Default constructor with our calculated data points
      * These points were obtained by testing the robot irl at multiple points
      */
-    public ShooterCalculator() {
-        this(Arrays.asList(
+    public ShooterCalculator(Config config) {
+        
+        this(config, Arrays.asList(
             new VelocityPoint(109, 4500, 43), // initiation line
             new VelocityPoint(130, 4500, 43.5),
             new VelocityPoint(150, 4500, 43),
@@ -78,9 +80,10 @@ public class ShooterCalculator {
             new VelocityPoint(397, 7400, 59)
             )
         );
+        
     }
 
-    public void initialize(VisionSubsystem visionSubsystem) {
+	public void initialize(VisionSubsystem visionSubsystem) {
         this.visionSubsystem = visionSubsystem;
         this.splineVPoint = new SplineVelocityPoint(points);
     }
@@ -102,7 +105,7 @@ public class ShooterCalculator {
         // calculate the velocity for this distance_in
         // If we don't have a target locked (we've lost the target) then return a default velocity
         if (!targetLocked){
-            return config.shooter.DEFAULT_SHOOTER_VELOCITY_RPM;
+            return config.shooter.getShooterVelocity_rpm();
         } else {
             return lastTargetVelocity;
         }
