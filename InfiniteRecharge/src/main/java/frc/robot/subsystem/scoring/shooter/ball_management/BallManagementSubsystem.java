@@ -22,7 +22,7 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
     // Motors
 
     // Talons
-    @Log.SpeedController
+    @Log.SpeedController(name = "Ball Management Motor")
     WPI_TalonSRX motor;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -95,5 +95,10 @@ public class BallManagementSubsystem extends BitBucketSubsystem {
     @Override
     public void listTalons() {
         talons.add(motor);
+    }
+    
+    @Override
+    public String configureLogName() {
+        return "Shooter";
     }
 }
