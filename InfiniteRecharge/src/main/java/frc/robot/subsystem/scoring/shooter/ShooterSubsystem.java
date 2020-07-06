@@ -78,7 +78,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     @Log.Exclude
     @io.github.oblarg.oblog.annotations.Config.Exclude
     private VisionSubsystem visionSubsystem;
-    private ShooterCalculator shooterCalculator;
+    private final ShooterCalculator shooterCalculator;
 
     //////////////////////////////////////////////////////////////////////////////
     // Motors
@@ -87,11 +87,11 @@ public class ShooterSubsystem extends BitBucketSubsystem {
     private WPI_TalonSRX azimuthMotor;
     private WPI_TalonSRX elevationMotor;
 
-    @Log.SpeedController
+    @Log.SpeedController(name = "Ball Propulsion Motor")
     private WPI_TalonFX ballPropulsionMotor;
     private WPI_TalonFX ballPropulsionFollower;
 
-    @Log.SpeedController
+    @Log.SpeedController(name = "Ball Feeder Motor")
     private WPI_TalonSRX feeder;
 
     // Neos
