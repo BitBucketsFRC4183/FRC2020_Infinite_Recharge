@@ -34,6 +34,7 @@ import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
 import frc.robot.utils.JoystickScale;
 import frc.robot.utils.talonutils.MotorUtils;
+import frc.robot.subsystem.drive.auto.AutoConfig;
 
 public class DriveSubsystem extends BitBucketSubsystem {
     public enum DriveMethod {
