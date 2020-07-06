@@ -17,11 +17,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.config.Config;
 import frc.robot.subsystem.SubsystemUtilities.DiagnosticsState;
+import io.github.oblarg.oblog.Loggable;
 
 /**
  *
  */
-public abstract class BitBucketSubsystem extends SubsystemBase {
+public abstract class BitBucketSubsystem extends SubsystemBase implements Loggable {
 
 	protected final DriverStation driverStation; // Convenience
 
