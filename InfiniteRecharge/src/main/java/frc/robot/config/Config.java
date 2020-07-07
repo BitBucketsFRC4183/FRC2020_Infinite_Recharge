@@ -3,6 +3,9 @@ package frc.robot.config;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import frc.robot.config.BallManagementConfig;
+import frc.robot.subsystem.drive.auto.AutoConfig;
+import frc.robot.subsystem.scoring.intake.IntakeConfig;
 import frc.robot.utils.control.pidf.PIDF;
 
 public class Config {
@@ -50,12 +53,6 @@ public class Config {
 
     //////////////////////////////////////////////////////////////////////////////
     // Motor Configs
-
-    public static class IntakeConfig {
-        public boolean intakePivotEnabled = true;
-
-        public MotorConfig intake = new MotorConfig();
-    }
 
     public static class ClimbConfig {
 
@@ -171,16 +168,6 @@ public class Config {
             leftLeader = leftMotors[0];
             rightLeader = rightMotors[0];
         }
-    }
-
-    public static class AutoConfig {
-        public double cruiseSpeed_mps = 0.3*14;
-        public double maxAcceleration_mps = 2;
-
-        public double b = 2;
-        public double zeta = 0.35;
-
-        public double kP = 0.911;
     }
 
     public ShooterConfig shooter = new ShooterConfig();
