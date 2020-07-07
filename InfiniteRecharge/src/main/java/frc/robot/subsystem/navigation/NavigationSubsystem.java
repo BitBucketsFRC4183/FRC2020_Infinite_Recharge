@@ -22,12 +22,14 @@ import frc.robot.subsystem.navigation.systems.RobotSystem1;
 import frc.robot.subsystem.navigation.systems.RobotSystemConfig;
 import frc.robot.subsystem.scoring.shooter.ShooterSubsystem;
 import frc.robot.utils.data.DoubleDataWindow;
+import io.github.oblarg.oblog.annotations.Log;
 import frc.robot.subsystem.vision.VisionSubsystem;
 
 public class NavigationSubsystem extends BitBucketSubsystem {
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
 
+    @Log.Gyro(name = "NavX")
     private AHRS ahrs;
 
     // recent acceleration data from IMU

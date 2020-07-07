@@ -1,8 +1,10 @@
 package frc.robot.config;
 
 import frc.robot.config.MotorConfig;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 
-public class ShooterConfig {
+public class ShooterConfig implements Loggable {
 
     // Constants
 
@@ -14,8 +16,6 @@ public class ShooterConfig {
 
     public static final double FEEDER_OUTPUT_PERCENT = 0.8;
 
-    public static final float DEFAULT_SHOOTER_VELOCITY_RPM = 6000;
-
     public static final boolean USE_BANG_BANG = false;
     public static final double BANG_BANG_PERCENT = 1.0;
     public static final double BANG_BANG_RAMP_UP_PERCENT = 0.4;
@@ -26,6 +26,12 @@ public class ShooterConfig {
     public static final float AZIMUTH_LEFT_LIMIT_SWITCH_DEG = 90;
     public static final float AZIMUTH_RIGHT_LIMIT_SWITCH_DEG = 180;
 
+    // Dashboard Config
+
+    private float shooterVelocity_rpm;
+    private float azimuthTurnRate_deg;
+    private float elevationTurnRate_deg;
+
     // Config
 
     public float azimuthGearRatio = 28f / 130f;
@@ -34,8 +40,7 @@ public class ShooterConfig {
 
     public float shooterGearRatio = .45f / 1f;
 
-    public float defaultAzimuthTurnVelocity_deg = 10;
-    public float defaultElevationTurnVelocity_deg = 10;
+    
 
     public double manualAzimuthDeadband = 0.2;
     public double manualElevationDeadband = 0.2;
@@ -83,5 +88,34 @@ public class ShooterConfig {
 
         azimuth.inverted = true;
         elevation.inverted = false;
+    }
+
+    @Config(defaultValueNumeric = 10, name = "Azimuth Turn Rate (Degrees)")
+    public void setAzimuthTurnRate_deg(float azimuthTurnRate_deg) {
+        this.azimuthTurnRate_deg = azimuthTurnRate_deg;
+    }
+    @Config(defaultValueNumeric = 10, name = "Elevation Turn Rate (Degrees)")
+    public void setElevationTurnRate_deg(float elevationTurnRate_deg) {
+        this.elevationTurnRate_deg = elevationTurnRate_deg;
+    }
+
+    @Config(defaultValueNumeric = 6000, name = "Shooter Velocity (RPM)")
+    public void setShooterVelocity_rpm(float shooterVelocity_rpm) {
+        this.shooterVelocity_rpm = shooterVelocity_rpm;
+    }
+
+    @Override
+    public String configureLogName() {
+        return "Shooter";
+    }
+
+    public float getAzimuthTurnRate_deg() {
+        return azimuthTurnRate_deg;
+    }
+    public float getElevationTurnRate_deg() {
+        return elevationTurnRate_deg;
+    }
+    public float getShooterVelocity_rpm() {
+        return shooterVelocity_rpm;
     }
 }

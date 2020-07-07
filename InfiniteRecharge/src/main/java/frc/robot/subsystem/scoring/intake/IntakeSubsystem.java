@@ -11,6 +11,8 @@ import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
 
+import frc.robot.config.MotorConfig;
+
 public class IntakeSubsystem extends BitBucketSubsystem {
     public enum IntakeState {
         Intaking, Outaking, Off;
@@ -50,7 +52,7 @@ public class IntakeSubsystem extends BitBucketSubsystem {
     public void dashboardInit() {
         // TODO Auto-generated method stub
         super.dashboardInit();
-        SmartDashboard.putNumber(getName() + "/Intake Speed", IntakeConstants.INTAKE_OUTPUT);
+        SmartDashboard.putNumber(getName() + "/Intake Speed", config.intake.INTAKE_OUTPUT);
     }
 
     @Override
@@ -78,12 +80,12 @@ public class IntakeSubsystem extends BitBucketSubsystem {
             break;
 
         case Intaking:
-            motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", IntakeConstants.INTAKE_OUTPUT));
+            motor.set(SmartDashboard.getNumber(getName() + "/Intake Speed", config.intake.INTAKE_OUTPUT));
             SmartDashboard.putString(getName() + "/IntakeState", "Intaking");
             break;
 
         case Outaking:
-            motor.set(-SmartDashboard.getNumber(getName() + "/Intake Speed", IntakeConstants.OUTAKE_OUTPUT));
+            motor.set(-SmartDashboard.getNumber(getName() + "/Intake Speed", config.intake.OUTAKE_OUTPUT));
             SmartDashboard.putString(getName() + "/IntakeState", "Outaking");
             break;
         }
