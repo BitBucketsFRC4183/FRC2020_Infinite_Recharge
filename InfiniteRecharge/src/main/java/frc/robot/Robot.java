@@ -21,18 +21,16 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
-import frc.robot.operatorinterface.OI;
 import frc.robot.subsystem.spinnyboi.SpinnyBoiSubsystem;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.subsystem.climber.ClimbSubsystem;
 import frc.robot.subsystem.vision.VisionSubsystem;
-import frc.robot.utils.CommandUtils;
 import frc.robot.utils.ProxyCommand;
 import io.github.oblarg.oblog.Logger;
 import io.github.oblarg.oblog.annotations.Log;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.DriveUtils;
-import frc.robot.subsystem.drive.Idle;
+import frc.robot.subsystem.drive.auto.AutoAlign;
 import frc.robot.subsystem.drive.auto.AutoDrive;
 import frc.robot.subsystem.navigation.NavigationSubsystem;
 import frc.robot.subsystem.pidhelper.PIDHelperSubsystem;
@@ -137,12 +135,12 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////
         // Drive Subsystem
         if (config.enableDriveSubsystem) {
-            b.driveAutoAim.whenHeld(new InstantCommand(() -> driveSubsystem.setAutoAligning(true), driveSubsystem)).whenReleased(new InstantCommand(() -> driveSubsystem.setAutoAligning(false), driveSubsystem));
+            b.driveAutoAim.whenHeld(new AutoAlign(driveSubsystem));
 
             driveSubsystem.setDefaultCommand(new RunCommand(
                 () -> driveSubsystem.drive(
-                    b.driverControl.getRawAxis(b.driveSpeed),
-                    b.driverControl.getRawAxis(b.driveTurn)),
+                    b.driverControl.getRawAxis(b.driveSpeedAxis),
+                    b.driverControl.getRawAxis(b.driveTurnAxis)),
                 driveSubsystem)
             );
         }
@@ -152,8 +150,10 @@ public class Robot extends TimedRobot {
         if (config.enableIntakeSubsystem) {
             b.operatorToggleIntake.whenPressed(new InstantCommand(() -> intakeSubsystem.toggleIntakeArm(), intakeSubsystem));
 
-            b.operatorIntake.whenHeld(new InstantCommand(() -> intakeSubsystem.intake(), intakeSubsystem)).whenReleased(new InstantCommand(() -> intakeSubsystem.off(), intakeSubsystem));
-            b.operatorOutake.whenHeld(new InstantCommand(() -> intakeSubsystem.outake(), intakeSubsystem)).whenReleased(new InstantCommand(() -> intakeSubsystem.off(), intakeSubsystem));
+            b.operatorIntake.whenHeld(new InstantCommand(() -> intakeSubsystem.intake(), intakeSubsystem))
+                    .whenReleased(new InstantCommand(() -> intakeSubsystem.off(), intakeSubsystem));
+            b.operatorOutake.whenHeld(new InstantCommand(() -> intakeSubsystem.outake(), intakeSubsystem))
+                    .whenReleased(new InstantCommand(() -> intakeSubsystem.off(), intakeSubsystem));
         }
 
         //////////////////////////////////////////////
@@ -176,10 +176,14 @@ public class Robot extends TimedRobot {
         //////////////////////////////////////////////
         // Shooter Subsystem
         if (config.enableShooterSubsystem) {
-            b.operatorAimBot.whenHeld(new InstantCommand(() -> shooterSubsystem.autoAim(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.stopAutoAim(), shooterSubsystem));
-            b.operatorSpinUp.whenHeld(new InstantCommand(() -> shooterSubsystem.startSpinningUp(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.stopSpinningUp(), shooterSubsystem));
-            b.operatorFeeder.whenHeld(new InstantCommand(() -> shooterSubsystem.spinFeeder(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.stopSpinningFeeder(), shooterSubsystem));
-            b.operatorFire.whenHeld(new InstantCommand(() -> shooterSubsystem.spinBMS(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.holdFire(), shooterSubsystem));
+            b.operatorAimBot.whenHeld(new InstantCommand(() -> shooterSubsystem.autoAim(), shooterSubsystem))
+                    .whenReleased(new InstantCommand(() -> shooterSubsystem.stopAutoAim(), shooterSubsystem));
+            b.operatorSpinUp.whenHeld(new InstantCommand(() -> shooterSubsystem.startSpinningUp(), shooterSubsystem))
+                    .whenReleased(new InstantCommand(() -> shooterSubsystem.stopSpinningUp(), shooterSubsystem));
+            b.operatorFeeder.whenHeld(new InstantCommand(() -> shooterSubsystem.spinFeeder(), shooterSubsystem))
+                    .whenReleased(new InstantCommand(() -> shooterSubsystem.stopSpinningFeeder(), shooterSubsystem));
+            b.operatorFire.whenHeld(new InstantCommand(() -> shooterSubsystem.spinBMS(), shooterSubsystem))
+                    .whenReleased(new InstantCommand(() -> shooterSubsystem.holdFire(), shooterSubsystem));
 
             shooterSubsystem.setDefaultCommand(new RunCommand(
                 () -> shooterSubsystem.rotate(
@@ -188,8 +192,10 @@ public class Robot extends TimedRobot {
                 shooterSubsystem)
             );
 
-            b.operatorNextElevation.whenPressed(new InstantCommand(() -> shooterSubsystem.nextPositionElevation(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.resetPositionElevationSwitcher(), shooterSubsystem));
-            b.operatorLastElevation.whenPressed(new InstantCommand(() -> shooterSubsystem.lastPositionElevation(), shooterSubsystem)).whenReleased(new InstantCommand(() -> shooterSubsystem.resetPositionElevationSwitcher(), shooterSubsystem));
+            b.operatorNextElevation.whenPressed(new InstantCommand(() -> shooterSubsystem.nextPositionElevation(), shooterSubsystem))
+                    .whenReleased(new InstantCommand(() -> shooterSubsystem.resetPositionElevationSwitcher(), shooterSubsystem));
+            b.operatorLastElevation.whenPressed(new InstantCommand(() -> shooterSubsystem.lastPositionElevation(), shooterSubsystem))
+                    .whenReleased(new InstantCommand(() -> shooterSubsystem.resetPositionElevationSwitcher(), shooterSubsystem));
 
 
             b.setElevationToDashboardNum.whenPressed(new InstantCommand(() -> {
@@ -208,7 +214,7 @@ public class Robot extends TimedRobot {
         // SpinnyBoi Subsystem
         if (config.enableSpinnyboiSubsystem) {
             b.operatorSpinForward.whenHeld(new InstantCommand(() -> spinnyBoiSubsystem.forward(), spinnyBoiSubsystem)).whenReleased(new InstantCommand(() -> spinnyBoiSubsystem.off(), spinnyBoiSubsystem));
-            b.operatorSpinBackward.whenHeld(new InstantCommand(() -> spinnyBoiSubsystem.forward(), spinnyBoiSubsystem)).whenReleased(new InstantCommand(() -> spinnyBoiSubsystem.off(), spinnyBoiSubsystem));
+            b.operatorSpinBackward.whenHeld(new InstantCommand(() -> spinnyBoiSubsystem.backward(), spinnyBoiSubsystem)).whenReleased(new InstantCommand(() -> spinnyBoiSubsystem.off(), spinnyBoiSubsystem));
         }
     }
 
@@ -329,7 +335,6 @@ public class Robot extends TimedRobot {
         .andThen(() -> stopEverything())
 
         // all done
-        .andThen(new Idle(driveSubsystem))
         .schedule();
     }
 
@@ -343,7 +348,6 @@ public class Robot extends TimedRobot {
         shooterSubsystem.holdFire();
         shooterSubsystem.rotateToDeg(0, 0);
         intakeSubsystem.off();
-        new Idle(driveSubsystem);
     }
 
     /**

@@ -13,8 +13,8 @@ public class Buttons {
     // drive
     JoystickButton driveAutoAim = new JoystickButton(driverControl, PS4Constants.CIRCLE.getId());
 
-    int driveSpeed = PS4Constants.LEFT_STICK_Y.getId();
-    int driveTurn = PS4Constants.RIGHT_STICK_X.getId();
+    int driveSpeedAxis = PS4Constants.LEFT_STICK_Y.getId();
+    int driveTurnAxis = PS4Constants.RIGHT_STICK_X.getId();
 
     // intake
     POVButton operatorIntake = new POVButton(operatorControl, 180); // down
