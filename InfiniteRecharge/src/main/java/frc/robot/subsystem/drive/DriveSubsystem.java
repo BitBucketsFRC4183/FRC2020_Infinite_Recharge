@@ -40,13 +40,6 @@ import frc.robot.utils.talonutils.MotorUtils;
 import frc.robot.subsystem.drive.auto.AutoConfig;
 
 public class DriveSubsystem extends BitBucketSubsystem {
-    public enum DriveMethod {
-        AUTO, // drive in auto
-        IDLE, // don't do anything
-        VELOCITY, // just regular driving... this used to be using the TalonFX velocity control, now it's open loop
-        ALIGN // auto align the drive base with the vision target
-    };
-    private DriveMethod driveMethod = DriveMethod.IDLE; // default
 
     private DriverStation driverStation;
 
@@ -349,15 +342,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
         return (leftSpeed + rightSpeed) / 2.0;
     }
 
-
-
-    // get the method its using to drive
-    public DriveMethod getDriveMethod() { return driveMethod; }
-
-
-
-
-
     public void testInit() {
 
     }
@@ -379,22 +363,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
         differentialDrive.feed();
 
 
-
-
-        if (driverStation.isOperatorControl()) {
-            if (driveMethod == DriveMethod.AUTO || driveMethod == DriveMethod.IDLE) {
-                driveMethod = DriveMethod.VELOCITY;
-            } else if (autoAligning) {
-                driveMethod = DriveMethod.ALIGN;
-            } else {
-                driveMethod = DriveMethod.VELOCITY;
-            }
-        } else if (driverStation.isAutonomous()) {
-            driveMethod = DriveMethod.AUTO; // please don't press any buttons during auto anyways :)))
-        }
-
-
-
         if (getTelemetryEnabled()) {
             double leftSpeed = DRIVE_UTILS.ticksP100ToIps(leftMotors[0].getSelectedSensorVelocity());
             double rightSpeed = DRIVE_UTILS.ticksP100ToIps(rightMotors[0].getSelectedSensorVelocity());
@@ -414,7 +382,6 @@ public class DriveSubsystem extends BitBucketSubsystem {
             SmartDashboard.putNumber(getName() + "/left ticks", leftMotors[0].getSelectedSensorPosition());
             SmartDashboard.putNumber(getName() + "/right ticks", rightMotors[0].getSelectedSensorPosition());
 
-            SmartDashboard.putString(getName() + "/drive method", driveMethod.toString());
         }
     }
 

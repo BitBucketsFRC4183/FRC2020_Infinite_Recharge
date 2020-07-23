@@ -10,6 +10,7 @@ import frc.robot.RobotMap;
 import frc.robot.config.Config;
 import frc.robot.subsystem.BitBucketSubsystem;
 import frc.robot.utils.talonutils.MotorUtils;
+import frc.robot.subsystem.scoring.intake.IntakeConstants;
 
 import frc.robot.config.MotorConfig;
 
