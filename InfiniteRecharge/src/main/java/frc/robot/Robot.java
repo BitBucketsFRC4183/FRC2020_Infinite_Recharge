@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.config.Config;
 import frc.robot.config.ConfigChooser;
@@ -192,11 +193,17 @@ public class Robot extends TimedRobot {
                 shooterSubsystem)
             );
 
-            b.operatorNextElevation.whenPressed(new InstantCommand(() -> shooterSubsystem.nextPositionElevation(), shooterSubsystem))
-                    .whenReleased(new InstantCommand(() -> shooterSubsystem.resetPositionElevationSwitcher(), shooterSubsystem));
-            b.operatorLastElevation.whenPressed(new InstantCommand(() -> shooterSubsystem.lastPositionElevation(), shooterSubsystem))
-                    .whenReleased(new InstantCommand(() -> shooterSubsystem.resetPositionElevationSwitcher(), shooterSubsystem));
-
+            b.operatorNextElevation.whenPressed(new StartEndCommand(
+                () -> shooterSubsystem.nextPositionElevation(),
+                () -> shooterSubsystem.resetPositionElevationSwitcher(),
+                shooterSubsystem)
+            );
+            
+            b.operatorLastElevation.whenPressed(new StartEndCommand(
+                () -> shooterSubsystem.lastPositionElevation(),
+                () -> shooterSubsystem.resetPositionElevationSwitcher(),
+                shooterSubsystem)
+            );
 
             b.setElevationToDashboardNum.whenPressed(new InstantCommand(() -> {
                 shooterSubsystem.rotateToDeg(

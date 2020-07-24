@@ -53,7 +53,7 @@ public class Buttons {
     JoystickButton driverRotationControl = new JoystickButton(driverControl, PS4Constants.TRIANGLE.getId());
     JoystickButton driverColorControl = new JoystickButton(driverControl, PS4Constants.CROSS.getId());
 
-    // forced Idle for corresponding subsystems
+    // forced Idle for corresponding subsystems (still unimplemented)
     JoystickButton driverIdle = new JoystickButton(driverControl, PS4Constants.TRACKPAD.getId());
     JoystickButton operatorIdle = new JoystickButton(operatorControl, PS4Constants.TRACKPAD.getId());
 
