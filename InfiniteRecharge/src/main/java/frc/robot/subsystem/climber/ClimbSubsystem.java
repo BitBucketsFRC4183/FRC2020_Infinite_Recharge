@@ -47,7 +47,7 @@ public class ClimbSubsystem extends BitBucketSubsystem {
     }
 
     public void pitRewind(double leftStick, double rightStick) {
-        if (!isRewindEnabled()) {
+        if (!isPitRewindEnabled()) {
             return;
         }
 
@@ -71,12 +71,26 @@ public class ClimbSubsystem extends BitBucketSubsystem {
         climbDashboard.putRewindEnabled(false);
     }
 
-    public boolean isRewindEnabled(){
+    // true if pit rewind
+    // false if manual rewind
+    public boolean isPitRewindEnabled(){
         return climbDashboard.rewindEnabled();
     }
 
     public boolean isActive(){
         return active;
+    }
+
+    public void moveArms(double leftStick, double rightStick) {
+        if (!isActive()) {
+            return;
+        }
+
+        if (isPitRewindEnabled()) {
+            pitRewind(leftStick, rightStick);
+        } else {
+            manualClimb(leftStick, rightStick);
+        }
     }
 
     public void manualClimb(double leftStick, double rightStick){

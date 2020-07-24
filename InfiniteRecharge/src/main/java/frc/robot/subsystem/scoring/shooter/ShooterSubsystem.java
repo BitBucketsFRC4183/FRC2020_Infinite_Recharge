@@ -356,7 +356,19 @@ public class ShooterSubsystem extends BitBucketSubsystem {
         }
     }
 
-    public void rotate(double spinRateAzimuth, double spinRateElevation) {
+    public void rotate(double azimuthInput, double elevationInput) {
+        double spinRateAzimuth;
+        double spinRateElevation;
+
+        // ensure axis input is above deadband
+        if (azimuthInput >= config.shooter.manualAzimuthDeadband || elevationInput >= config.shooter.manualElevationDeadband) {
+            spinRateAzimuth = azimuthInput;
+            spinRateElevation = elevationInput;
+        } else {
+            spinRateAzimuth = 0;
+            spinRateElevation = 0;
+        }
+
         // Turn turret at a quantity of degrees per second configurable in the smart
         // dashboard.
         double smartDashboardTurnRateTicksAzimuth = MathUtils.unitConverter(config.shooter.getAzimuthTurnRate_deg(), 360,
