@@ -98,9 +98,11 @@ public class ShooterCalculator {
         if (validTarget) {
             double ty = visionSubsystem.getTy();
             double distance = visionSubsystem.approximateDistanceFromTarget(ty);
+            double velocity = splineVPoint.getSpeedSpline(distance);
 
             targetLocked = true;
-            return splineVPoint.getSpeedSpline(distance);
+            lastTargetVelocity = velocity;
+            return velocity;
         }
         // calculate the velocity for this distance_in
         // If we don't have a target locked (we've lost the target) then return a default velocity
@@ -153,5 +155,8 @@ public class ShooterCalculator {
     }
     public void setTargetLocked(boolean b){
         targetLocked = b;
+    }
+    public void setLastTargetVelocity(double lastTargetVelocity){
+        this.lastTargetVelocity=lastTargetVelocity;
     }
 }
