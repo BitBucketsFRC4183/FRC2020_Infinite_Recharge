@@ -40,8 +40,6 @@ public class ShooterConfig implements Loggable {
 
     public float shooterGearRatio = .45f / 1f;
 
-    
-
     public double manualAzimuthDeadband = 0.2;
     public double manualElevationDeadband = 0.2;
 
@@ -51,7 +49,7 @@ public class ShooterConfig implements Loggable {
     public float forwardElevationSoftLimit_deg = 60;
     public float backwardElevationSoftLimit_deg = 0;
 
-    public float feederSpinUpDeadband_ticks = 50;
+    public float feederSpinUpDeadband_ticks = 200;
 
     public MotorConfig azimuth = new MotorConfig();
     public MotorConfig elevation = new MotorConfig();
@@ -94,6 +92,7 @@ public class ShooterConfig implements Loggable {
     public void setAzimuthTurnRate_deg(float azimuthTurnRate_deg) {
         this.azimuthTurnRate_deg = azimuthTurnRate_deg;
     }
+
     @Config(defaultValueNumeric = 10, name = "Elevation Turn Rate (Degrees)")
     public void setElevationTurnRate_deg(float elevationTurnRate_deg) {
         this.elevationTurnRate_deg = elevationTurnRate_deg;
@@ -112,9 +111,11 @@ public class ShooterConfig implements Loggable {
     public float getAzimuthTurnRate_deg() {
         return azimuthTurnRate_deg;
     }
+
     public float getElevationTurnRate_deg() {
         return elevationTurnRate_deg;
     }
+
     public float getShooterVelocity_rpm() {
         return shooterVelocity_rpm;
     }
