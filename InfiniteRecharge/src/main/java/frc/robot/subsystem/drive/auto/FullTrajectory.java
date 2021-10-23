@@ -71,6 +71,18 @@ public class FullTrajectory {
         this(name, firstPickupTrajectory, firstReturnTrajectory, secondPickupTrajectory, secondReturnTrajectory, true);
     }
 
+    // no auto
+    public FullTrajectory(boolean disable)
+    {
+        this.name = "No Auto";
+        this.firstPickupTrajectory = null;
+        this.firstReturnTrajectory = null;
+        this.secondPickupTrajectory = null;
+        this.secondReturnTrajectory = null;
+        this.hasSecondTrajectory = false;
+    }
+    
+
 
     public String getName() {
         return name;

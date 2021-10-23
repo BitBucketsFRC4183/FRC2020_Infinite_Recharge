@@ -276,6 +276,12 @@ public class Robot extends TimedRobot {
         // begin spinning up our hopper
         shooterSubsystem.spinBMS();
 
+        // no auto
+        if (driveSubsystem.getFirstPickupTrajectory() == null)
+        {
+            return;
+        }
+
         //intakeSubsystem.toggleIntakeArm();
 
         // start the command sequence
