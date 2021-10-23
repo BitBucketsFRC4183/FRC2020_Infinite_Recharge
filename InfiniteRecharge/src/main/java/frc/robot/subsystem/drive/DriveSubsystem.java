@@ -138,6 +138,9 @@ public class DriveSubsystem extends BitBucketSubsystem {
         OppTrenchEightBall oppTrench = new OppTrenchEightBall(trajectoryConfig);
         trajectories.add(oppTrench.getFullTrajectory());
 
+        FullTrajectory noAuto = new FullTrajectory(true);
+        trajectories.add(noAuto);
+
         ////////////////////////
 
         // create the RAMSETE controller with the specified tuning parameters
