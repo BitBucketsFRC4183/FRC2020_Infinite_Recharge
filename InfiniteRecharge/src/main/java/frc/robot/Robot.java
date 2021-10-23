@@ -273,8 +273,6 @@ public class Robot extends TimedRobot {
         navigationSubsystem.reset();
         navigationSubsystem.setInitialPose(driveSubsystem.getFirstPickupTrajectory().getInitialPose());
         visionSubsystem.turnOnLEDs();
-        // begin spinning up our hopper
-        shooterSubsystem.spinBMS();
 
         // no auto
         if (driveSubsystem.getFirstPickupTrajectory() == null)
@@ -282,7 +280,10 @@ public class Robot extends TimedRobot {
             return;
         }
 
-        //intakeSubsystem.toggleIntakeArm();
+        // begin spinning up our hopper
+        shooterSubsystem.spinBMS();
+
+        intakeSubsystem.toggleIntakeArm();
 
         // start the command sequence
         // and turn the intake
