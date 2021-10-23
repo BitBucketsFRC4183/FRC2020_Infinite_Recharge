@@ -30,7 +30,7 @@ public class Config {
     public int ELEVATION_MOTOR_ID = 7;
     public int SHOOTER_MOTOR_ID = 15;
     public int SHOOTER_FOLLOWER_MOTOR_ID = 16;
-    public int FEEDER_MOTOR_ID = 9;
+    public int FEEDER_MOTOR_ID = 11;
 
     public int BALLMANAGEMENT_MOTOR_ID = 14;
 
@@ -46,7 +46,7 @@ public class Config {
     public int RIGHT_DRIVE_IDS[] = { 1, 4 };
 
     // SpinnyBoi
-    public int SPINNYBOI_MOTOR_ID = 11;
+    public int SPINNYBOI_MOTOR_ID = 9;
 
     //////////////////////////////////////////////////////////////////////////////
     // Vision
