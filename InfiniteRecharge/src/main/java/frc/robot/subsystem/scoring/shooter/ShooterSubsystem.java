@@ -303,7 +303,7 @@ public class ShooterSubsystem extends BitBucketSubsystem {
 
         SmartDashboard.putNumber(getName() + "/averageError", averageError);
         // Spin up the feeder if the shooter is up to speed.
-        if (/*averageError <= config.shooter.feederSpinUpDeadband_ticks && */feeding) {
+        if (averageError <= config.shooter.feederSpinUpDeadband_ticks && feeding) {
             feeder.set(feederOutputPercent);
             SmartDashboard.putString(getName() + "/Feeder State", "Feeding");
             upToSpeed = true;

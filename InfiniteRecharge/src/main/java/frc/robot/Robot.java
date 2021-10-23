@@ -298,7 +298,7 @@ public class Robot extends TimedRobot {
         }))
         // the isUpToSpeed() was broken or something so we added this for a fix? dont quite remember
         // either way, we wait to make *sure* we're done shooting
-        .andThen(new WaitCommand(3))
+        .andThen(new WaitCommand(2))
 
         // stop shooting and lower the hood
         .andThen(new InstantCommand(() -> {
@@ -325,7 +325,7 @@ public class Robot extends TimedRobot {
                     System.out.println("Wait until");
                     return shooterSubsystem.isUpToSpeed();
                 }))
-                .andThen(new WaitCommand(3))
+                .andThen(new WaitCommand(2))
 
                 // we are done so stop it
                 .andThen(() -> stopEverything())

@@ -49,7 +49,7 @@ public class ShooterConfig implements Loggable {
     public float forwardElevationSoftLimit_deg = 60;
     public float backwardElevationSoftLimit_deg = 0;
 
-    public float feederSpinUpDeadband_ticks = 200;
+    public float feederSpinUpDeadband_ticks = 100;
 
     public MotorConfig azimuth = new MotorConfig();
     public MotorConfig elevation = new MotorConfig();
